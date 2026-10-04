@@ -1,0 +1,6 @@
+1.82s per message (median 1.80s, slowest 2.56s), file 531 MB
+exact 45/51 = 88%  | lang 96%  crop 98%  kg 94%  ask 98%  any 100%  grade 96%  yn 100%
+exact 51/51 = 100%  | lang 100%  crop 100%  kg 100%  ask 100%  any 100%  grade 100%  yn 100%
+1.91s per message (median 1.87s, slowest 2.40s), file 531 MB
+exact 50/70 = 71%  | lang 97%  crop 96%  kg 96%  ask 97%  any 99%  grade 81%  yn 100%
+exact 61/70 = 87%  | lang 100%  crop 97%  kg 99%  ask 100%  any 99%  grade 90%  yn 100%

@@ -1,0 +1,9 @@
+{
+ "model": "claude-sonnet-5-5",
+ "n": 70,
+ "median_ms": 1699.3749141693115,
+ "p90_ms": 2655.505895614624,
+ "in_tokens_per_msg": 491.0857142857143,
+ "out_tokens_per_msg": 118.38571428571429,
+ "usd_per_1000_msgs": 2.166
+}

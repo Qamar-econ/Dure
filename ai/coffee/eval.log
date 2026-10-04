@@ -1,0 +1,17 @@
+5.26s per message
+model test: exact 45/51 = 88%  | lang 96%  crop 98%  kg 94%  ask 98%  any 100%  grade 96%  yn 100%
+hybrid test: rules engine sure on 43/51 = 84% of messages -> sent to model: 8
+hybrid test: exact 51/51 = 100%  | lang 100%  crop 100%  kg 100%  ask 100%  any 100%  grade 100%  yn 100%
+hybrid test: rules engine wrong while sure: 0/43
+5.21s per message
+model test2: exact 49/70 = 70%  | lang 97%  crop 96%  kg 94%  ask 97%  any 99%  grade 81%  yn 100%
+hybrid test2: rules engine sure on 51/70 = 73% of messages -> sent to model: 19
+hybrid test2: exact 61/70 = 87%  | lang 100%  crop 97%  kg 99%  ask 100%  any 99%  grade 90%  yn 100%
+hybrid test2: rules engine wrong while sure: 1/51
+5.07s per message
+model test3: exact 43/60 = 72%  | lang 97%  crop 92%  kg 95%  ask 93%  any 97%  grade 87%  yn 100%
+hybrid test3: rules engine sure on 25/60 = 42% of messages -> sent to model: 35
+hybrid test3: exact 46/60 = 77%  | lang 97%  crop 92%  kg 95%  ask 93%  any 98%  grade 90%  yn 100%
+hybrid test3: rules engine wrong while sure: 0/25
+5.87s per message
+base few-shot test3: exact 4/60 = 7%  | lang 63%  crop 33%  kg 87%  ask 82%  any 65%  grade 43%  yn 65%

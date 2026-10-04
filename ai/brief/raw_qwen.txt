@@ -1,0 +1,25 @@
+{
+  "headline": "Coffee farmers' pool in Letefoho saw significant changes in offers and prices.",
+  "changed": [
+    {
+      "text": "Offers decreased by 17% compared to the previous week.",
+      "village": "Lebudu"
+    },
+    {
+      "text": "Insect contamination increased by 100% compared to the previous week.",
+      "village": "Lebudu"
+    },
+    {
+      "text": "Drying time reduced by 50% compared to the previous week.",
+      "village": "Lacau"
+    }
+  ],
+  "prices": [
+    "Prices dropped by 10% compared to the previous auction.",
+    "The average price for grade C fell by 10%."
+  ],
+  "review": [
+    "Farmers should consider reducing the amount of mold and insects in their coffee beans.",
+    "Farmers should monitor the drying process more closely to ensure faster and better results."
+  ]
+}

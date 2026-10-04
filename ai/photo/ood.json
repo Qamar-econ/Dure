@@ -1,0 +1,19 @@
+{
+ "pca_components": 32,
+ "novelty_threshold": 0.2988,
+ "test_refused_share": 0.006,
+ "commons_refused": "10/10",
+ "commons": {
+  "Coffee_Bean_Quality_Sorting_Comparison_Tanzania_jpg.jpg": 0.462,
+  "Coffee_defect_kuku_kambing_jpg.jpg": 0.358,
+  "Colombian_Parchment_Coffee_jpg.jpg": 0.715,
+  "High_Quality_Coffee_Beans_Closeup_Tanzania_jpg.jpg": 0.675,
+  "Rejected_Coffee_Beans_Closeup_Tanzania_jpg.jpg": 0.7,
+  "Starr_170109_0305_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg": 0.613,
+  "Starr_170109_0319_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg": 0.703,
+  "Starr_170109_0355_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_wi.jpg": 0.679,
+  "Starr_170109_4505_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg": 0.568,
+  "Starr_170109_4634_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg": 0.578
+ },
+ "onnx_mb": 3.88
+}

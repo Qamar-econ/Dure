@@ -1,0 +1,516 @@
+{
+ "hash": "e5fc05d95f5c",
+ "villages": [
+  "Eraulo",
+  "Ducurai",
+  "Lebudu",
+  "Hatugau",
+  "Lacau"
+ ],
+ "findings": [
+  {
+   "id": "F1",
+   "village": "Eraulo",
+   "text": "Eraulo, week 3: photos flagged black or mouldy 50% (week 1: 0%; the other four villages in week 3: 5%)",
+   "nums": [
+    3,
+    50,
+    1,
+    0,
+    5,
+    4
+   ],
+   "score": 95,
+   "dir": 1
+  },
+  {
+   "id": "F2",
+   "village": "Eraulo",
+   "text": "Eraulo, week 3: photos flagged insect damage 0% (week 1: 0%; the other four villages in week 3: 3%)",
+   "nums": [
+    3,
+    0,
+    1,
+    0,
+    3,
+    4
+   ],
+   "score": 3,
+   "dir": 0
+  },
+  {
+   "id": "F3",
+   "village": "Eraulo",
+   "text": "Eraulo, week 3: photos flagged uneven drying 25% (week 1: 0%; the other four villages in week 3: 3%)",
+   "nums": [
+    3,
+    25,
+    1,
+    0,
+    3,
+    4
+   ],
+   "score": 47,
+   "dir": 1
+  },
+  {
+   "id": "F4",
+   "village": "Eraulo",
+   "text": "Eraulo, week 3: grade C 50% of offers, confirmed by inspectors (week 1: 25%; other four villages: 10%)",
+   "nums": [
+    3,
+    50,
+    1,
+    25,
+    10,
+    4
+   ],
+   "score": 65,
+   "dir": 1
+  },
+  {
+   "id": "F5",
+   "village": "Eraulo",
+   "text": "Eraulo, week 3: 36 kg per offer, -28% against week 1 (51 kg)",
+   "nums": [
+    3,
+    36,
+    -28,
+    1,
+    51
+   ],
+   "score": 56,
+   "dir": -1
+  },
+  {
+   "id": "F6",
+   "village": "Eraulo",
+   "text": "Eraulo, week 3: 4 of 8 offers sat out (the farmer's minimum was above the price for that grade)",
+   "nums": [
+    3,
+    4,
+    8
+   ],
+   "score": 50,
+   "dir": 0
+  },
+  {
+   "id": "F7",
+   "village": "Ducurai",
+   "text": "Ducurai, week 3: photos flagged black or mouldy 0% (week 1: 0%; the other four villages in week 3: 16%)",
+   "nums": [
+    3,
+    0,
+    1,
+    0,
+    16,
+    4
+   ],
+   "score": 16,
+   "dir": 0
+  },
+  {
+   "id": "F8",
+   "village": "Ducurai",
+   "text": "Ducurai, week 3: photos flagged insect damage 0% (week 1: 0%; the other four villages in week 3: 3%)",
+   "nums": [
+    3,
+    0,
+    1,
+    0,
+    3,
+    4
+   ],
+   "score": 3,
+   "dir": 0
+  },
+  {
+   "id": "F9",
+   "village": "Ducurai",
+   "text": "Ducurai, week 3: photos flagged uneven drying 10% (week 1: 0%; the other four villages in week 3: 5%)",
+   "nums": [
+    3,
+    10,
+    1,
+    0,
+    5,
+    4
+   ],
+   "score": 15,
+   "dir": 1
+  },
+  {
+   "id": "F10",
+   "village": "Ducurai",
+   "text": "Ducurai, week 3: grade C 20% of offers, confirmed by inspectors (week 1: 30%; other four villages: 16%)",
+   "nums": [
+    3,
+    20,
+    1,
+    30,
+    16,
+    4
+   ],
+   "score": 14,
+   "dir": -1
+  },
+  {
+   "id": "F11",
+   "village": "Ducurai",
+   "text": "Ducurai, week 3: 45 kg per offer, 1% against week 1 (45 kg)",
+   "nums": [
+    3,
+    45,
+    1,
+    1,
+    45
+   ],
+   "score": 2,
+   "dir": 1
+  },
+  {
+   "id": "F12",
+   "village": "Ducurai",
+   "text": "Ducurai, week 3: 0 of 10 offers sat out (the farmer's minimum was above the price for that grade)",
+   "nums": [
+    3,
+    0,
+    10
+   ],
+   "score": 0,
+   "dir": 0
+  },
+  {
+   "id": "F13",
+   "village": "Lebudu",
+   "text": "Lebudu, week 3: photos flagged black or mouldy 20% (week 1: 10%; the other four villages in week 3: 11%)",
+   "nums": [
+    3,
+    20,
+    1,
+    10,
+    11,
+    4
+   ],
+   "score": 19,
+   "dir": 1
+  },
+  {
+   "id": "F14",
+   "village": "Lebudu",
+   "text": "Lebudu, week 3: photos flagged insect damage 10% (week 1: 0%; the other four villages in week 3: 0%)",
+   "nums": [
+    3,
+    10,
+    1,
+    0,
+    0,
+    4
+   ],
+   "score": 20,
+   "dir": 1
+  },
+  {
+   "id": "F15",
+   "village": "Lebudu",
+   "text": "Lebudu, week 3: photos flagged uneven drying 0% (week 1: 10%; the other four villages in week 3: 8%)",
+   "nums": [
+    3,
+    0,
+    1,
+    10,
+    8,
+    4
+   ],
+   "score": 18,
+   "dir": -1
+  },
+  {
+   "id": "F16",
+   "village": "Lebudu",
+   "text": "Lebudu, week 3: grade C 10% of offers, confirmed by inspectors (week 1: 0%; other four villages: 19%)",
+   "nums": [
+    3,
+    10,
+    1,
+    0,
+    19,
+    4
+   ],
+   "score": 19,
+   "dir": 1
+  },
+  {
+   "id": "F17",
+   "village": "Lebudu",
+   "text": "Lebudu, week 3: 50 kg per offer, 19% against week 1 (42 kg)",
+   "nums": [
+    3,
+    50,
+    19,
+    1,
+    42
+   ],
+   "score": 38,
+   "dir": 1
+  },
+  {
+   "id": "F18",
+   "village": "Lebudu",
+   "text": "Lebudu, week 3: 0 of 10 offers sat out (the farmer's minimum was above the price for that grade)",
+   "nums": [
+    3,
+    0,
+    10
+   ],
+   "score": 0,
+   "dir": 0
+  },
+  {
+   "id": "F19",
+   "village": "Hatugau",
+   "text": "Hatugau, week 3: photos flagged black or mouldy 0% (week 1: 0%; the other four villages in week 3: 16%)",
+   "nums": [
+    3,
+    0,
+    1,
+    0,
+    16,
+    4
+   ],
+   "score": 16,
+   "dir": 0
+  },
+  {
+   "id": "F20",
+   "village": "Hatugau",
+   "text": "Hatugau, week 3: photos flagged insect damage 0% (week 1: 0%; the other four villages in week 3: 3%)",
+   "nums": [
+    3,
+    0,
+    1,
+    0,
+    3,
+    4
+   ],
+   "score": 3,
+   "dir": 0
+  },
+  {
+   "id": "F21",
+   "village": "Hatugau",
+   "text": "Hatugau, week 3: photos flagged uneven drying 0% (week 1: 20%; the other four villages in week 3: 8%)",
+   "nums": [
+    3,
+    0,
+    1,
+    20,
+    8,
+    4
+   ],
+   "score": 28,
+   "dir": -1
+  },
+  {
+   "id": "F22",
+   "village": "Hatugau",
+   "text": "Hatugau, week 3: grade C 10% of offers, confirmed by inspectors (week 1: 50%; other four villages: 19%)",
+   "nums": [
+    3,
+    10,
+    1,
+    50,
+    19,
+    4
+   ],
+   "score": 49,
+   "dir": -1
+  },
+  {
+   "id": "F23",
+   "village": "Hatugau",
+   "text": "Hatugau, week 3: 61 kg per offer, 7% against week 1 (57 kg)",
+   "nums": [
+    3,
+    61,
+    7,
+    1,
+    57
+   ],
+   "score": 14,
+   "dir": 1
+  },
+  {
+   "id": "F24",
+   "village": "Hatugau",
+   "text": "Hatugau, week 3: 0 of 10 offers sat out (the farmer's minimum was above the price for that grade)",
+   "nums": [
+    3,
+    0,
+    10
+   ],
+   "score": 0,
+   "dir": 0
+  },
+  {
+   "id": "F25",
+   "village": "Lacau",
+   "text": "Lacau, week 3: photos flagged black or mouldy 0% (week 1: 11%; the other four villages in week 3: 16%)",
+   "nums": [
+    3,
+    0,
+    1,
+    11,
+    16,
+    4
+   ],
+   "score": 27,
+   "dir": -1
+  },
+  {
+   "id": "F26",
+   "village": "Lacau",
+   "text": "Lacau, week 3: photos flagged insect damage 0% (week 1: 22%; the other four villages in week 3: 3%)",
+   "nums": [
+    3,
+    0,
+    1,
+    22,
+    3,
+    4
+   ],
+   "score": 25,
+   "dir": -1
+  },
+  {
+   "id": "F27",
+   "village": "Lacau",
+   "text": "Lacau, week 3: photos flagged uneven drying 0% (week 1: 0%; the other four villages in week 3: 8%)",
+   "nums": [
+    3,
+    0,
+    1,
+    0,
+    8,
+    4
+   ],
+   "score": 8,
+   "dir": 0
+  },
+  {
+   "id": "F28",
+   "village": "Lacau",
+   "text": "Lacau, week 3: grade C 0% of offers, confirmed by inspectors (week 1: 11%; other four villages: 21%)",
+   "nums": [
+    3,
+    0,
+    1,
+    11,
+    21,
+    4
+   ],
+   "score": 32,
+   "dir": -1
+  },
+  {
+   "id": "F29",
+   "village": "Lacau",
+   "text": "Lacau, week 3: 49 kg per offer, -3% against week 1 (51 kg)",
+   "nums": [
+    3,
+    49,
+    -3,
+    1,
+    51
+   ],
+   "score": 6,
+   "dir": -1
+  },
+  {
+   "id": "F30",
+   "village": "Lacau",
+   "text": "Lacau, week 3: 0 of 9 offers sat out (the farmer's minimum was above the price for that grade)",
+   "nums": [
+    3,
+    0,
+    9
+   ],
+   "score": 0,
+   "dir": 0
+  },
+  {
+   "id": "F31",
+   "village": null,
+   "text": "Last auction (23 Jul): the lot cleared at $1.29/kg, against $1.27 at the first auction (6 Jul)",
+   "nums": [
+    23,
+    1.29,
+    1.27,
+    6
+   ],
+   "score": 5,
+   "dir": 0
+  },
+  {
+   "id": "F32",
+   "village": null,
+   "text": "Last auction: grade prices A $1.44, B $1.26, C $0.96 per kg; 5 buyers bid",
+   "nums": [
+    1.44,
+    1.26,
+    0.96,
+    5
+   ],
+   "score": 5,
+   "dir": 0
+  },
+  {
+   "id": "F33",
+   "village": null,
+   "text": "Last auction: farmers' median minimum $1.21/kg, 0.08 below the winning bid; 2 farms sat out",
+   "nums": [
+    1.21,
+    0.08,
+    2
+   ],
+   "score": 5,
+   "dir": 0
+  },
+  {
+   "id": "F34",
+   "village": null,
+   "text": "Lowest lot price in the three weeks: $1.23/kg on 16 Jul, with 5 farms sitting out",
+   "nums": [
+    1.23,
+    16,
+    5
+   ],
+   "score": 5,
+   "dir": 0
+  },
+  {
+   "id": "F35",
+   "village": null,
+   "text": "Rain fell 13 Jul to 15 Jul, in week 2 (from the pool records)",
+   "nums": [
+    13,
+    15,
+    2
+   ],
+   "score": 30,
+   "dir": 0
+  },
+  {
+   "id": "F36",
+   "village": null,
+   "text": "90 farmers on the register after three weeks; 61 agreed to be named to the ministry",
+   "nums": [
+    90,
+    61
+   ],
+   "score": 5,
+   "dir": 0
+  }
+ ],
+ "text": "Today is Monday 27 July 2026, 06:00. Letefoho coffee pool, five villages, three weeks of data.\nMOST UNUSUAL FINDINGS, most unusual first (ranked by code):\nF1: Eraulo, week 3: photos flagged black or mouldy 50% (week 1: 0%; the other four villages in week 3: 5%)\nF4: Eraulo, week 3: grade C 50% of offers, confirmed by inspectors (week 1: 25%; other four villages: 10%)\nF5: Eraulo, week 3: 36 kg per offer, -28% against week 1 (51 kg)\nF6: Eraulo, week 3: 4 of 8 offers sat out (the farmer's minimum was above the price for that grade)\nF22: Hatugau, week 3: grade C 10% of offers, confirmed by inspectors (week 1: 50%; other four villages: 19%)\nF3: Eraulo, week 3: photos flagged uneven drying 25% (week 1: 0%; the other four villages in week 3: 3%)\nF17: Lebudu, week 3: 50 kg per offer, 19% against week 1 (42 kg)\nF28: Lacau, week 3: grade C 0% of offers, confirmed by inspectors (week 1: 11%; other four villages: 21%)\n\nPRICES AND CONTEXT:\nF31: Last auction (23 Jul): the lot cleared at $1.29/kg, against $1.27 at the first auction (6 Jul)\nF32: Last auction: grade prices A $1.44, B $1.26, C $0.96 per kg; 5 buyers bid\nF33: Last auction: farmers' median minimum $1.21/kg, 0.08 below the winning bid; 2 farms sat out\nF34: Lowest lot price in the three weeks: $1.23/kg on 16 Jul, with 5 farms sitting out\nF35: Rain fell 13 Jul to 15 Jul, in week 2 (from the pool records)\nF36: 90 farmers on the register after three weeks; 61 agreed to be named to the ministry"
+}
