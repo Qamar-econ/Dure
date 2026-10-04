@@ -32,7 +32,7 @@ Demo prices are synthetic: grade B ≈ $2.45/kg, A ≈ $2.77, C ≈ $1.86 (the r
 
 | Part | AI or software | Where it runs |
 |---|---|---|
-| Reading farmers' SMS (kilos, grade, price, yes/no, questions) in Tetum and English | **AI, hybrid**: rules engine on every text + Qwen2.5-0.5B fine-tuned with LoRA for texts the rules engine is unsure of | Rules engine in the browser; fine-tuned model as an 8-bit GGUF on a hub laptop (llama.cpp), optional in the demo via `?api=` |
+| Reading farmers' SMS (kilos, grade, price, yes/no, questions) in Tetum and English | **AI, hybrid**: rules engine on every text + Qwen2.5-0.5B fine-tuned with LoRA for texts the rules engine is unsure of | Rules engine on the phone or hub; fine-tuned reader as an 8-bit GGUF on the hub laptop (llama.cpp). The web demo runs the rules engine only for offers (see below) |
 | Off-script questions ("is today a good day to sell?", "why is the price low?") | **AI**: stock Qwen2.5-0.5B-Instruct reads the intent; the reply is composed from live market data, so every number is real | On the visitor's device (transformers.js, WebGPU or WebAssembly), ~3 s per reply on a 2-core CPU |
 | Preliminary grade from one phone photo | **AI** (computer vision): CLIP ViT-B/32 (int8) + our 5-class head (A/B/C, roasted, not coffee) | On the visitor's device (onnxruntime-web), ~2 s per photo |
 | Weekly brief for extension services | **Code computes findings; AI writes; a checker verifies every sentence** | In the browser |
@@ -40,6 +40,21 @@ Demo prices are synthetic: grade B ≈ $2.45/kg, A ≈ $2.77, C ≈ $1.86 (the r
 | Pooling, auction, floor, escrow, payout, Registry | Ordinary software (must be predictable and auditable) | In the browser (simulated) |
 
 Both on-device models are pre-downloaded in the background while the story page is read (Cache Storage), so the demo starts instantly. The site is served with cross-origin isolation headers so WebAssembly can use several threads.
+
+## The fine-tuned reader and the web demo
+
+Dure has two small models, and they have different jobs.
+
+1. **The fine-tuned reader** (Qwen2.5-0.5B + LoRA, adapter in `ai/coffee/lora/`, 35 MB). Trained on 2,625 synthetic SMS and 250 real Tetum sentences (Labadain-30k+). It turns an unclear offer into fields (kilos, grade, minimum, yes/no). This is the model behind the Tetum Benchmark Index: 75% alone, 80% with the rules engine. It is built for the **hub laptop at the pickup point**: merged and quantised to an 8-bit GGUF (531 MB), it reads a text in 1.8 s on two CPU cores with llama.cpp (`ai/coffee/infer_gguf.py`).
+2. **The on-device question reader** (stock Qwen2.5-0.5B-Instruct, ONNX). It runs in the visitor's browser and only picks the topic of an off-script question (one of eight letters); the reply is written from live market data.
+
+The web demo uses the rules engine for offers and the second model for questions. We kept the fine-tuned reader out of the web demo by design:
+
+- **The demo has to run with no server.** Anyone opening the link gets the whole week in their own browser, with nothing for us to host or keep alive during judging.
+- **It matches where each model lives in the real service.** Farmers text from basic phones, so offers are read on the hub laptop, not on the farmer's phone. Shipping the reader to every visitor would show a deployment Dure does not use.
+- **Speed in a browser.** The reader writes a short structured answer (about 30 tokens); on a typical laptop browser that takes several times longer than the 1.8 s it needs under llama.cpp, while the question reader answers in one step (about 1.5–3 s).
+
+To see the fine-tuned reader at work, run `ai/coffee/infer_gguf.py` on the merged GGUF; the benchmark predictions it produced are in `ai/coffee/pred_gguf_test3.json` and are scored by `ai/coffee/score.py`.
 
 ## Tetum Benchmark Index
 
@@ -59,7 +74,7 @@ Later work: rules engine v2.1 scores 78% on test 3 on its own, and 98% on test 4
 
 Grading criteria follow the SCA green coffee defect classification; the grader looks only at photo-visible defects (black or mouldy beans, insect holes, broken beans, uneven drying/colour). Training: 900 synthetic piles composed from 1,202 real bean crops (Pre-Roast Coffee Bean Grading Dataset, MIT), labelled Wikimedia Commons photos, and 143 not-coffee photos. Leave-one-photo-out cross-validation: exact grade 46/58 (79%); the kind of answer (graded / roasted / not coffee) right on every bean photo; 34/35 not-coffee photos refused. Labels are ours, the test set is small, and there are no Timor-Leste farmer photos yet. The final grade is always the hand check at pickup.
 
-Note: the training scripts for photo grader v2 and the reader v2 weights were lost when our build environment was reset on 4 Oct; the deployed grader (`site/src/assets/grader_v2.js`, head weights inlined) and the measured numbers above were preserved.
+Note: the training scripts for photo grader v2 and a later reader experiment (v2) were lost when our build environment was reset on 4 Oct; the deployed grader (`site/src/assets/grader_v2.js`, head weights inlined), the benchmarked reader (the LoRA adapter in `ai/coffee/lora/`) and the measured numbers above were preserved.
 
 ## Guardrails
 
@@ -90,7 +105,7 @@ site/build.py           builds src/ into dist/
 site/src/               site.html (story), demo_map.html (demo), sheet.html (Registry + brief), assets/ (grader_v2.js, sample photos,
                         Letefoho satellite base map, training-photo thumbnails), _headers, shared.css, figs.js, geo.json
 site/dist/              built static site
-ai/coffee/              SMS reader: synthetic data generator, LoRA training, test sets 1–3, rules.js (v2.1), evaluation, FastAPI service
+ai/coffee/              SMS reader: synthetic data generator, LoRA training, test sets 1–3, rules.js (v2.1), evaluation, GGUF inference
 ai/photo/               photo grader v1 (MobileNetV3) scripts and results
 ai/brief/               brief findings + model writer + checker experiments
 ```
