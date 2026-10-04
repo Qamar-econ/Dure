@@ -8,11 +8,11 @@ Scope: the prototype and the pilot design. Dure has not run with real farmers. E
 |---|---|
 | Runs on a device the user already has | Plain SMS on any basic phone. No app, no data. Photos need a camera phone; without one the farmer sells ungraded and a person grades at pickup. |
 | Core feature works offline | Taking an offer works with the rules engine alone. If the server is down the rules engine keeps taking offers; the model rechecks later and any change goes back to the farmer to confirm. The whole service can run on one machine without internet: on 4 Oct we served the 8-bit reader (531 MB) from a local file with Hugging Face offline mode, about 1.8 s per message on 2 CPU cores, and the static pages and rules engine need no server at all. Not yet tried on a real laptop at a pickup point with the network physically off. |
-| Model files small enough to side-load or send over a weak connection | Qwen2.5-0.5B-Instruct with a LoRA adapter, quantised. Photo grader: 3.7 MB (ONNX). SMS reader: LoRA adapter about 35 MB on top of the 0.5B base model (about 1 GB in fp16; quantised size in RESULTS.md). |
+| Model files small enough to side-load or send over a weak connection | Qwen2.5-0.5B-Instruct with a LoRA adapter, quantised. Photo grader: CLIP ViT-B/32 compressed to 8 bits (89 MB) plus our own 5-class head, run in the browser. SMS reader: LoRA adapter about 35 MB on top of the 0.5B base model (about 1 GB in fp16; quantised size in RESULTS.md). |
 | At least one interaction in a local language | Tetum and English. Expect the question about a less-supported language: the rules and the confirmation step make Dure usable with little data, but accuracy in any new language must be measured first. |
 | Human in the loop: a person makes the final call; the tool informs and flags what it is unsure of; it does not act on the user's behalf; an agentic flow must check in with the user | Farmer confirms every reading. Person confirms the grade at pickup. Person confirms any exclusion. Experts decide on the brief. Payments are released by the auction and pickup rules, not by the AI. |
 | Avoid hallucinations | The reader outputs a fixed schema (kilos, grade, price, intent); anything outside it is "not sure, ask a person". The daily brief: code computes and ranks every finding; the small model writes sentences that must cite the findings they use; a checker drops any sentence whose numbers are not in the cited findings, that calls a rise a fall, or that states a cause. If too little survives, the template brief is shown. Each claim links to rows. |
-| Pass/fail fail-safe: "not sure, ask a person" instead of guessing | Reader abstains and asks; photo grader abstains below 60% confidence ("send another photo") and refuses photos unlike its training set (novelty guard: 10 of 10 real field photos refused); brief states what it cannot tell. |
+| Pass/fail fail-safe: "not sure, ask a person" instead of guessing | Reader abstains and asks; photo grader asks for another photo when the picture is too dark, blurry or shows no coffee (34 of 35 no-coffee photos refused in cross-validation), and says so when the beans are roasted; brief states what it cannot tell. |
 
 ## 2. Privacy
 
@@ -69,7 +69,7 @@ Scope: the prototype and the pilot design. Dure has not run with real farmers. E
 
 - Set or suggest a price on its own that replaces the auction, or change a farmer's minimum.
 - Exclude a farmer or decide a sanction beyond warning and time-out.
-- Give agronomic advice or diagnose a crop problem. The brief may say "consistent with parchment that could not dry" only as an observation flagged for expert review, never as a diagnosis or instruction to a farmer.
+- Give agronomic advice or diagnose a crop problem. The brief may say "consistent with coffee that could not dry" only as an observation flagged for expert review, never as a diagnosis or instruction to a farmer.
 - Invent a number in the brief. Every figure is computed from the Registry and links to rows.
 - Act for the farmer without confirmation, spend or move money, or message buyers on her behalf.
 - Claim certainty when unsure. The right answer is "not sure, ask a person".
