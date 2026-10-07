@@ -463,24 +463,27 @@ body.mob #mTries{display:block;position:absolute;left:0;right:0;z-index:20;opaci
 body.mob #mTries.on{opacity:1;pointer-events:auto}
 body.mob #mTries .tries{display:flex;flex-direction:column;min-height:0;margin:0;padding:0;max-height:none;overflow:visible;border:0;box-shadow:none;background:none}
 body.mob #mTries .tries button{flex:none;width:100%;min-height:0;display:flex;align-items:center;gap:6px;cursor:pointer;text-align:left}
-body.mob #mTries .tries button .tx{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-body.mob #mTries .tries button small{display:none!important}
+body.mob #mTries .tries button .tx{white-space:normal}
+body.mob #mTries .tries button small{display:block!important;white-space:normal}
+body.mob #mTries.sk-android .tries button small{font:italic 12.5px/1.3 var(--f-body);color:#7C776B;margin-top:2px}
+body.mob #mTries.sk-nokia .tries button small{font:17px/1.05 VT323,monospace!important;opacity:.75}
 body.mob #mTries .tries button .tx{font:inherit;color:inherit}
-/* Android: suggested-reply chips just above the text box */
-body.mob #mTries.sk-android{left:0;right:0;padding:18px 8px 0;background:linear-gradient(rgba(245,243,239,0),rgba(245,243,239,.96) 22px)}
-body.mob #mTries.sk-android .tries{flex-direction:row;flex-wrap:wrap;justify-content:flex-end;gap:6px;padding:6px 0}
-body.mob #mTries.sk-android .tries>b{flex-basis:100%;text-align:right;font:500 11px var(--f-body);color:#8A8578;padding:0 4px 2px}
-body.mob #mTries.sk-android .tries button{width:auto;max-width:100%;background:#fff;border:1px solid #CFE3C1;border-radius:18px;padding:7px 12px;color:#1d2a20;font:500 13.5px var(--f-body);box-shadow:0 2px 6px -3px rgba(0,0,0,.25)}
-body.mob #mTries.sk-android .tries button .lg{font-size:9.5px;color:#7A9A6A;border:0;padding:0;background:none}
+/* Android: one suggestion card just above the text box, rows of equal width */
+body.mob #mTries.sk-android{left:8px;right:8px}
+body.mob #mTries.sk-android .tries{flex-direction:column;gap:0;padding:6px 0;background:#fff;border:1px solid #E4E0D8;border-radius:16px;box-shadow:0 10px 26px -12px rgba(0,0,0,.35);overflow:hidden}
+body.mob #mTries.sk-android .tries>b{display:block;font:600 12.5px var(--f-body);color:#8A8578;padding:4px 14px 6px;text-transform:none}
+body.mob #mTries.sk-android .tries button{width:100%;background:none;border:0;border-top:1px solid #EFECE6;border-radius:0;padding:11px 14px;color:#1d2a20;font:500 15.5px var(--f-body);justify-content:space-between}
+body.mob #mTries.sk-android .tries button:active{background:#EAF3E3}
+body.mob #mTries.sk-android .tries button .lg{flex:none;font-size:10.5px;color:#7A9A6A;border:1px solid #CFE3C1;border-radius:6px;padding:1px 5px;background:none}
 /* feature phone: a monochrome 'Templates' menu on the LCD */
 body.mob #mTries.sk-nokia{background:var(--lcd);border-top:2px solid #1E2B20;font-family:VT323,monospace}
 body.mob #mTries.sk-nokia .tries{padding:2px 0 0}
-body.mob #mTries.sk-nokia .tries>b{display:block;font:20px VT323,monospace;color:#1E2B20;padding:0 6px;border-bottom:1px dashed rgba(30,43,32,.5)}
+body.mob #mTries.sk-nokia .tries>b{display:block;font:23px VT323,monospace;color:#1E2B20;padding:0 6px;border-bottom:1px dashed rgba(30,43,32,.5)}
 body.mob #mTries.sk-nokia .tries{counter-reset:tp}
-body.mob #mTries.sk-nokia .tries button{counter-increment:tp;background:none;border:0;border-radius:0;padding:1px 6px;font:19px/1.15 VT323,monospace;color:#1E2B20}
+body.mob #mTries.sk-nokia .tries button{counter-increment:tp;background:none;border:0;border-radius:0;padding:2px 6px;font:22px/1.15 VT323,monospace;color:#1E2B20}
 body.mob #mTries.sk-nokia .tries button::before{content:counter(tp);flex:none;width:14px}
 body.mob #mTries.sk-nokia .tries button:active,body.mob #mTries.sk-nokia .tries button:first-of-type{background:#1E2B20;color:var(--lcd)}
-body.mob #mTries.sk-nokia .tries button .tx{font:19px/1.1 VT323,monospace!important}
+body.mob #mTries.sk-nokia .tries button .tx{font:22px/1.1 VT323,monospace!important}
 body.mob #mTries.sk-nokia .tries button .lg{font:15px VT323,monospace;border:0;padding:0;background:none;color:inherit;opacity:.8}
 body.mob .barr{display:none}
 #mPills{display:flex;gap:6px;padding:0 14px 5px;flex-wrap:wrap}
@@ -512,7 +515,8 @@ body.mob .mp[data-p="map"] .mapcard{height:54dvh;flex:none;margin-bottom:8px}
 body.mob .mp[data-p="map"] #liveCard{flex:none;height:auto;min-height:280px}
 body.mob .mp[data-p="map"] .mk-cond{display:flex;margin:0 0 8px}
 /* charts on a phone: each wide chart is shown as two stacked crops at a readable size */
-body.mob .mp[data-p="dash"] .pane .figw{display:block;overflow-y:auto}
+body.mob .mp[data-p="dash"] .pane{overflow-y:auto;-webkit-overflow-scrolling:touch}
+body.mob .mp[data-p="dash"] .pane .figw{display:block;flex:none!important;height:auto!important;min-height:0;overflow:visible}
 .mstk{display:flex;flex-direction:column;gap:10px;width:100%;padding:4px 0}
 .mstk>svg{width:100%!important;height:auto!important;max-height:none!important;display:block;margin:0 auto}
 .mstk>svg.half{width:62%!important}
@@ -2422,7 +2426,7 @@ const _focus=HTMLElement.prototype.focus;HTMLElement.prototype.focus=function(o)
 /* the suggestions live inside the phone: an LCD 'Templates' menu on the feature phone, suggested-reply chips in the Android chat */
 const placePop=()=>{const c=$('composer'),ph=$('phone');if(!c||!ph)return;const host=ph.querySelector(skin==='nokia'?'.lcd':'.scr');if(!host)return;
   if(pop.parentNode!==host)host.appendChild(pop);pop.className=(pop.classList.contains('on')?'on ':'')+'sk-'+skin;
-  const k=ph.getBoundingClientRect().width/ph.offsetWidth||1,hr=host.getBoundingClientRect(),cr=c.getBoundingClientRect();pop.style.bottom=((hr.bottom-cr.top)/k+(skin==='nokia'?0:4))+'px'};
+  const k=ph.getBoundingClientRect().width/ph.offsetWidth||1,hr=host.getBoundingClientRect(),cr=c.getBoundingClientRect();pop.style.bottom=((hr.bottom-cr.top)/k+(skin==='nokia'?0:4))+'px';pop.style.maxHeight=Math.max(80,(cr.top-hr.top)/k-(skin==='nokia'?0:8))+'px';pop.style.overflowY='auto'};
 const popOn=()=>{const t=$('tries');if(!t||t.style.display==='none'||!t.querySelector('button'))return;placePop();pop.classList.add('on');const h=t.querySelector('b');if(h)h.textContent=skin==='nokia'?'Templates':'Suggested replies'};
 let quiet=0;document.addEventListener('focusin',e=>{if(e.target.id==='inp')setTimeout(()=>{if(performance.now()>quiet)popOn()},60)});
 document.addEventListener('focusout',e=>{if(e.target.id==='inp')setTimeout(()=>{if(!(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('#mTries')))pop.classList.remove('on')},220)});
@@ -2447,9 +2451,10 @@ let y0=null;sh.querySelector('.mhd').addEventListener('touchstart',e=>{y0=e.touc
 sh.querySelector('.mhd').addEventListener('touchend',e=>{if(y0!=null&&e.changedTouches[0].clientY-y0>60)hide();y0=null},{passive:true});
 let lastS=null,lastPh=null,lastN=0,lastKey=0;document.addEventListener('input',()=>{lastKey=performance.now()},true);
 /* wide desktop charts -> stacked crops [x,y,w,h, widthClass] in the 640-wide chart space */
-const CROPS={price:[[0,0,312,368],[304,28,336,352]],book:[[92,18,356,402],[438,34,202,360,'half']],photo:[[4,0,338,282],[344,0,296,262]]};
+const CROPS={price:[[304,28,336,352],[0,0,312,368]],book:[[92,18,356,388],[438,34,202,360,'half']],photo:[[4,0,338,282],[344,0,296,262]]};
 const crop=(str,cs)=>{const m=str.match(/<svg[^>]*viewBox="0 0 640 (\d+(?:\.\d+)?)"[^>]*>/);if(!m)return str;const VH=+m[1],tag=m[0];
   return '<div class="mstk">'+cs.map(c=>{const h=Math.min(c[3],VH-c[1]);return str.replace(tag,tag.replace(/viewBox="[^"]*"/,`viewBox="${c[0]} ${c[1]} ${c[2]} ${h}"`).replace(/\s(width|height)="[^"]*"/g,'').replace('<svg','<svg'+(c[4]?' class="half"':'')))}).join('')+'</div>'};
+{const pv=window.paneVH;window.paneVH=(id,mn,mx)=>mn}   /* phones: compact chart height; the crops below handle the layout */
 ['price','book','photo'].forEach(k=>{const n=k==='photo'?'photoSvgCard':k+'Svg',f=window[n];if(typeof f!=='function')return;window[n]=function(){const out=f.apply(this,arguments);return typeof out==='string'?crop(out,CROPS[k]):out}});
 setInterval(()=>{setH();
   if(typeof mk==='undefined'||!mk)return;
