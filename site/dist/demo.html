@@ -397,8 +397,8 @@ body.simon .mkbar{display:flex}
 /* desktop: the dashboard / suggestions boundary lines up with the map / market boundary on the left */
 @media (min-width:1101px){
   body:not(.mob) #dashCard{flex:1 1 0!important;height:auto!important;min-height:0}
-  body:not(.mob) .colD .tries{flex:0 0 clamp(170px,30%,260px)!important;min-height:0!important;max-height:none!important;overflow-y:auto;align-content:stretch;grid-template-rows:auto;grid-auto-rows:minmax(46px,1fr)}
-  body:not(.mob) .colD .tries button{padding:8px 14px;font-size:17px}body:not(.mob) .colD .tries button small{font-size:14px}
+  body:not(.mob) .colD .tries{flex:0 0 clamp(170px,30%,260px)!important;min-height:0!important;max-height:none!important;overflow-y:auto;align-content:start;grid-template-rows:auto;grid-auto-rows:max-content}
+  body:not(.mob) .colD .tries button{padding:7px 12px;font-size:clamp(14px,.9vw,17px);height:auto;min-height:max-content;overflow:visible}body:not(.mob) .colD .tries button small{font-size:clamp(12px,.75vw,14px)}
   body:not(.mob) .readg{flex:1 1 0!important;min-height:0}
   body:not(.mob) .readg .console{flex:0 1 auto!important;height:auto!important;max-height:60%!important;min-height:120px}
   body:not(.mob) .readg .feed{flex:1 1 0!important;height:auto!important;min-height:100px}
@@ -2224,6 +2224,8 @@ function bookSvg(now){
   {const G=['A','B','C'].filter(g=>seg[g]),mid=G.map(g=>(seg[g][0]+seg[g][1])/2),lab=mid.slice();
     for(let it=0;it<20;it++)for(let q=1;q<lab.length;q++){const d=lab[q]-lab[q-1];if(d<40){const m2=(lab[q]+lab[q-1])/2;lab[q-1]=m2-20;lab[q]=m2+20}}
     lab.forEach((v,q)=>lab[q]=Math.max(BT+10,Math.min(Y0+H-14,v)));
+    for(let q=lab.length-2;q>=0;q--)lab[q]=Math.min(lab[q],lab[q+1]-42);   /* clamping at the bottom must not squeeze the labels together */
+    for(let q=1;q<lab.length;q++)lab[q]=Math.max(lab[q],lab[q-1]+42);
     G.forEach((g,q)=>{const m=mid[q],L_=lab[q],kgG=shown.filter(f=>gOf(f)===g&&f.st==='in').reduce((a,f)=>a+f.kg,0);
       if(Math.abs(L_-m)>3)s+=`<path d="M${LX-8} ${L_.toFixed(1)} L${LX-5} ${m.toFixed(1)}" stroke="${CG[g]}" stroke-width="1.4"/>`;
       s+=`<g transform="translate(${LX-26} ${(L_-3).toFixed(1)})">${BEAN.art(g,.66,-20,q,true)}</g><text x="${LX-10}" y="${(L_+18).toFixed(1)}" text-anchor="end" ${FT} font-style="italic" font-size="10.5" fill="${INK2}">${kgf(kgG)} kg</text>`;
@@ -2238,7 +2240,7 @@ function bookSvg(now){
   // pulses
   pulses=pulses.filter(p=>now-p.t0<900);pulses.forEach(p=>{const k=Math.min(1,(now-p.t0)/800),e=ease(k);const [x,yy]=bz([BNX,cy(p.b)],[SV.x+SV.w,SV.y+SV.h/2],e);s+=`<g transform="translate(${x.toFixed(1)} ${yy.toFixed(1)})"><rect x="-22" y="-12" width="44" height="24" rx="12" fill="${RUST}"/><text y="5" text-anchor="middle" ${FT} font-size="13" font-weight="700" fill="#F6EFE0">${p.v.toFixed(2)}</text></g>`});
   // server = order book
-  const head=ph==='morning'?('order book · waiting for the lot'):ph==='auction'?('order book · live'):('order book · closed');
+  const head=ph==='morning'?('waiting for the lot'):ph==='auction'?('order book · live'):('order book · closed');
   s+=`<rect x="${SV.x}" y="${SV.y}" width="${SV.w}" height="${SV.h}" rx="16" fill="${INK}"/><text x="${SV.x+SV.w/2}" y="${SV.y+26}" text-anchor="middle" ${FT} font-size="12.5" font-style="italic" fill="#BFD0CC">${head}</text>`;
   for(let r=0;r<4;r++){const e=book[r],fresh=e&&pulses.some(p=>p.b===e.i);s+=`<rect x="${SV.x+12}" y="${SV.y+38+r*38}" width="${SV.w-24}" height="30" rx="5" fill="${fresh?'#3E6E76':'#2C4F57'}" opacity="${mk.res&&r>0?.5:1}"/>${e?`<text x="${SV.x+22}" y="${SV.y+58+r*38}" ${FT} font-size="15" font-weight="700" fill="#F6EFE0">$${e.best.toFixed(2)}</text><text x="${SV.x+SV.w-30}" y="${SV.y+58+r*38}" text-anchor="end" ${FT} font-size="11" fill="#BFD0CC">${esc(e.n.length>12?e.n.split(' ')[0]:e.n)}</text>`:''}<circle cx="${SV.x+SV.w-19}" cy="${SV.y+53+r*38}" r="4" fill="${!e?'#3F6A70':r===0?'#7FD18B':GOLD}"/>`}
   s+=`<text x="${SV.x+SV.w/2}" y="${SV.y+SV.h+24}" text-anchor="middle" ${FT} font-size="17" font-weight="700" fill="${INK}">Dure AI</text><text x="${SV.x+SV.w/2}" y="${SV.y+SV.h+41}" text-anchor="middle" ${FT} font-style="italic" font-size="13" fill="${INK2}">${('matching server')}</text>`;
