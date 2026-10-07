@@ -923,7 +923,8 @@ function sigSvg(fill){return `<svg width="18" height="12" viewBox="0 0 18 12">${
 function batSvg(fill){return `<svg width="24" height="12" viewBox="0 0 24 12"><rect x=".6" y=".6" width="20" height="10.8" rx="2.4" fill="none" stroke="${fill}" stroke-width="1.2"/><rect x="21.4" y="3.6" width="2" height="4.8" rx="1" fill="${fill}"/><rect x="2.2" y="2.2" width="${16.8*battery/100}" height="7.6" rx="1.2" fill="${battery<=20?'#C0392B':fill}"/></svg>`}
 function renderBar(){const b=document.querySelector('.bar-slot');if(!b)return;const col=skin==='android'?'#222':'#1E2B20';const sc=$('shClock');if(sc)sc.textContent=timeStr();
   b.innerHTML=skin==='android'?`<span>${timeStr()}</span><span class="sbc">${esc(stepTxt)}</span><span class="r"><span style="font-size:11px">E</span>${sigSvg(col)}<span>${battery}%</span>${batSvg(col)}</span>`
-    :`<span class="r">${sigSvg(col)}<span>${stepIdx<7?(Math.min(7,stepIdx+1))+'/7':'✓'}</span></span><span>${timeStr()}</span><span class="r">${battery}%${batSvg(col)}</span>`}
+    :`<span class="r">${sigSvg(col)}<span>${stepIdx<7?(Math.min(7,stepIdx+1))+'/7':'✓'}</span></span><span>${timeStr()}</span><span class="r">${battery}%${batSvg(col)}</span>`;placePills(b)}
+function placePills(slot){const lb=$('llmBtn'),gb=$('langBtn');if(!slot||!lb||!gb)return;let pl=$('mPills');if(!pl){pl=document.createElement('div');pl.id='mPills'}if(slot.nextSibling!==pl)slot.after(pl);if(lb.parentNode!==pl)pl.append(lb,gb)}
 setInterval(()=>{signal=Math.random()<.55?1:2;renderBar()},2600);
 function photoSvg(g,cls='ph'){return coffeePhoto(g).replace('<svg ',`<svg class="${cls}" preserveAspectRatio="xMidYMid slice" `)}
 
@@ -933,14 +934,14 @@ function buildPhone(){
     <div class="mst" id="mst">${grStatusText()}</div><div class="cred">Samples via Wikimedia Commons: A Harald Ulver, B Kızıldeniz (CC BY-SA 4.0); C Forest &amp; Kim Starr (CC BY 3.0 US)</div><button class="x" id="pkx">Cancel</button></div></div>`;
   const skip=`<button class="skipbar" id="skipbar"></button>`;
   if(skin==='android'){
-    $('phoneWrap').innerHTML=`<div class="android" id="phone"><div class="scr"><div class="a-sb bar-slot"></div>
+    {const pl=$('mPills'),br=document.querySelector('.barr');if(pl&&br&&pl.closest('#phoneWrap'))br.prepend(pl)}$('phoneWrap').innerHTML=`<div class="android" id="phone"><div class="scr"><div class="a-sb bar-slot"></div>
       <div class="a-hd"><div class="av">D</div><div><b>Dure AI</b><small>SMS · +670 7700 3873 · Tetum · English</small></div></div>
       <div class="a-list" id="list"></div>
       <div class="a-in" id="composer"><button id="att" title="Attach photo"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M16.5 6.5 L8 15a2.5 2.5 0 0 0 3.5 3.5l8.5-8.5a4.5 4.5 0 0 0-6.4-6.4L5 12.2a6.5 6.5 0 0 0 9.2 9.2L20 15.5" fill="none" stroke="#333" stroke-width="1.8" stroke-linecap="round"/></svg></button>
       <textarea id="inp" rows="1" placeholder="Text message"></textarea>${skip}
       <button class="send" id="snd" title="Send"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M3 20 L21 12 L3 4 L5.5 12Z" fill="#F6EFE0"/></svg></button></div>${pk}</div></div>`;
   } else {
-    $('phoneWrap').innerHTML=`<div class="nokia" id="phone"><div class="ear"></div><div class="scr"><div class="lcd" id="lcd">
+    {const pl=$('mPills'),br=document.querySelector('.barr');if(pl&&br&&pl.closest('#phoneWrap'))br.prepend(pl)}$('phoneWrap').innerHTML=`<div class="nokia" id="phone"><div class="ear"></div><div class="scr"><div class="lcd" id="lcd">
       <div class="sb bar-slot"></div><div class="lst" id="list"></div>
       <div id="composer" style="position:relative"><div class="inp">&gt;&nbsp;<input id="inp" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type here"></div>${skip}
       <div class="soft"><button id="att">Photo</button><button id="infoK">Info</button><button id="snd">Send</button></div></div></div>${pk}</div>
