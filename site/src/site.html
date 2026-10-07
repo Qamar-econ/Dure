@@ -498,7 +498,8 @@ h1.hero .ln>span{white-space:nowrap}
 #lgFig.on .lgb{opacity:1;transform:none}
 #lgFig .lgv{transition:fill .6s}
 #lgFig.on .lgv.hot{fill:#A8452A}
-@media (max-width:760px){.lg-cards{grid-template-columns:1fr}.lg-fig{padding:10px}}
+@media (max-width:760px){.lg-cards{grid-template-columns:1fr}.lg-fig{padding:10px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scrollbar-width:thin}.lg-fig svg{min-width:780px;display:block}.lg-swipe{display:block}}
+.lg-swipe{display:none;font:italic 13px Newsreader,serif;color:var(--ink-2);text-align:right;margin:-6px 4px 12px}
 @media (prefers-reduced-motion:reduce){#lgFig.on .lgd{animation:none}#lgFig .lgr,#lgFig .lgb{transition:none}}
 .rv{opacity:0;transform:translateY(22px);transition:opacity .8s,transform .9s cubic-bezier(.2,.7,.2,1)}.rv.on{opacity:1;transform:none}
 @media (max-width:760px){
@@ -795,7 +796,7 @@ p,li,small,blockquote,cite,.k,.principle p{text-wrap:pretty}
   <div class="fl-k rv">9 · From the slope to the ministry</div>
   <h2 class="rv">An automated Registry <em>and AI policy suggestions.</em></h2>
   <p class="lg-lead rv">A farmer Registry is important and effective, but labour-intensive and expensive to keep. Dure works as a market itself, and every deal leaves a footprint. <b>So the Registry builds itself.</b></p>
-  <div class="lg-fig rv" id="lgFig">
+  <div class="lg-fig rv" id="lgFig" data-lenis-prevent>
     <svg viewBox="0 0 1100 430" role="img" aria-label="Daily trades per farmer fill the Registry; the Registry's data analysis shows quality by week; a morning brief points an expert to Lebudu">
       <g font-family="Newsreader" fill="#1F3A40">
         <text x="20" y="28" font-size="17" font-style="italic" fill="#A8452A">1 · Daily accumulated trades</text>
@@ -807,6 +808,7 @@ p,li,small,blockquote,cite,.k,.principle p{text-wrap:pretty}
       <g id="lgBrief"></g>
     </svg>
   </div>
+  <div class="lg-swipe">Swipe sideways to see all three →</div>
   <div class="lg-two">
     <p class="rv">Policy makers and extension officers get accurate, good-quality information on limited resources.</p>
     <p class="rv"><b>AI is not a silver bullet.</b> Noor knows farming better than Dure, so Dure stays out of how she farms. But when the extension officer visits Noor twice a year, they can make the best of it.</p>

@@ -2518,6 +2518,7 @@ const land=()=>document.body.classList.contains('land');
 const autoShow=(p,ms)=>{if(land()){if(open!==p)show(p);return}if(open===p&&!auto)return;const a=document.activeElement;if(a&&a.id==='inp')a.blur();show(p);auto={until:performance.now()+ms}};
 const hide=()=>{auto=null;if(land())return;open=null;sh.classList.remove('open');dim.classList.remove('on')};
 window.mOpen=show;window.mClose=hide;
+let dropping=false;{const _pd=window.playDrop;if(typeof _pd==='function')window.playDrop=async(...a)=>{dropping=true;hide();try{return await _pd(...a)}finally{dropping=false}}}
 dock.querySelectorAll('.mbtns button').forEach(b=>b.onclick=()=>show(b.dataset.p));
 sh.querySelectorAll('.mseg button').forEach(b=>b.onclick=()=>show(b.dataset.p));
 const userHide=()=>{if(typeof mk!=='undefined'&&mk&&mk.phase==='auction')userClosedAuc=true;hide()};$('mBack').onclick=userHide;dim.onclick=userHide;$('mNew').onclick=userHide;
@@ -2562,9 +2563,15 @@ function mPay(now){const L=inLot().slice().sort((a,b)=>(b.me?1:0)-(a.me?1:0)),u=
   return `<div class="mx"><div class="mxstatus">One payment in, ${L.length} payments out</div><div class="mxrow">${stat(esc_(W.n)+' paid',M$(mk.paid),GOLD)}${stat('Wallets paid',Math.min(L.length,Math.max(0,Math.floor((u-1.4)/.12)))+' / '+L.length,'#7FD18B')}</div>
    <div class="mxbox">${L.map((f,k)=>{const done=u>1.4+k*.12;return `<div class="mxli ${f.me?'lead':''}"><span>${f.me?'You · Noor':esc_(f.name)} <small>${f.kg} kg · ${f.handG||gOf(f)}</small></span><b style="color:${done?'#7FD18B':'#8FA7A9'}">${done?'+'+M$(f.pay)+' ✓':'…'}</b></div>`}).join('')}</div>
    <div class="mxnote">Split by grade and kilos. Farmers without mobile money are paid by the truck driver at the next pickup.</div></div>`}
-function mPhoto(x){if(!x)return '';const P=x.probs||{},rows=[['A','Grade A'],['B','Grade B'],['C','Grade C'],['R','Roasted'],['N','Not beans']];
-  return `<div class="mx">${x.img?`<img class="mximg" src="${x.img}" alt="">`:''}<div class="mxcap2">${x.fid===0?'You':esc_((mk.farmers[x.fid]||{}).name||'')} · ${x.live?'live model on this device':'simulated grader'}${x.ms?` · ${x.ms} ms`:''}</div>
-   <div class="mxrow">${stat('Preliminary grade',x.kind==='graded'||!x.kind?(x.g||'—'):x.kind==='roasted'?'roasted':'retake',GOLD)}${stat('Confidence',(x.conf??'—')+'%','#F6EFE0')}</div>
+function mPhoto(x){if(!x)return '';const rows=[['A','Grade A'],['B','Grade B'],['C','Grade C'],['R','Roasted'],['N','Not beans']];
+  let P=x.probs||null,g=x.g,held=false;
+  if(!P&&x.aiG){const pc={A:0,B:0,C:0};pc[x.aiG]=x.conf/100;const rest=['A','B','C'].filter(k=>k!==x.aiG),r=1-x.conf/100,nr=rest.map(k=>Math.abs('ABC'.indexOf(k)-'ABC'.indexOf(x.aiG))),w0=nr[0]<nr[1]?.72:nr[0]>nr[1]?.28:.5;
+    pc[rest[0]]=r*w0;pc[rest[1]]=r-pc[rest[0]];P=pc;g=x.aiG;held=!!x.held}
+  P=P||{};
+  const pic=x.img?`<img class="mximg" src="${x.img}" alt="">`:`<svg class="mximg" viewBox="0 0 120 90" preserveAspectRatio="xMidYMid slice">${coffeePhoto(g||'B').replace(/^<svg[^>]*>|<\/svg>$/g,'')}</svg>`;
+  const gradeTxt=held?'a person decides':x.kind==='graded'||!x.kind?(g||'—'):x.kind==='roasted'?'roasted':'retake';
+  return `<div class="mx">${pic}<div class="mxcap2">${x.fid===0?'You':esc_((mk.farmers[x.fid]||{}).name||'')} · ${x.live?'live model on this device':'simulated grader'}${x.ms?` · ${x.ms} ms`:''}</div>
+   <div class="mxrow">${stat('Preliminary grade',gradeTxt,GOLD)}${stat('Confidence',(x.conf??'—')+'%','#F6EFE0')}</div>
    ${Object.keys(P).length?`<div class="mxbox"><div class="mxh">How likely each class</div>${rows.map(([k,l])=>P[k]==null?'':`<div class="mxpb"><span>${l}</span><i><u style="width:${Math.round(P[k]*100)}%"></u></i><b>${Math.round(P[k]*100)}%</b></div>`).join('')}</div>`:''}
    <div class="mxnote">A person checks every sack at pickup. That grade is the one paid.</div></div>`}
 {const o={priceSvg:mPrice,bookSvg:mBook,paySvg:mPay,photoSvgCard:mPhoto};for(const k in o)if(typeof window[k]==='function')window[k]=o[k]}
@@ -2574,10 +2581,12 @@ setInterval(()=>{setH();
   const cond=$('mkCond');if(cond&&cond.parentNode!==mapP)mapP.insertBefore(cond,mapP.firstChild);
   const typing=document.activeElement&&document.activeElement.id==='inp'&&performance.now()-lastKey<4000;
   const s=(typeof dashSticky!=='undefined')?dashSticky:null;
-  if(s!==lastS){if(['price','book','photo','rep'].includes(s)&&!typing){autoShow('dash',s==='photo'?6500:6000)}else if(s==='read'&&open!=='dash')dock.querySelector('.mbtns [data-p="dash"]').classList.add('dot');lastS=s}
-  if(mk.phase!==lastPh){if(lastPh&&['auction','paid'].includes(mk.phase))autoShow('dash',mk.phase==='paid'?7500:6000);if(lastPh==='morning'&&open!=='map')dock.querySelector('.mbtns [data-p="map"]').classList.add('dot');lastPh=mk.phase}
-  {const ff=(typeof ffGoal!=='undefined')&&ffGoal;if(ff&&ff!==lastFF&&!typing)autoShow('dash',7000);lastFF=ff;}
-  if(auto){const ff=(typeof ffGoal!=='undefined')&&ffGoal;if(ff||(typeof priceHold!=='undefined'&&priceHold>performance.now()))auto.until=Math.max(auto.until,performance.now()+2500);if(performance.now()>auto.until)hide()}   /* shown, then folds away by itself */
+  if(s!==lastS){if(s==='rep'&&auto&&open==='dash'){auto.until=Math.max(auto.until,performance.now()+2500)}else if(['price','book','photo','rep'].includes(s)&&!typing){autoShow('dash',s==='photo'?6500:6000)}else if(s==='read'&&open!=='dash')dock.querySelector('.mbtns [data-p="dash"]').classList.add('dot');lastS=s}
+  if(mk.phase!==lastPh){if(lastPh&&['auction','paid'].includes(mk.phase)&&!(mk.phase==='auction'&&ffGoal==null&&lastFF))autoShow('dash',mk.phase==='paid'?5500:6000);if(lastPh==='morning'&&open!=='map')dock.querySelector('.mbtns [data-p="map"]').classList.add('dot');lastPh=mk.phase}
+  {const ff=(typeof ffGoal!=='undefined')&&ffGoal;if(ff&&ff!==lastFF&&!typing&&ff!=='lock'&&!dropping)autoShow('dash',7000);
+   if(!ff&&lastFF&&auto)auto.until=performance.now()+1600;   /* a skip has landed: show the result, then fold away within 2 s */
+   lastFF=ff;}
+  if(auto){const ff=(typeof ffGoal!=='undefined')&&ffGoal;if(ff)auto.until=Math.max(auto.until,performance.now()+2500);if(performance.now()>auto.until)hide()}   /* shown, then folds away by itself */
   const n=(typeof msgs!=='undefined')?msgs.filter(m=>m.who==='ai'&&m.text).length:0;if(n>lastN&&open)$('mNew').classList.add('on');lastN=n;
   const sk=$('mSkip'),on=(typeof ffNext!=='undefined')&&!!ffNext&&!!ffLabel;sk.classList.toggle('on',!!(on&&open));if(on){const L=ffLabel;sk.textContent=(/pool closes/.test(L)?'Close pool':/auction/.test(L)?'To 17:00':/pickup point/.test(L)?'Drop sack':/truck/.test(L)?'Truck':/payment/.test(L)?'Payment':'Skip')+' ⏩'}
 },250);
