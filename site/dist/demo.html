@@ -459,7 +459,9 @@ body.simon .mkbar{display:flex}
 .lm .bil .hr{border-top:1px dashed rgba(30,43,32,.45);margin:3px 0}
 
 /* ================= phones: one screen = the phone + suggestions; dashboard and map open as sheets ================= */
-body.mob{overflow:hidden;overscroll-behavior:none}
+html:has(body.mob){height:100%;overflow:hidden;overscroll-behavior:none}
+body.mob{overflow:hidden;overscroll-behavior:none;position:fixed;inset:0;width:100%;height:100%;touch-action:pan-x pan-y}   /* the page itself never scrolls on phones: only the chat, the sheet and the popup do */
+body.mob #list,body.mob .lst,body.mob #mTries .tries{overscroll-behavior:contain}
 body.mob .top{padding:6px 10px;gap:6px 8px;flex-wrap:wrap;align-items:center}
 body.mob .top .brand svg{height:20px}
 body.mob .mk-l,body.mob .top .back,body.mob .mkbar .sim{display:none}
@@ -2619,6 +2621,10 @@ const applyLand=()=>{const L=innerWidth>innerHeight&&innerWidth>=900,was=documen
   if(L&&!was)show(open||'dash');if(!L&&was){open=null;sh.classList.remove('open');dim.classList.remove('on')}
   setH();if(typeof fitPhone==='function')fitPhone()};
 addEventListener('resize',applyLand);applyLand();
+/* if the browser nudges the page (keyboard, address bar, a stray drag), put it straight back */
+const pin=()=>{if(scrollX||scrollY||document.documentElement.scrollTop||document.body.scrollTop){scrollTo(0,0);document.documentElement.scrollTop=document.body.scrollTop=0}};
+addEventListener('scroll',pin,{passive:true});document.addEventListener('focusout',()=>setTimeout(pin,60));
+if(window.visualViewport)visualViewport.addEventListener('resize',()=>setTimeout(pin,120));
 })();
 </script>
 </body>
