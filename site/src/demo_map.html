@@ -214,6 +214,12 @@ a{color:inherit}
 .nvh,.nvc{font-size:19px;align-self:stretch;padding:0 8px}.nvb{height:6px;border:1px solid #1E2B20;align-self:stretch;margin:4px 8px}.nvb i{display:block;height:100%;width:0;background:#1E2B20}
 .lm.bank .w{background:#1E2B20;color:var(--lcd);padding:0 3px}
 .bank{position:absolute;left:10px;right:10px;top:8px;z-index:8;background:#fff;border-radius:18px;box-shadow:0 12px 28px -8px rgba(0,0,0,.45);display:flex;gap:10px;padding:12px;transform:translateY(-130%);transition:transform .45s cubic-bezier(.2,.9,.3,1.2)}
+body.mob .bank.mtop{position:fixed;left:12px;right:12px;top:calc(var(--topH,56px) + 10px);z-index:90;max-width:440px;margin:0 auto;transform:translateY(-180%)}
+body.mob .bank.mtop.on{transform:none}
+
+.bank.nk{background:var(--lcd,#C4DDB3);border:2px solid #1E2B20;border-radius:6px;box-shadow:0 10px 24px -8px rgba(0,0,0,.5);font-family:VT323,monospace;color:#1E2B20}
+.bank.nk .bi{background:#1E2B20;color:var(--lcd,#C4DDB3);border-radius:3px;font-family:VT323,monospace;font-size:20px}
+.bank.nk .bt{font-size:18px;color:#1E2B20;line-height:1.05}.bank.nk .bh span{color:#1E2B20;opacity:.7;font-size:16px}.bank.nk .bm b{color:#1E2B20}.bank.nk .bh b{font-weight:400}
 .bank.on{transform:none}.bank .bi{width:36px;height:36px;border-radius:10px;background:#2C4F57;color:#E4B64C;display:grid;place-items:center;font-weight:700;font-size:14px;flex:none}
 .bank .bt{flex:1;font-size:13px;color:#333}.bank .bh{display:flex;justify-content:space-between;margin-bottom:2px}.bank .bh span{color:#999;font-size:12px}.bank .bm b{color:#1F3A40}
 .bub.ai svg.ph{width:100%;height:auto;border-radius:10px;display:block;margin-bottom:4px}
@@ -1519,8 +1525,9 @@ function boxSvg(g,kg){return `<svg class="ph" viewBox="0 0 240 160" preserveAspe
   <text x="8" y="152" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#F2EADA">07:04 · truck 2 · Letefoho</text></svg>`}
 function bankBanner(pay,before,after){return new Promise(res=>{
   const scr=document.querySelector('.android .scr');const b=document.createElement('div');b.className='bank';
+  const top_=document.body.classList.contains('mob')&&!document.body.classList.contains('land');if(top_)b.classList.add('mtop');if(skin==='nokia')b.classList.add('nk');   /* phones: float above the dashboard sheet */
   b.innerHTML=`<div class="bi">$</div><div class="bt"><div class="bh"><b>Mobile wallet</b><span>now</span></div><div class="bm">Deposit <b>+$${pay.toFixed(2)}</b> · DURE LETEFOHO POOL</div><div class="bm">Balance <b id="bbal">$${before.toFixed(2)}</b></div></div>`;
-  scr.appendChild(b);requestAnimationFrame(()=>b.classList.add('on'));
+  (top_?document.body:scr).appendChild(b);requestAnimationFrame(()=>b.classList.add('on'));
   const t0=performance.now();setTimeout(function up(){const k=clamp((performance.now()-t0-700)/1200);$('bbal').textContent='$'+lerp(before,after,ease(k)).toFixed(2);if(k<1)requestAnimationFrame(up)},0);
   setTimeout(()=>{b.classList.remove('on');setTimeout(()=>{b.remove();res()},450)},4200);
 })}
@@ -2387,7 +2394,7 @@ async function paid(){
   const pay=me().pay,before=balance;balance=+(balance+pay).toFixed(2);
   await sleep(700);
   if(skin==='android')await bankBanner(pay,before,balance);
-  else{push({who:'bank',text:`Deposit +$${pay.toFixed(2)}\nFrom: DURE LETEFOHO POOL\n${LINE}\nBalance: $${balance.toFixed(2)}`});buzz();await sleep(1600)}
+  else{push({who:'bank',text:`Deposit +$${pay.toFixed(2)}\nFrom: DURE LETEFOHO POOL\n${LINE}\nBalance: $${balance.toFixed(2)}`});buzz();if(document.body.classList.contains('mob')&&!document.body.classList.contains('land'))await bankBanner(pay,before,balance);else await sleep(1600)}
   await aiSay(t=>t.paid(pay.toFixed(2),balance.toFixed(2)));await sleep(400);await repDash(true);await aiSay(t=>t.record(repNow,mk.hist.length+1,mk.hist.filter(w=>w.onTime).length+1));finish(true);
 }
 /* ---------- hand-off to the Registry (spec/RUN_SCHEMA.md) ---------- */
