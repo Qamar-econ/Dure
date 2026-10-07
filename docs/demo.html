@@ -463,7 +463,7 @@ body.mob.tab .android{width:min(430px,94vw);height:calc(100dvh - var(--topH,56px
 body.mob.tab .android .scr{border-radius:34px}
 body.mob.tab #mSheet{left:50%;right:auto;width:min(820px,100vw);margin-left:calc(min(820px,100vw) / -2);height:84dvh}
 body.mob.tab #mDock .mbtns{max-width:620px;margin:0 auto}
-body.land{--pc:clamp(380px,41vw,540px)}
+body.land{--pc:clamp(330px,34vw,470px)}
 body.land.simon #stage.on{width:var(--pc);height:calc(100dvh - var(--topH,56px))}
 body.land .colP{width:var(--pc)}
 body.land .android{width:min(420px,calc(var(--pc) - 40px));height:calc(100dvh - var(--topH,56px) - 28px);margin-top:14px}
@@ -471,6 +471,22 @@ body.mob.land #mDock,body.land #mDim,body.land #mBack,body.land #mNew,body.land 
 body.mob.land:not(.simon) #mSheet{display:none}
 body.mob.land #mSheet{left:var(--pc);right:0;width:auto;margin:0;top:var(--topH,56px);bottom:0;height:auto;transform:none;transition:none;border-radius:18px 0 0 0;box-shadow:-10px 0 30px -18px rgba(31,58,64,.45)}
 body.land .top .mk-l{display:block}
+/* tablets: the smartphone keeps its real proportions (360 × 740); it shrinks to fit, never stretches */
+body.mob.tab .android{aspect-ratio:360/740;width:auto!important;height:min(calc(100dvh - var(--topH,56px) - var(--dockH,110px) - 24px),940px,calc((100vw - 32px) * 740 / 360))!important}
+body.mob.land .android{height:min(calc(100dvh - var(--topH,56px) - 28px),calc((var(--pc) - 28px) * 740 / 360))!important}
+
+/* tablets sideways: three columns — phone · dashboard · map and market, all visible together */
+body.mob .end.on{z-index:80}
+body.mob.land #mSheet .mhd{display:none}
+body.mob.land #mSheet .mbody{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:10px;padding:10px;overflow:hidden;height:100%;box-sizing:border-box}
+body.mob.land #mSheet .mp{display:flex;flex-direction:column;min-height:0;height:100%;gap:8px}
+body.mob.land .mp[data-p="dash"] #dashCard{height:100%;min-height:0}
+body.mob.land .mp[data-p="map"] .mk-cond{flex:none;margin:0;flex-wrap:nowrap;gap:4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}body.mob.land .mk-cond::-webkit-scrollbar{display:none}body.mob.land .mk-cond>*{flex:none}
+body.mob.land #dtabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}body.mob.land #dtabs::-webkit-scrollbar{display:none}body.mob.land #dtabs>*{flex:none}
+body.mob.land .mp[data-p="map"] .mapcard{flex:1.15 1 0;min-height:200px;height:auto;margin:0}
+body.mob.land .mp[data-p="map"] #liveCard{flex:1 1 0;min-height:0;height:auto;overflow-y:auto}
+body.mob.land .mp[data-p="map"] .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+
 
 
 body.mob.simon #mDock{display:block;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--paper);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
