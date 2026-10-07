@@ -68,7 +68,7 @@ body{font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif;-webkit-font-
 
 .pin{position:relative}
 .stage{position:sticky;top:0;height:100vh;overflow:hidden}
-@media (max-width:760px){.stage{height:100svh}}
+@media (max-width:760px){.stage{height:100svh}.bar.flowbg{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(242,234,218,.97)}}
 #nav,#hint{display:none!important}
 .after,.cue2{display:none!important}
 /* navigation — always visible, one tap = one scene */
@@ -133,7 +133,7 @@ body.in .scrollcue{opacity:1}
 .bar{transition:background .3s,box-shadow .3s}
 .barr{display:flex;align-items:center;gap:14px}
 .bar.flowbg{background:rgba(242,234,218,.95);box-shadow:0 1px 0 rgba(31,58,64,.1);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
-@media (max-width:760px){.bar.solid{background:rgba(242,234,218,.96);box-shadow:0 1px 0 rgba(31,58,64,.1);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}}
+@media (max-width:760px){.bar.solid{background:rgba(242,234,218,.97);box-shadow:0 1px 0 rgba(31,58,64,.1)}}
 .bar.show svg{opacity:1}
 #heroScene{opacity:0}
 #hero .b1{right:4vw;top:20vh;width:min(800px,54vw)}
@@ -2766,7 +2766,9 @@ function pr_(el){const r=el.getBoundingClientRect();return clamp(-r.top/(el.offs
 function frame(){
   _clkLive=false;_busy=false;
   const ph=PS.hero,pm=PS.map,pr=PS.road,pt=PS.together,psp=PS.split,pcu=PS.curtain,phw=PS.how,pwa=PS.wai,pec=PS.econ;
-  secs.forEach((s,i)=>{const p=[ph,pm,pr,pt,psp,pcu,phw,pwa,pec][i];s.querySelectorAll('.beat').forEach(b=>b.classList.toggle('on',p>=+b.dataset.from&&p<+b.dataset.to))});
+  /* only the scenes on or next to the screen are redrawn (phones could not keep up redrawing all of them every frame) */
+  const VIS=id=>{const S=SEC[id];if(!S||S.top==null)return true;const t=S.top-scrollY;return t<innerHeight*1.15&&t+S.h>-innerHeight*.15};
+  secs.forEach((s,i)=>{if(!VIS(s.id))return;const p=[ph,pm,pr,pt,psp,pcu,phw,pwa,pec][i];s.querySelectorAll('.beat').forEach(b=>b.classList.toggle('on',p>=+b.dataset.from&&p<+b.dataset.to))});
   // opening: logo lifts away, scene rises in layers, Aurelia last
   const th=seg(ph,0,.48)*6.6;const o=ease(seg(th,0,1.1));
   $('openWrap').style.transform=`translateY(${-o*28}vh) scale(${1-o*.35})`;$('openWrap').style.opacity=1-seg(th,.3,1.0);$('credit').style.opacity=(1-seg(th,.05,.5)).toFixed(2);
@@ -2774,15 +2776,15 @@ function frame(){
   document.querySelector('.bar').classList.toggle('show',th>1.1||pm>0||pr>0);
   document.querySelector('.bar').classList.toggle('solid',th>1.1||pm>0||pr>0);
   {const ec=$('econ');document.querySelector('.bar').classList.toggle('flowbg',!!ec&&scrollY>ec.offsetTop+ec.offsetHeight-80)}   // text sections scroll under the logo; give the bar a backing there
-  const r1=ease(seg(th,.3,1.6)),r2=ease(seg(th,.5,1.9)),r3=ease(seg(th,.8,2.5));
+  if(VIS('hero')){const r1=ease(seg(th,.3,1.6)),r2=ease(seg(th,.5,1.9)),r3=ease(seg(th,.8,2.5));
   $('heroScene').style.opacity=seg(th,.2,.9);
   $('pCloud').setAttribute('transform',`translate(${(1-r1)*-40} ${(1-r1)*60})`);
   $('pMount').setAttribute('transform',`translate(0 ${(1-r1)*160})`);
   $('pFields').setAttribute('transform',`translate(0 ${(1-r2)*320})`);
   $('pFig').setAttribute('transform',`translate(0 ${(1-r3)*620})`);
   const hv=$('heroSvg'); if(innerWidth<=760){const w=900*innerWidth/innerHeight;hv.setAttribute('viewBox',`${470-w*.5} 0 ${w} 900`);hv.setAttribute('preserveAspectRatio','xMidYMax meet')}else{hv.setAttribute('viewBox','0 0 1440 900');hv.setAttribute('preserveAspectRatio','xMidYMax slice')}
-  // map
-  const z=ease(seg(pm,.04,.26));
+  }
+  if(VIS('map')){const z=ease(seg(pm,.04,.26));
   const zoomTo=innerWidth<=760?[310,-130,400,560]:[370,85,300,107];
   $('mapSvg').setAttribute('viewBox',[0,0,1000,595].map((v,i)=>lerp(v,zoomTo[i],z)).join(' '));
   if(innerWidth>760){$('mapSvg').style.left='36vw';$('mapSvg').style.width='62vw'}else{$('mapSvg').style.left='0';$('mapSvg').style.width='100%';$('mapSvg').style.height='62%';$('mapSvg').style.top='40px'}
@@ -2790,8 +2792,8 @@ function frame(){
   $('km').firstChild.nodeValue=Math.round(98*draw);
   $('hazards').setAttribute('opacity',seg(pm,.78,.88));
   $('dist').setAttribute('opacity',seg(pm,.6,.7));
-  ['lblTL','lblSea','lblSea2'].forEach(id=>$(id).setAttribute('opacity',1-z));
-  road(pr);together(pt);split(psp);curtain(pcu);how(phw);
+  ['lblTL','lblSea','lblSea2'].forEach(id=>$(id).setAttribute('opacity',1-z));}
+  if(VIS('road'))road(pr);if(VIS('together'))together(pt);if(VIS('split'))split(psp);if(VIS('curtain'))curtain(pcu);if(VIS('how'))how(phw);
   if(FLOW){flowRun('wai',wai);flowRun('econ',econ)}else{wai(pwa);econ(pec)}
   swapStages();
   prog.style.width=(scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight)*100).toFixed(2)+'%';

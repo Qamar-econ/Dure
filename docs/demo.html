@@ -454,14 +454,42 @@ body.mob .colD,body.mob .colM{display:none}
 body.mob .colP{display:flex;justify-content:center;align-items:flex-start;height:100%}
 body.mob .android{width:100vw;height:calc(100dvh - var(--topH,56px) - var(--dockH,110px));border-radius:0;padding:0;box-shadow:none;margin:0}
 body.mob .android .scr{border-radius:0}
+body.mob .nokia{width:340px;padding:44px 22px 0}
+body.mob .colP .phoneWrap{width:100%;display:flex;justify-content:center}
 #mDock,#mSheet,#mDim{display:none}
 body.mob.simon #mDock{display:block;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--paper);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
-body.mob #mTries .tries{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px;min-height:0;margin:0 0 6px;padding:0;scrollbar-width:none}
+#mTries{display:none}
+body.mob #mTries{display:block;position:absolute;left:0;right:0;z-index:20;opacity:0;pointer-events:none;transition:opacity .15s}
+body.mob #mTries.on{opacity:1;pointer-events:auto}
+body.mob #mTries .tries{display:flex;flex-direction:column;min-height:0;margin:0;padding:0;max-height:none;overflow:visible;border:0;box-shadow:none;background:none}
+body.mob #mTries .tries button{flex:none;width:100%;min-height:0;display:flex;align-items:center;gap:6px;cursor:pointer;text-align:left}
+body.mob #mTries .tries button .tx{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.mob #mTries .tries button small{display:none!important}
+body.mob #mTries .tries button .tx{font:inherit;color:inherit}
+/* Android: suggested-reply chips just above the text box */
+body.mob #mTries.sk-android{left:0;right:0;padding:18px 8px 0;background:linear-gradient(rgba(245,243,239,0),rgba(245,243,239,.96) 22px)}
+body.mob #mTries.sk-android .tries{flex-direction:row;flex-wrap:wrap;justify-content:flex-end;gap:6px;padding:6px 0}
+body.mob #mTries.sk-android .tries>b{flex-basis:100%;text-align:right;font:500 11px var(--f-body);color:#8A8578;padding:0 4px 2px}
+body.mob #mTries.sk-android .tries button{width:auto;max-width:100%;background:#fff;border:1px solid #CFE3C1;border-radius:18px;padding:7px 12px;color:#1d2a20;font:500 13.5px var(--f-body);box-shadow:0 2px 6px -3px rgba(0,0,0,.25)}
+body.mob #mTries.sk-android .tries button .lg{font-size:9.5px;color:#7A9A6A;border:0;padding:0;background:none}
+/* feature phone: a monochrome 'Templates' menu on the LCD */
+body.mob #mTries.sk-nokia{background:var(--lcd);border-top:2px solid #1E2B20;font-family:VT323,monospace}
+body.mob #mTries.sk-nokia .tries{padding:2px 0 0}
+body.mob #mTries.sk-nokia .tries>b{display:block;font:20px VT323,monospace;color:#1E2B20;padding:0 6px;border-bottom:1px dashed rgba(30,43,32,.5)}
+body.mob #mTries.sk-nokia .tries{counter-reset:tp}
+body.mob #mTries.sk-nokia .tries button{counter-increment:tp;background:none;border:0;border-radius:0;padding:1px 6px;font:19px/1.15 VT323,monospace;color:#1E2B20}
+body.mob #mTries.sk-nokia .tries button::before{content:counter(tp);flex:none;width:14px}
+body.mob #mTries.sk-nokia .tries button:active,body.mob #mTries.sk-nokia .tries button:first-of-type{background:#1E2B20;color:var(--lcd)}
+body.mob #mTries.sk-nokia .tries button .tx{font:19px/1.1 VT323,monospace!important}
+body.mob #mTries.sk-nokia .tries button .lg{font:15px VT323,monospace;border:0;padding:0;background:none;color:inherit;opacity:.8}
+body.mob .barr{display:none}
+#mPills{display:flex;gap:6px;padding:0 14px 5px;flex-wrap:wrap}
+#mPills .langbtn{font-size:10.5px;padding:2px 8px;border-width:1px;background:rgba(255,255,255,.65)}
+.nokia #mPills{padding:2px 6px}.nokia #mPills .langbtn{font:15px VT323,monospace;padding:0 6px;background:none;border:1px solid #1E2B20;border-radius:3px;color:#1E2B20}
 body.mob #mTries .tries::-webkit-scrollbar{display:none}
-body.mob #mTries .tries>b{display:none}
-body.mob #mTries .tries button{flex:none;max-width:74vw;padding:6px 10px;min-height:0;display:flex;align-items:center;gap:6px}
+body.mob #mTries .tries button{flex:none;width:100%;padding:6px 10px;min-height:0;display:flex;align-items:center;gap:6px}
 body.mob #mTries .tries button .tx{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px}
-body.mob #mTries .tries button small{display:none}
+body.mob #mTries .tries button small{display:block;font-size:11px}body.mob #mTries .tries button .tx{white-space:normal}
 .mbtns{display:flex;gap:6px}
 .mbtns button{flex:1;position:relative;border:1px solid var(--line-2);border-radius:12px;background:rgba(255,255,255,.6);padding:8px 6px;font:600 14px var(--f-body);color:var(--ink);cursor:pointer}
 .mbtns button i{position:absolute;top:5px;right:8px;width:9px;height:9px;border-radius:50%;background:var(--rust);display:none}.mbtns button.dot i{display:block}
@@ -483,10 +511,11 @@ body.mob .mp[data-p="dash"] #dashCard{height:calc(90dvh - 74px);flex:none}
 body.mob .mp[data-p="map"] .mapcard{height:54dvh;flex:none;margin-bottom:8px}
 body.mob .mp[data-p="map"] #liveCard{flex:none;height:auto;min-height:280px}
 body.mob .mp[data-p="map"] .mk-cond{display:flex;margin:0 0 8px}
-/* charts keep a readable size on a phone: swipe sideways inside them */
-body.mob .mp[data-p="dash"] .pane .figw{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
-body.mob .mp[data-p="dash"] .pane .figw>svg{min-width:620px}
-body.mob .mp[data-p="dash"] .pane .figw::after{content:'← swipe the chart →';display:block;text-align:center;font:italic 11px var(--f-display);color:#BFD0CC;padding-top:2px;position:sticky;left:0;width:100%}
+/* charts on a phone: each wide chart is shown as two stacked crops at a readable size */
+body.mob .mp[data-p="dash"] .pane .figw{display:block;overflow-y:auto}
+.mstk{display:flex;flex-direction:column;gap:10px;width:100%;padding:4px 0}
+.mstk>svg{width:100%!important;height:auto!important;max-height:none!important;display:block;margin:0 auto}
+.mstk>svg.half{width:62%!important}
 </style>
 </head>
 <body class="paper">
@@ -910,6 +939,9 @@ function buildPhone(){
   render();
 }
 function fitPhone(){const tp=document.querySelector('.top');if(tp)document.documentElement.style.setProperty('--topH',tp.offsetHeight+'px');const p=$('phone');if(!p)return;if((innerWidth<=420||document.body.classList.contains('mob'))&&skin==='android'){p.style.transform='';$('phoneWrap').style.height='';$('phoneWrap').style.width='';return}
+  if(document.body.classList.contains('mob')&&skin==='nokia'){   /* phones: zoom the feature phone so its screen fills the view; the keypad runs off the bottom */
+    p.style.transform='';const sc_=p.querySelector('.scr'),need=sc_.offsetTop+sc_.offsetHeight+70,av=innerHeight-(tp?tp.offsetHeight:56)-(($('mDock')||{}).offsetHeight||0)-6;
+    const k=Math.min(innerWidth*.96/p.offsetWidth,av/need);p.style.transform=`scale(${k.toFixed(3)})`;p.style.transformOrigin='top center';$('phoneWrap').style.height=av+'px';$('phoneWrap').style.width='';$('phoneWrap').style.overflow='hidden';return}
   p.style.transform='';const h=p.offsetHeight,avail=innerWidth>1100?innerHeight-(tp?tp.offsetHeight:56)-22:document.body.classList.contains('mob')?innerHeight-(tp?tp.offsetHeight:56)-(($('mDock')||{}).offsetHeight||0)-10:innerHeight-80;
   const sc=Math.max(.55,Math.min(1,avail/h));p.style.transform=sc<1?`scale(${sc.toFixed(3)})`:'';p.style.transformOrigin='top center';$('phoneWrap').style.height=sc<1?(h*sc)+'px':'';$('phoneWrap').style.width=sc<1?(p.offsetWidth*sc)+'px':''}
 addEventListener('resize',fitPhone);
@@ -2377,19 +2409,34 @@ $('langBtn').onclick=()=>{lang=lang==='tet'?'en':'tet';try{sessionStorage.setIte
 (()=>{if(!matchMedia('(max-width:760px)').matches)return;document.body.classList.add('mob');
 const $=id=>document.getElementById(id);
 const dock=document.createElement('div');dock.id='mDock';
-dock.innerHTML='<div id="mTries"></div><div class="mbtns"><button data-p="dash">📊 Dashboard<i></i></button><button data-p="map">🗺 Map &amp; market<i></i></button></div>';
+dock.innerHTML='<div class="mbtns"><button data-p="dash">📊 Dashboard<i></i></button><button data-p="map">🗺 Map &amp; market<i></i></button></div>';
 const sh=document.createElement('div');sh.id='mSheet';
 sh.innerHTML='<div class="mhd"><span class="grab"></span><div class="mseg"><button data-p="dash">Dashboard</button><button data-p="map">Map</button></div><div class="mr"><button id="mSkip"></button><button id="mBack">Phone ✕</button></div></div><div class="mnew" id="mNew">💬 New text from Dure AI · tap to read</div><div class="mbody"><div class="mp" data-p="dash"></div><div class="mp" data-p="map"></div></div>';
 const dim=document.createElement('div');dim.id='mDim';document.body.append(dock,dim,sh);
 sh.querySelector('.mp[data-p="dash"]').appendChild($('dashCard'));
 const mapP=sh.querySelector('.mp[data-p="map"]');mapP.appendChild(document.querySelector('.mapcard'));mapP.appendChild($('liveCard'));
-$('mTries').appendChild($('tries'));
+const pop=document.createElement('div');pop.id='mTries';document.body.appendChild(pop);pop.appendChild($('tries'));
+/* suggestions pop up above the text box only while she is typing */
+let tapInp=0;document.addEventListener('touchstart',e=>{if(e.target.closest&&e.target.closest('#inp,#composer,.inp,#mTries'))tapInp=performance.now()},{capture:true,passive:true});
+const _focus=HTMLElement.prototype.focus;HTMLElement.prototype.focus=function(o){if(this.id==='inp'&&performance.now()-tapInp>800)return;return _focus.call(this,o)};   // no keyboard popping up on its own
+/* the suggestions live inside the phone: an LCD 'Templates' menu on the feature phone, suggested-reply chips in the Android chat */
+const placePop=()=>{const c=$('composer'),ph=$('phone');if(!c||!ph)return;const host=ph.querySelector(skin==='nokia'?'.lcd':'.scr');if(!host)return;
+  if(pop.parentNode!==host)host.appendChild(pop);pop.className=(pop.classList.contains('on')?'on ':'')+'sk-'+skin;
+  const k=ph.getBoundingClientRect().width/ph.offsetWidth||1,hr=host.getBoundingClientRect(),cr=c.getBoundingClientRect();pop.style.bottom=((hr.bottom-cr.top)/k+(skin==='nokia'?0:4))+'px'};
+const popOn=()=>{const t=$('tries');if(!t||t.style.display==='none'||!t.querySelector('button'))return;placePop();pop.classList.add('on');const h=t.querySelector('b');if(h)h.textContent=skin==='nokia'?'Templates':'Suggested replies'};
+let quiet=0;document.addEventListener('focusin',e=>{if(e.target.id==='inp')setTimeout(()=>{if(performance.now()>quiet)popOn()},60)});
+document.addEventListener('focusout',e=>{if(e.target.id==='inp')setTimeout(()=>{if(!(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('#mTries')))pop.classList.remove('on')},220)});
+pop.addEventListener('click',e=>{if(e.target.closest('button')){quiet=performance.now()+700;setTimeout(()=>pop.classList.remove('on'),30)}});
+if(window.visualViewport)visualViewport.addEventListener('resize',()=>{if(pop.classList.contains('on'))placePop()});
 const setH=()=>{document.documentElement.style.setProperty('--dockH',dock.offsetHeight+'px');const t=document.querySelector('.top');if(t)document.documentElement.style.setProperty('--topH',t.offsetHeight+'px')};
 let open=null;
 const centerFigs=()=>document.querySelectorAll('.mp[data-p="dash"] .figw').forEach(f=>{if(f.scrollWidth>f.clientWidth&&!f.dataset.c){f.scrollLeft=(f.scrollWidth-f.clientWidth)/2;f.dataset.c=1}});
 const show=p=>{open=p;sh.classList.add('open');dim.classList.add('on');sh.querySelectorAll('[data-p]').forEach(e=>e.classList.toggle('on',e.dataset.p===p));dock.querySelector(`.mbtns [data-p="${p}"]`).classList.remove('dot');$('mNew').classList.remove('on');
   try{dirty.all=true}catch(e){}setTimeout(()=>dispatchEvent(new Event('resize')),360)};
-const hide=()=>{open=null;sh.classList.remove('open');dim.classList.remove('on')};
+let auto=null;/* {until} when the sheet opened by itself */
+sh.addEventListener('touchstart',()=>{auto=null},{passive:true});
+const autoShow=(p,ms)=>{if(open===p&&!auto)return;const a=document.activeElement;if(a&&a.id==='inp')a.blur();show(p);auto={until:performance.now()+ms}};
+const hide=()=>{auto=null;open=null;sh.classList.remove('open');dim.classList.remove('on')};
 window.mOpen=show;window.mClose=hide;
 dock.querySelectorAll('.mbtns button').forEach(b=>b.onclick=()=>show(b.dataset.p));
 sh.querySelectorAll('.mseg button').forEach(b=>b.onclick=()=>show(b.dataset.p));
@@ -2398,14 +2445,21 @@ $('mSkip').onclick=()=>{const b=$('skipbar');if(b)b.click()};
 /* swipe the sheet header down to close */
 let y0=null;sh.querySelector('.mhd').addEventListener('touchstart',e=>{y0=e.touches[0].clientY},{passive:true});
 sh.querySelector('.mhd').addEventListener('touchend',e=>{if(y0!=null&&e.changedTouches[0].clientY-y0>60)hide();y0=null},{passive:true});
-let lastS=null,lastPh=null,lastN=0;
+let lastS=null,lastPh=null,lastN=0,lastKey=0;document.addEventListener('input',()=>{lastKey=performance.now()},true);
+/* wide desktop charts -> stacked crops [x,y,w,h, widthClass] in the 640-wide chart space */
+const CROPS={price:[[0,0,312,368],[304,28,336,352]],book:[[92,18,356,402],[438,34,202,360,'half']],photo:[[4,0,338,282],[344,0,296,262]]};
+const crop=(str,cs)=>{const m=str.match(/<svg[^>]*viewBox="0 0 640 (\d+(?:\.\d+)?)"[^>]*>/);if(!m)return str;const VH=+m[1],tag=m[0];
+  return '<div class="mstk">'+cs.map(c=>{const h=Math.min(c[3],VH-c[1]);return str.replace(tag,tag.replace(/viewBox="[^"]*"/,`viewBox="${c[0]} ${c[1]} ${c[2]} ${h}"`).replace(/\s(width|height)="[^"]*"/g,'').replace('<svg','<svg'+(c[4]?' class="half"':'')))}).join('')+'</div>'};
+['price','book','photo'].forEach(k=>{const n=k==='photo'?'photoSvgCard':k+'Svg',f=window[n];if(typeof f!=='function')return;window[n]=function(){const out=f.apply(this,arguments);return typeof out==='string'?crop(out,CROPS[k]):out}});
 setInterval(()=>{setH();
   if(typeof mk==='undefined'||!mk)return;
+  {const slot=document.querySelector('#phone .bar-slot'),lb=$('llmBtn'),gb=$('langBtn');if(slot&&lb&&!(lb.parentNode&&lb.parentNode.id==='mPills'&&slot.nextSibling===lb.parentNode)){let pl=$('mPills');if(!pl){pl=document.createElement('div');pl.id='mPills'}slot.after(pl);pl.append(lb,gb)}}
   const cond=$('mkCond');if(cond&&cond.parentNode!==mapP)mapP.insertBefore(cond,mapP.firstChild);
-  const typing=document.activeElement&&document.activeElement.id==='inp';
+  const typing=document.activeElement&&document.activeElement.id==='inp'&&performance.now()-lastKey<4000;
   const s=(typeof dashSticky!=='undefined')?dashSticky:null;
-  if(s!==lastS){if(['price','book','photo','rep'].includes(s)&&!typing){if(open!=='dash')show('dash')}else if(s==='read'&&open!=='dash')dock.querySelector('.mbtns [data-p="dash"]').classList.add('dot');lastS=s}
-  if(mk.phase!==lastPh){if(lastPh&&['auction','paid'].includes(mk.phase)&&open!=='dash')show('dash');if(lastPh==='morning'&&open!=='map')dock.querySelector('.mbtns [data-p="map"]').classList.add('dot');lastPh=mk.phase}
+  if(s!==lastS){if(['price','book','photo','rep'].includes(s)&&!typing){autoShow('dash',s==='photo'?6500:6000)}else if(s==='read'&&open!=='dash')dock.querySelector('.mbtns [data-p="dash"]').classList.add('dot');lastS=s}
+  if(mk.phase!==lastPh){if(lastPh&&['auction','paid'].includes(mk.phase))autoShow('dash',mk.phase==='paid'?7500:6000);if(lastPh==='morning'&&open!=='map')dock.querySelector('.mbtns [data-p="map"]').classList.add('dot');lastPh=mk.phase}
+  if(auto){const ff=(typeof ffGoal!=='undefined')&&ffGoal;if(ff||(typeof priceHold!=='undefined'&&priceHold>performance.now()))auto.until=Math.max(auto.until,performance.now()+2500);if(performance.now()>auto.until)hide()}   /* shown, then folds away by itself */
   const n=(typeof msgs!=='undefined')?msgs.filter(m=>m.who==='ai'&&m.text).length:0;if(n>lastN&&open)$('mNew').classList.add('on');lastN=n;
   const sk=$('mSkip'),on=(typeof ffNext!=='undefined')&&!!ffNext&&!!ffLabel;sk.classList.toggle('on',!!(on&&open));if(on){const L=ffLabel;sk.textContent=(/pool closes/.test(L)?'Close pool':/auction/.test(L)?'To 17:00':/pickup point/.test(L)?'Drop sack':/truck/.test(L)?'Truck':/payment/.test(L)?'Payment':'Skip')+' ⏩'}
 },250);
