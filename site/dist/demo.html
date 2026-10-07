@@ -514,7 +514,29 @@ body.mob .mp[data-p="dash"] #dashCard{height:calc(90dvh - 74px);flex:none}
 body.mob .mp[data-p="map"] .mapcard{height:54dvh;flex:none;margin-bottom:8px}
 body.mob .mp[data-p="map"] #liveCard{flex:none;height:auto;min-height:280px}
 body.mob .mp[data-p="map"] .mk-cond{display:flex;margin:0 0 8px}
-/* charts on a phone: each wide chart is shown as two stacked crops at a readable size */
+
+/* phone dashboard cards */
+.mx{display:flex;flex-direction:column;gap:10px;padding:4px 2px 10px;color:#F6EFE0;font-family:var(--f-body)}
+.mxrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}
+.mxs{background:#2C4F57;border-radius:12px;padding:9px 11px}.mxs span{display:block;font-size:11.5px;color:#BFD0CC}.mxs b{display:block;font-family:var(--f-display);font-size:22px;line-height:1.15;margin-top:2px}
+.mxbox{background:#24434A;border-radius:12px;padding:10px 12px}
+body.mob .mp[data-p="dash"] .pane.lt{background:none!important;padding:0!important;box-shadow:none!important}body.mob .mp[data-p="dash"] .pane.lt .figw{background:none!important;padding:0!important}
+.mxh{font:600 13px var(--f-body);color:#F6EFE0;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.mxh i{font-weight:400;color:#BFD0CC;font-size:12px}
+.mxli{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:7px 0;border-top:1px solid rgba(191,208,204,.12);font-size:14.5px}.mxli:first-of-type{border-top:0}
+.mxli span{color:#DDE6E3;min-width:0}.mxli small{color:#8FA7A9;font-size:12px;margin-left:4px}.mxli b{color:var(--gold);font-family:var(--f-display);font-size:16px;white-space:nowrap}
+.mxli.lead{background:rgba(228,182,76,.14);margin:0 -8px;padding:7px 8px;border-radius:8px}.mxli.dim{opacity:.45}
+.mxchart{width:100%;height:auto;display:block;font-family:var(--f-body)}
+.mxcap{background:var(--gold);color:var(--ink);font:700 14px var(--f-display);padding:8px 12px;border-radius:10px}
+.mxnote{font:italic 12.5px/1.4 var(--f-display);color:#BFD0CC;padding:0 4px}
+.mxstatus{font:700 16px var(--f-display);color:#F6EFE0;padding:2px 4px}.mxstatus.live::before{content:'● ';color:#F08A6A}
+.mxbar{display:flex;height:30px;border-radius:8px;overflow:hidden;gap:2px}.mxbar i{display:flex;align-items:center;justify-content:center;min-width:22px}.mxbar i b{font:700 13px var(--f-display);color:#1F3A40}
+.mxleg{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:13px;color:#DDE6E3}
+.mxfeed{display:flex;flex-direction:column;gap:3px;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(191,208,204,.25);font-size:12.5px;color:#BFD0CC}.mxfeed b{color:var(--gold)}
+.mxbox.you{border:1.5px solid rgba(246,239,224,.4)}
+.mximg{width:100%;max-height:44vh;object-fit:cover;border-radius:12px;display:block}
+.mxcap2{font:italic 12px var(--f-display);color:#BFD0CC;margin-top:-4px}
+.mxpb{display:grid;grid-template-columns:92px 1fr 44px;align-items:center;gap:8px;padding:4px 0;font-size:13.5px;color:#DDE6E3}.mxpb i{height:10px;border-radius:5px;background:#18302F;overflow:hidden}.mxpb u{display:block;height:100%;background:var(--gold)}.mxpb b{text-align:right;font-family:var(--f-display)}
+/* charts on a phone */
 body.mob .mp[data-p="dash"] .pane{overflow-y:auto;-webkit-overflow-scrolling:touch}
 body.mob .mp[data-p="dash"] .pane .figw{display:block;flex:none!important;height:auto!important;min-height:0;overflow:visible}
 .mstk{display:flex;flex-direction:column;gap:10px;width:100%;padding:4px 0}
@@ -2451,18 +2473,54 @@ const hide=()=>{auto=null;open=null;sh.classList.remove('open');dim.classList.re
 window.mOpen=show;window.mClose=hide;
 dock.querySelectorAll('.mbtns button').forEach(b=>b.onclick=()=>show(b.dataset.p));
 sh.querySelectorAll('.mseg button').forEach(b=>b.onclick=()=>show(b.dataset.p));
-$('mBack').onclick=hide;dim.onclick=hide;$('mNew').onclick=hide;
+const userHide=()=>{if(typeof mk!=='undefined'&&mk&&mk.phase==='auction')userClosedAuc=true;hide()};$('mBack').onclick=userHide;dim.onclick=userHide;$('mNew').onclick=userHide;
 $('mSkip').onclick=()=>{const b=$('skipbar');if(b)b.click()};
 /* swipe the sheet header down to close */
 let y0=null;sh.querySelector('.mhd').addEventListener('touchstart',e=>{y0=e.touches[0].clientY},{passive:true});
 sh.querySelector('.mhd').addEventListener('touchend',e=>{if(y0!=null&&e.changedTouches[0].clientY-y0>60)hide();y0=null},{passive:true});
-let lastS=null,lastPh=null,lastN=0,lastKey=0;document.addEventListener('input',()=>{lastKey=performance.now()},true);
-/* wide desktop charts -> stacked crops [x,y,w,h, widthClass] in the 640-wide chart space */
-const CROPS={price:[[304,28,336,352],[0,0,312,368]],book:[[92,18,356,388],[438,34,202,360,'half']],photo:[[4,0,338,282],[344,0,296,262]]};
-const crop=(str,cs)=>{const m=str.match(/<svg[^>]*viewBox="0 0 640 (\d+(?:\.\d+)?)"[^>]*>/);if(!m)return str;const VH=+m[1],tag=m[0];
-  return '<div class="mstk">'+cs.map(c=>{const h=Math.min(c[3],VH-c[1]);return str.replace(tag,tag.replace(/viewBox="[^"]*"/,`viewBox="${c[0]} ${c[1]} ${c[2]} ${h}"`).replace(/\s(width|height)="[^"]*"/g,'').replace('<svg','<svg'+(c[4]?' class="half"':'')))}).join('')+'</div>'};
-{const pv=window.paneVH;window.paneVH=(id,mn,mx)=>mn}   /* phones: compact chart height; the crops below handle the layout */
-['price','book','photo'].forEach(k=>{const n=k==='photo'?'photoSvgCard':k+'Svg',f=window[n];if(typeof f!=='function')return;window[n]=function(){const out=f.apply(this,arguments);return typeof out==='string'?crop(out,CROPS[k]):out}});
+let lastS=null,lastPh=null,lastN=0,lastKey=0,lastFF=null,userClosedAuc=false;document.addEventListener('input',()=>{lastKey=performance.now()},true);
+/* phone dashboards: the desktop charts are redrawn as phone-sized cards (same live data) */
+const M$=v=>v==null?'—':'$'+v.toFixed(2),esc_=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const stat=(l,v,c)=>`<div class="mxs"><span>${l}</span><b style="color:${c||'#F6EFE0'}">${v}</b></div>`;
+function mPrice(now){const R=priceT0&&mk.phase!=='morning'?Math.min(1,((now||performance.now())-priceT0)/PRICE_MS):1;
+  const c=mk.cond,lotL=mk.phase==='morning'?inLot():mk.farmers.filter(f=>f.joinT!=null&&f.st!=='wait'),K=lotK(lotL.length?lotL:[{kg:1,aiG:'B'}]);
+  const asks=lotL.filter(f=>!f.any&&f.ask!=null).map(f=>({v:askLot(f,K),f}));
+  const fair=mk.fair??+fairEst(lotL,true).toFixed(3),floor=mk.floor??floorEst(lotL),open=mk.open,best=mk.best?mk.best.v:null,cl=mk.res&&mk.res.p,closed=mk.phase!=='morning';
+  const ref=cl??best??open??fair;
+  const vals=[...asks.map(a=>a.v),fair,floor,open,best].filter(v=>v!=null);let lo=Math.min(...vals)-.05,hi=Math.max(...vals)+.05;if(hi-lo<.4){const m=(hi+lo)/2;lo=m-.2;hi=m+.2}
+  const W=340,X=v=>14+(v-lo)/(hi-lo)*(W-28),st=(hi-lo)>1.2?.25:(hi-lo)>.6?.1:.05;let tk='';for(let v=Math.ceil(lo/st)*st;v<=hi;v+=st)tk+=`<path d="M${X(v).toFixed(1)} 112 v6" stroke="#46656B" stroke-width="1.5"/><text x="${X(v).toFixed(1)}" y="132" text-anchor="middle" font-size="11" fill="#BFD0CC">${v.toFixed(2)}</text>`;
+  let dots='';const rows={};asks.forEach(a=>{const bx=Math.round(X(a.v)/9);rows[bx]=(rows[bx]||0)+1;const r=rows[bx]-1,inn=R<.74?null:a.v<=ref+1e-9;dots+=`<circle cx="${X(a.v).toFixed(1)}" cy="${100-r*11}" r="${a.f.me?6:4.5}" fill="${inn===null?'#9DB7B9':inn?'#7FD18B':'#8A9A9E'}"${a.f.me?' stroke="#F6EFE0" stroke-width="2"':''}/>`});
+  const ln=(v,col,dash,lab,y)=>v==null?'':`<path d="M${X(v).toFixed(1)} 14 V112" stroke="${col}" stroke-width="2" ${dash?`stroke-dasharray="${dash}"`:''}/><text x="${X(v).toFixed(1)}" y="${y}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${col}">${lab}</text>`;
+  const svg=`<svg class="mxchart" viewBox="0 0 ${W} 140"><path d="M14 112 H${W-14}" stroke="#46656B" stroke-width="1.5"/>${tk}${R>=.42?ln(fair,'#7FD18B','5 4','fair',11):''}${R>=.58?ln(floor,'#F08A6A','2 4','floor',11):''}${R>=.74?ln(open,GOLD,'','opens',24):''}${dots}${best!=null?`<circle cx="${X(best).toFixed(1)}" cy="40" r="8" fill="${GOLD}"/><text x="${X(best).toFixed(1)}" y="44" text-anchor="middle" font-size="9" font-weight="800" fill="${INK}">bid</text>`:''}</svg>`;
+  const INP=[['Recent sales',`${c.lo.toFixed(2)}–${c.hi.toFixed(2)}`],['Buyers this week',c.nB],['Road to Gleno · Dili',ROAD_TXT[c.road]],['Days to export truck',c.soft],...(c.shock>1?[['Scarcity (bad weather)',`+${Math.round((c.shock-1)*100)}%`]]:[]),["Farmers' asks",asks.length?`${asks.length} · median ${(askMedian(lotL)??0).toFixed(2)}`:'—']];
+  const cap=R<1?`<div class="mxcap">${R<.42?"① Weighing this week's market":R<.58?'② A fair price for the whole lot':R<.74?"③ Farmers' minimums set a floor":'④ Bidding opens a little under fair'}</div>`:'';
+  return `<div class="mx">${cap}<div class="mxrow">${stat(closed?'Fair price':'Fair (so far)','$'+(closed?fair.toFixed(2):fair.toFixed(3)),'#7FD18B')}${stat('Floor',M$(floor),'#F08A6A')}${stat(cl!=null?'Cleared':best!=null?'Best bid':'Opens',cl!=null?M$(cl):best!=null?M$(best):open!=null?M$(open):'at close',GOLD)}</div>
+    <div class="mxbox"><div class="mxh">Each dot: one farmer's minimum <i><b style="color:#7FD18B">●</b> in · <b style="color:#8A9A9E">●</b> sits out</i></div>${svg}</div>
+    <div class="mxbox"><div class="mxh">What it weighs</div>${INP.map(([l,v])=>`<div class="mxli"><span>${l}</span><b>${v}</b></div>`).join('')}</div>
+    <div class="mxnote">Floor = the price at which 30% of the lot would sell. Bids below it don't count.</div></div>`}
+function mBook(now){const ph=mk.phase,lot=ph==='morning'?inLot():mk.farmers.filter(f=>f.st==='in'||(f.st==='out'&&f.joinT!=null)),kg={A:0,B:0,C:0};lot.filter(f=>f.st!=='out'||ph==='morning').forEach(f=>kg[gOf(f)]+=f.kg);
+  const tot=kg.A+kg.B+kg.C||1,res=mk.res,gp=res&&res.gp,me_=me();
+  const bar=`<div class="mxbar">${['A','B','C'].map(g=>kg[g]?`<i style="flex:${kg[g]};background:${CG[g]}"><b>${g}</b></i>`:'').join('')}</div><div class="mxleg">${['A','B','C'].map(g=>`<span><b style="color:${CG[g]}">■</b> ${g} ${kgf(kg[g])} kg${gp?` · $${gp[g].toFixed(2)}`:''}</span>`).join('')}</div>`;
+  const B=mk.buyers.map((b,i)=>({...b,i,v:b.best})).sort((a,b)=>(b.v??0)-(a.v??0));const lead=res&&!res.none?res.winner:mk.best?mk.best.b:null;
+  const status=ph==='morning'?`Pool filling · ${kgf(sumKg(inLot()))} of ${kgf(mk.target)} kg`:ph==='auction'?(mk.best?`Live · best ${M$(mk.best.v)} · closes 17:00`:`Open at ${M$(mk.open)} · no bids yet`):res&&res.none?'No bid above the floor. No sale, no penalty.':`Cleared at ${M$(res&&res.p)}`;
+  const yes=lot.filter(f=>f.dec==='yes').length,no=lot.filter(f=>f.dec==='no').length;
+  const recent=mk.bids.filter(b=>b.done).slice(-4).reverse();
+  return `<div class="mx"><div class="mxstatus ${ph==='auction'?'live':''}">${status}</div>
+   <div class="mxbox"><div class="mxh">One lot · ${kgf(sumKg(lot.filter(f=>f.st!=='out'||ph==='morning')))} kg · ${lot.length} farms${['decide','locked','pickup','paid'].includes(ph)?` · <b style="color:#7FD18B">${yes} YES</b> · ${no} NO`:''}</div>${bar}</div>
+   <div class="mxbox"><div class="mxh">Order book${mk.floor!=null?` <i>floor ${M$(mk.floor)} · opens ${M$(mk.open)}</i>`:''}</div>${B.map(b=>`<div class="mxli ${b.i===lead?'lead':''} ${b.out&&b.i!==lead?'dim':''}"><span>${esc_(b.n)} <small>${esc_(b.loc)}</small></span><b>${b.v!=null?M$(b.v):'—'}</b></div>`).join('')}
+   ${recent.length?`<div class="mxfeed">${recent.map(b=>`<span>${hhmm(b.t)} ${esc_(mk.buyers[b.b].n)} <b>${M$(b.v)}</b></span>`).join('')}</div>`:''}</div>
+   ${me_&&me_.joinT!=null?`<div class="mxbox you"><div class="mxh">You · Noor</div><div class="mxli"><span>${me_.kg} kg · grade ${gOf(me_)} · min ${me_.any?'any':M$(me_.ask)}</span><b>${me_.dec==='yes'||(me_.st==='in'&&res&&!res.none)?'in ✓':me_.dec==='no'?'out':ph==='decide'?'YES / NO?':'waiting'}</b></div></div>`:''}
+   <div class="mxnote">${ph==='auction'?"Bids below the farmers' floor don't count. At 17:00 the best bid takes it.":ph==='decide'?'Price at or above your minimum: you are in. Below: you choose YES or NO.':'Every grade goes into one lot; buyers bid on the whole lot.'}</div></div>`}
+function mPay(now){const L=inLot().slice().sort((a,b)=>(b.me?1:0)-(a.me?1:0)),u=anim.pay?(now-anim.pay)/1000:99,W=mk.buyers[mk.res.winner];
+  return `<div class="mx"><div class="mxstatus">One payment in, ${L.length} payments out</div><div class="mxrow">${stat(esc_(W.n)+' paid',M$(mk.paid),GOLD)}${stat('Wallets paid',Math.min(L.length,Math.max(0,Math.floor((u-1.4)/.12)))+' / '+L.length,'#7FD18B')}</div>
+   <div class="mxbox">${L.map((f,k)=>{const done=u>1.4+k*.12;return `<div class="mxli ${f.me?'lead':''}"><span>${f.me?'You · Noor':esc_(f.name)} <small>${f.kg} kg · ${f.handG||gOf(f)}</small></span><b style="color:${done?'#7FD18B':'#8FA7A9'}">${done?'+'+M$(f.pay)+' ✓':'…'}</b></div>`}).join('')}</div>
+   <div class="mxnote">Split by grade and kilos. Farmers without mobile money are paid by the truck driver at the next pickup.</div></div>`}
+function mPhoto(x){if(!x)return '';const P=x.probs||{},rows=[['A','Grade A'],['B','Grade B'],['C','Grade C'],['R','Roasted'],['N','Not beans']];
+  return `<div class="mx">${x.img?`<img class="mximg" src="${x.img}" alt="">`:''}<div class="mxcap2">${x.fid===0?'You':esc_((mk.farmers[x.fid]||{}).name||'')} · ${x.live?'live model on this device':'simulated grader'}${x.ms?` · ${x.ms} ms`:''}</div>
+   <div class="mxrow">${stat('Preliminary grade',x.kind==='graded'||!x.kind?(x.g||'—'):x.kind==='roasted'?'roasted':'retake',GOLD)}${stat('Confidence',(x.conf??'—')+'%','#F6EFE0')}</div>
+   ${Object.keys(P).length?`<div class="mxbox"><div class="mxh">How likely each class</div>${rows.map(([k,l])=>P[k]==null?'':`<div class="mxpb"><span>${l}</span><i><u style="width:${Math.round(P[k]*100)}%"></u></i><b>${Math.round(P[k]*100)}%</b></div>`).join('')}</div>`:''}
+   <div class="mxnote">A person checks every sack at pickup. That grade is the one paid.</div></div>`}
+{const o={priceSvg:mPrice,bookSvg:mBook,paySvg:mPay,photoSvgCard:mPhoto};for(const k in o)if(typeof window[k]==='function')window[k]=o[k]}
 setInterval(()=>{setH();
   if(typeof mk==='undefined'||!mk)return;
   {const slot=document.querySelector('#phone .bar-slot'),lb=$('llmBtn'),gb=$('langBtn');if(slot&&lb&&!(lb.parentNode&&lb.parentNode.id==='mPills'&&slot.nextSibling===lb.parentNode)){let pl=$('mPills');if(!pl){pl=document.createElement('div');pl.id='mPills'}slot.after(pl);pl.append(lb,gb)}}
@@ -2471,6 +2529,7 @@ setInterval(()=>{setH();
   const s=(typeof dashSticky!=='undefined')?dashSticky:null;
   if(s!==lastS){if(['price','book','photo','rep'].includes(s)&&!typing){autoShow('dash',s==='photo'?6500:6000)}else if(s==='read'&&open!=='dash')dock.querySelector('.mbtns [data-p="dash"]').classList.add('dot');lastS=s}
   if(mk.phase!==lastPh){if(lastPh&&['auction','paid'].includes(mk.phase))autoShow('dash',mk.phase==='paid'?7500:6000);if(lastPh==='morning'&&open!=='map')dock.querySelector('.mbtns [data-p="map"]').classList.add('dot');lastPh=mk.phase}
+  {const ff=(typeof ffGoal!=='undefined')&&ffGoal;if(ff&&ff!==lastFF&&!typing)autoShow('dash',7000);lastFF=ff;}
   if(auto){const ff=(typeof ffGoal!=='undefined')&&ffGoal;if(ff||(typeof priceHold!=='undefined'&&priceHold>performance.now()))auto.until=Math.max(auto.until,performance.now()+2500);if(performance.now()>auto.until)hide()}   /* shown, then folds away by itself */
   const n=(typeof msgs!=='undefined')?msgs.filter(m=>m.who==='ai'&&m.text).length:0;if(n>lastN&&open)$('mNew').classList.add('on');lastN=n;
   const sk=$('mSkip'),on=(typeof ffNext!=='undefined')&&!!ffNext&&!!ffLabel;sk.classList.toggle('on',!!(on&&open));if(on){const L=ffLabel;sk.textContent=(/pool closes/.test(L)?'Close pool':/auction/.test(L)?'To 17:00':/pickup point/.test(L)?'Drop sack':/truck/.test(L)?'Truck':/payment/.test(L)?'Payment':'Skip')+' ⏩'}
