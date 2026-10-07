@@ -995,14 +995,14 @@ function chartHeat(el){const C=sigCells(),WK=[...new Set(R.trades.filter(t=>!t.d
       s+=p==null?`<rect x="${x+1}" y="${y+1}" width="${cwid-2}" height="${rh-2}" rx="3" fill="#F3EEE4"/>`:
         `<rect x="${x+1}" y="${y+1}" width="${cwid-2}" height="${rh-2}" rx="3" fill="${mix(Math.min(1,p/60)*.92+.04)}"><title>${esc(v)}, week ${w}: ${l.toLowerCase()} ${p}% of ${X.length} offers</title></rect>`+(cwid>=24?`<text x="${x+cwid/2}" y="${y+rh/2+4}" text-anchor="middle" font-size="${small?9.5:11}" fill="${p>=35?'#FBF7EE':'#5B5345'}">${p}</text>`:'')})});
   el.innerHTML=s+'</svg>'}
-function signalsBlock(){return `<div class="sigs"><div class="cbox"><h4>Quality signals by week, whole pool</h4><div id="s1"></div></div><div class="cbox"><h4>By village, all weeks</h4><div id="s2"></div></div>
-  <div class="cbox full"><div class="hmh"><h4>By village and week, % of offers</h4><div class="seg">${SIG.map(([k,l])=>`<button data-hm="${k}" class="${k===hmK?'on':''}">${l}</button>`).join('')}</div></div><div id="s3"></div></div></div>`}
-function drawSignals(){if($('s1'))chartSigLine($('s1'));if($('s2'))chartSigBars($('s2'));if($('s3'))chartHeat($('s3'));
-  document.querySelectorAll('[data-hm]').forEach(b=>b.onclick=()=>{hmK=b.dataset.hm;document.querySelectorAll('[data-hm]').forEach(x=>x.classList.toggle('on',x.dataset.hm===hmK));chartHeat($('s3'))})}
+function signalsBlock(P=''){return `<div class="sigs"><div class="cbox"><h4>Quality signals by week, whole pool</h4><div id="${P}s1"></div></div><div class="cbox"><h4>By village, all weeks</h4><div id="${P}s2"></div></div>
+  <div class="cbox full"><div class="hmh"><h4>By village and week, % of offers</h4><div class="seg">${SIG.map(([k,l])=>`<button data-hm="${k}" class="${k===hmK?'on':''}">${l}</button>`).join('')}</div></div><div id="${P}s3"></div></div></div>`}
+function drawSignals(){for(const P of ['','t']){if($(P+'s1'))chartSigLine($(P+'s1'));if($(P+'s2'))chartSigBars($(P+'s2'));if($(P+'s3'))chartHeat($(P+'s3'))}
+  document.querySelectorAll('[data-hm]').forEach(b=>b.onclick=()=>{hmK=b.dataset.hm;document.querySelectorAll('[data-hm]').forEach(x=>x.classList.toggle('on',x.dataset.hm===hmK));for(const P of ['','t'])if($(P+'s3'))chartHeat($(P+'s3'))})}
 function renderChart(){
   const el=$('chart');
   if(tab==='market'){el.hidden=false;el.innerHTML='<div class="cpad" id="cm"></div>';chartPrices($('cm'));return}
-  if(tab==='signals'){el.hidden=false;el.innerHTML=signalsBlock();drawSignals();return}
+  if(tab==='signals'){el.hidden=false;el.innerHTML=signalsBlock('t');drawSignals();return}
   el.innerHTML='';el.hidden=true;
 }
 
@@ -1051,7 +1051,7 @@ function renderBrief(){
   if(!G){$('brief').innerHTML=h+'</div>';chartPrices($('c1'));if($('c2'))chartBids($('c2'));drawSignals();return}
   const A=genItems(),mode='gen';
     const li=a=>a.map(it=>`<li>${it.kind?`<span class="kind">${it.kind}</span>`:''}${esc(it.t)}${link(it)}</li>`).join('');
-  const hl=esc(A.headline||'').replace(/(\$?\d+(?:\.\d+)?%?)/g,'<b>$1</b>');
+  const hl=String(A.headline||'').split(/(\$?\d+(?:\.\d+)?%?)/).map((p,i)=>i%2?'<b>'+esc(p)+'</b>':esc(p)).join('');   /* highlight numbers before escaping, so entities like &#39; stay intact */
   h+=`<section class="sec ai"><div class="sech"><h3>What it means</h3></div><p class="byline">Written by Dure AI (rules engine + small AI) from this week's data · checked</p>
    <div class="head">${hl}</div>
    <h3>What changed</h3><ul>${li(A.changed)}</ul>

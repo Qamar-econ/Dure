@@ -471,6 +471,9 @@ body.mob.land #mDock,body.land #mDim,body.land #mBack,body.land #mNew,body.land 
 body.mob.land:not(.simon) #mSheet{display:none}
 body.mob.land #mSheet{left:var(--pc);right:0;width:auto;margin:0;top:var(--topH,56px);bottom:0;height:auto;transform:none;transition:none;border-radius:18px 0 0 0;box-shadow:-10px 0 30px -18px rgba(31,58,64,.45)}
 body.land .top .mk-l{display:block}
+body.mob .mximg{display:block;width:100%;height:auto;max-height:min(34dvh,300px);aspect-ratio:4/3;object-fit:cover;border-radius:12px}
+body.mob.land .mp[data-p="dash"] #dashCard{flex:1 1 auto;height:auto!important}
+
 /* tablets: the smartphone keeps its real proportions (360 × 740); it shrinks to fit, never stretches */
 body.mob.tab .android{aspect-ratio:360/740;width:auto!important;height:min(calc(100dvh - var(--topH,56px) - var(--dockH,110px) - 24px),940px,calc((100vw - 32px) * 740 / 360))!important}
 body.mob.land .android{height:min(calc(100dvh - var(--topH,56px) - 28px),calc((var(--pc) - 28px) * 740 / 360))!important}
@@ -519,7 +522,7 @@ body.mob #mTries.sk-nokia .tries button .tx{font:22px/1.1 VT323,monospace!import
 body.mob #mTries.sk-nokia .tries button .lg{font:15px VT323,monospace;border:0;padding:0;background:none;color:inherit;opacity:.8}
 body.mob .barr{display:none}
 #mPills{display:flex;gap:6px;padding:0 14px 5px;flex-wrap:wrap}
-#mPills .langbtn{font-size:10.5px;padding:2px 8px;border-width:1px;background:rgba(255,255,255,.65)}
+#mPills .langbtn{font-size:10.5px;padding:2px 8px;border-width:1px;background:rgba(255,255,255,.65)}#mPills .llmb.on{background:#4E8B5C;color:#fff;border-color:#4E8B5C}#mPills .llmb.busy{background:#F3E2B5;color:#5B4A1E;border-color:#C9A54A}#mPills .llmb.bad{color:var(--rust);border-color:var(--rust)}.nokia #mPills .llmb.on{background:#1E2B20!important;color:var(--lcd,#C4DDB3)!important}
 .nokia #mPills{padding:2px 6px}.nokia #mPills .langbtn{font:15px VT323,monospace;padding:0 6px;background:none;border:1px solid #1E2B20;border-radius:3px;color:#1E2B20}
 body.mob #mTries .tries::-webkit-scrollbar{display:none}
 body.mob #mTries .tries button{flex:none;width:100%;padding:6px 10px;min-height:0;display:flex;align-items:center;gap:6px}
@@ -953,9 +956,19 @@ function tick(){}
 function timeStr(){const m=Math.floor(mk?mk.t:390)%1440;return `${pad(Math.floor(m/60))}:${pad(m%60)}`}
 function sigSvg(fill){return `<svg width="18" height="12" viewBox="0 0 18 12">${[0,1,2,3].map(k=>`<rect x="${k*4.5}" y="${9-k*3}" width="3.2" height="${3+k*3}" rx=".6" fill="${k<signal?fill:'rgba(0,0,0,.18)'}"/>`).join('')}</svg>`}
 function batSvg(fill){return `<svg width="24" height="12" viewBox="0 0 24 12"><rect x=".6" y=".6" width="20" height="10.8" rx="2.4" fill="none" stroke="${fill}" stroke-width="1.2"/><rect x="21.4" y="3.6" width="2" height="4.8" rx="1" fill="${fill}"/><rect x="2.2" y="2.2" width="${16.8*battery/100}" height="7.6" rx="1.2" fill="${battery<=20?'#C0392B':fill}"/></svg>`}
-function renderBar(){const b=document.querySelector('.bar-slot');if(!b)return;const col=skin==='android'?'#222':'#1E2B20';const sc=$('shClock');if(sc)sc.textContent=timeStr();
-  b.innerHTML=skin==='android'?`<span>${timeStr()}</span><span class="sbc">${esc(stepTxt)}</span><span class="r"><span style="font-size:11px">E</span>${sigSvg(col)}<span>${battery}%</span>${batSvg(col)}</span>`
-    :`<span class="r">${sigSvg(col)}<span>${stepIdx<7?(Math.min(7,stepIdx+1))+'/7':'✓'}</span></span><span>${timeStr()}</span><span class="r">${battery}%${batSvg(col)}</span>`;placePills(b)}
+function dedupe(el){if(!el||el.__dd)return;el.__dd=1;for(const [pr,P] of [['innerHTML',Element.prototype],['textContent',Node.prototype]]){const d=Object.getOwnPropertyDescriptor(P,pr);
+  Object.defineProperty(el,pr,{configurable:true,get(){return d.get.call(this)},set(v){v=String(v);if(this.__lastW===pr+'\u0001'+v)return;this.__lastW=pr+'\u0001'+v;d.set.call(this,v)}})}}   /* skip DOM writes that would not change anything: fewer layouts per frame */
+function renderBar(){const b=document.querySelector('.bar-slot');if(!b)return;const col=skin==='android'?'#222':'#1E2B20';const sc=$('shClock');if(sc){dedupe(sc);sc.textContent=timeStr()}
+  /* build the bar once per skin/battery level, then only touch the text that changed: keeps the step pill's flash animation from restarting every minute */
+  const key=skin+'|'+battery;
+  if(b.__key!==key||!b.querySelector('.bt')){b.__key=key;
+    b.innerHTML=skin==='android'?`<span class="bt"></span><span class="sbc"></span><span class="r"><span style="font-size:11px">E</span>${sigSvg(col)}<span>${battery}%</span>${batSvg(col)}</span>`
+      :`<span class="r">${sigSvg(col)}<span class="bs"></span></span><span class="bt"></span><span class="r">${battery}%${batSvg(col)}</span>`}
+  const t=b.querySelector('.bt'),st=b.querySelector('.sbc'),bs=b.querySelector('.bs');
+  const tv=timeStr();if(t.textContent!==tv)t.textContent=tv;
+  if(st&&st.textContent!==stepTxt)st.textContent=stepTxt;
+  if(bs){const v=stepIdx<7?(Math.min(7,stepIdx+1))+'/7':'✓';if(bs.textContent!==v)bs.textContent=v}
+  placePills(b)}
 function placePills(slot){const lb=$('llmBtn'),gb=$('langBtn');if(!slot||!lb||!gb)return;let pl=$('mPills');if(!pl){pl=document.createElement('div');pl.id='mPills'}if(slot.nextSibling!==pl)slot.after(pl);if(lb.parentNode!==pl)pl.append(lb,gb)}
 setInterval(()=>{signal=Math.random()<.55?1:2;renderBar()},2600);
 function photoSvg(g,cls='ph'){return coffeePhoto(g).replace('<svg ',`<svg class="${cls}" preserveAspectRatio="xMidYMid slice" `)}
@@ -2043,10 +2056,10 @@ function flushFloats(){
     {const sv=$('map'),pt=sv.createSVGPoint();pt.x=f.x;pt.y=f.y;const sp=pt.matrixTransform(sv.getScreenCTM()),wr=wrap.getBoundingClientRect();d.style.left=(sp.x-wr.left)+'px';d.style.top=(sp.y-wr.top)+'px'}wrap.appendChild(d);setTimeout(()=>d.remove(),2600)});
 }
 /* ---------- market strip + status popup ---------- */
-function renderBarStrip(){
+function renderBarStrip(){['mkClock','mkDay','spdL','now','poolbar','facts','readMeta','photoMeta','kpis','elN'].forEach(i=>dedupe($(i)));
   $('mkClock').textContent=hhmm(mk.t);$('mkDay').textContent=`${dayName(mk.t)} · ${('week')} ${mk.week}`;
   $('mkHold').textContent=paused?('paused'):(mk.phase==='auction'&&priceHold>performance.now())?('setting the opening price'):ffGoal?('fast-forward'):mk.hold?(mk.phase==='morning'?('pool waits for your offer'):('waiting for your YES/NO')):'';
-  {const pp=$('mkSpeed').querySelector('[data-k="pp"]');pp.textContent=paused?'▶':'❚❚';pp.classList.toggle('on',paused);$('spdL').textContent=paused?'paused':mk.speed+'×';
+  {const pp=$('mkSpeed').querySelector('[data-k="pp"]');dedupe(pp);pp.textContent=paused?'▶':'❚❚';pp.classList.toggle('on',paused);$('spdL').textContent=paused?'paused':mk.speed+'×';
    $('mkSpeed').querySelector('[data-k="min"]').disabled=$('mkSpeed').querySelector('[data-k="dn"]').disabled=mk.speed===SPEEDS[0];$('mkSpeed').querySelector('[data-k="max"]').disabled=$('mkSpeed').querySelector('[data-k="up"]').disabled=mk.speed===SPEEDS[SPEEDS.length-1]}
   const c=mk.cond;
   const ck=JSON.stringify(c);if($('mkCond')._k!==ck){$('mkCond')._k=ck;

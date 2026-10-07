@@ -2912,8 +2912,8 @@ sizeSecs();sizeRoad();req();
               ['LTF-009 · Ducurai · 2 ha',[[3,60,'A','2.84',''],[4,65,'A','2.88',''],[5,60,'A','2.86',''],[6,70,'A','2.90',''],[7,60,'A','2.86','']]]];
   const cx=[34,96,160,214,284];let y=66,k=0;
   ['week','kg','grade','$/kg','flag'].forEach((h,j)=>g+=`<text x="${cx[j]}" y="${y}" ${F} font-size="12" font-weight="700" fill="${ink2}">${h}</text>`);
-  FARM.forEach(([name,rows])=>{y+=28;g+=`<g class="lgr" style="transition-delay:${(.4+k*.12).toFixed(2)}s"><text x="34" y="${y}" font-family="Newsreader" font-size="15" font-weight="700" fill="${ink}">${name}</text></g>`;y+=6;
-    rows.forEach(r=>{y+=22;k++;const hot=!!r[4];g+=`<g class="lgr" style="transition-delay:${(.4+k*.12).toFixed(2)}s">${hot?`<rect x="26" y="${y-17}" width="318" height="23" rx="4" fill="${rust}" opacity=".12"/>`:''}${['wk '+r[0],r[1]+' kg',r[2],r[3],r[4]].map((v,j)=>`<text x="${cx[j]}" y="${y}" ${F} font-size="13" fill="${j===4?rust:ink}"${j===4?' font-weight="700"':''}>${v}</text>`).join('')}</g>`});});
+  FARM.forEach(([name,rows])=>{y+=28;g+=`<g class="lgr" style="transition-delay:${(.15+k*.07).toFixed(2)}s"><text x="34" y="${y}" font-family="Newsreader" font-size="15" font-weight="700" fill="${ink}">${name}</text></g>`;y+=6;
+    rows.forEach(r=>{y+=22;k++;const hot=!!r[4];g+=`<g class="lgr" style="transition-delay:${(.15+k*.07).toFixed(2)}s">${hot?`<rect x="26" y="${y-17}" width="318" height="23" rx="4" fill="${rust}" opacity=".12"/>`:''}${['wk '+r[0],r[1]+' kg',r[2],r[3],r[4]].map((v,j)=>`<text x="${cx[j]}" y="${y}" ${F} font-size="13" fill="${j===4?rust:ink}"${j===4?' font-weight="700"':''}>${v}</text>`).join('')}</g>`});});
   g+=`<text x="34" y="392" ${F} font-size="11.5" fill="${ink2}">+ 593 more trades · every SMS lands here the same day</text>`;
   // 2. quality signals by week, whole pool (from the sample Registry)
   const S=[['Insect damage','#B8862E',[6,12,11,8,11,11,11,17]],['Low grade (C) share','#6B4A26',[22,29,18,25,25,11,17,19]],['Black or mouldy beans',rust,[3,7,4,9,3,1,12,12]]];
@@ -2925,11 +2925,11 @@ sizeSecs();sizeRoad();req();
   for(let w=1;w<=8;w++)c+=`<text x="${X(w)}" y="${Y(0)+16}" text-anchor="middle" ${F} font-size="11" fill="${ink2}">${w}</text>`;
   c+=`<text x="${X(1)-14}" y="${Y(0)+16}" text-anchor="end" ${F} font-size="11" fill="${ink2}">week</text>`;
   S.forEach(([n,col,v],i)=>{const d=v.map((x,j)=>`${j?'L':'M'}${X(j+1)} ${Y(x)}`).join(' ');
-    c+=`<g class="lgb" style="transition-delay:${(1+i*.35).toFixed(2)}s"><path d="${d}" fill="none" stroke="${col}" stroke-width="2.6" stroke-linejoin="round"/>${v.map((x,j)=>`<circle cx="${X(j+1)}" cy="${Y(x)}" r="3.2" fill="${col}"/>`).join('')}<text x="${X(8)+8}" y="${Y(v[7])+[4,-4,12][i]}" ${F} font-size="12" font-weight="700" fill="${col}">${v[7]}%</text>
+    c+=`<g class="lgb" style="transition-delay:${(.55+i*.22).toFixed(2)}s"><path d="${d}" fill="none" stroke="${col}" stroke-width="2.6" stroke-linejoin="round"/>${v.map((x,j)=>`<circle cx="${X(j+1)}" cy="${Y(x)}" r="3.2" fill="${col}"/>`).join('')}<text x="${X(8)+8}" y="${Y(v[7])+[4,-4,12][i]}" ${F} font-size="12" font-weight="700" fill="${col}">${v[7]}%</text>
       <rect x="396" y="${84+i*18}" width="12" height="4" rx="2" fill="${col}"/><text x="414" y="${90+i*18}" ${F} font-size="11.5" fill="${ink}">${n}</text></g>`});
   c+=`<text x="396" y="392" ${F} font-size="11.5" fill="${ink2}">One of the Registry's charts · synthetic data</text>`;
   // brief card
-  b+=`<g class="lgb" style="transition-delay:2.8s"><rect x="760" y="44" width="320" height="360" rx="12" fill="${ink}"/>
+  b+=`<g class="lgb" style="transition-delay:1.25s"><rect x="760" y="44" width="320" height="360" rx="12" fill="${ink}"/>
     <text x="780" y="76" font-family="Atkinson Hyperlegible Next,sans-serif" font-size="12" fill="#BFD0CC">Mon 27 July · 06:00 · Letefoho pool</text>
     <text x="780" y="112" font-family="Newsreader" font-size="22" font-weight="700" fill="#F6EFE0">Lebudu: mould on 60%</text>
     <text x="780" y="138" font-family="Newsreader" font-size="22" font-weight="700" fill="#F6EFE0">of photos after the rain</text>
@@ -2944,7 +2944,7 @@ sizeSecs();sizeRoad();req();
     <text x="780" y="368" font-family="Atkinson Hyperlegible Next,sans-serif" font-size="14" font-weight="700" fill="#7FD18B">and a check on drying space</text>
     <text x="780" y="392" font-family="Atkinson Hyperlegible Next,sans-serif" font-size="11" fill="#8FA9AA">every number links to its rows in the Registry</text></g>`;
   $('lgGrid').innerHTML=g;$('lgChart').innerHTML=c;$('lgBrief').innerHTML=b;
-  const io2=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io2.unobserve(e.target)}}),{threshold:.35});io2.observe($('lgFig'));
+  const io2=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io2.unobserve(e.target)}}),{threshold:.2});io2.observe($('lgFig'));
 }
 {const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')}),{threshold:.15});document.querySelectorAll('.rv').forEach(el=>io.observe(el));}
 // intro: start once fonts are ready (or after 1.2s at most)
