@@ -497,7 +497,7 @@ body.mob.land .colP .phoneWrap{align-items:center}
 body.mob.land .android{margin-top:0!important;height:min(calc(100dvh - var(--topH,56px) - 48px),calc((var(--pc) - 28px) * 740 / 360))!important}
 
 body.mob .mximg{display:block;width:100%;height:auto;max-height:min(34dvh,300px);aspect-ratio:4/3;object-fit:cover;border-radius:12px}
-body.mob.land .mp[data-p="dash"] #dashCard{flex:1 1 auto;height:auto!important}
+body.mob.land .mp[data-p="dash"] #dashCard{flex:1 1 0!important;height:auto!important;min-height:0}
 
 /* tablets: the smartphone keeps its real proportions (360 × 740); it shrinks to fit, never stretches */
 body.mob.tab .android{aspect-ratio:360/740;width:auto!important;height:min(calc(100dvh - var(--topH,56px) - var(--dockH,110px) - 24px),940px,calc((100vw - 32px) * 740 / 360))!important}
@@ -506,7 +506,7 @@ body.mob.land .android{height:min(calc(100dvh - var(--topH,56px) - 28px),calc((v
 /* tablets sideways: three columns — phone · dashboard · map and market, all visible together */
 body.mob .end.on{z-index:80}
 body.mob.land #mSheet .mhd{display:none}
-body.mob.land #mSheet .mbody{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);grid-template-rows:minmax(0,50fr) minmax(0,50fr);gap:10px;padding:10px;overflow:hidden;height:100%;box-sizing:border-box}
+body.mob.land #mSheet .mbody{display:grid;grid-template-columns:minmax(360px,1.08fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:10px;padding:10px;overflow:hidden;height:100%;box-sizing:border-box}
 body.mob.land #mSheet .mp{display:flex;flex-direction:column;min-height:0;height:100%;gap:8px}
 body.mob.land .mp[data-p="dash"] #dashCard{height:100%;min-height:0}
 body.mob.land .mp[data-p="map"] .mk-cond{flex:none;margin:0;flex-wrap:nowrap;gap:4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}body.mob.land .mk-cond::-webkit-scrollbar{display:none}body.mob.land .mk-cond>*{flex:none}
@@ -515,14 +515,15 @@ body.mob.land .mp[data-p="map"] .mapcard{flex:1.15 1 0;min-height:200px;height:a
 body.mob.land .mp[data-p="map"] #liveCard{flex:1 1 0;min-height:0;height:auto;overflow-y:auto}
 body.mob.land .mp[data-p="map"] .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
 .mp[data-p="tries"]{display:none!important}
-body.mob.land .mp[data-p="tries"]{display:flex!important;grid-column:1;grid-row:1;background:#FBF7EE;border:1px solid var(--line);border-radius:14px;padding:10px;overflow:hidden}
-body.mob.land .mp[data-p="map"]{grid-column:2;grid-row:1}
-body.mob.land .mp[data-p="dash"]{grid-column:1/-1;grid-row:2}
+body.mob.land .mp[data-p="tries"]{display:none!important;grid-column:1;grid-row:1;background:#FBF7EE;border:1px solid var(--line);border-radius:14px;padding:10px;overflow:hidden}
+body.mob.land .mp[data-p="map"]{grid-column:2;grid-row:1;justify-content:center;gap:10px}
+body.mob.land .mp[data-p="dash"]{grid-column:1;grid-row:1}
 body.mob.land #liveCard{display:none!important}
-body.mob.land #dashCard{zoom:1.14}   /* larger type in the dashboard on tablets */
+body.mob.land #dashCard{zoom:1}@media (min-width:1280px){body.mob.land #dashCard{zoom:1.12}}   /* larger type in the dashboard on tablets */
 body.mob.land .mp[data-p="map"] .mk-cond{zoom:.92}
 
-body.mob.land .mp[data-p="map"] .mapcard{flex:1 1 0!important;min-height:0!important}
+body.mob.land .mp[data-p="map"] .mapcard{flex:none!important;min-height:0!important;height:auto!important}body.mob.land .mp[data-p="map"] #mapwrap{flex:none;aspect-ratio:1/1.05;height:auto;width:100%;max-height:calc(100dvh - var(--topH,56px) - 190px)}
+body.mob.land .mp[data-p="map"] .mk-cond{flex-wrap:wrap!important;overflow:visible!important;zoom:1!important;justify-content:flex-start}
 body.mob.land .mp[data-p="tries"] .tries{display:flex!important;flex-direction:column;gap:6px;margin:0;padding:0;max-height:none;height:100%;overflow-y:auto;overscroll-behavior:contain}
 body.mob.land .mp[data-p="tries"] .tries>b{font:600 15px var(--f-display);color:var(--ink);margin:0 0 2px}
 body.mob.land .mp[data-p="tries"] .tries button{flex:none;margin:0;font-size:15px;line-height:1.3;padding:8px 11px;align-items:center}
@@ -2536,7 +2537,6 @@ const triesP=document.createElement('div');triesP.className='mp on';triesP.datas
 let tapInp=0;
 /* first tap on the text box: show the suggestions (no keyboard); second tap: keyboard */
 const tapBox=e=>{const t=e.target;if(!(t&&t.closest))return;
-  if(document.body.classList.contains('land')){if(t.closest('#inp,.inp'))tapInp=performance.now();return}   /* suggestions are always in view on the side: the text box just types */
   if(t.closest('#inp,.inp')){const inp=$('inp');if(document.activeElement===inp)return;
     if(!pop.classList.contains('on')&&$('tries')&&$('tries').style.display!=='none'&&$('tries').querySelector('button')){e.preventDefault();popOn();return}
     tapInp=performance.now();if(e.type!=='touchstart')return;e.preventDefault();_focus.call(inp,{preventScroll:true});return}
@@ -2638,7 +2638,7 @@ setInterval(()=>{setH();
 addEventListener('resize',setH);setH();
 /* tablets held sideways: phone on the left, dashboard / map always open on the right */
 const applyLand=()=>{const L=innerWidth>innerHeight&&innerWidth>=900,was=document.body.classList.contains('land');
-  {const tr=$('tries');if(tr){if(L&&tr.parentNode!==triesP){pop.classList.remove('on');triesP.appendChild(tr)}else if(!L&&tr.parentNode!==pop)pop.appendChild(tr)}}
+  {const tr=$('tries');if(tr&&tr.parentNode!==pop)pop.appendChild(tr)}
   document.body.classList.toggle('tab',innerWidth>760);document.body.classList.toggle('land',L);
   if(L&&!was)show(open||'dash');if(!L&&was){open=null;sh.classList.remove('open');dim.classList.remove('on')}
   setH();if(typeof fitPhone==='function')fitPhone()};
