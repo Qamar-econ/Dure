@@ -400,7 +400,10 @@ body.in .scrollcue{opacity:1}
   .who{font-size:14px;margin-bottom:6px;line-height:1.2}.who span{display:none}.how-note{display:none}
   .how-cap p{display:none}
   .how-wrap{padding-top:118px;align-items:start}.how-wrap .stagebox{height:34vh}
-  .fp,.ad{width:44vw!important;height:min(calc(44vw*2.1),calc(100vh - 118px - 34vh - 66px))!important;aspect-ratio:auto!important;box-sizing:border-box}
+  .how-wrap{bottom:0;height:100%;box-sizing:border-box;grid-template-rows:min(29svh,calc(100svh - 138px - 320px)) minmax(0,1fr);padding-top:138px!important;padding-bottom:max(16px,env(safe-area-inset-bottom));align-content:stretch}
+  .how-wrap .stagebox{height:100%;min-height:0;overflow:hidden}
+  .how-wrap > .fcol{display:flex;flex-direction:column;align-items:center;min-height:0;height:100%}
+  .fp,.ad{width:44vw!important;flex:0 1 auto;min-height:0;height:calc(44vw*2.1)!important;max-height:100%;aspect-ratio:auto!important;box-sizing:border-box;overflow:hidden}
   .ad .in{height:100%}
   #cuFig{width:100%;height:52%;top:auto}
   .cu-title,.ledger,.principle{left:16px;right:16px;width:auto;top:74px;transform:none}
