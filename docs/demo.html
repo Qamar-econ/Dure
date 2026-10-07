@@ -492,6 +492,10 @@ body.mob.land #mDock,body.land #mDim,body.land #mBack,body.land #mNew,body.land 
 body.mob.land:not(.simon) #mSheet{display:none}
 body.mob.land #mSheet{left:var(--pc);right:0;width:auto;margin:0;top:var(--topH,56px);bottom:0;height:auto;transform:none;transition:none;border-radius:18px 0 0 0;box-shadow:-10px 0 30px -18px rgba(31,58,64,.45)}
 body.land .top .mk-l{display:block}
+body.mob.land .colP{align-items:center!important;height:100%}
+body.mob.land .colP .phoneWrap{align-items:center}
+body.mob.land .android{margin-top:0!important;height:min(calc(100dvh - var(--topH,56px) - 48px),calc((var(--pc) - 28px) * 740 / 360))!important}
+
 body.mob .mximg{display:block;width:100%;height:auto;max-height:min(34dvh,300px);aspect-ratio:4/3;object-fit:cover;border-radius:12px}
 body.mob.land .mp[data-p="dash"] #dashCard{flex:1 1 auto;height:auto!important}
 
@@ -502,7 +506,7 @@ body.mob.land .android{height:min(calc(100dvh - var(--topH,56px) - 28px),calc((v
 /* tablets sideways: three columns — phone · dashboard · map and market, all visible together */
 body.mob .end.on{z-index:80}
 body.mob.land #mSheet .mhd{display:none}
-body.mob.land #mSheet .mbody{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,40fr) minmax(0,60fr);gap:10px;padding:10px;overflow:hidden;height:100%;box-sizing:border-box}
+body.mob.land #mSheet .mbody{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);grid-template-rows:minmax(0,50fr) minmax(0,50fr);gap:10px;padding:10px;overflow:hidden;height:100%;box-sizing:border-box}
 body.mob.land #mSheet .mp{display:flex;flex-direction:column;min-height:0;height:100%;gap:8px}
 body.mob.land .mp[data-p="dash"] #dashCard{height:100%;min-height:0}
 body.mob.land .mp[data-p="map"] .mk-cond{flex:none;margin:0;flex-wrap:nowrap;gap:4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}body.mob.land .mk-cond::-webkit-scrollbar{display:none}body.mob.land .mk-cond>*{flex:none}
@@ -515,6 +519,9 @@ body.mob.land .mp[data-p="tries"]{display:flex!important;grid-column:1;grid-row:
 body.mob.land .mp[data-p="map"]{grid-column:2;grid-row:1}
 body.mob.land .mp[data-p="dash"]{grid-column:1/-1;grid-row:2}
 body.mob.land #liveCard{display:none!important}
+body.mob.land #dashCard{zoom:1.14}   /* larger type in the dashboard on tablets */
+body.mob.land .mp[data-p="map"] .mk-cond{zoom:.92}
+
 body.mob.land .mp[data-p="map"] .mapcard{flex:1 1 0!important;min-height:0!important}
 body.mob.land .mp[data-p="tries"] .tries{display:flex!important;flex-direction:column;gap:6px;margin:0;padding:0;max-height:none;height:100%;overflow-y:auto;overscroll-behavior:contain}
 body.mob.land .mp[data-p="tries"] .tries>b{font:600 15px var(--f-display);color:var(--ink);margin:0 0 2px}
@@ -1046,7 +1053,7 @@ function buildPhone(){
 function fitPhone(){const tp=document.querySelector('.top');if(tp)document.documentElement.style.setProperty('--topH',tp.offsetHeight+'px');const p=$('phone');if(!p)return;if((innerWidth<=420||document.body.classList.contains('mob'))&&skin==='android'){p.style.transform='';$('phoneWrap').style.height='';$('phoneWrap').style.width='';return}
   if(document.body.classList.contains('mob')&&skin==='nokia'){   /* phones: zoom the feature phone so its screen fills the view; the keypad runs off the bottom */
     p.style.transform='';const sc_=p.querySelector('.scr'),need=sc_.offsetTop+sc_.offsetHeight+70,av=innerHeight-(tp?tp.offsetHeight:56)-(($('mDock')||{}).offsetHeight||0)-6;
-    const cw=($('phoneWrap').parentElement||{}).clientWidth||innerWidth,k=Math.min(Math.min(cw,innerWidth)*(document.body.classList.contains('land')?.9:.96)/p.offsetWidth,av/need,innerWidth>760?1.7:9);p.style.transform=`scale(${k.toFixed(3)})`;p.style.transformOrigin='top center';$('phoneWrap').style.height=av+'px';$('phoneWrap').style.width='';$('phoneWrap').style.overflow='hidden';return}
+    const LND=document.body.classList.contains('land'),cw=($('phoneWrap').parentElement||{}).clientWidth||innerWidth,k=LND?Math.min(cw*.9/p.offsetWidth,(av-24)/p.offsetHeight):Math.min(Math.min(cw,innerWidth)*(document.body.classList.contains('land')?.9:.96)/p.offsetWidth,av/need,innerWidth>760?1.7:9);p.style.transform=`scale(${k.toFixed(3)})`;p.style.transformOrigin=LND?'center center':'top center';$('phoneWrap').style.height=av+'px';$('phoneWrap').style.width='';$('phoneWrap').style.overflow='hidden';return}
   p.style.transform='';const h=p.offsetHeight,avail=innerWidth>1100?innerHeight-(tp?tp.offsetHeight:56)-22:document.body.classList.contains('mob')?innerHeight-(tp?tp.offsetHeight:56)-(($('mDock')||{}).offsetHeight||0)-10:innerHeight-80;
   const sc=Math.max(.55,Math.min(1,avail/h));p.style.transform=sc<1?`scale(${sc.toFixed(3)})`:'';p.style.transformOrigin='top center';$('phoneWrap').style.height=sc<1?(h*sc)+'px':'';$('phoneWrap').style.width=sc<1?(p.offsetWidth*sc)+'px':''}
 addEventListener('resize',fitPhone);
