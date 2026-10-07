@@ -28,6 +28,7 @@ body{font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif;-webkit-font-
 
 .pin{position:relative}
 .stage{position:sticky;top:0;height:100vh;overflow:hidden}
+@media (max-width:760px){.stage{height:100svh}}
 #nav,#hint{display:none!important}
 .after,.cue2{display:none!important}
 /* navigation — always visible, one tap = one scene */
@@ -1935,7 +1936,7 @@ function frame(){
 
 }
 let raf=0;const req=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;tickCtl();frame()})};
-addEventListener('resize',()=>{sizeRoad();measure();req()});
+let _rw=innerWidth,_rh=innerHeight;addEventListener('resize',()=>{/* phones fire resize whenever the address bar slides: ignore height-only changes */if(innerWidth===_rw&&Math.abs(innerHeight-_rh)<160)return;_rw=innerWidth;_rh=innerHeight;sizeRoad();measure();req()});
 /* ---------- scroll controller: each scene = one slot of scroll; it plays fast, then holds ---------- */
 const CH=[['1','The field'],['2','The buyers'],['3','The road'],['4','The buyer'],['5','Together'],['6','The catch'],['7','Dure'],['8','How it works'],['8','How Dure AI works'],['9','The Registry','ledger10'],['10','Tetum Benchmark Index','hybrid'],['11','Field problems','risks']];
 const H=(i,a,b)=>[(i+a)/8,(i+b)/8-(b>=1?.0001:0)], E=(i)=>[i/4,(i+1)/4-.0001];
@@ -1955,7 +1956,7 @@ const SCN=[
 const PLAY=.62;               // share of a slot where the animation runs; the rest holds the end frame for reading
 const slotVH=d=>Math.round(38+d*14);
 const SEC={};secs.forEach(el=>SEC[el.id]={el,slots:[],len:0});
-SCN.forEach((n,k)=>{const S=SEC[n.s];n.k=k;n.o=S.len;n.l=Math.round(slotVH(n.d)*((n.s==='econ'||n.s==='wai')&&innerWidth<=760?1.25:1));S.slots.push(n);S.len+=n.l;});
+SCN.forEach((n,k)=>{const S=SEC[n.s];n.k=k;n.o=S.len;n.l=Math.round(slotVH(n.d)*((n.s==='econ'||n.s==='wai')&&innerWidth<=760?.95:innerWidth<=760?.6:1));   /* phones: shorter scenes, fewer swipes */S.slots.push(n);S.len+=n.l;});
 const SWAP=innerWidth<=760;   // phones: the six AI panels share one fixed screen and swap like the How-it-works steps
 function sizeSecs(){Object.values(SEC).forEach(S=>S.el.style.height=S.el.classList.contains('flow')?'':(SWAP&&(S.el.id==='wai'||S.el.id==='econ'))?`${S.len}vh`:`calc(${S.len}vh + 100vh)`);measure()}
 const TOPS={};function measure(){Object.values(SEC).forEach(S=>{S.top=S.el.offsetTop;S.h=S.el.offsetHeight});['risks','wai','econ','hybrid','ledger10'].forEach(id=>{const e=$(id);if(e)TOPS[id]=[e.offsetTop,e.offsetHeight]})}
@@ -1990,11 +1991,11 @@ function target(){
     TG_[id]=v;
   });
 }
-let lastT=0;
+let lastT=0;const TOUCHY=matchMedia('(pointer:coarse)').matches||innerWidth<=760;
 function tickCtl(){
   target();
   const now=performance.now(),dt=Math.min(64,now-(lastT||now));lastT=now;
-  const k=1-Math.pow(1-(window.__lenis?.45:.16),dt/16.7);   // Lenis already eases the page, so scenes follow it closely   // smooth follow: fast but never jumpy
+  const k=1-Math.pow(1-(window.__lenis?.45:TOUCHY?.38:.16),dt/16.7);   // Lenis already eases the page, so scenes follow it closely   // smooth follow: fast but never jumpy
   let moving=false;
   for(const id in PS){const d=TG_[id]-PS[id];
     // big jumps (chapter menu, reload mid-page) snap; small ones glide
@@ -2074,7 +2075,7 @@ Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1200))]).then(()=
 <script>/* Warm the demo while the story is read: download the two on-device models (photo grader 89 MB, small AI ~500 MB)
    into the browser's cache in the background, so the demo starts instantly. Skipped on data-saver connections. */
 (()=>{const go=async()=>{try{
-  if(!('caches' in self)||(navigator.connection&&navigator.connection.saveData))return;
+  if(!('caches' in self)||(navigator.connection&&(navigator.connection.saveData||navigator.connection.type==='cellular'))||matchMedia('(pointer:coarse)').matches||innerWidth<=760)return;   // never on phones / mobile data
   let f16=false;try{if(navigator.gpu){const a=await navigator.gpu.requestAdapter();f16=!!(a&&a.features&&a.features.has('shader-f16'))}}catch(e){}
   const HF='https://huggingface.co/onnx-community/Qwen2.5-0.5B-Instruct/resolve/main/';
   const jobs=[['dure-grader-v2','https://huggingface.co/Xenova/clip-vit-base-patch32/resolve/main/onnx/vision_model_quantized.onnx'],

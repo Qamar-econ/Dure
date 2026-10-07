@@ -438,6 +438,55 @@ body.simon .mkbar{display:flex}
 .lm .bil>.tr{color:#1E2B20;opacity:.72;border-left:1px solid rgba(30,43,32,.45);padding-left:5px;font-size:16px}
 .lm .bil>small{font-size:12px!important;line-height:1.1;color:#1E2B20;opacity:.6;text-transform:none;letter-spacing:0}
 .lm .bil .hr{border-top:1px dashed rgba(30,43,32,.45);margin:3px 0}
+
+/* ================= phones: one screen = the phone + suggestions; dashboard and map open as sheets ================= */
+body.mob{overflow:hidden;overscroll-behavior:none}
+body.mob .top{padding:6px 10px;gap:6px 8px;flex-wrap:wrap;align-items:center}
+body.mob .top .brand svg{height:20px}
+body.mob .mk-l,body.mob .top .back,body.mob .mkbar .sim{display:none}
+body.mob .mkbar{order:0;flex:1 1 auto;flex-basis:auto;gap:6px;flex-wrap:nowrap}
+body.mob .mk-clock b{font-size:22px}body.mob .mk-clock span{font-size:10px}
+body.mob .mk-speed button{width:25px;height:22px;font-size:12px}body.mob .mk-speed [data-k="min"],body.mob .mk-speed [data-k="max"]{display:none}body.mob .mk-speed span{min-width:0;font-size:10.5px}
+body.mob .ctl .ib{width:28px;height:28px;font-size:13px}
+body.mob .barr{flex-basis:100%;display:flex;gap:6px}body.mob .barr .langbtn{font-size:11px;padding:3px 8px}
+body.mob #stage.on{display:block;padding:0;height:calc(100dvh - var(--topH,56px) - var(--dockH,110px));overflow:hidden}
+body.mob .colD,body.mob .colM{display:none}
+body.mob .colP{display:flex;justify-content:center;align-items:flex-start;height:100%}
+body.mob .android{width:100vw;height:calc(100dvh - var(--topH,56px) - var(--dockH,110px));border-radius:0;padding:0;box-shadow:none;margin:0}
+body.mob .android .scr{border-radius:0}
+#mDock,#mSheet,#mDim{display:none}
+body.mob.simon #mDock{display:block;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--paper);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+body.mob #mTries .tries{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px;min-height:0;margin:0 0 6px;padding:0;scrollbar-width:none}
+body.mob #mTries .tries::-webkit-scrollbar{display:none}
+body.mob #mTries .tries>b{display:none}
+body.mob #mTries .tries button{flex:none;max-width:74vw;padding:6px 10px;min-height:0;display:flex;align-items:center;gap:6px}
+body.mob #mTries .tries button .tx{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px}
+body.mob #mTries .tries button small{display:none}
+.mbtns{display:flex;gap:6px}
+.mbtns button{flex:1;position:relative;border:1px solid var(--line-2);border-radius:12px;background:rgba(255,255,255,.6);padding:8px 6px;font:600 14px var(--f-body);color:var(--ink);cursor:pointer}
+.mbtns button i{position:absolute;top:5px;right:8px;width:9px;height:9px;border-radius:50%;background:var(--rust);display:none}.mbtns button.dot i{display:block}
+body.mob #mDim{display:block;position:fixed;inset:0;z-index:45;background:rgba(20,26,30,.32);opacity:0;pointer-events:none;transition:opacity .3s}
+body.mob #mDim.on{opacity:1;pointer-events:auto}
+body.mob #mSheet{display:flex;flex-direction:column;position:fixed;left:0;right:0;bottom:0;height:90dvh;z-index:50;background:var(--paper);border-radius:18px 18px 0 0;box-shadow:0 -14px 34px -16px rgba(31,58,64,.5);transform:translateY(104%);transition:transform .34s cubic-bezier(.2,.8,.2,1)}
+body.mob #mSheet.open{transform:none}
+.mhd{position:relative;display:flex;align-items:center;gap:6px;padding:16px 10px 8px;flex:none}
+.mhd .grab{position:absolute;top:6px;left:50%;width:38px;height:4px;margin-left:-19px;border-radius:2px;background:rgba(31,58,64,.25)}
+.mseg{display:flex;background:rgba(31,58,64,.08);border-radius:10px;padding:2px}
+.mseg button{border:0;background:none;padding:6px 10px;border-radius:8px;font:600 13px var(--f-body);color:var(--ink);cursor:pointer}.mseg button.on{background:var(--ink);color:#F6EFE0}
+.mhd .mr{margin-left:auto;display:flex;gap:6px;align-items:center}
+#mSkip{display:none;border:0;border-radius:10px;padding:7px 9px;background:var(--rust);color:#FFF6EC;font:600 12px var(--f-body);max-width:30vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}#mSkip.on{display:block}
+#mBack{border:1.4px solid var(--ink);border-radius:10px;padding:6px 10px;background:var(--ink);color:#F6EFE0;font:600 13px var(--f-body);cursor:pointer;white-space:nowrap}
+.mnew{display:none;margin:0 10px 8px;padding:9px 12px;border-radius:12px;background:#DDEFD0;color:#1d2a20;font:600 13.5px var(--f-body);cursor:pointer;flex:none}.mnew.on{display:block}
+.mbody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 8px 14px}
+.mp{display:none}.mp.on{display:block}
+body.mob .mp[data-p="dash"] #dashCard{height:calc(90dvh - 74px);flex:none}
+body.mob .mp[data-p="map"] .mapcard{height:54dvh;flex:none;margin-bottom:8px}
+body.mob .mp[data-p="map"] #liveCard{flex:none;height:auto;min-height:280px}
+body.mob .mp[data-p="map"] .mk-cond{display:flex;margin:0 0 8px}
+/* charts keep a readable size on a phone: swipe sideways inside them */
+body.mob .mp[data-p="dash"] .pane .figw{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
+body.mob .mp[data-p="dash"] .pane .figw>svg{min-width:620px}
+body.mob .mp[data-p="dash"] .pane .figw::after{content:'← swipe the chart →';display:block;text-align:center;font:italic 11px var(--f-display);color:#BFD0CC;padding-top:2px;position:sticky;left:0;width:100%}
 </style>
 </head>
 <body class="paper">
@@ -860,8 +909,8 @@ function buildPhone(){
   $('skipbar').onclick=async()=>{if(!ffNext||busy)return;snap();const f=ffNext;busy=true;if(f.ff){$('skipbar').textContent='⏩ …';ffNext=null;await f();ffHide()}else{ffHide();await f()}busy=false;syncCtl()};
   render();
 }
-function fitPhone(){const tp=document.querySelector('.top');if(tp)document.documentElement.style.setProperty('--topH',tp.offsetHeight+'px');const p=$('phone');if(!p)return;if(innerWidth<=420&&skin==='android'){p.style.transform='';$('phoneWrap').style.height='';return}
-  p.style.transform='';const h=p.offsetHeight,avail=innerWidth>1100?innerHeight-(tp?tp.offsetHeight:56)-22:innerHeight-80;
+function fitPhone(){const tp=document.querySelector('.top');if(tp)document.documentElement.style.setProperty('--topH',tp.offsetHeight+'px');const p=$('phone');if(!p)return;if((innerWidth<=420||document.body.classList.contains('mob'))&&skin==='android'){p.style.transform='';$('phoneWrap').style.height='';$('phoneWrap').style.width='';return}
+  p.style.transform='';const h=p.offsetHeight,avail=innerWidth>1100?innerHeight-(tp?tp.offsetHeight:56)-22:document.body.classList.contains('mob')?innerHeight-(tp?tp.offsetHeight:56)-(($('mDock')||{}).offsetHeight||0)-10:innerHeight-80;
   const sc=Math.max(.55,Math.min(1,avail/h));p.style.transform=sc<1?`scale(${sc.toFixed(3)})`:'';p.style.transformOrigin='top center';$('phoneWrap').style.height=sc<1?(h*sc)+'px':'';$('phoneWrap').style.width=sc<1?(p.offsetWidth*sc)+'px':''}
 addEventListener('resize',fitPhone);
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
@@ -977,8 +1026,9 @@ const engName=()=>engine.name==='chat'?`small AI (on this device) · ${(engine.m
    only messages it can't place come here. Every reply is checked in JS: numbers must
    come from the grounding context, no promises, ≤320 chars; otherwise a checked template.
    ===================================================================== */
+const PHONEISH=matchMedia('(max-width:760px)').matches||matchMedia('(pointer:coarse)').matches;
 const LLM={st:'off',p:0,err:null,gen:null,dtype:null,device:null,model:'onnx-community/Qwen2.5-0.5B-Instruct',lib:'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.5'};
-function llmLabel(){return LLM.st==='ready'?'Small AI chat: on ✓':LLM.st==='loading'?`Small AI: loading ${Math.round(LLM.p)}%`:LLM.st==='failed'?'Small AI: failed':'Small AI chat: off'}
+function llmLabel(){return LLM.st==='ready'?'Small AI chat: on ✓':LLM.st==='loading'?`Small AI: loading ${Math.round(LLM.p)}%`:LLM.st==='failed'?'Small AI: failed':PHONEISH?'Small AI: tap to load (500 MB)':'Small AI chat: off'}
 function llmSync(){const b=$('llmBtn');if(!b)return;b.textContent=llmLabel();b.classList.toggle('on',LLM.st==='ready');b.classList.toggle('busy',LLM.st==='loading');b.classList.toggle('bad',LLM.st==='failed');
   b.dataset.tip=LLM.st==='ready'?`Qwen2.5-0.5B-Instruct · ${LLM.dtype} · ${LLM.device} · on this device. Click to turn off.`:LLM.st==='failed'?`Could not load: ${LLM.err}. Click to retry.`:'Small AI chat · on this device (≈500 MB, once). Answers questions the rules engine can\'t place.'}
 async function llmLoad(){
@@ -2258,7 +2308,7 @@ function finish(sold){
 }
 const STEP_SHORT=['Morning price','Your offer','Send photo','Pool','Auction','Pickup','Paid'];
 async function start(s){
-  if(QS.get('llm')!=='0')llmLoad();   // small AI chat is on by default; ?llm=0 turns it off
+  if(QS.get('llm')==='1'||(QS.get('llm')!=='0'&&!PHONEISH&&!(navigator.connection&&navigator.connection.saveData)))llmLoad();   // on by default on computers; on phones it waits for a tap (~500 MB)
   if(DURE_API)fetch(DURE_API+'/health').catch(()=>{});
   const q=new URLSearchParams(location.search);const seed=+(q.get('seed')||0)||Math.floor(Math.random()*9e4)+1e4;
   newMarket(seed);rep0=repNow=me().rep;
@@ -2322,5 +2372,45 @@ llmSync();$('llmBtn').onclick=()=>{if(LLM.st==='ready'){LLM.st='off';llmSync();r
 $('langBtn').onclick=()=>{lang=lang==='tet'?'en':'tet';try{sessionStorage.setItem('dure-sms-lang',lang)}catch(e){}syncLangBtn()};
 </script>
 
+<script>
+/* phones: the default screen is the phone plus suggested texts; the dashboard and the map open as sheets when needed */
+(()=>{if(!matchMedia('(max-width:760px)').matches)return;document.body.classList.add('mob');
+const $=id=>document.getElementById(id);
+const dock=document.createElement('div');dock.id='mDock';
+dock.innerHTML='<div id="mTries"></div><div class="mbtns"><button data-p="dash">📊 Dashboard<i></i></button><button data-p="map">🗺 Map &amp; market<i></i></button></div>';
+const sh=document.createElement('div');sh.id='mSheet';
+sh.innerHTML='<div class="mhd"><span class="grab"></span><div class="mseg"><button data-p="dash">Dashboard</button><button data-p="map">Map</button></div><div class="mr"><button id="mSkip"></button><button id="mBack">Phone ✕</button></div></div><div class="mnew" id="mNew">💬 New text from Dure AI · tap to read</div><div class="mbody"><div class="mp" data-p="dash"></div><div class="mp" data-p="map"></div></div>';
+const dim=document.createElement('div');dim.id='mDim';document.body.append(dock,dim,sh);
+sh.querySelector('.mp[data-p="dash"]').appendChild($('dashCard'));
+const mapP=sh.querySelector('.mp[data-p="map"]');mapP.appendChild(document.querySelector('.mapcard'));mapP.appendChild($('liveCard'));
+$('mTries').appendChild($('tries'));
+const setH=()=>{document.documentElement.style.setProperty('--dockH',dock.offsetHeight+'px');const t=document.querySelector('.top');if(t)document.documentElement.style.setProperty('--topH',t.offsetHeight+'px')};
+let open=null;
+const centerFigs=()=>document.querySelectorAll('.mp[data-p="dash"] .figw').forEach(f=>{if(f.scrollWidth>f.clientWidth&&!f.dataset.c){f.scrollLeft=(f.scrollWidth-f.clientWidth)/2;f.dataset.c=1}});
+const show=p=>{open=p;sh.classList.add('open');dim.classList.add('on');sh.querySelectorAll('[data-p]').forEach(e=>e.classList.toggle('on',e.dataset.p===p));dock.querySelector(`.mbtns [data-p="${p}"]`).classList.remove('dot');$('mNew').classList.remove('on');
+  try{dirty.all=true}catch(e){}setTimeout(()=>dispatchEvent(new Event('resize')),360)};
+const hide=()=>{open=null;sh.classList.remove('open');dim.classList.remove('on')};
+window.mOpen=show;window.mClose=hide;
+dock.querySelectorAll('.mbtns button').forEach(b=>b.onclick=()=>show(b.dataset.p));
+sh.querySelectorAll('.mseg button').forEach(b=>b.onclick=()=>show(b.dataset.p));
+$('mBack').onclick=hide;dim.onclick=hide;$('mNew').onclick=hide;
+$('mSkip').onclick=()=>{const b=$('skipbar');if(b)b.click()};
+/* swipe the sheet header down to close */
+let y0=null;sh.querySelector('.mhd').addEventListener('touchstart',e=>{y0=e.touches[0].clientY},{passive:true});
+sh.querySelector('.mhd').addEventListener('touchend',e=>{if(y0!=null&&e.changedTouches[0].clientY-y0>60)hide();y0=null},{passive:true});
+let lastS=null,lastPh=null,lastN=0;
+setInterval(()=>{setH();
+  if(typeof mk==='undefined'||!mk)return;
+  const cond=$('mkCond');if(cond&&cond.parentNode!==mapP)mapP.insertBefore(cond,mapP.firstChild);
+  const typing=document.activeElement&&document.activeElement.id==='inp';
+  const s=(typeof dashSticky!=='undefined')?dashSticky:null;
+  if(s!==lastS){if(['price','book','photo','rep'].includes(s)&&!typing){if(open!=='dash')show('dash')}else if(s==='read'&&open!=='dash')dock.querySelector('.mbtns [data-p="dash"]').classList.add('dot');lastS=s}
+  if(mk.phase!==lastPh){if(lastPh&&['auction','paid'].includes(mk.phase)&&open!=='dash')show('dash');if(lastPh==='morning'&&open!=='map')dock.querySelector('.mbtns [data-p="map"]').classList.add('dot');lastPh=mk.phase}
+  const n=(typeof msgs!=='undefined')?msgs.filter(m=>m.who==='ai'&&m.text).length:0;if(n>lastN&&open)$('mNew').classList.add('on');lastN=n;
+  const sk=$('mSkip'),on=(typeof ffNext!=='undefined')&&!!ffNext&&!!ffLabel;sk.classList.toggle('on',!!(on&&open));if(on){const L=ffLabel;sk.textContent=(/pool closes/.test(L)?'Close pool':/auction/.test(L)?'To 17:00':/pickup point/.test(L)?'Drop sack':/truck/.test(L)?'Truck':/payment/.test(L)?'Payment':'Skip')+' ⏩'}
+},250);
+addEventListener('resize',setH);setH();
+})();
+</script>
 </body>
 </html>
