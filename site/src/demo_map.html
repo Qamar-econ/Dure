@@ -394,6 +394,19 @@ body.simon .mkbar{display:flex}
 
 /* live market panel under the map: fills the column */
 #liveCard{flex:0 0 clamp(170px,30%,260px);min-height:0;display:flex;flex-direction:column;gap:8px}
+/* desktop: the dashboard / suggestions boundary lines up with the map / market boundary on the left */
+@media (min-width:1101px){
+  body:not(.mob) #dashCard{flex:1 1 0!important;height:auto!important;min-height:0}
+  body:not(.mob) .colD .tries{flex:0 0 clamp(170px,30%,260px)!important;min-height:0!important;max-height:none!important;overflow-y:auto;align-content:stretch;grid-template-rows:auto;grid-auto-rows:minmax(46px,1fr)}
+  body:not(.mob) .colD .tries button{padding:8px 14px;font-size:17px}body:not(.mob) .colD .tries button small{font-size:14px}
+  body:not(.mob) .readg{flex:1 1 0!important;min-height:0}
+  body:not(.mob) .readg .console{flex:0 1 auto!important;height:auto!important;max-height:60%!important;min-height:120px}
+  body:not(.mob) .readg .feed{flex:1 1 0!important;height:auto!important;min-height:100px}
+  body:not(.mob) .readg .console .raw{font-size:16px;padding:4px 9px;margin-bottom:4px}
+  body:not(.mob) .readg .console table{border-spacing:0 2px}
+  body:not(.mob) .readg .console td{padding:3px 8px}
+}
+
 .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;flex:none}
 .kpi{background:#2C4F57;border-radius:8px;padding:6px 8px;min-width:0}
 .kpi span{display:block;font-size:10.5px;color:#BFD0CC;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
