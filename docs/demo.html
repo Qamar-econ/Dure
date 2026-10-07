@@ -2622,7 +2622,10 @@ const applyLand=()=>{const L=innerWidth>innerHeight&&innerWidth>=900,was=documen
   setH();if(typeof fitPhone==='function')fitPhone()};
 addEventListener('resize',applyLand);applyLand();
 /* if the browser nudges the page (keyboard, address bar, a stray drag), put it straight back */
-const pin=()=>{if(scrollX||scrollY||document.documentElement.scrollTop||document.body.scrollTop){scrollTo(0,0);document.documentElement.scrollTop=document.body.scrollTop=0}};
+const FRAME=()=>[$('stage'),document.querySelector('.colP'),$('phoneWrap'),$('phone'),document.querySelector('#phone .scr'),document.querySelector('#phone .lcd')].filter(Boolean);
+const pin=()=>{if(scrollX||scrollY||document.documentElement.scrollTop||document.body.scrollTop){scrollTo(0,0);document.documentElement.scrollTop=document.body.scrollTop=0}
+  FRAME().forEach(e=>{if(e.scrollTop||e.scrollLeft){e.scrollTop=0;e.scrollLeft=0}})};   /* the browser scrolls clipped boxes to show the input; undo that so the phone never slides */
+document.addEventListener('scroll',e=>{const t=e.target;if(t&&t.nodeType===1&&FRAME().includes(t))pin()},true);
 addEventListener('scroll',pin,{passive:true});document.addEventListener('focusout',()=>setTimeout(pin,60));
 if(window.visualViewport)visualViewport.addEventListener('resize',()=>setTimeout(pin,120));
 })();
