@@ -1,0 +1,56 @@
+[
+ {
+  "file": "samples/sample_A.jpg",
+  "intended": "A",
+  "predicted": "A",
+  "probs": {
+   "A": 0.8999999761581421,
+   "B": 0.010999999940395355,
+   "C": 0.05999999865889549,
+   "N": 0.0020000000949949026,
+   "R": 0.027000000700354576
+  },
+  "title": "High_Quality_Coffee_Beans_Closeup_-_Tanzania.jpg",
+  "author": "Harald Ulver",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:High_Quality_Coffee_Beans_Closeup_-_Tanzania.jpg",
+  "credit": "Harald Ulver, CC BY-SA 4.0, via Wikimedia Commons",
+  "note": "training photo (not in the frozen test)"
+ },
+ {
+  "file": "samples/sample_B.jpg",
+  "intended": "B",
+  "predicted": "B",
+  "probs": {
+   "A": 0.0820000022649765,
+   "B": 0.8169999718666077,
+   "C": 0.0949999988079071,
+   "N": 0.003000000026077032,
+   "R": 0.004000000189989805
+  },
+  "title": "Raw_coffee_beans.jpg",
+  "author": "Kızıldeniz",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Raw_coffee_beans.jpg",
+  "credit": "Kızıldeniz, CC BY-SA 4.0, via Wikimedia Commons",
+  "note": "training photo (not in the frozen test)"
+ },
+ {
+  "file": "samples/sample_C.jpg",
+  "intended": "C",
+  "predicted": "C",
+  "probs": {
+   "A": 0.148,
+   "B": 0.068,
+   "C": 0.777,
+   "N": 0.005,
+   "R": 0.002
+  },
+  "title": "Starr-170109-4505-Coffea arabica-Coffee Berry Borer damaged parchment seeds sample-Kula Community Center-Maui (32344618211).jpg",
+  "author": "Forest and Kim Starr",
+  "license": "CC BY 3.0 US",
+  "page": "https://commons.wikimedia.org/wiki/File:Starr-170109-4505-Coffea_arabica-Coffee_Berry_Borer_damaged_parchment_seeds_sample-Kula_Community_Center-Maui_(32344618211).jpg",
+  "credit": "Forest and Kim Starr, CC BY 3.0 US, via Wikimedia Commons",
+  "note": "training-pool web photo (not in the frozen test), resized to 600x800; graded C by grader_v2 in the browser"
+ }
+]

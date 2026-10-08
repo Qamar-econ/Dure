@@ -1,0 +1,10 @@
+__pycache__/
+*.pt
+*.gguf
+ai/coffee/base/
+ai/coffee/merged/
+ai/brief/qwen15/
+ai/brief/gguf/
+ai/photo/img/
+ai/coffee/*.gguf
+.env

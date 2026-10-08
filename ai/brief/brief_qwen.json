@@ -1,0 +1,50 @@
+{
+ "hash": "788a33e377e4",
+ "written_at": "Monday 27 July 2026, 06:00",
+ "meta": {
+  "model": "Qwen2.5-1.5B-Instruct (Apache-2.0), bf16, CPU",
+  "seconds": 460,
+  "tokens_in": 1709,
+  "tokens_out": 212,
+  "cost_usd": 0
+ },
+ "validation": {
+  "checked": 8,
+  "kept": 6,
+  "numbers_checked": 5,
+  "dropped": [
+   {
+    "where": "changed",
+    "text": "Insect contamination increased by 100% compared to the previous week.",
+    "why": [
+     "number 100 not in the table"
+    ]
+   },
+   {
+    "where": "changed",
+    "text": "Drying time reduced by 50% compared to the previous week.",
+    "why": [
+     "number 50 not in the table"
+    ]
+   }
+  ],
+  "usable": false
+ },
+ "brief": {
+  "headline": "Coffee farmers' pool in Letefoho saw significant changes in offers and prices.",
+  "changed": [
+   {
+    "text": "Offers decreased by 17% compared to the previous week.",
+    "village": "Lebudu"
+   }
+  ],
+  "prices": [
+   "Prices dropped by 10% compared to the previous auction.",
+   "The average price for grade C fell by 10%."
+  ],
+  "review": [
+   "Farmers should consider reducing the amount of mold and insects in their coffee beans.",
+   "Farmers should monitor the drying process more closely to ensure faster and better results."
+  ]
+ }
+}

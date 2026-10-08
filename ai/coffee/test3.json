@@ -1,0 +1,782 @@
+[
+ {
+  "expect": "none",
+  "msg": "Bondia maun, hau ho kafe parchment 25 kilu, hau nia presu minimu 1.30 dolar",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 25,
+   "ask": 1.3,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "kafe A 60kg. fan 1,45 ka as",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 60,
+   "ask": 1.45,
+   "any": false,
+   "grade": "A",
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "hau sei fa'an kafe maran no moos 80 kilu, presu saida deit diak",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 80,
+   "ask": null,
+   "any": true,
+   "grade": "A",
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "Boa tarde. Hau iha kafe 15 kg maibe iha fuan metan uitoan. 1 dolar 20 bele?",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 15,
+   "ask": 1.2,
+   "any": false,
+   "grade": "B",
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "kafe bolor 30 kilu. 0.95",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 30,
+   "ask": 0.95,
+   "any": false,
+   "grade": "C",
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "Hau nia kafe basa tebes, 12kg, presu bainhira de'it",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 12,
+   "ask": null,
+   "any": true,
+   "grade": "C",
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "kakau 50 kg 2 dolar",
+  "label": {
+   "lang": "tet",
+   "crop": "other",
+   "kg": 50,
+   "ask": 2.0,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "batar 100 kilu",
+  "label": {
+   "lang": "tet",
+   "crop": "other",
+   "kg": 100,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "Bon dia, hau Maria husi Gleno. kafe 45 kilu. Hau nia kafe diak, maran, la iha bolor. Hau hakarak 1.48 ou liu. Obrigada",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 45,
+   "ask": 1.48,
+   "any": false,
+   "grade": "A",
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "kafe 200kg qualquer presu",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 200,
+   "ask": null,
+   "any": true,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "fan kafe 18 kilu, 1.22 minimu",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 18,
+   "ask": 1.22,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "hau ba fa'an kafe 35 kg. 130 sentavo",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 35,
+   "ask": 1.3,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "kafe kilu 70, nia kualidade ok, 1 dolar 28",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 70,
+   "ask": 1.28,
+   "any": false,
+   "grade": "B",
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "Dolar 1.40 mak hau hakarak. Kafe 22kg",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 22,
+   "ask": 1.4,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "maun kafe hau iha 9 kilu deit hehe. presu 1,0",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 9,
+   "ask": 1.0,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "Hau iha kafe 150 kg no fore 20 kg. Kafe nia presu 1.35",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 150,
+   "ask": 1.35,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "kafe moos 40 kilu, hau fan 1.46",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 40,
+   "ask": 1.46,
+   "any": false,
+   "grade": "A",
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "kafe 33 kg buat balu metan, 1.25",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 33,
+   "ask": 1.25,
+   "any": false,
+   "grade": "B",
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "Hau lakon ona kafe, la iha atu fa'an semana ne'e",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": null,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "presu kafe ohin dala hira?",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": null,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "kg",
+  "msg": "55",
+  "label": {
+   "lang": null,
+   "crop": null,
+   "kg": 55,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "kg",
+  "msg": "kilu 40 mak iha",
+  "label": {
+   "lang": "tet",
+   "crop": null,
+   "kg": 40,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "kg",
+  "msg": "saku rua, ida-idak 30kg",
+  "label": {
+   "lang": "tet",
+   "crop": null,
+   "kg": 60,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "kg",
+  "msg": "100 kilu",
+  "label": {
+   "lang": "tet",
+   "crop": null,
+   "kg": 100,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "ask",
+  "msg": "1.30",
+  "label": {
+   "lang": null,
+   "crop": null,
+   "kg": null,
+   "ask": 1.3,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "ask",
+  "msg": "hau hakarak 1.42 dolar",
+  "label": {
+   "lang": "tet",
+   "crop": null,
+   "kg": null,
+   "ask": 1.42,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "ask",
+  "msg": "presu saida deit",
+  "label": {
+   "lang": "tet",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": true,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "ask",
+  "msg": "1 dolar 10",
+  "label": {
+   "lang": "tet",
+   "crop": null,
+   "kg": null,
+   "ask": 1.1,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "ask",
+  "msg": "sentavo 95",
+  "label": {
+   "lang": "tet",
+   "crop": null,
+   "kg": null,
+   "ask": 0.95,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "ask",
+  "msg": "la iha minimu, fan de'it",
+  "label": {
+   "lang": "tet",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": true,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "decide",
+  "msg": "sim",
+  "label": {
+   "lang": "tet",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": "yes"
+  }
+ },
+ {
+  "expect": "decide",
+  "msg": "lae, presu ki'ik liu",
+  "label": {
+   "lang": "tet",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": "no"
+  }
+ },
+ {
+  "expect": "decide",
+  "msg": "Sim obrigadu maun",
+  "label": {
+   "lang": "tet",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": "yes"
+  }
+ },
+ {
+  "expect": "decide",
+  "msg": "diak, hau konkorda",
+  "label": {
+   "lang": "tet",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": "yes"
+  }
+ },
+ {
+  "expect": "decide",
+  "msg": "LAE hau la fa'an",
+  "label": {
+   "lang": "tet",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": "no"
+  }
+ },
+ {
+  "expect": "decide",
+  "msg": "la bele. hau hein semana oin",
+  "label": {
+   "lang": "tet",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": "no"
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "kafe 48kg diak liu, hau fan 1.47 deit",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 48,
+   "ask": 1.47,
+   "any": false,
+   "grade": "A",
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "Bom dia. Kafe 5 kg so, 1.00 ok?",
+  "label": {
+   "lang": "tet",
+   "crop": "coffee",
+   "kg": 5,
+   "ask": 1.0,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "Hello i have 40 kg coffee good quality. lowest 1.45",
+  "label": {
+   "lang": "en",
+   "crop": "coffee",
+   "kg": 40,
+   "ask": 1.45,
+   "any": false,
+   "grade": "A",
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "coffee 25kg any price",
+  "label": {
+   "lang": "en",
+   "crop": "coffee",
+   "kg": 25,
+   "ask": null,
+   "any": true,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "sell coffe 60 kilo wet little bit, 1.0 dollar",
+  "label": {
+   "lang": "en",
+   "crop": "coffee",
+   "kg": 60,
+   "ask": 1.0,
+   "any": false,
+   "grade": "C",
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "Good morning sir. I want to sell my coffee, around 120 kg. Some black beans but mostly ok. Minimum 1.25 per kg please. Thank you and God bless",
+  "label": {
+   "lang": "en",
+   "crop": "coffee",
+   "kg": 120,
+   "ask": 1.25,
+   "any": false,
+   "grade": "B",
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "maize 80kg 0.50",
+  "label": {
+   "lang": "en",
+   "crop": "other",
+   "kg": 80,
+   "ask": 0.5,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "C grade coffee 30kg 0.95",
+  "label": {
+   "lang": "en",
+   "crop": "coffee",
+   "kg": 30,
+   "ask": 0.95,
+   "any": false,
+   "grade": "C",
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "mouldy coffee 10kg, any",
+  "label": {
+   "lang": "en",
+   "crop": "coffee",
+   "kg": 10,
+   "ask": null,
+   "any": true,
+   "grade": "C",
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "cof 15 kg. 140 cents",
+  "label": {
+   "lang": "en",
+   "crop": "coffee",
+   "kg": 15,
+   "ask": 1.4,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "How much price today?",
+  "label": {
+   "lang": "en",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "kg",
+  "msg": "only 35 kg sir",
+  "label": {
+   "lang": "en",
+   "crop": null,
+   "kg": 35,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "kg",
+  "msg": "about 90 kilograms",
+  "label": {
+   "lang": "en",
+   "crop": null,
+   "kg": 90,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "ask",
+  "msg": "1.35 per kg",
+  "label": {
+   "lang": "en",
+   "crop": null,
+   "kg": null,
+   "ask": 1.35,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "ask",
+  "msg": "any price is ok",
+  "label": {
+   "lang": "en",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": true,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "ask",
+  "msg": "one dollar thirty",
+  "label": {
+   "lang": "en",
+   "crop": null,
+   "kg": null,
+   "ask": 1.3,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "decide",
+  "msg": "yes",
+  "label": {
+   "lang": "en",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": "yes"
+  }
+ },
+ {
+  "expect": "decide",
+  "msg": "No, too low",
+  "label": {
+   "lang": "en",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": "no"
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "Selamat pagi, saya mau jual kopi 50 kg harga 1,40 per kilo",
+  "label": {
+   "lang": "unknown",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "Kopi saya kering dan bersih 30 kg, harga berapa?",
+  "label": {
+   "lang": "unknown",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "Bom dia, quero vender 40 kg de café a 1,45 dólares",
+  "label": {
+   "lang": "unknown",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "Não vendo esta semana, obrigado",
+  "label": {
+   "lang": "unknown",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "Hola, quiero vender 20 kilos de café",
+  "label": {
+   "lang": "unknown",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ },
+ {
+  "expect": "none",
+  "msg": "Bonjour, je veux vendre 25 kg de café",
+  "label": {
+   "lang": "unknown",
+   "crop": null,
+   "kg": null,
+   "ask": null,
+   "any": false,
+   "grade": null,
+   "yn": null
+  }
+ }
+]

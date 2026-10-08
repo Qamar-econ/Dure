@@ -1,0 +1,7 @@
+# 8-bit GGUF reader (default; what a hub laptop would run)
+llama-cpp-python>=0.3
+fastapi
+uvicorn
+# only needed to serve the full-precision Hugging Face model instead (MODEL_ID=<folder>)
+# torch
+# transformers>=4.45

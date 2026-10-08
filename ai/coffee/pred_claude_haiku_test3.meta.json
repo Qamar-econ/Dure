@@ -1,0 +1,9 @@
+{
+ "model": "claude-haiku-4-5-20251001",
+ "n": 60,
+ "median_ms": 655.1072597503662,
+ "p90_ms": 812.5808238983154,
+ "in_tokens_per_msg": 366.35,
+ "out_tokens_per_msg": 33.46666666666667,
+ "usd_per_1000_msgs": 0.534
+}

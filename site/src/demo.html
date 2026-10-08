@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dure — Try it as Noor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta name="description" content="Try Dure as Noor, a coffee farmer in Ermera, Timor-Leste: text Dure AI in Tetum or English, send a photo of your parchment, and follow one sack all the way to getting paid.">
+<meta name="theme-color" content="#F2EADA">
+<meta property="og:type" content="website"><meta property="og:title" content="Dure — Try it as Noor">
+<meta property="og:description" content="Sell your coffee by text message. Any phone, no internet, no app.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/*FAVICON*/">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Atkinson+Hyperlegible+Mono:wght@400;500;600&family=Gochi+Hand&family=VT323&family=Roboto+Flex:opsz,wght@8..144,400..700&display=swap" rel="stylesheet">
+<style>
+/*SHARED*/
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:var(--ivory);color:var(--ink);font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif}
+body{position:relative}
+body>*{position:relative;z-index:1}
+a{color:inherit}
+.top{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:20px 36px;background:rgba(242,234,218,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.barr{display:flex;align-items:center;gap:12px}
+.langbtn{font-family:var(--f-display);font-size:14px;line-height:1;padding:7px 12px;border-radius:20px;border:1.3px solid var(--line-2);background:transparent;color:var(--ink);cursor:pointer}
+@media (max-width:560px){.langbtn{font-size:12.5px;padding:5px 9px}.barr{gap:8px}}
+.topprog{position:absolute;left:0;right:0;top:0;height:2px;background:rgba(31,58,64,.14)}.topprog span{display:block;height:100%;width:0;background:var(--ink);transition:width .6s}
+/* ---------- picker ---------- */
+#pick{max-width:900px;margin:4vh auto 8vh;padding:0 20px;text-align:center}
+#pick .k{font-family:Newsreader,serif;font-style:italic;color:var(--rust);font-size:18px}
+#pick h1{font-family:Newsreader,serif;font-weight:700;font-size:clamp(34px,4.4vw,56px);letter-spacing:-.035em;line-height:1.05;margin:10px 0 14px}
+#pick h1 em{font-weight:500;color:var(--rust)}
+#pick p.lead{font-family:Newsreader,serif;font-size:19px;color:var(--ink-2);max-width:40em;margin:0 auto 34px;line-height:1.45}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:640px;margin:0 auto}
+.choice{border:1.6px solid rgba(31,58,64,.25);border-radius:18px;background:rgba(255,255,255,.45);padding:24px 16px 20px;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;font:inherit;color:inherit}
+.choice:hover{transform:translateY(-3px);border-color:var(--ink);box-shadow:0 18px 30px -22px rgba(31,58,64,.6)}
+.choice svg{height:150px;width:auto;display:block;margin:0 auto 14px}
+.choice b{display:block;font-family:Newsreader,serif;font-size:21px}
+.choice span{font-size:14px;color:var(--ink-2)}
+.fine{margin-top:28px;font-family:Newsreader,serif;font-style:italic;font-size:14px;color:var(--ink-2)}
+/* ---------- stage ---------- */
+#stage{display:none;grid-template-columns:auto minmax(280px,420px);gap:48px;justify-content:center;align-items:start;padding:8px 24px 40px}
+#stage.on{display:grid}
+.side{padding-top:6px}
+.side h2{font-family:Newsreader,serif;font-size:26px;letter-spacing:-.02em;margin-bottom:4px}
+.side .sub{font-family:Newsreader,serif;font-style:italic;color:var(--ink-2);font-size:15px;margin-bottom:18px}
+.steps{list-style:none;border-top:2px solid var(--ink);margin-bottom:22px}
+.steps li{display:flex;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid rgba(31,58,64,.15);font-family:Newsreader,serif;font-size:16px;color:rgba(31,58,64,.4)}
+.steps li i{width:22px;height:22px;border-radius:50%;border:1.6px solid currentColor;display:grid;place-items:center;font-style:normal;font-size:12px;flex:none}
+.steps li.now{color:var(--ink);font-weight:600}.steps li.now i{background:var(--rust);border-color:var(--rust);color:#fff}
+.steps li.done{color:var(--leaf)}.steps li.done i{background:var(--leaf);border-color:var(--leaf);color:#fff}
+.console{background:var(--ink);color:#F6EFE0;border-radius:14px;padding:14px 16px 16px;margin-bottom:18px}
+.console .hd{display:flex;justify-content:space-between;font-family:Newsreader,serif;font-style:italic;font-size:13px;color:#BFD0CC;margin-bottom:10px}
+.console .hd b{width:8px;height:8px;border-radius:50%;background:#7FD18B;display:inline-block;margin-top:4px}
+.console .raw{background:var(--lcd);color:var(--ink);font-family:VT323,monospace;font-size:20px;line-height:1.1;border-radius:6px;padding:8px 10px;margin-bottom:10px;word-break:break-word;min-height:34px}
+.console .raw mark{background:rgba(228,182,76,.8);color:inherit;border-radius:3px;padding:0 2px}
+.console table{width:100%;border-collapse:separate;border-spacing:0 5px;font-size:14px}
+.console td{background:var(--teal);padding:7px 10px}
+.console td:first-child{border-radius:5px 0 0 5px;color:#BFD0CC;width:40%}
+.console td:last-child{border-radius:0 5px 5px 0;text-align:right;font-weight:600}
+.console td.miss{color:var(--gold);font-style:italic;font-weight:400}
+.console .note{font-size:12.5px;color:#BFD0CC;margin-top:6px;line-height:1.45}
+.console .empty{font-family:Newsreader,serif;font-style:italic;color:#BFD0CC;font-size:14px}
+.tries{font-family:Newsreader,serif;font-size:14px;color:var(--ink-2);margin-bottom:16px}
+.tries>b{display:block;font-size:15px;color:var(--ink);margin-bottom:8px}
+.tries button{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;font-family:"Atkinson Hyperlegible Next",sans-serif;font-size:14px;line-height:1.35;background:#FBF7EE;border:1px solid rgba(31,58,64,.16);border-radius:10px;padding:8px 12px;margin:0 0 6px;cursor:pointer;color:var(--ink);transition:border-color .15s,background .15s}
+.tries button:hover{border-color:var(--ink);background:#fff}
+.tries button .tx{flex:1}.tries button .lg{flex:none;font-size:10.5px;letter-spacing:.06em;color:var(--ink-2);border:1px solid rgba(31,58,64,.25);border-radius:4px;padding:1px 5px;margin-top:2px}
+.ff{display:none;width:100%;padding:13px 16px;border:none;border-radius:30px;background:var(--rust);color:#FFF6EC;font-family:Newsreader,serif;font-size:17px;font-weight:600;cursor:pointer;margin-bottom:14px}
+.ff.on{display:block}.ff:disabled{opacity:.45;cursor:default}
+.end{display:none;border:1.6px solid var(--leaf);border-radius:14px;padding:16px;background:rgba(78,139,92,.08);font-family:Newsreader,serif}
+.end.on{display:block}.end h3{font-size:20px;margin-bottom:6px}.end p{font-size:15px;color:var(--ink-2);line-height:1.45;margin-bottom:12px}
+/* ---------- phone shells ---------- */
+.phoneWrap{position:relative}
+.android{width:360px;height:740px;border-radius:44px;background:#141A1E;padding:12px;box-shadow:0 40px 60px -30px rgba(31,58,64,.7),inset 0 0 0 2px #2A3238}
+.android .scr{position:relative;width:100%;height:100%;border-radius:34px;background:#F5F3EF;overflow:hidden;display:flex;flex-direction:column;font-family:"Roboto Flex",Roboto,system-ui,sans-serif;font-variation-settings:"opsz" 14;letter-spacing:.005em}
+.a-sb{display:flex;justify-content:space-between;align-items:center;padding:12px 22px 6px;font-size:13px;font-weight:600;color:#222}
+.a-sb .r{display:flex;gap:7px;align-items:center}
+.a-hd{display:flex;align-items:center;gap:10px;padding:8px 16px 10px;border-bottom:1px solid #E4E0D8;background:#fff}
+.a-hd .av{width:36px;height:36px;border-radius:50%;background:var(--ink);color:#F6EFE0;display:grid;place-items:center;font-family:Newsreader,serif;font-weight:700}
+.a-hd b{display:block;font-size:15px}.a-hd small{font-size:12px;color:#777}
+.a-list{flex:1;overflow-y:auto;padding:14px 12px 8px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth}
+.bub{max-width:80%;padding:9px 12px;border-radius:18px;font-size:14.5px;line-height:1.38;white-space:pre-wrap;word-break:break-word;animation:pop .25s ease-out}
+.bub.ai{background:#fff;border:1px solid #E6E1D8;align-self:flex-start;border-bottom-left-radius:6px}
+.bub.me{background:#D8ECCB;align-self:flex-end;border-bottom-right-radius:6px}
+.bub .meta{display:block;font-size:11px;color:#8A8A8A;margin-top:3px;text-align:right}
+.bub img,.bub svg.ph{display:block;width:190px;height:142px;border-radius:12px;margin-bottom:4px}
+.sys{align-self:center;font-size:12px;color:#7A7A7A;background:#ECE8E0;padding:4px 10px;border-radius:12px}
+.typing{align-self:flex-start;background:#fff;border:1px solid #E6E1D8;border-radius:18px;padding:10px 14px;display:flex;gap:4px}
+.typing i{width:7px;height:7px;border-radius:50%;background:#AAA;animation:dot 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+.prog{height:4px;background:#E4E0D8;border-radius:2px;margin-top:6px;overflow:hidden}.prog i{display:block;height:100%;background:var(--leaf);width:0}
+.a-in{display:flex;gap:8px;align-items:flex-end;padding:8px 10px 14px;background:#fff;border-top:1px solid #E4E0D8}
+.a-in button{width:40px;height:40px;border-radius:50%;border:none;background:#EFECE6;display:grid;place-items:center;cursor:pointer;flex:none}
+.a-in button.send{background:var(--ink)}
+.a-in textarea{flex:1;resize:none;border:1px solid #DDD7CC;border-radius:20px;padding:10px 14px;font:inherit;font-size:15px;max-height:96px;outline:none;background:#FAF8F4}
+@keyframes pop{from{transform:translateY(6px);opacity:0}to{transform:none;opacity:1}}
+@keyframes dot{0%,100%{opacity:.3}50%{opacity:1}}
+/* nokia */
+.nokia{width:300px;height:660px;border-radius:70px 70px 80px 80px;background:linear-gradient(90deg,#1B2227,#2E3A42 18%,#3A4952 50%,#2E3A42 82%,#1B2227);padding:52px 26px 0;box-shadow:0 40px 60px -30px rgba(31,58,64,.7);position:relative}
+.nokia .ear{width:70px;height:8px;border-radius:4px;background:#12181B;margin:0 auto 18px}
+.nokia .scr{position:relative;background:#8FA37A;border-radius:14px;padding:8px;box-shadow:inset 0 0 0 3px #1C2428}
+.lcd{background:var(--lcd);border-radius:6px;height:300px;display:flex;flex-direction:column;font-family:VT323,monospace;color:#1E2B20;overflow:hidden;cursor:text}
+.lcd .sb{display:flex;justify-content:space-between;align-items:center;font-size:17px;padding:4px 8px 2px;border-bottom:1px solid rgba(30,43,32,.35)}
+.lcd .sb .r{display:flex;align-items:center;gap:6px}
+.lcd .lst{flex:1;overflow-y:auto;padding:4px 8px;font-size:19px;line-height:1.05;scroll-behavior:smooth}
+.lcd .lst::-webkit-scrollbar{width:4px}.lcd .lst::-webkit-scrollbar-thumb{background:#5C7250}
+.lm{margin-bottom:7px;white-space:pre-wrap;word-break:break-word}
+.lm .w{display:block;font-size:15px;opacity:.7}
+.lm.me{text-align:right}
+.lm.sysm{text-align:center;font-size:15px;opacity:.7}
+.lm svg.ph{width:96px;height:72px;image-rendering:pixelated;filter:grayscale(1) contrast(1.4) sepia(.5) hue-rotate(40deg);display:inline-block}
+.lcd .inp{display:flex;align-items:center;border-top:1px solid rgba(30,43,32,.35);padding:3px 8px;font-size:19px}
+.lcd .inp input{flex:1;border:none;background:none;font:inherit;color:inherit;outline:none;min-width:0}
+.lcd .soft{display:flex;justify-content:space-between;font-size:17px;padding:2px 8px 4px;background:rgba(30,43,32,.1)}
+.lcd .soft button{border:none;background:none;font:inherit;color:inherit;cursor:pointer;padding:0 2px}
+.nkeys{margin-top:22px;display:grid;grid-template-columns:repeat(3,1fr);gap:9px 14px;padding:0 10px}
+.nkeys button{height:32px;border-radius:14px;border:none;background:#4A5A64;color:#D9E2E6;font-family:"Atkinson Hyperlegible Next";font-size:12px;cursor:pointer}
+.nnav{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding:0 6px}
+.nnav button{width:60px;height:22px;border-radius:11px;border:none;cursor:pointer}
+.nnav .dp{width:70px;height:34px;border-radius:17px;background:#46555E}
+/* photo picker */
+.picker{position:absolute;inset:0;background:rgba(20,26,30,.55);display:none;align-items:flex-end;z-index:5}
+.picker.on{display:flex}
+.picker .sheet{background:#fff;width:100%;border-radius:22px 22px 0 0;padding:16px 14px 20px}
+.nokia .picker .sheet{background:var(--lcd);font-family:VT323,monospace;border-radius:6px 6px 0 0}
+.picker h4{font-family:Newsreader,serif;font-size:16px;margin-bottom:10px}
+.nokia .picker h4{font-family:VT323,monospace;font-size:20px;font-weight:400}
+.picker .row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.picker .row button{border:1.5px solid #DDD;border-radius:10px;background:#FAF8F4;padding:6px 6px 8px;cursor:pointer;font:inherit}
+.picker .row button:hover{border-color:var(--ink)}
+.picker svg{width:100%;height:auto;border-radius:6px;display:block;margin-bottom:5px}
+.picker img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;display:block;margin-bottom:5px}
+.picker .sheet{max-height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.nokia .picker .row{gap:5px}.nokia .picker .row button{padding:3px 3px 4px}.nokia .picker .row span{display:none}.nokia .picker .pknote{font-size:13px;line-height:1.25}
+.picker .row b{display:block;font-size:13px}.picker .row span{font-size:11px;color:#777}
+.nokia .picker .row b{font-size:17px;font-weight:400}.nokia .picker .row span{font-size:14px;color:#1E2B20}
+.picker .x{margin-top:10px;width:100%;padding:8px;border:none;background:none;font:inherit;color:#777;cursor:pointer}
+.buzz{animation:buzz .4s 2}
+@keyframes buzz{0%,100%{transform:translateX(0)}25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
+@media (max-width:860px){
+  #stage{grid-template-columns:1fr;gap:22px;padding:0 10px 30px}
+  .phoneWrap{display:flex;justify-content:center}
+  .choices{grid-template-columns:1fr 1fr;gap:12px}.choice svg{height:110px}
+  .top{padding:14px 16px}
+}
+@media (max-width:420px){
+  .android{width:100vw;height:calc(100svh - 64px - var(--peek,0px));border-radius:0;padding:0;box-shadow:none;margin:0 -10px}
+  .android .scr{border-radius:0}
+}
+.langs{font-family:Newsreader,serif;font-size:14px;color:var(--ink-2);margin:-8px 0 16px;padding:8px 12px;border:1px dashed rgba(31,58,64,.35);border-radius:10px}
+.langs b{color:var(--ink)}
+.skipbar{display:none;border:none;background:var(--rust);color:#FFF6EC;font-family:Newsreader,serif;font-weight:600;font-size:15px;cursor:pointer;animation:pulse 1.6s infinite}
+.android #composer .skipbar{flex:1;width:auto;height:auto;min-height:42px;border-radius:21px;padding:8px 14px;box-shadow:none;background:var(--rust);line-height:1.2}
+.android #composer.skip textarea{display:none}
+.android #composer.skip #att,.android #composer.skip #snd{opacity:.3;pointer-events:none}
+.nokia #composer .skipbar{width:100%;font-family:VT323,monospace;font-weight:400;font-size:18px;line-height:1;background:#1E2B20;color:var(--lcd);padding:3px 8px;text-align:left;border-radius:0}
+.nokia #composer.skip .inp{display:none}
+#composer.skip .skipbar{display:block}
+#composer:not(.skip) .skipbar{display:none!important}
+.a-in button#att.blink{animation:blinkA 1.1s infinite}
+@keyframes blinkA{0%,100%{background:#EFECE6;box-shadow:0 0 0 0 rgba(168,69,42,.0)}50%{background:#F6D9C9;box-shadow:0 0 0 5px rgba(168,69,42,.35)}}
+.nokia #att.blink{animation:blinkN 1s steps(1) infinite}
+@keyframes blinkN{0%{background:#1E2B20;color:var(--lcd)}50%{background:none;color:#1E2B20}}
+@keyframes pulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.18)}}
+.lm,.bub{font-variant-numeric:tabular-nums}
+.lcd .lst{font-family:VT323,"Apple SD Gothic Neo","Malgun Gothic",monospace}
+.tries button small{display:block;font-size:12px;color:var(--ink-2);margin-top:1px;font-style:italic}
+.vid{position:absolute;inset:0;background:#0E1316;z-index:7;display:flex;flex-direction:column;justify-content:center;opacity:0;transition:opacity .35s}
+.vid.on{opacity:1}.vid .vsc{width:100%;height:auto;display:block}
+.vtop{display:flex;justify-content:space-between;color:#F6EFE0;font-size:12px;padding:0 14px 8px}.vtop span:first-child{color:#F08A6A}
+.vcap{color:#F6EFE0;font-family:Newsreader,serif;font-size:15px;padding:12px 14px 10px;min-height:44px}
+.vbar{height:3px;background:#3A4952;margin:0 14px}.vbar i{display:block;height:100%;width:0;background:#E4B64C}
+.vtime{display:flex;justify-content:space-between;color:#AAB;font-size:12px;padding:6px 14px}
+.nvid{position:absolute;left:0;right:0;top:22px;bottom:0;background:var(--lcd);z-index:6;display:flex;flex-direction:column;align-items:center;padding-top:4px}
+.lcd{position:relative}.nvid canvas{width:232px;height:128px;image-rendering:pixelated}
+.nvh,.nvc{font-size:19px;align-self:stretch;padding:0 8px}.nvb{height:6px;border:1px solid #1E2B20;align-self:stretch;margin:4px 8px}.nvb i{display:block;height:100%;width:0;background:#1E2B20}
+.lm.bank .w{background:#1E2B20;color:var(--lcd);padding:0 3px}
+.bank{position:absolute;left:10px;right:10px;top:8px;z-index:8;background:#fff;border-radius:18px;box-shadow:0 12px 28px -8px rgba(0,0,0,.45);display:flex;gap:10px;padding:12px;transform:translateY(-130%);transition:transform .45s cubic-bezier(.2,.9,.3,1.2)}
+.bank.on{transform:none}.bank .bi{width:36px;height:36px;border-radius:10px;background:#2C4F57;color:#E4B64C;display:grid;place-items:center;font-weight:700;font-size:14px;flex:none}
+.bank .bt{flex:1;font-size:13px;color:#333}.bank .bh{display:flex;justify-content:space-between;margin-bottom:2px}.bank .bh span{color:#999;font-size:12px}.bank .bm b{color:#1F3A40}
+.bub.ai svg.ph{width:100%;height:auto;border-radius:10px;display:block;margin-bottom:4px}
+.end.on{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:50;width:min(420px,calc(100vw - 32px));background:var(--ivory);border:2px solid var(--ink);border-radius:20px;padding:26px 24px 22px;box-shadow:0 0 0 100vmax rgba(20,26,30,.55),0 30px 60px -20px rgba(0,0,0,.5);animation:popm .35s cubic-bezier(.2,.9,.3,1.2)}
+.end .ek{font-family:Newsreader,serif;font-style:italic;color:var(--rust);font-size:15px;margin-bottom:4px}.end.on h3{font-size:26px}
+.end .eb{display:flex;gap:10px;flex-wrap:wrap}.end .eb>*{flex:1 1 150px}
+@keyframes popm{from{opacity:0;transform:translate(-50%,-44%)}to{opacity:1;transform:translate(-50%,-50%)}}
+.nkeys button small{display:block;font-size:10px;opacity:.65;line-height:1}.nkeys button.hit{background:#6C7E88}
+.still{animation:none!important}
+.lcd .lm .w{font-family:VT323,monospace}
+.ctl{display:flex;gap:8px;align-items:center}
+/* camera */
+.cam{position:absolute;inset:0;z-index:7;background:#000;opacity:0;transition:opacity .4s;overflow:hidden}
+.cam.on{opacity:1}.cam .world{position:absolute;inset:0;width:100%;height:100%}
+.cam .vign{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,transparent 55%,rgba(0,0,0,.38));pointer-events:none}
+.cam .grain{position:absolute;inset:0;opacity:.08;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");mix-blend-mode:multiply;pointer-events:none}
+.cam .grid{position:absolute;inset:0}.cam .grid i{position:absolute;background:rgba(255,255,255,.22)}
+.cam .grid i:nth-child(1){left:33.3%;top:0;bottom:0;width:1px}.cam .grid i:nth-child(2){left:66.6%;top:0;bottom:0;width:1px}.cam .grid i:nth-child(3){top:33.3%;left:0;right:0;height:1px}.cam .grid i:nth-child(4){top:66.6%;left:0;right:0;height:1px}
+.cam .af{position:absolute;left:50%;top:58%;width:74px;height:74px;margin:-37px;border:1.5px solid #FFD54A;border-radius:4px;transition:opacity .2s}
+.cam .ctop{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:34px 16px 10px;color:#fff;font-size:12px;background:linear-gradient(rgba(0,0,0,.45),transparent);font-variant-numeric:tabular-nums}
+.cam .rec{display:flex;align-items:center;gap:6px;font-weight:600}.cam .rec i{width:9px;height:9px;border-radius:50%;background:#E53935;animation:dot 1s infinite}.cam .rec b{font-weight:500}
+.cam .ccap:empty{display:none}
+.cam .ccap{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;top:62px;background:rgba(0,0,0,.45);border-radius:14px;padding:4px 12px;text-align:center;color:#fff;font-size:14px;text-shadow:0 1px 4px rgba(0,0,0,.7)}
+.cam .cbot{position:absolute;left:0;right:0;bottom:0;height:104px;display:flex;align-items:center;justify-content:space-around;background:rgba(0,0,0,.5)}
+.cam .thumb{width:40px;height:40px;border-radius:8px;background:#A07A4A;border:2px solid #fff}
+.cam .shut{width:64px;height:64px;border-radius:50%;border:4px solid #fff;display:grid;place-items:center}.cam .shut i{width:24px;height:24px;border-radius:5px;background:#E53935}
+.cam .flip{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;display:grid;place-items:center;font-size:20px}
+/* reputation dashboard */
+.console .rep td:last-child{font-variant-numeric:tabular-nums}
+.console .calc{font-family:VT323,monospace;font-size:19px;background:#18302F;border-radius:6px;padding:8px 10px;margin:10px 0 8px;color:#CFE3B8;min-height:28px}
+.gauge{position:relative;height:18px;border-radius:9px;background:#18302F;overflow:hidden;margin:6px 0 4px}
+.gauge i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#4E8B5C,#7FD18B);border-radius:9px}
+.gauge u{position:absolute;top:-3px;bottom:-3px;width:2px;background:#E4B64C}
+.gl{display:flex;justify-content:space-between;font-size:12px;color:#B9C9C4}
+.gbig{font-family:Newsreader,serif;font-size:30px;font-weight:600;color:#F6EFE0;font-variant-numeric:tabular-nums}
+.console tr.pend td{opacity:.35}
+.ctl button{white-space:nowrap}
+@media(max-width:760px){.top{padding:14px 16px}}
+@media(max-width:560px){.ctl{gap:6px}.ctl button{font-size:13px;padding:6px 10px}.top .back{font-size:0}.top .back::before{content:'← Story';font-size:15px}
+ .ctl #undo span{display:none}.ctl #undo::after{content:'Back';margin-left:2px}.ctl #rephone span{display:none}.ctl #rephone::after{content:'Phone';margin-left:2px}
+ .top .back::before{white-space:nowrap}}
+
+/* ---------- phones: info panel becomes a bottom sheet under the chat ---------- */
+.peek{display:none}
+@media (max-width:760px){
+  body.sheet{--peek:70px}
+  body.sheet #stage{padding-bottom:calc(var(--peek) + 8px);z-index:auto}
+  body.sheet .side{position:fixed;left:0;right:0;bottom:0;z-index:40;max-height:78vh;max-height:78dvh;background:var(--paper);border-radius:18px 18px 0 0;
+    box-shadow:0 -12px 30px -14px rgba(31,58,64,.45);padding:0 16px 22px;overflow:hidden;transform:translateY(calc(100% - var(--peek)));transition:transform .38s cubic-bezier(.2,.8,.2,1)}
+  body.sheet .side.open{transform:none;overflow-y:auto;overscroll-behavior:contain}
+  body.sheet .peek{display:flex;position:sticky;top:0;z-index:2;width:calc(100% + 32px);margin:0 -16px 12px;height:var(--peek);padding:14px 16px 10px;gap:10px;align-items:center;border:0;background:var(--paper);border-radius:18px 18px 0 0;text-align:left;cursor:pointer;color:var(--ink);font:inherit}
+  .peek::before{content:"";position:absolute;left:50%;top:6px;width:38px;height:4px;margin-left:-19px;border-radius:2px;background:rgba(31,58,64,.25)}
+  .peek .pk{flex:1;min-width:0}
+  .peek .pk b{display:block;font-family:var(--f-display);font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .peek .pk span{display:block;font-size:12.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+  .peek .pk span.new{color:var(--rust)}
+  .peek i{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line-2);display:grid;place-items:center;font-style:normal;font-size:14px;transition:transform .3s}
+  .side.open .peek i{transform:rotate(180deg)}
+  .peek.ping i{animation:ping 1s 2}
+  @keyframes ping{50%{background:var(--gold);border-color:var(--gold)}}
+  body.sheet .side h2{font-size:22px}
+  .sheet-dim{position:fixed;inset:0;z-index:39;background:rgba(20,26,30,.25);opacity:0;pointer-events:none;transition:opacity .3s}
+  body.sheet.sheet-open .sheet-dim{opacity:1;pointer-events:auto}
+}
+
+.picker .row{flex-wrap:wrap}
+.realph{object-fit:cover;display:block}
+.picker .up{display:block;margin:10px 0 2px;padding:10px 12px;border:1.5px dashed rgba(31,58,64,.4);border-radius:10px;text-align:center;font-size:14px;cursor:pointer}
+.picker .up input{display:none}
+#phone.drop{outline:3px dashed var(--rust);outline-offset:6px}
+.picker .pknote{font-size:12px;line-height:1.4;opacity:.75;margin:8px 0 4px}
+.pbar{display:inline-block;width:80px;height:7px;border-radius:4px;background:rgba(255,255,255,.15);vertical-align:middle;margin-right:6px;overflow:hidden}.pbar i{display:block;height:100%;background:#7FD18B}
+</style>
+</head>
+<body class="paper">
+<div class="top"><div class="topprog"><span id="topprog"></span></div><a class="brand" href="./" aria-label="Dure — back to the story"><svg viewBox="-2 0 336 130" aria-label="Dure."><text x="0" y="104" font-family="Newsreader" font-size="130" font-weight="680" letter-spacing="-5.8" fill="#1F3A40" style="font-variation-settings:'opsz' 72">Dure</text><g transform="translate(316 89)"><g transform="rotate(-28)"><ellipse rx="11.5" ry="15" fill="#6B4226"/><ellipse cx="-3.6" cy="-4.5" rx="4" ry="6.4" fill="#8F5E38" opacity=".55"/><path d="M0.6 -13.6 C -5.2 -7.4 5.2 -1.6 0 4 C -4.2 8.4 1.2 11.2 0.2 13.8" stroke="#2B180C" stroke-width="2.3" fill="none" stroke-linecap="round"/></g></g></svg></a><div class="ctl" id="ctl" style="display:none"><button id="undo" class="btn-ghost btn-sm" disabled>↶ <span>Back a step</span></button><button id="rephone" class="btn-ghost btn-sm">⟲ <span>Choose phone</span></button></div><div class="barr"><a class="back label-i" href="./">← Back to the story</a></div></div>
+
+<section id="pick">
+  <div class="k">Demo</div>
+  <h1>You are Noor. <em>Sell your coffee by text.</em></h1>
+  <p class="lead">It's the coffee harvest in Letefoho, Ermera, and your parchment is dry. Pick the phone you carry, write to Dure AI however you like, send a photo, and follow one 40 kg sack all the way to getting paid.</p>
+  <div class="choices">
+    <button class="choice" data-skin="nokia"><svg viewBox="0 0 60 130"><rect x="4" y="2" width="52" height="126" rx="18" fill="#2E3A42"/><rect x="11" y="18" width="38" height="36" rx="4" fill="#B7CF9A"/><ellipse cx="30" cy="64" rx="10" ry="5" fill="#46555E"/><g fill="#4A5A64"><rect x="12" y="76" width="10" height="7" rx="3"/><rect x="25" y="76" width="10" height="7" rx="3"/><rect x="38" y="76" width="10" height="7" rx="3"/><rect x="12" y="88" width="10" height="7" rx="3"/><rect x="25" y="88" width="10" height="7" rx="3"/><rect x="38" y="88" width="10" height="7" rx="3"/><rect x="12" y="100" width="10" height="7" rx="3"/><rect x="25" y="100" width="10" height="7" rx="3"/><rect x="38" y="100" width="10" height="7" rx="3"/></g></svg><b>Feature phone</b><span>the kind most farmers carry</span></button>
+    <button class="choice" data-skin="android"><svg viewBox="0 0 64 130"><rect x="2" y="2" width="60" height="126" rx="10" fill="#141A1E"/><rect x="6" y="8" width="52" height="114" rx="6" fill="#F5F3EF"/><rect x="10" y="30" width="30" height="10" rx="5" fill="#fff" stroke="#DDD"/><rect x="24" y="46" width="30" height="10" rx="5" fill="#D8ECCB"/><rect x="10" y="62" width="34" height="14" rx="5" fill="#fff" stroke="#DDD"/><circle cx="32" cy="12" r="1.6" fill="#141A1E"/></svg><b>Android phone</b><span>a cheap smartphone, plain SMS</span></button>
+  </div>
+  <p class="fine">Dure AI speaks Tetum and English. No app to install. Every message is a plain text message. Battery low, one or two bars of signal, like on the slopes above Letefoho.</p>
+</section>
+
+<section id="stage">
+  <div class="phoneWrap" id="phoneWrap"></div>
+  <aside class="side">
+    <h2>Your first sale</h2>
+    <div class="sub">Write the way you'd write to a neighbour, any spelling.</div><div class="langs">Dure AI speaks <b>Tetum</b> · <b>English</b></div>
+    <ol class="steps" id="steps">
+      <li><i>1</i>Morning price arrives</li><li><i>2</i>Tell Dure AI what you're selling</li><li><i>3</i>Send one photo</li>
+      <li><i>4</i>The pool fills up</li><li><i>5</i>Buyers bid</li><li><i>6</i>Pickup and check</li><li><i>7</i>Get paid</li>
+    </ol>
+    <div class="tries" id="tries"></div>
+    <div class="console" id="console"><div class="hd"><span>Dure AI · what it understood</span><b></b></div><div class="empty">Send a message and watch it being read.</div></div>
+    <div class="end" id="end"></div>
+  </aside>
+</section>
+
+<script>
+/*CROP*/
+/*GRADER*/
+
+/* =====================================================================
+   Dure AI — rule-based message reader.
+   Languages: Tetum, English.
+   Lexicon + fuzzy spelling match + slot-aware number rules.
+   parse(text, expect) — expect is the field Dure AI just asked for
+   ('kg' | 'ask' | null), so a bare "50" or ".39" lands in the right slot.
+   ===================================================================== */
+const DureAI=(()=>{
+  const HANGUL=/[^\s\S]/; // never matches: no Hangul in this build
+  const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').normalize('NFC').replace(/[’'`]/g,'');
+  const lev=(a,b)=>{const m=a.length,n=b.length;if(Math.abs(m-n)>2)return 9;const d=Array.from({length:m+1},(_,i)=>[i]);for(let j=1;j<=n;j++)d[0][j]=j;
+    for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[m][n]};
+  const LEX={
+    coffee:['coffee','coffe','cofee','kofi','kafe','kafeh','cafe','kopi','parchment','perchment','pergaminho'],
+    other:['potato','potatoes','batata','cabbage','repolho','tomato','tomatoes','tomate','onion','cebola','corn','milho','maize','rice','foos','carrot','carrots','snoura','senoura'],
+    unit:['kg','kgs','kilo','kilos','kilu','kilus','quilo','quilos','kilogram','kilograms','kilograma'],
+    cent:['sentavu','sentavus','sentavos','centavos','sen','cent','cents','c','ct'],
+    dollar:['dollar','dollars','dolar','usd'],
+    sell:['fan','faan','sell','selling','sale','hakarak','want'],
+    priceW:['folin','presu','harga','price','minimu','minimum','min','least','lowest'],
+    good:['diak','good','nice','great','clean','furak','kapaas','moos','mos'],
+    mid:['normal','regular','ok-ish','mediu','average','notbad','soso'],
+    bad:['aat','bad','poor','damaged','broken','wet','mouldy','moldy','mould','fuhuk','dodok','bokon','rotten'],
+    very:['los','loos','very','really'],
+    greet:['bondia','botarde','bonoite','hello','hi','hey'],
+    any:['any','anything','whatever','laimporta'],
+  };
+  const LANGW={tet:['bondia','botarde','bonoite','diak','los','fan','faan','sentavu','kilu','kafe','bele','hau','ha','ita','ami','nia','nee','neebe','hakarak','atu','folin','presu','aat','obrigadu','laimporta','loos','lae','furak','iha','ho','no','ba','moos','mos','dolar','deit','mak','sei','simu','hatene','uitoan','barak','balun','maran','metan','bokon','fuhuk','minimu','tinan','ohin','aban','maun','mana','kilograma','sin','sim','sentavos','centavos','hotu-hotu','uluk','hein','saida','hira','ruma','leten'],
+    en:['coffee','sell','selling','good','bad','price','cents','hello','hi','want','very','have','of','the','yes','no','any','not','clean','parchment','i','my','is','it','and','for','but','some','about','around','fine','go','ahead','nope','yep','thanks','please','lowest','per','take','sorry','can','dry','wet','kilos','minimum','morning','quality','sure','whatever','dollar','dollars','okay','ok']};
+  const PREF=w=>{if(!HANGUL.test(w))return null;for(const k in LEX)for(const x of LEX[k])if(HANGUL.test(x)&&x.length>=2&&w.startsWith(x))return {k,fixed:x===w?null:x};return null};
+  function find(tok){
+    for(const k in LEX){if(LEX[k].includes(tok))return {k,fixed:null}}
+    const p=PREF(tok);if(p)return p;
+    if(tok.length>=5&&!HANGUL.test(tok))for(const k of ['coffee','other','unit','cent','sell','good','bad','any','priceW']){for(const w of LEX[k]){if(w.length<4||HANGUL.test(w))continue;const d=lev(tok,w);if(d<=(w.length>=6?2:1))return {k,fixed:w}}}
+    return null;}
+  const YES=['yes','y','ya','yeah','yep','sure','ok','okay','loos','ls','sin','sim'], NO=['no','n','nope','lae'];
+  /* number words people text in Timor-Leste: Tetum, plus the Indonesian, Portuguese and English ones they mix in */
+  const NW={sanulu:10,ruanulu:20,tolunulu:30,haatnulu:40,limanulu:50,neennulu:60,hitunulu:70,ualunulu:80,sianulu:90,
+    ten:10,twenty:20,thirty:30,forty:40,fourty:40,fifty:50,sixty:60,seventy:70,eighty:80,ninety:90,
+    vinte:20,trinta:30,quarenta:40,cinquenta:50,sessenta:60,setenta:70,oitenta:80,noventa:90,cem:100};
+  const ID_UNITS={dua:2,tiga:3,empat:4,lima:5,enam:6,tujuh:7,delapan:8,sembilan:9};
+  const TET_UNITS={ida:1,rua:2,tolu:3,haat:4,lima:5};
+  function words2num(t){
+    t=t.replace(/\b(dua|tiga|empat|lima|enam|tujuh|delapan|sembilan)\s+puluh\b/g,(m,a)=>String(ID_UNITS[a]*10)).replace(/\bseratus\b/g,'100');
+    t=t.replace(/\batus\s+(ida|rua|tolu|haat|lima)\b/g,(m,a)=>String(TET_UNITS[a]*100)).replace(/\b(a|one)\s+hundred\b/g,'100');
+    return t.replace(/\b[a-z]+\b/g,w=>NW[w]!==undefined?String(NW[w]):w);
+  }
+  /* "1 dolar 45 sentavu", "1 dollar 25", "1 dolar" -> "$1.45" */
+  function money(t){
+    t=t.replace(/(?<![\d.])(\d{1,2})\s*(?:dolar|dollar|dollars|dolares)\s+(\d{1,2})\b(?:\s*(?:sentavu|sentavus|sentavos|centavos|cents?|sen|c)\b)?/g,(m,d,c)=>` $${d}.${c.padStart(2,'0')} `);
+    return t.replace(/(?<![\d.])(\d{1,2})\s*(?:dolar|dollar|dollars|dolares)\b(?!\s*\d)/g,(m,d)=>` $${d} `);
+  }
+  /* whole messages in a language Dure doesn't read yet (code-switched words alone don't count) */
+  const FOREIGN=['saya','mau','jual','berapa','selamat','pagi','siang','sore','bagus','tolong','kirim','hari','ini','ada','boleh','saja','kualitas','terima','kasih',
+    'bom','boa','vendo','quero','vender','tenho','para','preco','obrigado','ate','seco','dolares','quilos','minimo','nina','kahawa','nzuri','habari','sabini'];
+  const ANYPAIR=[['saida','deit'],['hira','deit'],['ruma','deit'],['neebe','deit'],['hotu-hotu','ok'],['any','price'],['simu','hotu']];
+  const CJK=/[぀-ヿ㐀-鿿가-힣]/;
+  function parse(text,expect){
+    let t=norm(text).replace(/(\d)\s*,(\d{1,2})(?!\d)/g,'$1.$2');
+    const LB={tet:0,en:0};t.split(/[^a-z-]+/).forEach(w=>{if(['sanulu','ruanulu','tolunulu','haatnulu','limanulu','neennulu','hitunulu','ualunulu','sianulu','atus','dolar','sentavu','sentavus','sentavos','centavos'].includes(w))LB.tet++;
+      if(['ten','twenty','thirty','forty','fourty','fifty','sixty','seventy','eighty','ninety','hundred','dollar','dollars','cents'].includes(w))LB.en++});
+    t=money(words2num(t));
+    t=t.replace(/(\d+(?:\.\d+)?)([a-z가-힣]+)/g,'$1 $2').replace(/\$\s*/g,' $ ');
+    const toks=t.split(/[^a-z0-9.$가-힣-]+/).map(x=>x.replace(/\.+$/,'')).filter(Boolean);
+    const joined=[];for(let i=0;i<toks.length;i++){const two=toks[i]+(toks[i+1]||'');if(['laimporta','notbad','soso'].includes(two)){joined.push(two);i++}else joined.push(toks[i])}
+    const out={lang:null,crop:null,other:null,kg:null,grade:null,ask:null,any:false,yes:false,no:false,fixes:[],spans:{},hits:0};
+    const score={tet:LB.tet,en:LB.en};let letters=false,foreign=0;
+    const tags=joined.map(w=>{const num=/^\d*\.?\d+$/.test(w)?parseFloat(w):null;const hit=num===null&&w!=='$'?find(w):null;
+      if(num===null&&w!=='$'&&!(hit&&hit.k==='unit'))letters=true;if(hit&&hit.k!=='unit')out.wordHits=(out.wordHits||0)+1;if(YES.includes(w)||NO.includes(w))out.wordHits=(out.wordHits||0)+1;
+      for(const L in LANGW)if(LANGW[L].includes(w)||(hit&&hit.fixed&&LANGW[L].includes(hit.fixed)))score[L]++;
+      if(FOREIGN.includes(w))foreign++;
+      if(hit)out.hits++;return {w,num,hit,dollar:w==='$'}});
+    let q=null,very=false;const add=(k,w)=>{out.spans[k]=(out.spans[k]||[]).concat(w)};
+    const units=tags.filter(x=>x.num!==null).length;
+    tags.forEach((g,i)=>{const nx=tags[i+1],pv=tags[i-1];
+      if(YES.includes(g.w)){out.yes=true;out.hits++}if(NO.includes(g.w)){out.no=true;out.hits++}
+      if(pv&&ANYPAIR.some(([a,b])=>pv.w===a&&g.w===b))out.any=true;
+      if(g.w==='grade'&&nx&&/^[abc]$/.test(nx.w)){q=nx.w.toUpperCase();add('grade',[g.w,nx.w])}
+      if(g.hit){const k=g.hit.k;if(g.hit.fixed)out.fixes.push(`${g.w} → ${g.hit.fixed}`);
+        if(k==='coffee'){out.crop='coffee';add('crop',g.w)}
+        if(k==='other')out.other=g.hit.fixed||g.w;
+        if(k==='very'){very=true;add('grade',g.w)}
+        if(k==='good'&&!(pv&&(pv.w==='not'||pv.w==='no'||pv.w==='la'||pv.w==='dia'||pv.w==='bondia'))){q='A';add('grade',g.w)}
+        if(k==='good'&&pv&&pv.w==='la'){q='C';add('grade',g.w)}
+        if(k==='mid'){q='B';add('grade',g.w)}
+        if(k==='bad'){q=(pv&&pv.w==='not')?'B':'C';add('grade',g.w)}
+        if(k==='any')out.any=true;}
+      /* defects: a few dark beans is B, many is C */
+      if(g.w==='metan'||g.w==='black'){const few=(nx&&['uitoan','balun'].includes(nx.w))||(pv&&['some','few','a'].includes(pv.w));
+        const many=(nx&&['barak','hotu'].includes(nx.w))||(pv&&['lots','many','lot'].includes(pv.w))||tags.slice(Math.max(0,i-2),i).some(x=>x.w==='lots'||x.w==='many');
+        q=many?'C':few?'B':(q||'B');add('grade',g.w)}
+      if(g.num!==null){
+        const unit=nx&&nx.hit&&nx.hit.k==='unit', cent=nx&&nx.hit&&nx.hit.k==='cent', dol=(pv&&pv.dollar)||(nx&&(nx.dollar||nx.hit&&nx.hit.k==='dollar'));
+        const priceCtx=tags.slice(Math.max(0,i-3),i).some(x=>x.hit&&(x.hit.k==='sell'||x.hit.k==='priceW'))||(pv&&pv.hit&&pv.hit.k==='priceW');
+        const dec=/\./.test(g.w);
+        const unitBefore=pv&&pv.hit&&pv.hit.k==='unit'&&!dec&&g.num>=5&&!(nx&&nx.hit&&nx.hit.k==='unit');   // Tetum order: "kilu 40"
+        const nearCoffee=tags.slice(Math.max(0,i-3),i).some(x=>x.hit&&x.hit.k==='coffee');
+        if(unit){if(out.kg===null||nearCoffee){out.kg=g.num;add('kg',[g.w,nx.w])}}
+        else if(unitBefore&&out.kg===null){out.kg=g.num;add('kg',[pv.w,g.w])}
+        else if(cent){out.ask=+(g.num/100).toFixed(2);add('ask',[g.w,nx.w])}
+        else if(dol){out.ask=g.num;add('ask',[g.w])}
+        else if(dec&&g.num<5){out.ask=g.num;add('ask',[g.w])}
+        else if(expect==='ask'&&out.ask===null&&g.num<5){out.ask=g.num;add('ask',[g.w])}
+        else if(expect==='ask'&&out.ask===null&&g.num>=50&&g.num<500){out.ask=+(g.num/100).toFixed(2);add('ask',[g.w])}   // "140" = 140 cents
+        else if(expect==='kg'&&out.kg===null){out.kg=g.num;add('kg',[g.w])}
+        else if(priceCtx&&g.num>=50&&g.num<500&&!dec&&(out.kg!==null||tags.some((x,j)=>j>i&&x.num!==null))){out.ask=+(g.num/100).toFixed(2);add('ask',[g.w])}
+        else if(out.kg===null&&g.num>=5){out.kg=g.num;add('kg',[g.w]);out.fixes.push(`${g.w} → ${g.w} kg (assumed)`)}
+        else if(priceCtx&&g.num>=50&&g.num<500){out.ask=+(g.num/100).toFixed(2);add('ask',[g.w])}
+        if(out.kg!==null||out.ask!==null)out.hits++;
+      }});
+    if(q)out.grade=q;
+    if(out.any)out.ask=out.ask??null;
+    const best=Object.entries(score).sort((a,b)=>b[1]-a[1])[0];
+    out.lang=best[1]>0?best[0]:null;
+    const own=score.tet+score.en;
+    out.unknown=CJK.test(text)||(foreign>=2&&foreign>own)||(letters&&!out.wordHits&&best[1]===0&&!(expect&&units));
+    if(!out.unknown&&!out.lang&&letters&&expect&&units)out.lang=null;
+    /* sure = the rules engine answers on its own; otherwise the small model is asked (when it's reachable) */
+    const nums=tags.filter(x=>x.num!==null).length;
+    /* sure only if every word was recognised: a known word, a language marker, a greeting, yes/no or a number */
+    const known=w=>/^[\d.$]+$/.test(w)||YES.includes(w)||NO.includes(w)||FOREIGN.includes(w)||Object.values(LANGW).some(L=>L.includes(w))||!!find(w)||['a','of','the','and','per','is','ok','pls','please','obrigadu','obrigada'].includes(w);
+    const unknownWords=joined.filter(w=>!known(w)).length;
+    out.sure=out.unknown?(CJK.test(text)||foreign>=2):(!out.fixes.length&&unknownWords===0&&nums<=2&&(out.lang!==null||(!!expect&&nums>0&&!letters)));
+    out.raw=text;return out;}
+  return {parse};
+})();
+
+/* ---------- words Dure AI says ---------- */
+const LINE='--------------';
+const T={
+ en:{bigKg:n=>`${n} kg? That's more than one farm can bring.\nHow many kg of parchment? (e.g. 40 kg)`,dropBtn:'Take your sack to the pickup point',truckBtn:'Skip to the truck, 07:05',payBtn:'Skip to payment',droppedMe:'dropped at church',dropAck:'Got it ✓\n'+LINE+'\nSack #0412 at the pickup point.\nTruck comes at 07:00.',name:'English',got:'Got it',crop:'Crop',qty:'Quantity',grade:'Grade',ask:'Your ask',any:'any price',cropName:'parchment coffee',
+  askCrop:"What are you selling, and how many kg?\nThis week's pool is parchment coffee.",askKg:'How many kg of parchment?',
+  askAsk:'Lowest price you\'d take, per kg?\nA 1.40–1.48 · B 1.22–1.30 · C .94–1.02\nReply "any" if you don\'t mind.',askPhoto:'Now send one photo of the parchment, spread out.',
+  low:'That\'s well under this week\'s prices.',high:'That\'s above this week\'s prices, so you may sit out.',
+  cropOnly:"This week's pool is parchment coffee only.\nAny coffee to sell?",remind:'Tap the paper clip (or "Photo") to send one picture.',photoFirst:'First tell me what you\'re selling and how many kg.',
+  checking:'Checking the photo…',first:'First look: grade',note:'A person confirms the grade at pickup.',unsure:c=>`Not sure about this photo (${c}%).\nPlease send another: closer, in daylight, beans spread out.`,novel:'This photo is unlike the ones I learned from, so I won\'t guess a grade.\nSend a closer photo of a few beans, or skip it: a person grades every sack at pickup.',
+  def:['Black or mouldy','Insect holes','Uneven drying','Stones, twigs'],val:{none:'none',slight:'slight',small:'some',found:'found'},
+  poolIn:"You're in this week's Letefoho pool\n"+LINE+"\n1,420 of 2,000 kg so far\nI'll text you when it's full.",
+  poolFull:'Pool full\n'+LINE+'\n2,000 kg · 23 farms\nBidding opens $1.24/kg\nCloses 17:00',
+  auction:'Auction closed\n'+LINE+'\n5 buyers bid\nLot price $1.30/kg\nA $1.46 · B $1.28 · C $0.98',
+  sold:(kg,g,p,pay)=>`Sold ✓\n${LINE}\n${kg} kg · grade ${g}\n$${p}/kg = $${pay}\n${LINE}\nPickup Thu 07:00, church`,
+  sit:(g,p,a)=>`Grade ${g}: $${p}/kg\nYour ask: $${a}/kg\n${LINE}\nYou sit this one out, no penalty.\nReply YES by 20:00 to sell anyway, or NO.`,
+  yes:'OK, you\'re in.\nPickup Thu 07:00, church.',no:'No problem, nothing on your record.\nNext pool: Monday.',yn:'Reply YES or NO.',
+  pickup:(g,kg)=>`Picked up ✓\n${LINE}\nSack #0412 · ${kg} kg\nGrade ${g} confirmed by hand\nOn truck 2 to Dili`,paid:(pay,bal)=>`Paid ✓\n${LINE}\n+$${pay} to your mobile wallet\nBalance $${bal}`,
+  record:r=>`Your record\n${LINE}\nSales: 1 · on time: 1\nGrade matched photo: 1\nLikely to deliver: ${r}%`,wait:'Noted. I\'ll text you when there\'s news.',done:'Thanks! See you next week.',upd:a=>`Updated ✓ Your ask: $${a}/kg`},
+ tet:{bigKg:n=>`${n} kg? Barak liu ba to'os ida.\nKafé kilu hira? (ez. 40 kilu)`,dropBtn:'Lori ita-nia saku ba fatin pickup',truckBtn:'Salta ba kamioneta, 07:05',payBtn:'Salta ba selu',droppedMe:'tau ona iha igreja',dropAck:'Diak ✓\n'+LINE+'\nSaku #0412 iha fatin pickup.\nKamioneta mai 07:00.',name:'Tetum',got:'Diak',crop:'Aihan',qty:'Kuantidade',grade:'Grau',ask:'Folin minimu',any:'saida de\'it',cropName:'kafé',
+  askCrop:"Ita fan saida, kilu hira?\nSemana ne'e kafé de'it.",askKg:'Kafé kilu hira?',
+  askAsk:'Folin minimu ba kilu ida?\nA 1.40–1.48 · B 1.22–1.30 · C .94–1.02\nHatan "la importa" se la importa.',askPhoto:'Agora haruka foto ida husi ita-nia kafé.',
+  low:"Ne'e kiak liu folin semana ne'e.",high:"Ne'e aas liu folin semana ne'e, karik la tama.",
+  cropOnly:"Semana ne'e kafé de'it.\nIta iha kafé?",remind:'Hili klip (ka "Photo") hodi haruka foto ida.',photoFirst:'Uluk fo hatene ita fan saida no kilu hira.',
+  checking:'Haree hela foto…',first:'Haree dahuluk: grau',note:'Ema ida konfirma grau iha pickup.',unsure:c=>`Hau la iha serteza ho foto ne'e (${c}%).\nFavór haruka foto seluk: besik liu, ho naroman, kafé habelar.`,novel:"Foto ne'e la hanesan foto sira ne'ebé hau aprende ona, entaun hau la fó grau.\nHaruka foto besik liu, ka la presiza: ema ida haree saku hotu iha pickup.",
+  def:['Metan ka fuhuk',"Kuak ki'ik",'Maran la hanesan','Fatuk, ai-tahan'],val:{none:'laiha',slight:'uitoan',small:'balun',found:'iha'},
+  poolIn:'Ita tama ona pool Letefoho\n'+LINE+'\n1.420 husi 2.000 kg\nHau haruka SMS bainhira nakonu.',
+  poolFull:'Pool nakonu\n'+LINE+"\n2.000 kg · to'os 23\nLeilaun hahu $1.24/kg\nTaka 17:00",
+  auction:'Leilaun taka ona\n'+LINE+"\nSosa-na'in 5\nLote $1.30/kg\nA $1.46 · B $1.28 · C $0.98",
+  sold:(kg,g,p,pay)=>`Fan ona ✓\n${LINE}\n${kg} kg · grau ${g}\n$${p}/kg = $${pay}\n${LINE}\nPickup Kinta 07:00, igreja`,
+  sit:(g,p,a)=>`Grau ${g}: $${p}/kg\nIta-nia minimu: $${a}/kg\n${LINE}\nDala ne'e ita la tama, la iha multa.\nHatan LOOS to'o 20:00 atu fan, ka LAE.`,
+  yes:'Diak, ita tama.\nPickup Kinta 07:00, igreja.',no:'La iha problema.\nPool tuir mai: Segunda.',yn:'Hatan LOOS ka LAE.',
+  pickup:(g,kg)=>`Foti ona ✓\n${LINE}\nSaku #0412 · ${kg} kg\nGrau ${g} konfirma ho liman\nIha kamioneta 2 ba Dili`,paid:(pay,bal)=>`Selu ona ✓\n${LINE}\n+$${pay} ba ita-nia karteira\nSaldu $${bal}`,
+  record:r=>`Ita-nia rejistu\n${LINE}\nFan: 1 · tempu loos: 1\nGrau = foto: 1\nFiar entrega: ${r}%`,wait:'Diak. Hau haruka SMS bainhira iha notísia.',done:'Obrigadu! To\'o semana oin.',upd:a=>`Muda ona ✓ Minimu: $${a}/kg`}
+};
+const UNKNOWN="Sorry, I couldn't recognise that language.\nI speak Tetum and English.\n"+LINE+"\nKoalia Tetun ka Inglés.\nTetum or English works.";
+const CHIPS={
+  crop:[['bondia! kafe 40kilu diak los.. fan 1.45 bele?','TET','Morning! 40 kg of very good coffee. Can I sell at $1.45?'],['coffee 40kg, clean, 1.40','EN']],
+  kg:[['40 kilu','TET','40 kg'],['40 kg','EN']],
+  ask:[['dolar 1.45','TET','$1.45'],['la importa','TET',"I don't mind"],['1.40','EN'],['any','EN']],
+  decide:[['loos','TET','yes'],['lae','TET','no'],['YES','EN'],['NO','EN']],
+};
+/* ===================================================================== */
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const jit=(a,b)=>a+Math.random()*(b-a);
+const GP={A:1.46,B:1.28,C:0.98};
+/* real test photos the grader never saw in training (Pre-Roast Coffee Bean Grading Dataset, MIT); probs = the same model, cached for offline use */
+const PH=/*PHOTOS*/;
+const PH_LAB={A:['Photo 1','even, clean'],B:['Photo 2','a few dark marks'],C:['Photo 3','broken, discoloured'],'?':['Photo 4','blurry, hard to tell'],F:['Photo 5','real parchment, borer damage']};
+let lastGrade=null;
+let chipKind=null,stepIdx=0,hist=[],epoch=0,rep0=64,repNow=64,skin='android',msgs=[],busy=false,st='offer',lang='en',offer={crop:null,kg:null,grade:null,ask:null,any:false},photo=null,clock=[6,30],battery=20,signal=2,ffNext=null,expect=null;
+const L=()=>T[lang];
+function pad(n){return String(n).padStart(2,'0')}
+function tick(min){let [h,m]=clock;m+=min;h+=Math.floor(m/60);m%=60;clock=[h%24,m];renderBar()}
+function timeStr(){return `${pad(clock[0])}:${pad(clock[1])}`}
+function sigSvg(fill){return `<svg width="18" height="12" viewBox="0 0 18 12">${[0,1,2,3].map(k=>`<rect x="${k*4.5}" y="${9-k*3}" width="3.2" height="${3+k*3}" rx=".6" fill="${k<signal?fill:'rgba(0,0,0,.18)'}"/>`).join('')}</svg>`}
+function batSvg(fill){return `<svg width="24" height="12" viewBox="0 0 24 12"><rect x=".6" y=".6" width="20" height="10.8" rx="2.4" fill="none" stroke="${fill}" stroke-width="1.2"/><rect x="21.4" y="3.6" width="2" height="4.8" rx="1" fill="${fill}"/><rect x="2.2" y="2.2" width="${16.8*battery/100}" height="7.6" rx="1.2" fill="${battery<=20?'#C0392B':fill}"/></svg>`}
+function renderBar(){const b=document.querySelector('.bar-slot');if(!b)return;const col=skin==='android'?'#222':'#1E2B20';
+  b.innerHTML=skin==='android'?`<span>${timeStr()}</span><span class="r"><span style="font-size:11px">E</span>${sigSvg(col)}<span>${battery}%</span>${batSvg(col)}</span>`
+    :`<span class="r">${sigSvg(col)}<span>E</span></span><span>${timeStr()}</span><span class="r">${battery}%${batSvg(col)}</span>`}
+setInterval(()=>{signal=Math.random()<.55?1:2;renderBar()},2600);
+function photoSvg(g,cls='ph'){const src=PH[g]?PH[g].jpg:(typeof g==='string'&&/^(data|blob):/.test(g)?g:null);if(src)return `<img class="${cls} realph" src="${src}" alt="coffee photo">`;return cropPhoto(g).replace('<svg ',`<svg class="${cls}" preserveAspectRatio="xMidYMid slice" `)}
+
+function buildPhone(){
+  const pk=`<div class="picker" id="picker"><div class="sheet"><h4>${skin==='android'?'Choose a photo':'Insert > Picture'}</h4><div class="row">${['A','B','C','?','F'].map(g=>`<button data-g="${g}">${photoSvg(g,'')}<b>${PH_LAB[g][0]}</b><span>${PH_LAB[g][1]}</span></button>`).join('')}</div><label class="up">${skin==='android'?'📷 Take or attach a photo':'Insert file…'}<input type="file" accept="image/*" ${skin==='android'?'capture="environment"':''} id="upl"></label><p class="pknote">Or paste an image (Ctrl/⌘ V) or drop it on the phone. Photos 1–4: test photos the model never saw (Coffee Bean Grading Dataset, MIT). Photo 5: Forest &amp; Kim Starr, CC BY 3.0 US, Wikimedia Commons. The model runs in this browser; no photo is uploaded.</p><button class="x" id="pkx">Cancel</button></div></div>`;
+  const skip=`<button class="skipbar" id="skipbar"></button>`;
+  if(skin==='android'){
+    $('phoneWrap').innerHTML=`<div class="android" id="phone"><div class="scr"><div class="a-sb bar-slot"></div>
+      <div class="a-hd"><div class="av">D</div><div><b>Dure AI</b><small>SMS · +670 7700 3873 · Tetum · EN</small></div></div>
+      <div class="a-list" id="list"></div>
+      <div class="a-in" id="composer"><button id="att" title="Attach photo"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M16.5 6.5 L8 15a2.5 2.5 0 0 0 3.5 3.5l8.5-8.5a4.5 4.5 0 0 0-6.4-6.4L5 12.2a6.5 6.5 0 0 0 9.2 9.2L20 15.5" fill="none" stroke="#333" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+      <textarea id="inp" rows="1" placeholder="Text message"></textarea>${skip}
+      <button class="send" id="snd" title="Send"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M3 20 L21 12 L3 4 L5.5 12Z" fill="#F6EFE0"/></svg></button></div>${pk}</div></div>`;
+  } else {
+    $('phoneWrap').innerHTML=`<div class="nokia" id="phone"><div class="ear"></div><div class="scr"><div class="lcd" id="lcd">
+      <div class="sb bar-slot"></div><div class="lst" id="list"></div>
+      <div id="composer" style="position:relative"><div class="inp">&gt;&nbsp;<input id="inp" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type here"></div>${skip}
+      <div class="soft"><button id="att">Photo</button><button id="snd">Send</button></div></div></div>${pk}</div>
+      <div class="nnav"><button style="background:#4E8B5C" id="snd2" title="Send"></button><span class="dp"></span><button style="background:#A8452A" id="clr" title="Clear"></button></div>
+      <div class="nkeys">${['1 .,?','2 abc','3 def','4 ghi','5 jkl','6 mno','7 pqrs','8 tuv','9 wxyz','* $-!','0','# ␣'].map(k=>`<button tabindex="-1" data-k="${k[0]}">${k[0]}<small>${k.slice(2)}</small></button>`).join('')}</div></div>`;
+    $('lcd').addEventListener('click',e=>{if(!e.target.closest('#skipbar'))$('inp').focus()});
+    $('snd2').onclick=send;$('clr').onclick=()=>{$('inp').value=$('inp').value.slice(0,-1);$('inp').focus()};
+    let kLast=null,kT=0,kI=0;const CYC={'*':['.',',','?','!','$','-',"'"],'#':[' ','#','/']};
+    document.querySelectorAll('.nkeys button').forEach(b=>b.onclick=()=>{const k=b.dataset.k,el=$('inp'),now=Date.now();
+      if(CYC[k]){if(kLast===k&&now-kT<900){kI=(kI+1)%CYC[k].length;el.value=el.value.slice(0,-1)+CYC[k][kI]}else{kI=0;el.value+=CYC[k][0]}}
+      else el.value+=k;kLast=k;kT=now;b.classList.add('hit');setTimeout(()=>b.classList.remove('hit'),120);});
+  }
+  fitPhone();renderBar();
+  $('snd').onclick=send;
+  $('inp').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});
+  if(skin==='android')$('inp').addEventListener('input',e=>{e.target.style.height='auto';e.target.style.height=Math.min(96,e.target.scrollHeight)+'px'});
+  $('att').onclick=()=>{if(busy||ffNext)return;$('att').classList.remove('blink');$('picker').classList.add('on')};
+  $('pkx').onclick=()=>{$('picker').classList.remove('on');if(chipKind==='photo')$('att').classList.add('blink')};
+  document.querySelectorAll('#picker .row button').forEach(b=>b.onclick=()=>{$('picker').classList.remove('on');sendPhoto(b.dataset.g)});
+  const readImg=f=>{if(!f||!/^image\//.test(f.type))return;const r=new FileReader();r.onload=()=>{$('picker').classList.remove('on');sendPhoto(r.result)};r.readAsDataURL(f)};
+  const ph=$('phone');ph.addEventListener('dragover',e=>{e.preventDefault();ph.classList.add('drop')});ph.addEventListener('dragleave',()=>ph.classList.remove('drop'));
+  ph.addEventListener('drop',e=>{e.preventDefault();ph.classList.remove('drop');readImg(e.dataTransfer.files&&e.dataTransfer.files[0])});
+  if(!window.__pasteHooked){window.__pasteHooked=1;document.addEventListener('paste',e=>{const it=[...(e.clipboardData&&e.clipboardData.items||[])].find(x=>x.type.startsWith('image/'));if(!it)return;e.preventDefault();const f=it.getAsFile();const r=new FileReader();r.onload=()=>{const pk=$('picker');if(pk)pk.classList.remove('on');sendPhoto(r.result)};r.readAsDataURL(f)})}
+  if($('upl'))$('upl').onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$('picker').classList.remove('on');sendPhoto(r.result)};r.readAsDataURL(f);e.target.value=''};
+  Grader.load().catch(()=>{});
+  $('skipbar').onclick=async()=>{if(!ffNext||busy)return;snap();const f=ffNext;ffHide();busy=true;await f();busy=false;syncCtl()};
+  render();
+}
+function fitPhone(){const p=$('phone');if(!p)return;if(innerWidth<=420&&skin==='android'){p.style.transform='';$('phoneWrap').style.height='';return}
+  const h=p.offsetHeight,sc=Math.min(1,(innerHeight-80-(document.body.classList.contains('sheet')?70:0))/h);p.style.transform=sc<1?`scale(${sc.toFixed(3)})`:'';p.style.transformOrigin='top center';$('phoneWrap').style.height=sc<1?(h*sc)+'px':''}
+addEventListener('resize',fitPhone);
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+const hk=s=>s;
+function msgHtml(m){
+  if(skin==='android'){
+    if(m.who==='sys')return `<div class="sys">${m.text}</div>`;
+    if(m.who==='typing')return `<div class="typing"><i></i><i></i><i></i></div>`;
+    const meta=m.who==='me'?`<span class="meta">${m.time} · ${m.status==='sending'?'Sending…':'Sent'}</span>`:`<span class="meta">${m.time}</span>`;
+    return `<div class="bub ${m.who}">${m.svg||''}${m.img?photoSvg(m.img):''}${m.text?esc(m.text):''}${m.prog!=null?`<div class="prog"><i style="width:${m.prog}%"></i></div><span class="meta">Sending MMS… ${Math.round(m.prog)}%</span>`:meta}</div>`;
+  }
+  if(m.who==='sys')return `<div class="lm sysm">-- ${m.text} --</div>`;
+  if(m.who==='typing')return `<div class="lm"><span class="w">Dure AI</span>...</div>`;
+  const who=m.who==='me'?'Me':m.who==='bank'?'BankuRai':'Dure AI';const status=m.who==='me'?(m.prog!=null?` Sending ${Math.round(m.prog)}%`:m.status==='sending'?' Sending...':' Sent'):'';
+  return `<div class="lm ${m.who}"><span class="w">${who} ${m.time}${status}</span>${m.svg||''}${m.img?photoSvg(m.img):''}${m.text?hk(esc(m.text)):''}</div>`;
+}
+function render(full){
+  const Ls=$('list');if(!Ls)return;
+  if(full){Ls.innerHTML='';msgs.forEach(m=>{m.el=null;m._h=null})}
+  const live=new Set(msgs.map(m=>m.el).filter(Boolean));
+  [...Ls.children].forEach(c=>{if(!live.has(c))c.remove()});
+  let added=false;
+  msgs.forEach((m,i)=>{
+    if(m.prog!=null&&m.el&&m._h&&m.el.querySelector('.prog')&&skin==='android'){m.el.querySelector('.prog i').style.width=m.prog+'%';m.el.querySelector('.bub>.meta,.meta:last-child').textContent=`Sending MMS… ${Math.round(m.prog)}%`;return}
+    const h=msgHtml(m);
+    if(m.el&&m._h===h)return;
+    const tpl=document.createElement('template');tpl.innerHTML=h.trim();const el=tpl.content.firstChild;
+    if(m.el){el.classList.add('still');m.el.replaceWith(el)}else{added=true;if(full)el.classList.add('still');Ls.appendChild(el)}
+    m.el=el;m._h=h;
+  });
+  if(added||full)Ls.scrollTop=Ls.scrollHeight;
+}
+function push(m){m.time=timeStr();msgs.push(m);render();return m}
+async function aiSay(text,wait=[1100,2000]){
+  const t=push({who:'typing'});await sleep(Math.max(250,jit(...wait)-readMs));readMs=0;msgs.splice(msgs.indexOf(t),1);
+  push({who:'ai',text});buzz();}
+function buzz(force){if(skin==='android'&&!force)return;const p=document.querySelector('#phone .scr');p.classList.remove('buzz');void p.offsetWidth;p.classList.add('buzz')}
+function step(n){stepIdx=n;if(SHEET){const li=document.querySelectorAll('#steps li')[Math.min(6,n)];if(li)$('pkStep').textContent=`Step ${Math.min(7,n+1)} of 7 · ${li.textContent.replace(/^\d+/,'').trim()}`;if(n>=3&&n<=6){const e=$('pkInfo');e.textContent='Tap to follow the steps and what Dure AI checked';e.classList.remove('new')}}const tp=$('topprog');if(tp)tp.style.width=(Math.min(7,n)/7*100)+'%';document.querySelectorAll('#steps li').forEach((li,i)=>{li.className=i<n?'done':i===n?'now':''})}
+function ffShow(label,fn){const b=$('skipbar');b.textContent=skin==='nokia'?label.replace(' ⏩',' >>'):label;ffLabel=label;requestAnimationFrame(()=>{const Ls=$('list');if(Ls)Ls.scrollTop=Ls.scrollHeight});$('composer').classList.add('skip');ffNext=fn}
+let ffLabel='';function ffHide(){$('composer').classList.remove('skip');ffNext=null;ffLabel=''}
+function chips(kind){const box=$('tries');chipKind=kind;const list=CHIPS[kind];
+  const a=$('att');if(a)a.classList.toggle('blink',kind==='photo');
+  if(!list){box.style.display='none';box.innerHTML='';return}box.style.display='';
+  box.innerHTML=`<b>Stuck? Tap one to try it</b>`+list.map(([tx,lg,en])=>`<button data-c="${esc(tx)}"><span class="tx">${esc(tx)}${en?`<small>(${esc(en)})</small>`:''}</span><span class="lg">${lg}</span></button>`).join('');
+  box.querySelectorAll('button').forEach(b=>b.onclick=()=>{$('inp').value=b.dataset.c;if(skin==='android')$('inp').dispatchEvent(new Event('input'));
+    if(SHEET){sheet(false);setTimeout(()=>$('inp').focus({preventScroll:true}),380)}else if(innerWidth<=900){$('phone').scrollIntoView({behavior:'smooth',block:'end'});setTimeout(()=>$('inp').focus({preventScroll:true}),450)}else $('inp').focus()});}
+
+/* ---------- console ---------- */
+function showParse(p){
+  peekInfo(p.unknown?'Dure AI: language not recognised':`Dure AI read: ${[offer.crop,offer.kg!=null?offer.kg+' kg':null,offer.any?'any price':offer.ask!=null?'$'+offer.ask.toFixed(2)+'/kg':null].filter(Boolean).join(' · ')||'nothing yet'}`);
+  let raw=esc(p.raw);const marks=[].concat(p.spans.crop||[],p.spans.kg||[],p.spans.grade||[],p.spans.ask||[]).flat();
+  [...new Set(marks)].forEach(w=>{if(!w)return;const re=new RegExp('('+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','i');raw=raw.replace(re,'<mark>$1</mark>')});
+  const row=(l,v,need)=>`<tr><td>${l}</td>${v==null?`<td class="miss">${need?'missing, will ask':'—'}</td>`:`<td>${v}</td>`}</tr>`;
+  $('console').innerHTML=`<div class="hd"><span>Dure AI · what it understood</span><b></b></div><div class="raw">${raw}</div>
+    <table>${row('Read by',engine.name==='model'?`small model · 0.5B · ${engine.ms} ms`:engine.why==='sure'?'rules engine · sure, model not needed':`rules engine · ${engine.why}`)}${row('Language',p.unknown?'not recognised':p.lang?T[p.lang].name:'(kept) '+T[lang].name)}${row('Crop',offer.crop,1)}${row('Quantity',offer.kg!=null?offer.kg+' kg':null,1)}${row('Quality words',offer.grade?offer.grade+' · preliminary':null)}${row('Your ask',offer.any?'any price':offer.ask!=null?'$'+offer.ask.toFixed(2)+' / kg':null,1)}</table>
+    ${p.fixes.length?`<div class="note">Spelling read as: ${p.fixes.map(esc).join(', ')}</div>`:''}${expect?`<div class="note">Expecting: ${expect==='kg'?'a quantity':'a price'}, so a bare number goes there.</div>`:''}`;
+}
+function showPhoto(g,r){peekInfo(r.novel?'Photo check: unlike the training photos · not graded':r.sure?`Photo check: grade ${r.grade} · ${r.conf}% · tap to see how`:`Photo check: not sure (${r.conf}%) · asked for another photo`);
+  const bars=r.probs?['A','B','C'].map((k,n)=>`<tr><td>Grade ${k}</td><td><span class="pbar"><i style="width:${r.probs[n]}%"></i></span> ${r.probs[n]}%</td></tr>`).join(''):'<tr><td colspan="2">Grader unavailable</td></tr>';
+  const eng=r.engine==='model'?`photo model · MobileNetV3-Small · 3.7 MB · in this browser · ${r.ms} ms`:r.engine==='cached'?'photo model · result cached (offline)':'photo model unavailable';
+  $('console').innerHTML=`<div class="hd"><span>Dure AI · photo check</span><b></b></div><div style="display:flex;gap:10px;margin-bottom:8px">${photoSvg(g,'').replace('<img ','<img style="width:110px;height:82px;border-radius:6px;object-fit:cover" ')}<div class="note" style="margin:0">IMG_0412.jpg<br>via MMS · ${offer.kg} kg<br>${eng}</div></div>
+  <table>${bars}<tr><td>Like the training photos?</td><td style="color:${r.novel?'#E4B64C':'#7FD18B'}">${r.novelty==null?'—':r.novel?`no (${r.novelty}% unexplained)`:`yes (${r.novelty}% unexplained)`}</td></tr><tr><td>${r.sure?'Preliminary grade':'Decision'}</td><td style="font-size:18px">${r.sure?`${r.grade} · ${r.conf}%`:r.novel?'not graded':'ask for another photo'}</td></tr></table>
+  <div class="note">${r.novel?'In testing, the grader was confidently wrong on photos unlike its training set, so it now refuses them. A person grades every sack at pickup.':r.sure?'Learned from 840 graded bean photos. A person confirms the grade at pickup, and that grade is the one paid.':`Below ${Math.round(Grader.THR*100)}% sure, Dure AI doesn't guess. It asks for a clearer photo; a person grades at pickup either way.`}</div>`}
+
+
+/* ---------- rewind ---------- */
+function snap(){
+  hist.push({msgs:msgs.filter(m=>m.who!=='typing').map(({el,_h,...m})=>({...m})),st,lang,offer:{...offer},photo,clock:[...clock],battery,expect,balance,repNow,
+    ff:ffNext,ffLabel,stepIdx,chipKind,console:$('console').innerHTML});
+  syncCtl();
+}
+function undo(){
+  if(busy||!hist.length)return;const h=hist.pop();epoch++;
+  msgs=h.msgs;st=h.st;lang=h.lang;offer=h.offer;photo=h.photo;clock=h.clock;battery=h.battery;expect=h.expect;balance=h.balance;repNow=h.repNow;
+  $('end').classList.remove('on');$('end').innerHTML='';$('picker').classList.remove('on');
+  document.querySelectorAll('.cam,.nvid,.bank').forEach(x=>x.remove());
+  if(h.ff)ffShow(h.ffLabel,h.ff);else ffHide();
+  step(h.stepIdx);chips(h.chipKind);$('console').innerHTML=h.console;renderBar();render(true);syncCtl();
+}
+function syncCtl(){const u=$('undo');if(u)u.disabled=busy||!hist.length}
+setInterval(syncCtl,400);
+/* ---------- conversation ---------- */
+function need(){if(!offer.crop)return 'crop';if(offer.kg==null)return 'kg';if(offer.ask==null&&!offer.any)return 'ask';if(!photo)return 'photo';return 'pool'}
+function summary(){const t=L();return `${t.got} ✓\n${LINE}\n${t.crop}: ${t.cropName}\n${t.qty}: ${offer.kg} kg\n${t.ask}: ${offer.any?t.any:offer.ask!=null?'$'+offer.ask.toFixed(2)+'/kg':'?'}\n${LINE}`}
+async function proceed(changed,prefix=''){
+  const n=need(),t=L();expect=n==='kg'?'kg':n==='ask'?'ask':null;chips(n==='pool'?null:n);
+  if(n==='crop'){await aiSay(prefix+t.askCrop);step(1);return}
+  const head=changed?summary()+'\n':'';
+  if(n==='kg'){await aiSay(prefix+head+t.askKg);step(1);return}
+  if(n==='ask'){await aiSay(prefix+head+t.askAsk);step(1);return}
+  if(n==='photo'){await aiSay(prefix+head+t.askPhoto);st='photo';step(2);return}
+  await joinPool(changed);
+}
+async function send(){
+  const el=$('inp');const text=el.value.trim();if(!text||busy||ffNext)return;snap();el.value='';if(skin==='android')el.style.height='auto';
+  busy=true;const m=push({who:'me',text,status:'sending'});tick(1);
+  await sleep(jit(900,signal===1?2300:1500));m.status='sent';render();
+  await handle(text);busy=false;
+}
+/* ---------- rules engine reads every text; the small model only when the rules engine is unsure ---------- */
+const DURE_API=(new URLSearchParams(location.search).get('api')||'').replace(/\/$/,'');
+let readMs=0,engine={name:'rules',why:'sure'};
+async function readMsg(text){
+  const ex=st==='decide'?'decide':expect||'none';
+  const rules=DureAI.parse(text,expect);
+  if(rules.sure){engine={name:'rules',why:'sure'};return rules}
+  if(!DURE_API){engine={name:'rules',why:'not sure, no model connected'};return rules}
+  const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),8000),t0=performance.now();
+  const typing=push({who:'typing'});
+  try{
+    const r=await fetch(DURE_API+'/parse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({msg:text,expect:ex}),signal:ctl.signal});
+    const j=await r.json();if(!j.ok)throw new Error('unreadable output');
+    const m=j.result;readMs=performance.now()-t0;engine={name:'model',ms:j.ms};
+    return {...rules,lang:m.lang==='unknown'?null:m.lang,unknown:m.lang==='unknown',crop:m.crop==='coffee'?'coffee':null,other:m.crop==='other'?'other':null,
+      kg:m.kg,ask:m.ask,any:m.any,grade:m.grade,yes:m.yn==='yes',no:m.yn==='no',fixes:[]};
+  }catch(e){readMs=performance.now()-t0;engine={name:'rules',why:e.name==='AbortError'?'model took over 8 s':'model unreachable'};return rules}
+  finally{clearTimeout(to);msgs.splice(msgs.indexOf(typing),1);render()}
+}
+async function handle(text){
+  const p=await readMsg(text);
+  if(p.unknown){showParse(p);await aiSay(UNKNOWN);return}
+  if(p.lang)lang=p.lang;
+  const t=L();
+  if(st==='offer'||st==='photo'){
+    if(p.other&&!p.crop){showParse(p);await aiSay(t.cropOnly);return}
+    let changed=false;
+    if(p.crop&&!offer.crop){offer.crop='coffee';changed=true}
+    if(p.kg!=null&&(p.kg>1000||p.kg<1)){showParse(p);expect='kg';await aiSay(t.bigKg(p.kg));return}
+    if(p.kg!=null){offer.kg=Math.round(p.kg);changed=true}
+    if(p.grade){offer.grade=p.grade}
+    if(p.ask!=null){offer.ask=p.ask;offer.any=false;changed=true}
+    if(p.any&&(expect==='ask'||offer.ask==null)){offer.any=true;changed=true}
+    if(!offer.crop&&(offer.kg!=null||offer.ask!=null))offer.crop='coffee';
+    showParse(p);
+    let warn='';if(p.ask!=null){if(p.ask<.9)warn=t.low+'\n';else if(p.ask>1.8)warn=t.high+'\n'}
+    if(!changed&&need()==='photo'){await aiSay(t.remind,[700,1200]);return}
+    await proceed(changed,warn);return;
+  }
+  if(st==='decide'){
+    if(p.yes&&!p.no){await aiSay(t.yes);afterSold();return}
+    if(p.no){await aiSay(t.no);await repDash(false);finish(false);return}
+    await aiSay(t.yn,[700,1200]);return;
+  }
+  if(st==='wait'){await aiSay(t.wait,[700,1200]);return}
+  await aiSay(t.done,[700,1200]);
+}
+async function sendPhoto(g){
+  if(busy)return;const t=L();
+  if(st!=='offer'&&st!=='photo')return;
+  if(!offer.crop||offer.kg==null){busy=true;await aiSay(t.photoFirst,[700,1100]);busy=false;return}
+  snap();busy=true;chips(null);const m=push({who:'me',img:g,text:'',prog:0,status:'sending'});
+  const dur=jit(4200,6200);const t0=performance.now();
+  while(true){const k=(performance.now()-t0)/dur;if(k>=1)break;m.prog=Math.min(99,k*100);render();await sleep(jit(180,420))}
+  m.prog=null;m.status='sent';render();battery=19;tick(2);
+  await sleep(600);await aiSay(t.checking,[800,1200]);
+  const src=PH[g]?PH[g].jpg:g;const [r]=await Promise.all([Grader.grade(src,PH[g]),sleep(jit(900,1500))]);
+  showPhoto(g,r);
+  if(r.novel){await aiSay(t.novel);st='photo';chips('photo');busy=false;return}
+  if(!r.sure){await aiSay(t.unsure(r.conf));st='photo';chips('photo');busy=false;return}
+  photo=r.grade;lastGrade=r;
+  await aiSay(`${t.first} ${r.grade} (${r.conf}%)\n${LINE}\nA ${r.probs[0]}% · B ${r.probs[1]}% · C ${r.probs[2]}%\n${LINE}\n${t.note}`);
+  st='offer';await proceed(false);busy=false;
+}
+async function joinPool(){
+  await sleep(500);await aiSay(L().poolIn);st='wait';step(3);chips(null);expect=null;
+  ffShow('Skip to when the pool is full ⏩',poolFull);
+}
+async function poolFull(){
+  clock=[11,40];renderBar();push({who:'sys',text:'11:40'});
+  await aiSay(L().poolFull);step(4);ffShow('Skip to 17:00, auction close ⏩',auction);
+}
+async function auction(){
+  clock=[17,0];renderBar();push({who:'sys',text:'17:00'});const t=L();
+  const gp=GP[photo],kg=offer.kg,pay=(gp*kg).toFixed(2);
+  await aiSay(t.auction);
+  const ok=offer.any||offer.ask==null||offer.ask<=gp+1e-9;
+  if(ok){await aiSay(t.sold(kg,photo,gp.toFixed(2),pay));afterSold()}
+  else{await aiSay(t.sit(photo,gp.toFixed(2),offer.ask.toFixed(2)));st='decide';chips('decide')}
+  step(5);
+}
+function afterSold(){st='wait';step(5);chips(null);ffShow(L().dropBtn+' ⏩',dropOff)}
+async function dropOff(){
+  clock=[6,50];renderBar();push({who:'sys',text:'Thursday 06:50'});
+  await playDrop();tick(3);
+  push({who:'me',text:L().droppedMe,status:'sent'});await sleep(400);
+  await aiSay(L().dropAck);ffShow(L().truckBtn+' ⏩',pickup);
+}
+async function pickup(){
+  clock=[7,5];renderBar();push({who:'sys',text:'Thursday 07:05'});
+  const t=push({who:'typing'});await sleep(jit(1600,2400));msgs.splice(msgs.indexOf(t),1);
+  push({who:'ai',svg:boxSvg(photo,offer.kg),text:''});await sleep(300);
+  await aiSay(L().pickup(photo,offer.kg));step(6);ffShow(L().payBtn+' ⏩',paid);
+}
+let balance=104.75;
+async function paid(){
+  clock=[9,20];renderBar();push({who:'sys',text:'Thursday 09:20'});
+  const pay=+(GP[photo]*offer.kg).toFixed(2),before=balance;balance=+(balance+pay).toFixed(2);
+  await sleep(700);
+  if(skin==='android')await bankBanner(pay,before,balance);
+  else{push({who:'bank',text:`Deposit +$${pay.toFixed(2)}\nFrom: DURE LETEFOHO POOL\n${LINE}\nBalance: $${balance.toFixed(2)}`});buzz();await sleep(1600)}
+  await aiSay(L().paid(pay.toFixed(2),balance.toFixed(2)));await sleep(400);await repDash(true);await aiSay(L().record(repNow));finish(true);
+}
+
+/* ---------- reputation dashboard ---------- */
+async function repDash(sold){
+  const my=epoch;const con=$('console');
+  if(SHEET){peekInfo('Reputation update');sheet(true);setTimeout(()=>con.scrollIntoView({behavior:'smooth',block:'nearest'}),420)}else con.scrollIntoView({behavior:'smooth',block:innerWidth<900?'center':'nearest'});
+  const rows=sold?[['Delivered on time','06:52 ≤ 07:00','1.00',.35],['Grade matched photo',`${photo} = ${photo}`,'1.00',.30],['Quantity as promised',`${offer.kg} / ${offer.kg} kg`,'1.00',.20],['Stayed after committing','yes','1.00',.15]]
+    :[['Sat out below ask','no penalty','—',0]];
+  con.innerHTML=`<div class="hd"><span>Dure AI · reputation update</span><b></b></div>
+    <table class="rep">${rows.map(r=>`<tr class="pend"><td><span>${r[0]}</span><br><small style="opacity:.7">${r[1]}</small></td><td>${r[3]?'× '+r[3].toFixed(2):''}</td><td>${r[2]}</td></tr>`).join('')}</table>
+    <div class="calc" id="calc"></div>
+    <div class="gl"><span>Likely to deliver</span><span>steady-order pool at 80%</span></div>
+    <div class="gauge"><i id="gfill" style="width:${rep0}%"></i><u style="left:80%"></u></div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="gbig" id="gnum">${repNow}%</span><span class="gl" id="gnote">new farmer, starting value</span></div>
+    <div class="note">Flood weeks and sit-outs are not counted. A person reviews any drop before it affects orders.</div>`;
+  const trs=[...con.querySelectorAll('tr')];
+  for(const tr of trs){await sleep(650);if(my!==epoch)return;tr.classList.remove('pend')}
+  const calc=$('calc');
+  if(!sold){calc.textContent='sit-out → record unchanged';await sleep(1200);return}
+  const lines=['this sale = .35+.30+.20+.15 = 1.00',`new = 0.8 × ${rep0}% + 0.2 × 100%`,`new = ${Math.round(.8*rep0+20)}%`];
+  for(const ln of lines){calc.textContent='';for(const ch of ln){calc.textContent+=ch;await sleep(22)}await sleep(500);if(my!==epoch)return;calc.textContent=ln}
+  const target=Math.round(.8*rep0+20),from=repNow,t0=performance.now();
+  await new Promise(r=>{(function a(){const k=clamp((performance.now()-t0)/1600),v=lerp(from,target,ease(k));$('gfill').style.width=v+'%';$('gnum').textContent=Math.round(v)+'%';if(k<1)requestAnimationFrame(a);else r()})()});
+  repNow=target;$('gnote').textContent=`+${target-from} · ${80-target}% to the steady-order pool`;await sleep(900);
+}
+/* ---------- drop-off "video" ---------- */
+function playDrop(){return skin==='android'?dropAndroid():dropNokia()}
+const ease=k=>k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2, clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)), lerp=(a,b,k)=>a+(b-a)*k;
+function crateSvg(g,big){ // a jute sack of parchment, 34 x 18 units, base at y=18
+  return `<path d="M3 18 C 0 12 1 3 6 -1 C 12 -3 22 -3 28 -1 C 33 3 34 12 31 18Z" fill="#CDB48A" stroke="#9E8456" stroke-width="1.2"/><path d="M6 -1 C 13 2 21 2 28 -1" stroke="#9E8456" stroke-width="1.2" fill="none"/><path d="M14 -2 L17 -6 L20 -2" stroke="#7A6340" stroke-width="1" fill="none"/><path d="M7 8 H27 M5 13 H29" stroke="#B59C70" stroke-width=".8"/><text x="17" y="12" text-anchor="middle" font-family="Atkinson Hyperlegible Next,sans-serif" font-size="4.6" font-weight="700" fill="#7A6340">${g}</text>`}
+/* ---------- first-person camera: carrying the sack to the pickup point ---------- */
+function rnd(seed){let x=Math.sin(seed*999.13)*43758.5453;return x-Math.floor(x)}
+function camCrate(g,tag){ // a 40 kg jute sack, cm units, base-centre at origin, ~50 wide x 46 tall
+  return `<path d="M-23 0 C -27 -14 -25 -34 -18 -42 C -8 -47 8 -47 18 -42 C 25 -34 27 -14 23 0Z" fill="#CDB48A" stroke="#9E8456" stroke-width=".9"/>
+   <path d="M-18 -42 C -8 -37 8 -37 18 -42" stroke="#9E8456" stroke-width=".9" fill="none"/><path d="M-4 -44 L 0 -50 L 4 -44" stroke="#7A6340" stroke-width=".9" fill="none"/>
+   <path d="M-22 -28 H22 M-24 -12 H24" stroke="#B59C70" stroke-width=".5"/><path d="M-14 -36 C -15 -20 -14 -8 -12 0 M12 -36 C 13 -22 13 -10 11 0" stroke="#BCA478" stroke-width=".4" fill="none"/>
+   ${tag?`<g class="ctag"><rect x="-9" y="-26" width="18" height="11" rx="1" fill="#FBF7EE" stroke="#1F3A40" stroke-width=".4"/><text x="0" y="-21.6" text-anchor="middle" font-family="Atkinson Hyperlegible Next,sans-serif" font-size="3.4" font-weight="700" fill="#1F3A40">#0412</text><text x="0" y="-17.4" text-anchor="middle" font-family="Atkinson Hyperlegible Next,sans-serif" font-size="2.8" fill="#1F3A40">${tag}</text></g>`:''}`;
+}
+function camChurch(){return `<rect x="-360" y="-560" width="720" height="560" fill="#F6EFE0" stroke="#1F3A40" stroke-width="6"/>
+  <path d="M-420 -550 L0 -900 L420 -550Z" fill="#A8452A" stroke="#1F3A40" stroke-width="6"/><path d="M0 -1120v220M-60 -1050h120" stroke="#1F3A40" stroke-width="22"/>
+  <path d="M-110 0v-230a110 110 0 0 1 220 0v230Z" fill="#2C4F57"/><circle cx="0" cy="-420" r="62" fill="#E4B64C" stroke="#1F3A40" stroke-width="10"/>
+  <rect x="-300" y="-380" width="90" height="150" rx="45" fill="#2C4F57"/><rect x="210" y="-380" width="90" height="150" rx="45" fill="#2C4F57"/>
+  <rect x="-380" y="-8" width="760" height="10" fill="#C9A56B"/>`}
+function camSign(){return `<rect x="-4" y="-190" width="8" height="190" fill="#6E4520"/><rect x="-62" y="-205" width="124" height="46" rx="5" fill="#1F3A40"/><text x="0" y="-188" text-anchor="middle" font-family="Atkinson Hyperlegible Next,sans-serif" font-size="15" font-weight="700" fill="#F6EFE0">DURE PICKUP</text><text x="0" y="-170" text-anchor="middle" font-family="Atkinson Hyperlegible Next,sans-serif" font-size="11" fill="#E4B64C">Thu 07:00 · Letefoho</text>`}
+function camTree(s){return `<rect x="-18" y="-260" width="36" height="260" fill="#6E4520"/><ellipse cx="0" cy="-330" rx="${160+s*40}" ry="${130+s*30}" fill="#6E9A5C"/><ellipse cx="-50" cy="-370" rx="90" ry="70" fill="#7FAA6A"/>`}
+function camBush(s){return `<ellipse cx="0" cy="-22" rx="${55+s*25}" ry="${30+s*10}" fill="#6E9A5C"/><ellipse cx="-18" cy="-34" rx="30" ry="20" fill="#7FAA6A"/>`}
+function dropAndroid(){return new Promise(res=>{
+  const scr=document.querySelector('.android .scr');const W=scr.clientWidth,H=scr.clientHeight;const v=document.createElement('div');v.className='cam';
+  v.innerHTML=`<svg class="world" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"></svg>
+   <div class="grain"></div><div class="vign"></div>
+   <div class="grid"><i></i><i></i><i></i><i></i></div><div class="af" id="af"></div>
+   <div class="ctop"><span class="rec"><i></i>REC <b id="ctime">00:00</b></span><span>1080p · 30</span></div>
+   <div class="ccap" id="ccap"></div>
+   <div class="cbot"><span class="thumb"></span><span class="shut"><i></i></span><span class="flip">⟲</span></div>`;
+  scr.appendChild(v);requestAnimationFrame(()=>v.classList.add('on'));
+  const svg=v.querySelector('.world'),cap=v.querySelector('#ccap'),f=W*.95,cx=W/2;
+  const G=photo,tagTxt=`${offer.kg} kg · ${G}`;
+  const posts=[];for(let i=0;i<14;i++){posts.push({X:-2.3,Z:1.6+i*2.1},{X:2.3,Z:2.6+i*2.1})}
+  const bushes=[[-3.4,5,1],[3.6,8.5,.4],[-4.2,11,.7],[3.2,16,.9],[-3,19,.2],[4.5,22,.6]];
+  const tufts=[];for(let i=0;i<40;i++)tufts.push({X:(rnd(i+50)-.5)*1.7,Z:.8+rnd(i+80)*16});
+  const stack=[{X:-.27,Z:14.9,e:0},{X:.27,Z:14.9,e:0},{X:0,Z:14.9,e:.27},{X:.62,Z:15.5,e:0}];
+  const D=9800,t0=performance.now();let camZ=0,camH=1.5,hor=H*.42,bobX=0,roll=0;
+  const Zend=12.9;
+  function P(X,Z,e,near=.22){const dz=Z-camZ;if(dz<near)return null;const k=f/dz;return {x:cx+bobX+X*k,y:hor+(camH-e)*k,k}}
+  const obj=(X,Z,e,body,near)=>{const p=P(X,Z,e,near);if(!p)return '';return `<g transform="translate(${p.x.toFixed(1)} ${p.y.toFixed(1)}) scale(${(p.k/100).toFixed(4)})">${body}</g>`};
+  function frame(now){
+    const T=now-t0;
+    // walk
+    const u=clamp((T-500)/4800),walk=ease(u);camZ=walk*Zend;const speed=Math.sin(Math.PI*u);
+    const ph=camZ/0.72*Math.PI;bobX=Math.sin(ph)*6*speed;roll=Math.sin(ph)*.9*speed;
+    let baseHor=H*.42+Math.abs(Math.sin(ph))*-9*speed;camH=1.5;
+    // crouch & tilt down
+    const c=ease(clamp((T-5300)/1100));camH=lerp(1.5,.78,c);baseHor=lerp(baseHor,H*.1,c);
+    // rise a little at the end
+    const r=ease(clamp((T-8200)/1100));camH=lerp(camH,1.05,r);baseHor=lerp(baseHor,H*.2,r);
+    hor=baseHor;
+    // held sack
+    const put=ease(clamp((T-6400)/1100)),rel=ease(clamp((T-7500)/650));
+    const cZ=camZ+lerp(.66,.74,put),cX=lerp(0,.06,put),cE=lerp(camH-.56,0,put);
+    let s='';
+    s+=`<rect width="${W}" height="${Math.max(0,hor)+2}" fill="#F2E3C4"/><circle cx="${W*.78+bobX*.1}" cy="${hor-160}" r="26" fill="#E4B64C" opacity=".9"/>`;
+    s+=`<path d="M${-20+bobX*.2} ${hor+1} Q${W*.25} ${hor-38} ${W*.5+bobX*.2} ${hor-14} T${W+20} ${hor-24} V${hor+2} H-20Z" fill="#9DB57F"/>`;
+    s+=`<rect y="${hor}" width="${W}" height="${H-hor+40}" fill="#A9BF84"/>`;
+    // road
+    const rp=[[-.95,camZ+.25],[-.8,camZ+90],[.8,camZ+90],[.95,camZ+.25]].map(([X,Z])=>{const p=P(X,Z,0)||{x:cx,y:H};return `${p.x.toFixed(1)},${Math.min(p.y,H*3).toFixed(1)}`});
+    s+=`<polygon points="${rp.join(' ')}" fill="#C9A56B"/>`;
+    s+=obj(-14,70,0,camTree(1))+obj(11,64,0,camTree(.4))+obj(22,80,0,camTree(.8));
+    s+=obj(1.4,27,0,camChurch());
+    // fences: rails drawn segment by segment, nothing closer than 1.2 m, line weight capped
+    for(const side of [-2.3,2.3]){const col=posts.filter(p=>p.X===side);
+      for(const e of [.95,.5]){const pts=col.map(p=>P(p.X,p.Z,e,1.2)).filter(Boolean);
+        for(let q=0;q<pts.length-1;q++){const a=pts[q],b=pts[q+1],w=Math.min(5,Math.max(1,(a.k+b.k)/2*.028));
+          s+=`<line x1="${a.x.toFixed(1)}" y1="${a.y.toFixed(1)}" x2="${b.x.toFixed(1)}" y2="${b.y.toFixed(1)}" stroke="#6E4520" stroke-width="${w.toFixed(1)}" stroke-linecap="round"/>`}}}
+    const items=[];
+    posts.forEach(p=>items.push([p.Z,obj(p.X,p.Z,0,`<rect x="-5" y="-110" width="10" height="110" fill="#8A5A2B"/>`,1.2)]));
+    bushes.forEach(([X,Z,k])=>items.push([Z,obj(X,Z,0,camBush(k),1.5)]));
+    tufts.forEach(t=>items.push([t.Z,obj(t.X,t.Z,0,`<path d="M-4 0 l-2 -7 M0 0 l0 -9 M4 0 l2 -7" stroke="#7C8F52" stroke-width="1.4"/><ellipse cx="9" cy="-1" rx="3" ry="1.6" fill="#A08560"/>`,.9)]));
+    items.push([15.4,obj(-2.0,15.4,0,camSign())]);
+    stack.forEach((c,i)=>items.push([c.Z-(c.e?.001:0)-i*1e-4,obj(c.X,c.Z,c.e,camCrate(i%2?'A':'B'))]));
+    items.sort((a,b)=>b[0]-a[0]);s+=items.map(i=>i[1]).join('');
+    // our sack, carried in both forearms (no hands drawn: forearms hook under the bottom corners)
+    const tagOn=T>8000;const cp=P(cX,cZ,cE);
+    if(cp)s+=`<g transform="translate(${cp.x.toFixed(1)} ${cp.y.toFixed(1)}) scale(${(cp.k/100).toFixed(4)})">${camCrate(G,tagOn?tagTxt:null)}</g>`;
+    if(cp&&rel<1){const hk=cp.k/100;
+      for(const sd of [-1,1]){const ox=sd*rel*190,oy=rel*320;
+        const ax=(sd<0?-40:W+40)+ox,ay=H+30+oy;
+        const ex=cp.x+sd*(25*hk+14)+ox,ey=cp.y+6+oy;
+        const fx=cp.x+sd*(25*hk*.22)+ox,fy=cp.y+8+oy;
+        s+=`<path d="M${ax} ${ay} Q${(ax+ex)/2+sd*20} ${(ay+ey)/2+30} ${ex.toFixed(1)} ${ey.toFixed(1)}" stroke="#A8452A" stroke-width="72" stroke-linecap="round" fill="none"/>
+          <path d="M${ax} ${ay} Q${(ax+ex)/2+sd*20} ${(ay+ey)/2+30} ${ex.toFixed(1)} ${ey.toFixed(1)}" stroke="#8E3A22" stroke-width="14" stroke-linecap="round" fill="none" transform="translate(${sd*20} 10)" opacity=".55"/>
+          <path d="M${ex.toFixed(1)} ${ey.toFixed(1)} L${fx.toFixed(1)} ${fy.toFixed(1)}" stroke="#8A5A3B" stroke-width="38" stroke-linecap="round"/>
+          <path d="M${(ex-sd*4).toFixed(1)} ${(ey+10).toFixed(1)} L${fx.toFixed(1)} ${(fy+12).toFixed(1)}" stroke="#774A2F" stroke-width="8" stroke-linecap="round" opacity=".55"/>
+          <circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="30" fill="#A8452A"/><path d="M${(ex-sd*22).toFixed(1)} ${(ey-18).toFixed(1)} q${sd*-8} 18 0 36" stroke="#8E3A22" stroke-width="5" fill="none"/>`}}
+    svg.innerHTML=`<g transform="rotate(${roll.toFixed(2)} ${cx} ${H/2})">${s}</g>`;
+    svg.style.filter=`blur(${(speed*.5+c*(1-c)*1.2).toFixed(2)}px)`;
+    // UI
+    v.querySelector('#ctime').textContent='00:'+String(Math.min(9,Math.floor(T/1000))).padStart(2,'0');
+    const af=v.querySelector('#af');af.style.opacity=T<700?1:T<8000?0:(T<8700?1:0);
+    cap.textContent=T<5300?`${offer.kg} kg · walking to the pickup point`:T<7600?'Putting the sack down…':T<8000?'':`Sack #0412 down ✓  06:52`;
+    if(T<D)requestAnimationFrame(frame);else{v.classList.remove('on');setTimeout(()=>{v.remove();res()},450)}
+  }
+  requestAnimationFrame(frame);
+})}
+
+function dropNokia(){return new Promise(res=>{
+  const lcd=$('lcd');const v=document.createElement('div');v.className='nvid';
+  v.innerHTML=`<div class="nvh">PICKUP PT 06:52</div><canvas width="116" height="64"></canvas><div class="nvc" id="nvc">CARRYING ${offer.kg}KG...</div><div class="nvb"><i id="nvp"></i></div>`;
+  lcd.appendChild(v);const c=v.querySelector('canvas').getContext('2d');const INK='#1E2B20',BG='#B7CF9A';
+  const px=(x,y,w=1,h=1)=>c.fillRect(Math.round(x),Math.round(y),w,h);
+  const box=(x,y)=>{c.fillStyle=INK;px(x,y,10,1);px(x,y+5,10,1);px(x,y,1,6);px(x+9,y,1,6);px(x+1,y+2,8,1);px(x+2,y-1);px(x+4,y-2);px(x+6,y-1);px(x+8,y-2)};
+  const D=6000,t0=performance.now(),GY=56;
+  function fr(now){const T=now-t0;c.fillStyle=BG;c.fillRect(0,0,116,64);c.fillStyle=INK;
+    px(0,GY,116,1);for(let i=0;i<116;i+=4)px(i+((T/300|0)%2),GY+3);
+    // church
+    px(80,30,28,1);px(80,30,1,26);px(107,30,1,26);for(let i=0;i<14;i++){px(80+i,30-i/1.2|0);px(107-i,30-i/1.2|0)}px(93,8,1,8);px(91,10,5,1);px(91,44,5,12);px(93,36,2,2);
+    // sign
+    px(66,38,1,18);px(60,34,14,6);c.fillStyle=BG;px(62,36,2,1);px(66,36,2,1);px(70,36,2,1);c.fillStyle=INK;
+    box(82,50);box(94,50);
+    let x,bend=0,frame=(T/140|0)%2,hold=T<3300,dy=0;
+    if(T<2800)x=lerp(-10,64,ease(T/2800));else x=64;
+    if(T>=2800&&T<3800){bend=Math.round(Math.sin(clamp((T-2800)/1000)*Math.PI)*3);frame=2}
+    // man (feet at GY)
+    const hx=x-bend, hy=GY-18+bend;
+    px(hx-1,hy,3,3);px(hx-2,hy-1,5,1);/*hat*/ px(x,GY-15+bend,1,8);
+    if(frame===0){px(x-2,GY-7,1,4);px(x+2,GY-7,1,4);px(x-3,GY-3,1,3);px(x+3,GY-3,1,3)}else if(frame===1){px(x,GY-7,1,7)}else{px(x-1,GY-7,1,7);px(x+1,GY-7,1,7)}
+    if(hold){px(x+1,GY-12+bend,4,1);const by=T<2800?GY-16:GY-16+clamp((T-2800)/500)*10;box(x+4,by)}else{px(x+1,GY-12+bend,1,4);box(69,50)}
+    if(T>4000&&(T/250|0)%2){px(71,44,6,3)}
+    const k=clamp(T/D);$('nvp').style.width=(k*100)+'%';if(T>4200)$('nvc').textContent='DROPPED OK #0412';
+    if(T<D+400)requestAnimationFrame(fr);else{v.remove();res()}}
+  requestAnimationFrame(fr);
+})}
+function boxSvg(g,kg){return `<svg class="ph" viewBox="0 0 240 160" preserveAspectRatio="xMidYMid slice"><rect width="240" height="160" fill="#DCCFB4"/><rect y="0" width="240" height="46" fill="#9FB6C2"/>
+  <rect x="0" y="100" width="240" height="60" fill="#5B5345"/><rect x="0" y="96" width="240" height="8" fill="#3E3830"/>
+  <g transform="translate(40 50) scale(4.4)">${crateSvg(g)}</g>
+  <g transform="translate(150 28) rotate(4)"><rect width="74" height="54" rx="4" fill="#fff" stroke="#1F3A40" stroke-width="1.5"/><text x="8" y="16" font-family="Atkinson Hyperlegible Next,sans-serif" font-size="11" font-weight="700" fill="#1F3A40">#0412</text><text x="8" y="31" font-family="Atkinson Hyperlegible Next,sans-serif" font-size="10" fill="#1F3A40">${kg} kg · ${g}</text><text x="8" y="46" font-family="Atkinson Hyperlegible Next,sans-serif" font-size="10" font-weight="700" fill="#4E8B5C">✓ checked</text></g>
+  <text x="8" y="152" font-family="Atkinson Hyperlegible Next,sans-serif" font-size="9" fill="#F2EADA">07:04 · truck 2 · Letefoho</text></svg>`}
+function bankBanner(pay,before,after){return new Promise(res=>{
+  const scr=document.querySelector('.android .scr');const b=document.createElement('div');b.className='bank';
+  b.innerHTML=`<div class="bi">BR</div><div class="bt"><div class="bh"><b>Banku Rai</b><span>now</span></div><div class="bm">Deposit <b>+$${pay.toFixed(2)}</b> · DURE LETEFOHO POOL</div><div class="bm">Balance <b id="bbal">$${before.toFixed(2)}</b></div></div>`;
+  scr.appendChild(b);requestAnimationFrame(()=>b.classList.add('on'));
+  const t0=performance.now();setTimeout(function up(){const k=clamp((performance.now()-t0-700)/1200);$('bbal').textContent='$'+lerp(before,after,ease(k)).toFixed(2);if(k<1)requestAnimationFrame(up)},0);
+  setTimeout(()=>{b.classList.remove('on');setTimeout(()=>{b.remove();res()},450)},4200);
+})}
+function finish(sold){
+  st='done';step(sold?7:5);ffHide();chips(null);busy=false;
+  const pay=sold?(GP[photo]*offer.kg).toFixed(2):null;
+  $('end').innerHTML=sold?`<div class="ek">Demo complete</div><h3>Paid: $${pay}</h3><p>${offer.kg} kg of grade ${photo} parchment, sold through one pooled lot to buyers who had to compete, with no haggling at the farm gate. Reputation ${rep0}% → ${repNow}%.</p><div class="eb"><button class="btn-ghost" onclick="location.reload()">↺ Try again</button><a class="btn-ghost" href="sheet.html?add=LTF-041,${offer.kg},${photo},${(offer.ask??0).toFixed(2)}" target="_blank" rel="noopener">See it in the register ↗</a><a class="btn" href="./">Back to the story <span class="arr">→</span></a></div>`
+    :`<div class="ek">Demo complete</div><h3>You sat this one out</h3><p>No penalty. That's the point: every farmer decides, every week.</p><div class="eb"><button class="btn-ghost" onclick="location.reload()">↺ Try again</button><a class="btn" href="./">Back to the story <span class="arr">→</span></a></div>`;
+  const my=epoch;setTimeout(()=>{if(my===epoch){sheet(false);$('end').classList.add('on')}},2400);
+}
+async function start(s){
+  if(DURE_API)fetch(DURE_API+'/health').catch(()=>{});
+  skin=s;epoch++;hist=[];$('ctl').style.display='';$('pick').style.display='none';$('stage').classList.add('on');buildPhone();step(0);chips(null);
+  busy=true;await sleep(900);push({who:'sys',text:'Monday 06:30'});
+  const MORN=['Parchment prices this week, per kg','Selling? Reply in Tetum or English, your own words.'];
+  await aiSay(`Bondia! ${MORN[0]}\n${LINE}\nA  1.40–1.48\nB  1.22–1.30\nC  0.94–1.02\n${LINE}\n${MORN[1]}`,[500,800]);
+  step(1);chips('crop');busy=false;$('inp').focus();
+}
+document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>start(b.dataset.skin));
+/* bottom sheet (phones) */
+const SHEET=innerWidth<=760;
+document.body.append($('end'));
+if(SHEET){document.body.classList.add('sheet');
+  const side=document.querySelector('.side'),pk=document.createElement('button');pk.className='peek';pk.id='peek';
+  pk.innerHTML='<div class="pk"><b id="pkStep">Step 1 of 7 · Morning price arrives</b><span id="pkInfo">Tap for example messages and what Dure AI read</span></div><i>▲</i>';
+  side.prepend(pk);const dim=document.createElement('div');dim.className='sheet-dim';document.body.append(dim);
+  pk.onclick=()=>sheet(!side.classList.contains('open'));dim.onclick=()=>sheet(false);}
+function sheet(open){if(!SHEET)return;document.querySelector('.side').classList.toggle('open',open);document.body.classList.toggle('sheet-open',open);if(open)document.querySelector('.side').scrollTop=0}
+function peekInfo(t){if(!SHEET)return;const e=$('pkInfo');e.textContent=t;e.classList.add('new');const p=$('peek');p.classList.remove('ping');void p.offsetWidth;p.classList.add('ping');}
+$('undo').onclick=undo;$('rephone').onclick=()=>{location.href=location.pathname};
+</script>
+
+</body>
+</html>
