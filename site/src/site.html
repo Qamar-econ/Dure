@@ -1385,11 +1385,11 @@ const HOW=[
   })();
   const BN={A:['#D7A660','#A8773A','#F1D29C'],B:['#A67B4F','#74522F','#C9A27A'],C:['#5F4533','#30221A','#806450']};
   const bean1=(x,y,r,g,dk)=>{const c=BN[g],f=dk?'#2A1E17':c[0];return `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${r.toFixed(0)})"><ellipse rx="6.2" ry="4.3" fill="${f}" stroke="${c[1]}" stroke-width=".8"/><ellipse cx="-1.6" cy="-1.5" rx="3.2" ry="1.5" fill="${c[2]}" opacity="${dk?.25:.55}"/><path d="M-5.2 .3 C -2.4 -1.4 -.7 1.8 1.7 .1 C 3.1 -1 4.4 -.2 5.2 .2" stroke="${dk?'#120C08':c[1]}" stroke-width="1.1" fill="none" stroke-linecap="round"/></g>`};
-  const lotTok=(g,k=0)=>`<g transform="translate(23.5 15.4)">${BEAN.art(g,1.02,-26,k)}</g>`;
+  const lotTok=(g,k=0)=>`<g transform="translate(23.5 15.4)">${BEAN.art(g,1,-24,0)}</g>`; // same angle for every bean so rows and columns read as a grid
   const grades=[...Array(20).fill('A'),...Array(12).fill('B'),...Array(8).fill('C')];
   const arr=grades.map((g,k)=>[g,k]).sort((a,b)=>Math.sin(a[1]*12.9898)*43758%1-Math.sin(b[1]*12.9898)*43758%1).map(x=>x[0]);
   const order={C:0,B:8,A:20},cnt={A:0,B:0,C:0};
-  const slotXY=s=>[60+(s%4)*47.5,398-(Math.floor(s/4)+1)*30.8];
+  const slotXY=s=>[62.5+(s%4)*46,398-(Math.floor(s/4)+1)*30.8];
   let blocks='';arr.forEach((g,k)=>{const fin=order[g]+cnt[g]++;const [x0,y0]=slotXY(k),[x1,y1]=slotXY(fin);
     blocks+=`<g class="blk" data-k="${k}" data-x0="${x0}" data-y0="${y0}" data-x1="${x1}" data-y1="${y1}" opacity="0">${lotTok(g,k)}</g>`});
   let sp=`<g id="sPool" class="sc" opacity="0">${BEAN.defs}<g id="silo"><path d="M56 96 V402 C 56 408 60 410 66 410 H 244 C 250 410 254 408 254 402 V96" fill="rgba(255,255,255,.35)" stroke="${ink}" stroke-width="3"/>
