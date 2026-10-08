@@ -838,7 +838,7 @@ p,li,small,blockquote,cite,.k,.principle p{text-wrap:pretty}
   <div class="fl-k rv">9 · From the slope to the ministry</div>
   <h2 class="rv">An automated Registry <em>and AI policy suggestions.</em></h2>
   <p class="lg-lead rv">A farmer Registry is important and effective, but labour-intensive and expensive to keep. Dure works as a market itself, and every deal leaves a footprint. <b>So the Registry builds itself.</b></p>
-  <div class="lg-fig rv" id="lgFig" data-lenis-prevent>
+  <div class="lg-fig rv" id="lgFig">
     <svg viewBox="0 0 1100 430" role="img" aria-label="Daily trades per farmer fill the Registry; the Registry's data analysis shows quality by week; a morning brief points an expert to Lebudu">
       <g font-family="Newsreader" fill="#1F3A40">
         <text x="20" y="28" font-size="17" font-style="italic" fill="#A8452A">1 · Daily accumulated trades</text>
@@ -2187,6 +2187,8 @@ addEventListener('keydown',e=>{if(!TAP)return;if(e.target.closest&&e.target.clos
 {let lw=innerWidth,keep=-1;addEventListener('resize',()=>{if(!TAP||innerWidth===lw)return;lw=innerWidth;keep=stepNow;setTimeout(()=>{if(keep>=0){scrollTo(0,stopY(keep));req();onHold()}},350)})}
 addEventListener('scroll',()=>{if(!TAP||anim)return;const h=$('tapHint');if(h&&scrollY>flowTop()+40)h.classList.remove('on');if(scrollY>flowTop()+60)scue.classList.remove('on');if(scrollY<flowTop()-4){const y=stepNow>=STEPS.length-1?stopY(STEPS.length-2):stepNow>=0?stopY(stepNow):0;if(y!=null&&Math.abs(scrollY-y)>4){scrollTo(0,y);req();onHold()}}},{passive:true});   /* the story part never drifts: it sits on the frame of the current step */
 if(TAP)requestAnimationFrame(()=>setTap(true));else{document.documentElement.classList.remove('tapm');$('tapMode').textContent='Tap mode';onHold()}
+/* the Registry figure only takes the finger on phones, where it scrolls sideways; elsewhere the page scroll passes straight through it */
+if(innerWidth<=760)$('lgFig').setAttribute('data-lenis-prevent','');
 window.__dure={at(sec,p){const S=SEC[sec];const n=S.slots.find(n=>p>=n.a&&p<=n.b)||S.slots[S.slots.length-1];scrollTo(0,S.el.offsetTop+(n.o+clamp((p-n.a)/(n.b-n.a),0,1)*n.l*PLAY)*innerHeight/100);req();},go:goScene,get cur(){return cur},get n(){return SCN.length},get busy(){return Object.keys(PS).some(id=>Math.abs(PS[id]-TG_[id])>.0004)},SEC,SCN};
 function show(){}
 if('scrollRestoration' in history)history.scrollRestoration='manual';
