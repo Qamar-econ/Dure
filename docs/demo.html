@@ -492,6 +492,15 @@ body.mob.land #mDock,body.land #mDim,body.land #mBack,body.land #mNew,body.land 
 body.mob.land:not(.simon) #mSheet{display:none}
 body.mob.land #mSheet{left:var(--pc);right:0;width:auto;margin:0;top:var(--topH,56px);bottom:0;height:auto;transform:none;transition:none;border-radius:18px 0 0 0;box-shadow:-10px 0 30px -18px rgba(31,58,64,.45)}
 body.land .top .mk-l{display:block}
+/* tablets: the start screen fills the screen and sits in the middle */
+body.mob.tab:not(.simon) #pick{min-height:calc(100dvh - var(--topH,56px));margin:0 auto;max-width:1100px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding-block:24px}
+body.mob.tab:not(.simon) #pick h1{font-size:clamp(46px,6.2vw,66px);text-wrap:balance}
+body.mob.tab:not(.simon) #pick .lead{font-size:clamp(19px,2vw,23px);max-width:760px}
+body.mob.tab:not(.simon) #pick .choices{max-width:820px;gap:28px;width:100%}
+body.mob.tab:not(.simon) #pick .choice{padding:34px 20px 28px}body.mob.tab:not(.simon) #pick .choice svg{height:170px}
+body.mob.tab:not(.simon) #pick .choice b{font-size:26px}body.mob.tab:not(.simon) #pick .choice span{font-size:16px}
+body.mob.tab:not(.simon) #pick .fine{font-size:16px}
+
 body.mob.land .colP{align-items:center!important;height:100%}
 body.mob.land .colP .phoneWrap{align-items:center}
 body.mob.land .android{margin-top:0!important;height:min(calc(100dvh - var(--topH,56px) - 48px),calc((var(--pc) - 28px) * 740 / 360))!important}
