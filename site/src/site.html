@@ -98,6 +98,8 @@ body.in .scrollcue{opacity:1}
 .bar.flowbg{background:rgba(242,234,218,.95);box-shadow:0 1px 0 rgba(31,58,64,.1);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 @media (max-width:760px){.bar.solid{background:rgba(242,234,218,.97);box-shadow:0 1px 0 rgba(31,58,64,.1)}}
 .bar.show svg{opacity:1}
+.bar svg text{transition:fill .35s}.chap,.chap b{transition:color .35s}
+.bar.ontais{background:transparent!important;box-shadow:none!important}.bar.ontais svg text{fill:#FBF7EE}.bar.ontais .chap,.bar.ontais .chap b{color:#FBF7EE}   /* over the tais: white */
 #heroScene{opacity:0}
 #hero .b1{right:4vw;top:20vh;width:min(800px,54vw)}
 #hero .b2{right:4vw;top:22vh;width:min(500px,36vw);background:rgba(242,234,218,.94);padding:26px 28px 28px}
@@ -229,6 +231,7 @@ body.in .scrollcue{opacity:1}
 .fp .ear{width:28%;height:1.2%;margin:0 auto 6%;border-radius:4px;background:#11171B}
 .fp .cam{position:absolute;top:4.2%;right:17%;width:5%;aspect-ratio:1;border-radius:50%;background:#0B1013;box-shadow:inset 0 0 0 2px #46555E}
 .fp .scr{position:relative;height:40%;border-radius:10px;background:#0E1417;padding:5%}
+#how .fp{z-index:3}   /* the phone stays above the photo when it lifts to take it (tablets: the photo box is its own layer) */
 .fp .flash{position:absolute;inset:-30%;border-radius:50%;background:radial-gradient(circle,#fff 0,#fffbe6 30%,rgba(255,251,230,0) 70%);opacity:0;pointer-events:none;z-index:3}
 .fp .lcd{height:100%;border-radius:4px;background:linear-gradient(180deg,#C4DDB3,#AFCB9C);padding:6% 7%;font-family:VT323,monospace;color:#1E2B1A;overflow:hidden;display:flex;flex-direction:column}
 .fp .sb{display:flex;justify-content:space-between;font-size:clamp(11px,1vw,15px);border-bottom:1.5px solid #1E2B1A;padding-bottom:2px;margin-bottom:5px;line-height:1}
@@ -543,6 +546,7 @@ h1.hero .ln>span{white-space:nowrap}
 .lg-close{font-family:Newsreader,serif;font-size:clamp(22px,2.2vw,32px);line-height:1.3;max-width:900px;margin:30px 0 22px}
 .lg-close em{color:var(--rust)}
 .lg-note{font-size:14px;color:var(--ink-2);margin-left:12px}
+@media (max-width:760px){.lg-note{display:block;margin:10px 0 0}}   /* phones: the note sits under the button */
 #lgFig .lgd{opacity:0}
 #lgFig.on .lgd{animation:lgFly 1.6s cubic-bezier(.4,.1,.3,1) forwards}
 @keyframes lgFly{0%{opacity:0;transform:translate(0,0)}12%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy))}}
@@ -721,11 +725,11 @@ p,li,small,blockquote,cite,.k,.principle p{text-wrap:pretty}
     <g id="T4"></g>
   </svg>
   <div class="grain"></div>
-  <div class="beat b" data-from="-1" data-to=".2">
+  <div class="beat b" data-from="-1" data-to=".197">
     <div class="k">The magic of cooperation</div>
     <p>Noor isn't the only one on that road. <em>Her neighbours are carrying coffee baskets too.</em></p>
   </div>
-  <div class="beat b" data-from=".22" data-to=".44">
+  <div class="beat b" data-from=".197" data-to=".44">
     <div class="k">Collective bargaining</div>
     <p>More farmers, more bargaining power. <em>Only the quantity went up, yet the price got better.</em> This is cooperation. This is Dure.</p>
   </div>
@@ -848,7 +852,7 @@ p,li,small,blockquote,cite,.k,.principle p{text-wrap:pretty}
 
 
 <section class="flow" id="ledger10"><div class="fl-wrap">
-  <div class="fl-k rv">9 · From the slope to the ministry</div>
+  <div class="fl-k rv">10 · From the slope to the ministry</div>
   <h2 class="rv">An automated Registry <em>and AI policy suggestions.</em></h2>
   <p class="lg-lead rv">A farmer Registry is important and effective, but labour-intensive and expensive to keep. Dure works as a market itself, and every deal leaves a footprint. <b>So the Registry builds itself.</b></p>
   <div class="lg-fig rv" id="lgFig">
@@ -872,7 +876,7 @@ p,li,small,blockquote,cite,.k,.principle p{text-wrap:pretty}
 </div></section>
 
 <section class="flow" id="hybrid"><div class="fl-wrap">
-  <div class="fl-k rv">10 · Tetum Benchmark Index</div>
+  <div class="fl-k rv">11 · Tetum Benchmark Index</div>
   <h2 class="rv">How well does AI read <em>Tetum texts?</em></h2>
   <p class="hy-lead rv">Tetum is one of the languages large language models overlook most. Pairing Qwen's small AI with a rules engine, Dure reads Tetum texts close to the level of a large model.</p>
   <div class="tbi rv">
@@ -882,11 +886,11 @@ p,li,small,blockquote,cite,.k,.principle p{text-wrap:pretty}
     <div class="tbi-r"><div class="tbi-l"><b>Rules engine alone</b><span>no model, instant</span></div><div class="tbi-b"><i style="--w:70%"></i><em>70%</em></div><div class="tbi-m">works with no server · $0</div></div>
     <div class="tbi-r dim"><div class="tbi-l"><b>Untrained small model</b><span>Qwen2.5-0.5B, examples only</span></div><div class="tbi-b"><i style="--w:7%"></i><em>7%</em></div><div class="tbi-m">why training matters</div></div>
   </div>
-  <p class="hy-foot rv"><b>Method.</b> Test set: 60 SMS (44 Tetum, 16 English) written independently by Claude Sonnet, not by us, and frozen before any reader was scored. Exact match: crop, quantity, grade, price and intent must all be right. English subset: 16/16 for Dure. A second set of 80 texts we wrote, including questions: rules engine 98%, with the small model 99%. Yes/no replies: 100% on both. The rules engine scores 78% after our latest update (v2.1). Costs: API list prices; sending 1,000 SMS costs $30–$150, so reading them adds less than 1%. Measured 4 Oct 2026.</p>
+  <p class="hy-foot rv"><b>Method.</b> 60 test SMS (44 Tetum, 16 English), written by Claude Sonnet, not by us, and frozen before any reader was scored. A text counts only if crop, quantity, grade, price and intent are all right. On 80 texts we wrote ourselves: rules engine 98%, with the small model 99%. Costs are API list prices: reading adds under 1% to the cost of sending the SMS. Measured 4 Oct 2026.</p>
 </div></section>
 
 <section class="flow" id="risks"><div class="fl-wrap">
-  <div class="fl-k rv">11 · Field problems</div>
+  <div class="fl-k rv">12 · Field problems</div>
   <h2 class="rv">What are the real <em>field problems?</em></h2>
   <div class="risk rv">
     <div><h4>The road washes out.</h4><p>Dure books the truck and the pickup point. It can't fix the road, and doesn't pretend to.</p></div>
@@ -989,7 +993,7 @@ document.querySelectorAll('.hz').forEach(g=>{const pt=route.getPointAtLength(RL*
 
 /* ---------- ROAD ---------- */
 const GY=720;
-const WX={flood:[2400,3140],gap:[9800,10280],slide:[5000,5560],driver:6380,truck:6480,end:7600};
+const WX={flood:[2400,3140],gap:[9800,10280],slide:[4165,4725],driver:5545,truck:5645,end:6765};   /* the road between the flood and the landslide was shortened by 835 (half the walk) */
 {
   let c='';for(let i=0;i<14;i++)c+=cloud(i*700+rnd(i)*300,110+rnd(i+9)*150,.6+rnd(i+3)*.7);
   $('L0').innerHTML=c;
@@ -1072,7 +1076,7 @@ function groundPath(){const [f0,f1]=WX.flood;
 const RH=[520,560,600,640,680,720,760,800];
 $('rHarv').innerHTML=`<path d="M440 ${GY+4} C 520 ${GY-10} 820 ${GY-10} 900 ${GY+4} L900 ${GY+16} L440 ${GY+16}Z" fill="#7A5534"/>`+[600,640,680,720,760,800,840,870].map((x,i)=>`<g transform="translate(${x+20} ${GY+2}) scale(1.2)" opacity=".92"><path d="M0 0 V-30" stroke="#5A4630" stroke-width="2.4"/><ellipse cx="0" cy="-34" rx="18" ry="14" fill="#2F5E3A"/><ellipse cx="-8" cy="-26" rx="11" ry="8" fill="#3F7148"/><ellipse cx="9" cy="-40" rx="10" ry="7" fill="#3F7148"/>${[[-6,-22],[5,-28],[10,-22],[-11,-33],[2,-40]].map(([a,b],j)=>`<circle cx="${a}" cy="${b}" r="2.6" fill="${(i+j)%3?'#C23A2E':'#7FA84E'}"/>`).join('')}</g>`).join('')
 const roadSvg=$('roadSvg');
-const AK=[[0,420],[.06,420],[.14,1700],[.17,2300],[.30,2300],[.36,3260],[.62,4930],[.73,4930],[.80,5640],[.88,6120],[1,6120]];
+const AK=[[0,420],[.06,420],[.14,1700],[.17,2300],[.30,2300],[.36,3260],[.62,4095],[.73,4095],[.80,4805],[.88,5285],[1,5285]];
 function ax(p){for(let i=1;i<AK.length;i++){if(p<=AK[i][0]){const[a,xa]=AK[i-1],[b,xb]=AK[i];return lerp(xa,xb,(p-a)/(b-a))}}return AK[AK.length-1][1]}
 function pileH(x){const[s0,s1]=WX.slide;if(x<s0||x>s1)return 0;return Math.sin((x-s0)/(s1-s0)*Math.PI)*100}
 let _SY=scrollY,_IW=innerWidth,_IH=innerHeight,_DH=0;   /* viewport + scroll read once per frame: reading them after style writes forced a full layout each time */
@@ -1315,9 +1319,11 @@ function split(p){
   let fr='';for(let x=10;x<1440;x+=22){const y=930+Math.sin(x/1440*Math.PI)*18;fr+=`<path d="M${x} ${y} v38" stroke="#E4B64C" stroke-width="4"/><circle cx="${x}" cy="${y+42}" r="5" fill="#9A3326"/>`}
   $('fringe').innerHTML=fr;
 }
+let _onTais=false;
 function curtain(p){
-  const down=ease(seg(p,0,.14)), up=ease(seg(p,.22,.34));
-  $('drape').style.transform=`translateY(${(-110+110*down-120*up).toFixed(2)}%)`;
+  const down=ease(seg(p,0,.14)), up=ease(seg(p,.22,.34)), ty=-110+110*down-120*up;
+  $('drape').style.transform=`translateY(${ty.toFixed(2)}%)`;
+  {const top=ty/100*1.08*_IH;_onTais=top<4&&top+1.08*_IH>90}   // the cloth covers the header strip
   $('cuFig').style.opacity=up>.2?1:0;
   $('cuTitle').classList.toggle('on',up>.9&&p<.46);
   const lis=[...document.querySelectorAll('#ledger li')];
@@ -1740,8 +1746,8 @@ function how(p){_lastP=p;
 {
   const T='font-family="Newsreader"', ink='#1F3A40', ink2='#5B5345', rust='#A8452A', gold='#E4B64C', leaf='#4E8B5C';
   const heads=[
-   {n:'How Dure AI works — 4',h:'AI that <em>measures trust.</em>',p:'Farm size doesn\'t matter. Trust builds from the number of trades, punctuality and consistent quality. Force majeure, such as a natural disaster, is never counted. Reputation guides how the market is run and when sanctions apply.',c:'In the demo, reputation is computed from pre-accumulated synthetic trade records.'},
-   {n:'How Dure AI works — 5',h:'AI that <em>runs two markets.</em>',p:'Dure covers different buyers in different markets. The blended pool is an open market that builds economies of scale. The fixed pool links part of high-reputation farmers\' output to steady buyers.',c:'In the demo, the fixed pool runs on pre-accumulated synthetic records.'},
+   {n:'Technical walkthrough — 4',h:'AI that <em>measures trust.</em>',p:'Farm size doesn\'t matter. Trust builds from the number of trades, punctuality and consistent quality. Force majeure, such as a natural disaster, is never counted. Reputation guides how the market is run and when sanctions apply.',c:'In the demo, reputation is computed from pre-accumulated synthetic trade records.'},
+   {n:'Technical walkthrough — 5',h:'AI that <em>runs two markets.</em>',p:'Dure covers different buyers in different markets. The blended pool is an open market that builds economies of scale. The fixed pool links part of high-reputation farmers\' output to steady buyers.',c:'In the demo, the fixed pool runs on pre-accumulated synthetic records.'},
   ];
   $('ecHeads').innerHTML=heads.map((h,i)=>`<div class="ec-head fade" data-i="${i}"><div class="n">${h.n}</div><h3>${h.h}</h3><p>${h.p}</p>${h.c?`<cite>${h.c}</cite>`:''}</div>`).join('');
   // fig 1: reputation, and the record it comes from
@@ -1867,9 +1873,9 @@ function econ(p){
 {
   const T='font-family="Newsreader"', ink='#1F3A40', ink2='#5B5345', rust='#A8452A', leaf='#4E8B5C', gold='#E4B64C';
   const heads=[
-   {n:'How Dure AI works — 1',h:'AI that <em>understands Tetum.</em>',p:'Large AI models have long left Tetum behind. Dure pairs a small model (Qwen2.5-0.5B) with a rules engine, trained on about 3,000 Tetum and English messages. Dialects and spelling slips are fine. It picks out exactly what it needs.',c:'Qwen is an inexpensive open-source model, strong in Asian languages. Training: up to 2,875 synthetic texts from our generator + 250 real Tetum sentences (Labadain-30k+, CC BY 4.0).'},
-   {n:'How Dure AI works — 2',h:'AI that <em>knows coffee.</em>',p:'Coffee is graded on SCA defect criteria. Dure taught a small vision model the ones a photo can show, from 1,200 real bean photos, to sort coffee into three grades. It names the exact grade 79% of the time; the final grade comes from a hand check at pickup.',c:'Criteria: SCA green coffee defect classification. Bean photos: Pre-Roast Coffee Bean Grading Dataset (MIT) and Wikimedia Commons.',x:'<div class="trs"><img src="assets/train/t00.jpg" alt="" title="Harald Ulver, CC BY-SA 4.0, Wikimedia Commons" width="60" height="60"><img src="assets/train/t01.jpg" alt="" title="Michael C. Wright, CC BY-SA 4.0, Wikimedia Commons" width="60" height="60"><img src="assets/train/t02.jpg" alt="" title="Felipe Quijano, CC BY-SA 4.0, Wikimedia Commons" width="60" height="60"><img src="assets/train/t03.jpg" alt="" title="Harald Ulver, CC BY-SA 4.0, Wikimedia Commons" width="60" height="60"><img src="assets/train/t04.jpg" alt="" title="Harald Ulver, CC BY-SA 4.0, Wikimedia Commons" width="60" height="60"><img src="assets/train/t05.jpg" alt="" title="Forest & Kim Starr, CC BY 3.0, Wikimedia Commons" width="60" height="60"><img src="assets/train/t07.jpg" alt="" title="Forest & Kim Starr, CC BY 3.0, Wikimedia Commons" width="60" height="60"><img src="assets/train/t08.jpg" alt="" title="Forest & Kim Starr, CC BY 3.0, Wikimedia Commons" width="60" height="60"></div><div class="trs-c">Some of our training photos · Wikimedia Commons: H. Ulver, M. C. Wright, F. Quijano (CC BY-SA 4.0); Forest &amp; Kim Starr (CC BY 3.0)</div>'},
-   {n:'How Dure AI works — 3',h:'AI that <em>makes the market.</em>',p:'Dure AI estimates a fair price from recent sales, buyers, road and rain. Bidding opens a little under it. Farmers whose ask is above the final price sit out.',c:'In the demo, the opening price is set from pre-accumulated synthetic trade data.'},
+   {n:'Technical walkthrough — 1',h:'AI that <em>understands Tetum.</em>',p:'Large AI models have long left Tetum behind. Dure pairs a small model (Qwen2.5-0.5B) with a rules engine, trained on about 3,000 Tetum and English messages. Dialects and spelling slips are fine. It picks out exactly what it needs.',c:'Qwen is an inexpensive open-source model, strong in Asian languages. Training: up to 2,875 synthetic texts from our generator + 250 real Tetum sentences (Labadain-30k+, CC BY 4.0).'},
+   {n:'Technical walkthrough — 2',h:'AI that <em>knows coffee.</em>',p:'Coffee is graded on SCA defect criteria. Dure taught a small vision model the ones a photo can show, from 1,200 real bean photos, to sort coffee into three grades. It names the exact grade 79% of the time; the final grade comes from a hand check at pickup.',c:'Criteria: SCA green coffee defect classification. Bean photos: Pre-Roast Coffee Bean Grading Dataset (MIT) and Wikimedia Commons.',x:'<div class="trs"><img src="assets/train/t00.jpg" alt="" title="Harald Ulver, CC BY-SA 4.0, Wikimedia Commons" width="60" height="60"><img src="assets/train/t01.jpg" alt="" title="Michael C. Wright, CC BY-SA 4.0, Wikimedia Commons" width="60" height="60"><img src="assets/train/t02.jpg" alt="" title="Felipe Quijano, CC BY-SA 4.0, Wikimedia Commons" width="60" height="60"><img src="assets/train/t03.jpg" alt="" title="Harald Ulver, CC BY-SA 4.0, Wikimedia Commons" width="60" height="60"><img src="assets/train/t04.jpg" alt="" title="Harald Ulver, CC BY-SA 4.0, Wikimedia Commons" width="60" height="60"><img src="assets/train/t05.jpg" alt="" title="Forest & Kim Starr, CC BY 3.0, Wikimedia Commons" width="60" height="60"><img src="assets/train/t07.jpg" alt="" title="Forest & Kim Starr, CC BY 3.0, Wikimedia Commons" width="60" height="60"><img src="assets/train/t08.jpg" alt="" title="Forest & Kim Starr, CC BY 3.0, Wikimedia Commons" width="60" height="60"></div><div class="trs-c">Some of our training photos · Wikimedia Commons: H. Ulver, M. C. Wright, F. Quijano (CC BY-SA 4.0); Forest &amp; Kim Starr (CC BY 3.0)</div>'},
+   {n:'Technical walkthrough — 3',h:'AI that <em>makes the market.</em>',p:'Dure AI estimates a fair price from recent sales, buyers, road and rain. Bidding opens a little under it. Farmers whose ask is above the final price sit out.',c:'In the demo, the opening price is set from pre-accumulated synthetic trade data.'},
   ];
   $('waHeads').innerHTML=heads.map((h,i)=>`<div class="ec-head fade" data-i="${i}"><div class="n">${h.n}</div><h3>${h.h}</h3><p>${h.p}</p>${h.c?`<cite>${h.c}</cite>`:''}${h.x||''}</div>`).join('');
   // 1: parser console — the raw text, and what each piece becomes
@@ -2019,6 +2025,7 @@ function frame(){
   $('cue').classList.toggle('gone',ph>.02);
   BAR.classList.toggle('show',th>1.1||pm>0||pr>0);
   BAR.classList.toggle('solid',th>1.1||pm>0||pr>0);
+  BAR.classList.toggle('ontais',VIS('curtain')&&_onTais);   // logo and chapter turn white over the tais
   {const E=SEC.econ;BAR.classList.toggle('flowbg',!!E&&E.top!=null&&_SY>E.top+E.h-80)}   // text sections scroll under the logo; give the bar a backing there
   if(VIS('hero')){const r1=ease(seg(th,.3,1.6)),r2=ease(seg(th,.5,1.9)),r3=ease(seg(th,.8,2.5));
   $('heroScene').style.opacity=seg(th,.2,.9);
@@ -2049,13 +2056,13 @@ function frame(){
 let raf=0;const req=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;tickCtl();frame()})};
 let _rw=innerWidth,_rh=innerHeight;addEventListener('resize',()=>{/* phones fire resize whenever the address bar slides: ignore height-only changes */if(innerWidth===_rw&&Math.abs(innerHeight-_rh)<160)return;_rw=innerWidth;_rh=innerHeight;sizeRoad();measure();req()});
 /* ---------- scroll controller: each scene = one slot of scroll; it plays fast, then holds ---------- */
-const CH=[['1','The field'],['2','The buyers'],['3','The road'],['4','The buyer'],['5','Together'],['6','The catch'],['7','Dure'],['8','How it works'],['8','How Dure AI works'],['9','The Registry','ledger10'],['10','Tetum Benchmark Index','hybrid'],['11','Field problems','risks']];
+const CH=[['1','The field'],['2','The buyers'],['3','The road'],['4','The buyer'],['5','Together'],['6','The catch'],['7','Dure'],['8','How it works'],['9','Technical walkthrough'],['10','The Registry','ledger10'],['11','Tetum Benchmark Index','hybrid'],['12','Field problems','risks']];
 const H=(i,a,b)=>[(i+a)/8,(i+b)/8-(b>=1?.0001:0)], E=(i)=>[i/4,(i+1)/4-.0001];
 const SCN=[
  {s:'hero',a:0,b:.2,d:1.4,c:0},{s:'hero',a:.48,b:.62,d:.8,c:0},{s:'hero',a:.62,b:.9,d:.8,c:0},
  {s:'map',a:0,b:.27,d:1.6,c:1},{s:'map',a:.27,b:.71,d:2.2,c:1},{s:'map',a:.71,b:.99,d:1,c:1},
- {s:'road',a:0,b:.062,d:1.4,c:2},{s:'road',a:.062,b:.149,d:1.6,c:2},{s:'road',a:.149,b:.35,d:2.4,c:2},{s:'road',a:.35,b:.58,d:1.6,c:2},{s:'road',a:.58,b:.795,d:2.4,c:2},{s:'road',a:.795,b:.99,d:2,c:3},
- {s:'together',a:0,b:.2,d:2,c:4},{s:'together',a:.2,b:.439,d:2,c:4},{s:'together',a:.439,b:.63,d:1,c:4},{s:'together',a:.63,b:.81,d:1,c:4},{s:'together',a:.81,b:.99,d:1,c:4},
+ {s:'road',a:0,b:.062,d:1.4,c:2},{s:'road',a:.062,b:.149,d:1.6,c:2},{s:'road',a:.149,b:.35,d:2.4,c:2},{s:'road',a:.35,b:.62,d:1.6,L:35,c:2},{s:'road',a:.62,b:.795,d:1.5,c:2},{s:'road',a:.795,b:.99,d:2,c:3},
+ {s:'together',a:0,b:.2,d:2,L:41,pl:1,c:4},{s:'together',a:.2,b:.439,d:2,c:4},{s:'together',a:.439,b:.63,d:1,c:4},{s:'together',a:.63,b:.81,d:1,c:4},{s:'together',a:.81,b:.99,d:1,c:4},
  {s:'split',a:0,b:.43,d:1.8,c:5},{s:'split',a:.43,b:.555,d:1,c:5},{s:'split',a:.555,b:.905,d:2.6,c:5},{s:'split',a:.905,b:.99,d:.8,c:5},
  {s:'curtain',a:0,b:.2,d:1.4,c:6},{s:'curtain',a:.2,b:.455,d:1.4,c:6},{s:'curtain',a:.455,b:.99,d:2.0,c:6},
  ...[[0,0,1,2.4],[1,0,.143,1],[1,.143,.41,1.8],[1,.41,.57,1.4],[1,.57,1,2.4],[2,0,.58,1.8],[2,.58,1,1.4],[3,0,1,3.2],[4,0,.64,2.4],[4,.64,1,1.4],[5,0,1,2.6],[6,0,.56,2],[6,.56,1,2.6],[7,0,1,1.6]]
@@ -2065,9 +2072,10 @@ const SCN=[
 ];
 // slot length in vh: short scroll per scene (fast), longer only for long animations
 const PLAY=.62;               // share of a slot where the animation runs; the rest holds the end frame for reading
+const PLn=n=>n.pl||PLAY;      // a slot with pl:1 has no hold: its animation runs straight into the next slot's
 const slotVH=d=>Math.round(38+d*14);
 const SEC={};secs.forEach(el=>SEC[el.id]={el,slots:[],len:0});
-SCN.forEach((n,k)=>{const S=SEC[n.s];n.k=k;n.o=S.len;n.l=Math.round(slotVH(n.d)*((n.s==='econ'||n.s==='wai')&&innerWidth<=760?.95:innerWidth<=760?.6:1));   /* phones: shorter scenes, fewer swipes */S.slots.push(n);S.len+=n.l;});
+SCN.forEach((n,k)=>{const S=SEC[n.s];n.k=k;n.o=S.len;n.l=Math.round((n.L||slotVH(n.d))*((n.s==='econ'||n.s==='wai')&&innerWidth<=760?.95:innerWidth<=760?.6:1));   /* phones: shorter scenes, fewer swipes */S.slots.push(n);S.len+=n.l;});
 const SWAP=innerWidth<=760;   // phones: the six AI panels share one fixed screen and swap like the How-it-works steps
 function sizeSecs(){Object.values(SEC).forEach(S=>S.el.style.height=S.el.classList.contains('flow')?'':(SWAP&&(S.el.id==='wai'||S.el.id==='econ'))?`${S.len}vh`:`calc(${S.len}vh + 100vh)`);measure()}
 const TOPS={};function measure(){Object.values(SEC).forEach(S=>{S.top=S.el.offsetTop;S.h=S.el.offsetHeight});['risks','wai','econ','hybrid','ledger10'].forEach(id=>{const e=$(id);if(e)TOPS[id]=[e.offsetTop,e.offsetHeight]})}
@@ -2075,7 +2083,7 @@ addEventListener('load',()=>{measure();req()});document.fonts&&document.fonts.re
 function swapStages(){if(!SWAP)return;const H=_IH,r=id=>{const[t,h]=TOPS[id];return{top:t-_SY,bottom:t+h-_SY}},a=r('wai'),b=r('econ');
   const onA=a.top<H*.55&&b.top>0, onB=b.top<=0&&b.bottom>H*.25;
   $('wai').classList.toggle('act',onA);$('econ').classList.toggle('act',onB);}
-/* phones: the six "How Dure AI works" panels are ordinary full-screen blocks that scroll normally;
+/* phones: the six "Technical walkthrough" panels are ordinary full-screen blocks that scroll normally;
    each picture plays as it comes up the screen */
 const FLOW=false;   // phones use the pinned one-screen panels below
 if(FLOW)['wai','econ'].forEach(id=>{const R=$(id),st=R.querySelector('.stage');R.classList.add('flow');
@@ -2095,7 +2103,7 @@ function target(){
     let v=S.slots[0].a;
     for(const n of S.slots){
       if(y<n.o) break;
-      const u=clamp((y-n.o)/(n.l*PLAY),0,1);
+      const u=clamp((y-n.o)/(n.l*PLn(n)),0,1);
       v=lerp(n.a,n.b-.003,u);
       if(y>=n.o&&y<S.len+100) cur=n.k;
     }
@@ -2125,7 +2133,7 @@ addEventListener('scroll',()=>req(),{passive:true});
 })();
 // chapter menu: jump to the end of that chapter's first scene
 function jumpTo(y){if(window.__lenis)window.__lenis.scrollTo(y,{immediate:true,force:true});else scrollTo({top:y,behavior:'instant'})}
-function goScene(k){const n=SCN[k];const S=SEC[n.s];if(S.el.classList.contains('flow')){jumpTo(S.el.offsetTop);req();return;}jumpTo(S.el.offsetTop+(n.o+n.l*PLAY+2)*innerHeight/100);req();}
+function goScene(k){const n=SCN[k];const S=SEC[n.s];if(S.el.classList.contains('flow')){jumpTo(S.el.offsetTop);req();return;}jumpTo(S.el.offsetTop+(n.o+n.l*PLn(n)+2)*innerHeight/100);req();}
 $('menu').innerHTML=CH.map((c,i)=>`<button data-i="${i}"><b>${c[0]}</b>${c[1]}</button>`).join('');
 $('chap').onclick=e=>{e.stopPropagation();$('menu').classList.toggle('on');[...$('menu').children].forEach((b,i)=>b.classList.toggle('cur',i===SCN[cur].c));};
 $('menu').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=+b.dataset.i;$('menu').classList.remove('on');if(CH[i][2]){$(CH[i][2]).scrollIntoView({behavior:'smooth'});return;}const k=SCN.findIndex(x=>x.c===i);const n=SCN[k];scrollTo({top:SEC[n.s].el.offsetTop+n.o*innerHeight/100,behavior:'smooth'});};
@@ -2138,14 +2146,14 @@ let TAP=TAPQ==='1'||(COARSE&&TAPQ!=='0');try{const v=sessionStorage.getItem('dur
    scenes whose text only builds on the last (the How-it-works chats) run on too, with a reading pause in between. */
 const TAPS=new Set([1,2,5,6,13,14,15,16,17,19,20,21,22,23,24,28,30,31,33,36,37,38,39,40,41,42]);
 const SPLIT={11:[.88,.94]};   // scene 11: the walk up to the trader joins the monsoon walk (Noor stops at .88); the next tap changes the text and he lifts his price sign (done by .94); the still tail runs on into the next chapter
-const PAUSE={3:1300,4:1400,12:1300,18:900,25:1300,26:600,29:1100,32:1000,34:1100,35:1000,'11a':0};   // short breaths inside a chain: the text is readable while things move   // ms to read what just appeared, before the chain moves on
+const PAUSE={3:1300,4:1400,18:900,25:1300,26:600,29:1100,32:1000,34:1100,35:1000,'11a':0};   // short breaths inside a chain: the text is readable while things move   // ms to read what just appeared, before the chain moves on
 const STEPS=[];{let g=[];SCN.forEach((n,k)=>{const cs=SPLIT[k];if(cs){const b=[n.a,...cs,n.b];for(let i=0;i<b.length-1;i++){g.push({k,p0:b[i],p1:b[i+1]});if(i<b.length-2){STEPS.push({ks:g,c:n.c});g=[]}}}else g.push({k,p0:n.a,p1:n.b});if(TAPS.has(k)&&!cs){STEPS.push({ks:g,c:n.c});g=[]}});
   STEPS.push({fl:'ledger10',pg:0,c:9});}   /* the text chapters at the end read better as an ordinary scroll: one tap brings you there */
 const flowTop=()=>$('ledger10').offsetTop,inFree=()=>TAP&&scrollY>=flowTop()-4;
 const maxY=()=>document.documentElement.scrollHeight-innerHeight;
-const yAtP=(k,q)=>{const n=SCN[k],t=SEC[n.s].el.offsetTop,pe=n.b-.003;return t+(n.o+n.l*PLAY*clamp((q-n.a)/(pe-n.a),0,1))*innerHeight/100};
+const yAtP=(k,q)=>{const n=SCN[k],t=SEC[n.s].el.offsetTop,pe=n.b-.003;return t+(n.o+n.l*PLn(n)*clamp((q-n.a)/(pe-n.a),0,1))*innerHeight/100};
 function stopY(j){const st=STEPS[j];if(!st)return 0;let y;
-  if(st.ks){const pt=st.ks[st.ks.length-1],n=SCN[pt.k],S=SEC[n.s];y=pt.p1<n.b?yAtP(pt.k,pt.p1):S.el.offsetTop+(n.o+n.l*PLAY+1)*innerHeight/100}
+  if(st.ks){const pt=st.ks[st.ks.length-1],n=SCN[pt.k],S=SEC[n.s];y=pt.p1<n.b?yAtP(pt.k,pt.p1):S.el.offsetTop+(n.o+n.l*PLn(n)+1)*innerHeight/100}
   else{const el=$(st.fl);y=el.offsetTop;if(st.pg)y+=Math.max(0,Math.min(el.offsetHeight-innerHeight,st.pg*innerHeight*.82))}
   return Math.round(Math.min(maxY(),Math.max(0,y)))}
 const VHMS=34,TRMS=8.5;   // TRMS: ms per vh when the page scrolls from one chapter to the next   // ms per vh of animated scroll: one constant playback speed, so Noor never speeds up or slows down between taps
@@ -2156,12 +2164,12 @@ const secAt=y=>{for(const id in SEC){const S=SEC[id];const t=S.el.offsetTop;if(y
 /* playback runs at one steady scroll speed; on the road, time stretches where Noor would otherwise sprint, so her walk keeps one speed */
 const WALKVH=28;   // px of road per vh of scroll that reads as a steady walk
 const paceCuts=(k,p0,p1)=>{const n=SCN[k],cuts=[p0];if(n.s==='road')AK.forEach(([q])=>{if(q>p0&&q<p1)cuts.push(q)});cuts.push(p1);
-  const dpv=(n.b-.003-n.a)/(n.l*PLAY);return cuts.slice(1).map((q,i)=>{const a=cuts[i];let w=1;if(n.s==='road'){const dx=Math.abs(ax(q)-ax(a)),dvh=(q-a)/dpv;w=Math.max(1,dx/Math.max(1e-6,dvh)/WALKVH)}return [a,q,w]})};
+  const dpv=(n.b-.003-n.a)/(n.l*PLn(n));return cuts.slice(1).map((q,i)=>{const a=cuts[i];let w=1;if(n.s==='road'){const dx=Math.abs(ax(q)-ax(a)),dvh=(q-a)/dpv;w=Math.max(1,dx/Math.max(1e-6,dvh)/WALKVH)}return [a,q,w]})};
 function planOf(j){const st=STEPS[j],vh=innerHeight/100,items=[];let cur=scrollY;
   st.ks.forEach((pt,i)=>{const k=pt.k,n=SCN[k],t=SEC[n.s].el.offsetTop,pe=n.b-.003;
-    const a=yAtP(k,pt.p0),b=pt.p1<n.b?yAtP(k,pt.p1):Math.min(maxY(),t+(n.o+n.l*PLAY+1)*vh);
+    const a=yAtP(k,pt.p0),b=pt.p1<n.b?yAtP(k,pt.p1):Math.min(maxY(),t+(n.o+n.l*PLn(n)+1)*vh);
     if(a>cur+2){if(secAt(cur)===n.s)items.push({y0:a,y1:a,ms:0});else items.push({y0:cur,y1:a,ms:RMOT?0:(a-cur)/vh*TRMS})}
-    const pOf=y=>n.a+(pe-n.a)*clamp(((y-t)/vh-n.o)/(n.l*PLAY),0,1),q0=pOf(Math.max(a,Math.min(cur,b))),q1=Math.min(pe,pt.p1);
+    const pOf=y=>n.a+(pe-n.a)*clamp(((y-t)/vh-n.o)/(n.l*PLn(n)),0,1),q0=pOf(Math.max(a,Math.min(cur,b))),q1=Math.min(pe,pt.p1);
     paceCuts(k,q0,q1).forEach(([x0,x1,w])=>{const y0=yAtP(k,x0),y1=yAtP(k,x1);if(y1-y0>.5)items.push({y0,y1,ms:RMOT?0:(y1-y0)/vh*VHMS*(SLOWF[n.s]||1)*(SCF[k]||1)*w})});
     if(b>yAtP(k,q1)+.5)items.push({y0:yAtP(k,q1),y1:b,ms:0});
     const last=i===st.ks.length-1;if(!last&&PAUSE[k]&&pt.p1>=n.b)items.push({wait:RMOT?0:PAUSE[k]});cur=b});
@@ -2251,7 +2259,7 @@ function centreGroups(){const P=innerWidth<=760;const bar=60,foot=document.docum
 addEventListener('resize',()=>requestAnimationFrame(centreGroups));document.fonts&&document.fonts.ready.then(centreGroups);setTimeout(centreGroups,600);
 /* the Registry figure only takes the finger on phones, where it scrolls sideways; elsewhere the page scroll passes straight through it */
 if(innerWidth<=760)$('lgFig').setAttribute('data-lenis-prevent','');
-window.__dure={at(sec,p){const S=SEC[sec];const n=S.slots.find(n=>p>=n.a&&p<=n.b)||S.slots[S.slots.length-1];scrollTo(0,S.el.offsetTop+(n.o+clamp((p-n.a)/(n.b-n.a),0,1)*n.l*PLAY)*innerHeight/100);req();},go:goScene,step:j=>goStep(j),stepY:j=>stopY(j),steps:()=>STEPS.length,get cur(){return cur},get n(){return SCN.length},get busy(){return Object.keys(PS).some(id=>Math.abs(PS[id]-TG_[id])>.0004)},SEC,SCN};
+window.__dure={at(sec,p){const S=SEC[sec];const n=S.slots.find(n=>p>=n.a&&p<=n.b)||S.slots[S.slots.length-1];scrollTo(0,S.el.offsetTop+(n.o+clamp((p-n.a)/(n.b-n.a),0,1)*n.l*PLn(n))*innerHeight/100);req();},go:goScene,step:j=>goStep(j),stepY:j=>stopY(j),steps:()=>STEPS.length,get cur(){return cur},get n(){return SCN.length},get busy(){return Object.keys(PS).some(id=>Math.abs(PS[id]-TG_[id])>.0004)},SEC,SCN};
 function show(){}
 if('scrollRestoration' in history)history.scrollRestoration='manual';
 sizeSecs();sizeRoad();req();
