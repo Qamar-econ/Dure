@@ -565,3 +565,9 @@ svg.mximg{background:#7C5B3A}
   .nf-card.on polyline{stroke-dashoffset:0}
 }
 @media (min-width:700px){.conv .dash{max-width:520px;margin-left:auto;margin-right:auto}}
+
+/* soft edges: every illustrated sequence fades into the page above and below it, so nothing ends on a hard line */
+.road.zoom::before,.road.tog::after,.hero::after{content:"";position:absolute;left:0;right:0;height:110px;z-index:4;pointer-events:none}
+.road.zoom::before{top:0;background:linear-gradient(var(--ivory),rgba(242,234,218,0))}
+.road.tog::after{bottom:0;background:linear-gradient(rgba(242,234,218,0),var(--ivory))}
+.hero::after{bottom:0;height:90px;background:linear-gradient(rgba(242,234,218,0),var(--ivory))}
