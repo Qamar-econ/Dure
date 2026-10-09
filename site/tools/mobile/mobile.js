@@ -42,9 +42,10 @@ function place(s){const r=s.svg.getBoundingClientRect(),k=r.width/s.vb.width,H=i
   const prog=clamp((H*.58-r.top)/r.height,0,1);let noorX=null;
   s.ws.forEach((w,i)=>{let u;
     if(w.el.classList.contains('nb'))u=clamp((prog-.06-i*.04)/.6,0,1);             // neighbours set off one after another
-    else if(s.heap)u=clamp((prog-.02)/.66,0,1);
-    else{let lo=0,hi=w.L;const yT=Math.min((H*.58-r.top)/k,1760);   // she stops at the trader's plaza                                      // Noor on the long road: where the road is at that height
-      for(let n=0;n<22;n++){const m=(lo+hi)/2;if(w.p.getPointAtLength(m).y<yT)lo=m;else hi=m}u=lo/w.L}
+    else{   // Noor: wherever her road is at the same height on screen. One continuous walk across both maps:
+            // the road's Noor shows only while that height is on the road, the gathering's only once it is on the gathering
+      const yT=(H*.58-r.top)/k;w.el.style.visibility=(s.heap?yT>=0:yT<=s.vb.height)?'visible':'hidden';
+      let lo=0,hi=w.L;for(let n=0;n<22;n++){const m=(lo+hi)/2;if(w.p.getPointAtLength(m).y<yT)lo=m;else hi=m}u=lo/w.L}
     const a=w.p.getPointAtLength(u*w.L),b=w.p.getPointAtLength(Math.min(w.L,u*w.L+3)),c=w.p.getPointAtLength(Math.max(0,u*w.L-3));
     const dx=b.x-c.x;if(!w.front&&Math.abs(dx)>.6)w.el.classList.toggle('left',dx<0);   // front-facing figures never turn
     w.el.style.transform=`translate3d(${((a.x-s.vb.x)*k-w.fx).toFixed(1)}px,${(a.y*k-w.fy).toFixed(1)}px,0)`;

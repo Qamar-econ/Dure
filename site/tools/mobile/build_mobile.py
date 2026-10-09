@@ -289,11 +289,11 @@ PAGE = f'''<!doctype html>
 <!-- 3-4 · the road, seen from above -->
 <section class="road zoom" id="road" data-c="3" data-t="The road" style="--h:{ROAD_H}">
   <div class="sky"><div class="pan">{road_svg()}{sprite(PART['trader'], 'tr', .27, 'still', 'data-at="250,1722"')}{sprite(PART['fnoor'], 'nr', .24, 'walker noor front', 'data-p="roadLine"')}</div><div class="rain" aria-hidden="true"><i></i></div>
-    <div class="cap" style="--y:16;--x:4"><p class="kick">Harvest season</p><p>Noor needs cash within three days <em>for her daughter's school fees.</em></p></div>
+    <div class="cap" style="--y:110;--x:4"><p class="kick">Harvest season</p><p>Noor needs cash within three days <em>for her daughter's school fees.</em></p></div>
     <div class="bang" style="--y:700;--x:4">Flood.</div>
     <div class="cap" style="--y:900;--x:40"><p>“Recent heavy rains have damaged many roads and bridges in the country, disrupting people's access to markets.”</p><cite>Asian Development Bank, Timor-Leste</cite></div>
     <div class="bang" style="--y:1150;--x:4">Landslide.</div>
-    <div class="cap" style="--y:1470;--x:4" data-c="4" data-t="The buyer"><p class="kick">Unfair pricing</p><p>No truck from Dili risks the road, except one trader's. <b>He names his price.</b></p></div>
+    <div class="cap" style="--y:1470;--x:4" data-c="4" data-t="The buyer"><p class="kick">Unfair pricing</p><p>No truck from Dili risks the road, except one trader's. <b>He names his price, and she has to accept it.</b></p></div>
   </div>
 </section>
 
