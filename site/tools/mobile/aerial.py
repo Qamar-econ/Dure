@@ -222,7 +222,7 @@ def road_svg():
 
 # --------------------------------------------------------------------------- together: the neighbours' paths join one road
 TOG_H = 980
-MAIN_D = "M 200 -10 C 200 120, 214 260, 206 400 S 192 600, 236 738"
+MAIN_D = "M 200 -10 C 200 120, 214 260, 206 400 S 196 640, 238 760 S 262 840, 262 862"   # ends in front of the stack, not on it
 PATHS = [  # (start house, path to their place around the lot, jacket)
     ((58, 70), "M 58 96 C 70 190, 150 230, 204 300 S 196 600, 132 748", '#2E5E8A'),
     ((340, 56), "M 336 82 C 320 170, 240 230, 208 330 S 214 600, 300 752", '#C9A06A'),
