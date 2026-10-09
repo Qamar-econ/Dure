@@ -224,7 +224,7 @@ PAGE = f'''<!doctype html>
 <!-- 2 · the buyers -->
 <section class="txt split" data-c="2" data-t="The buyers">
   <p class="kick rv">Where she farms</p>
-  <h2 class="rv">The buyers who pay properly <em>are in Dili.</em></h2>
+  <h2 class="rv">The buyers who pay a fair price <em>are in Dili.</em></h2>
   <p class="rv">Ermera grows close to half of Timor-Leste's coffee.</p>
   <div class="map rv">{fig('map.route', None, 'Map: Letefoho to Gleno 19 km, Gleno to Dili 45 km, 64 km by road')}</div>
   <div class="big rv"><span class="n"><span class="cnt" data-to="98">98</span>%</span><p>of Ermera's coffee is bought by just four traders in the capital <span class="soft">(survey of 100 farmers, 2014)</span>.</p><cite>Cristovão, Bogor Agricultural University, 2015</cite></div>
