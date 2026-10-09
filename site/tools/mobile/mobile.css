@@ -571,3 +571,33 @@ svg.mximg{background:#7C5B3A}
 .road.zoom::before{top:0;background:linear-gradient(var(--ivory),rgba(242,234,218,0))}
 .road.tog::after{bottom:0;background:linear-gradient(rgba(242,234,218,0),var(--ivory))}
 .hero::after{bottom:0;height:90px;background:linear-gradient(rgba(242,234,218,0),var(--ivory))}
+
+/* ---------- night: everything after the first tais band ---------- */
+.night{--ivory:#231C17;--paper:#2C241F;--ink:#F4EBDA;--ink2:#D9CDB6;--soft:#A99C86;--line:rgba(244,235,218,.14);--rust:#E58F6E;
+  background:#231C17;color:var(--ink)}
+.night .kick,.night .chapno{color:var(--gold)}
+.night h2 em,.night h3 em{color:#E58F6E}
+.night .btn.ghost{color:var(--ink);border-color:rgba(244,235,218,.4)}
+/* the thread: two quiet halves on the dark page */
+.night .conv{background:linear-gradient(90deg,rgba(127,209,139,.07) 0 50%,rgba(143,183,196,.07) 50% 100%)}
+.night .conv::before{border-left-color:rgba(244,235,218,.18)}
+.night .sides{color:rgba(244,235,218,.42)}
+.night .conv .msg{box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.night .conv .dash{background:#1F3A40;box-shadow:0 0 0 1px rgba(244,235,218,.08)}
+.night .illus{color:var(--soft)}
+/* data cards stay paper: documents laid on the dark table, in their own light colours */
+.night .nf-rep,.night .nf-pool,.night .nf-card,.night .nf-lot{--ink:#1F3A40;--ink2:#4F4A40;--soft:#7A7062;--line:rgba(31,58,64,.16);--rust:#A8452A;color:var(--ink)}
+.night .nf-pool{background:#F2EADA;border-radius:16px;padding:16px 12px 14px}
+.night .nf-card .ft{color:#7A7062}
+.night .nf-card .kk{color:#A8452A}
+
+/* the bar turns dark with the page */
+.bar{transition:background-color .4s,color .4s}
+.nightbar .bar{background:rgba(35,28,23,.94);border-bottom-color:rgba(244,235,218,.1);color:#F4EBDA}
+.nightbar .bar .logo text{fill:#F4EBDA}
+.nightbar .bar .chap{color:#D9CDB6}
+.nightbar .bar .chap b{color:var(--gold)}
+.night .bench .bar{background:rgba(244,235,218,.07)}
+.night .bench .bar i{background:#3D6068}
+.night .bench li.me .bar i{background:#C9603F}
+.night .bench li.dim .bar i{background:#6E6A62}

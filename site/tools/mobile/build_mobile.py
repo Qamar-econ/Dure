@@ -350,6 +350,7 @@ PAGE = f'''<!doctype html>
   </div>
 </section>
 
+<div class="night">   <!-- from the first tais band to the end, the page stays dark -->
 <!-- 8 · how it works -->
 <section class="how" data-c="8" data-t="How it works">
   <p class="chapno rv">8 · How it works</p>
@@ -410,6 +411,7 @@ PAGE = f'''<!doctype html>
   </dl>
 </section>
 
+</div>
 <section class="dark close">
   <div class="tais" aria-hidden="true"></div>
   <div class="in">

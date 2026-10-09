@@ -12,7 +12,7 @@ $$('.rv').forEach(el=>io.observe(el));
 
 /* chapter label */
 const chap=$('#chap');let last='';
-const io2=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const c=e.target.dataset.c,t=e.target.dataset.t;if(c+t!==last){last=c+t;chap.innerHTML=`<b>${c}</b>${t}`}}),{rootMargin:'-40% 0px -55% 0px'});
+const io2=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const c=e.target.dataset.c,t=e.target.dataset.t;if(c+t!==last){last=c+t;chap.innerHTML=`<b>${c}</b>${t}`};document.body.classList.toggle('nightbar',+c>=7)}),{rootMargin:'-40% 0px -55% 0px'});
 $$('[data-c]').forEach(m=>io2.observe(m));
 
 /* walkers: standing figures from the story follow their paths as their section scrolls by.
