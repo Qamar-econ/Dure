@@ -627,6 +627,7 @@ body.mob .mp[data-p="dash"] .pane .figw{display:block;flex:none!important;height
 .mstk{display:flex;flex-direction:column;gap:10px;width:100%;padding:4px 0}
 .mstk>svg{width:100%!important;height:auto!important;max-height:none!important;display:block;margin:0 auto}
 .mstk>svg.half{width:62%!important}
+@media (pointer:coarse){#pick .fine a, .brand{position:relative}#pick .fine a::after, .brand::after{content:'';position:absolute;inset:-12px -10px}}   /* touch: a bigger invisible hit area, same look */
 </style>
 </head>
 <body class="paper">
@@ -1181,8 +1182,8 @@ const engName=()=>engine.name==='chat'?`small AI (on this device) · ${(engine.m
    come from the grounding context, no promises, ≤320 chars; otherwise a checked template.
    ===================================================================== */
 const PHONEISH=matchMedia('(max-width:760px)').matches||matchMedia('(pointer:coarse)').matches;
-const LLM={st:'off',p:0,err:null,gen:null,dtype:null,device:null,model:'onnx-community/Qwen2.5-0.5B-Instruct',lib:'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.5'};
-function llmLabel(){return LLM.st==='ready'?'Small AI chat: on ✓':LLM.st==='loading'?`Small AI: loading ${Math.round(LLM.p)}%`:LLM.st==='failed'?'Small AI: failed':PHONEISH?'Small AI: tap to load (500 MB)':'Small AI chat: off'}
+const LLM={cached:false,st:'off',p:0,err:null,gen:null,dtype:null,device:null,model:'onnx-community/Qwen2.5-0.5B-Instruct',lib:'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.5'};
+function llmLabel(){return LLM.st==='ready'?'Small AI chat: on ✓':LLM.st==='loading'?`Small AI: loading ${Math.round(LLM.p)}%`:LLM.st==='failed'?'Small AI: failed':PHONEISH&&!LLM.cached?'Small AI: tap to load (500 MB)':'Small AI chat: off'}
 function llmSync(){const b=$('llmBtn');if(!b)return;b.textContent=llmLabel();b.classList.toggle('on',LLM.st==='ready');b.classList.toggle('busy',LLM.st==='loading');b.classList.toggle('bad',LLM.st==='failed');
   b.dataset.tip=LLM.st==='ready'?`Qwen2.5-0.5B-Instruct · ${LLM.dtype} · ${LLM.device} · on this device. Click to turn off.`:LLM.st==='failed'?`Could not load: ${LLM.err}. Click to retry.`:'Small AI chat · on this device (≈500 MB, once). Answers questions the rules engine can\'t place.'}
 async function llmLoad(){
@@ -2465,7 +2466,10 @@ function finish(sold){
 }
 const STEP_SHORT=['Morning price','Your offer','Send photo','Pool','Auction','Pickup','Paid'];
 async function start(s){
-  if(QS.get('llm')==='1'||(QS.get('llm')!=='0'&&!PHONEISH&&!(navigator.connection&&navigator.connection.saveData)))llmLoad();   // on by default on computers; on phones it waits for a tap (~500 MB)
+  /* Small AI: the story page pre-downloads it in the background. Load it automatically on computers, and on phones once it is already in the cache (nothing to download). */
+  let have=false;try{if('caches' in self){const c=await caches.open('dure-models');const base='https://huggingface.co/'+LLM.model+'/resolve/main/onnx/';have=!!(await c.match(base+'model_q4f16.onnx')||await c.match(base+'model_quantized.onnx'))}}catch(e){}
+  LLM.cached=have;llmSync();
+  if(QS.get('llm')==='1'||(QS.get('llm')!=='0'&&(have||!PHONEISH)&&!(navigator.connection&&navigator.connection.saveData&&!have)))llmLoad();
   if(DURE_API)fetch(DURE_API+'/health').catch(()=>{});
   const q=new URLSearchParams(location.search);const seed=+(q.get('seed')||0)||Math.floor(Math.random()*9e4)+1e4;
   newMarket(seed);rep0=repNow=me().rep;
