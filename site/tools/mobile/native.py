@@ -299,35 +299,29 @@ GOLDV, GREEN, CORAL = '#E4B64C', '#7FD18B', '#F08A6A'
 
 
 def mx_price(chart):
-    chart = (chart.replace('stroke="#D8CCB2"', 'stroke="#35585F"').replace('fill="#5B5345"', 'fill="#BFD0CC"')
+    chart = (chart.replace('viewBox="0 0 360 236"', 'viewBox="0 14 360 206"').replace('stroke="#D8CCB2"', 'stroke="#35585F"').replace('fill="#5B5345"', 'fill="#BFD0CC"')
              .replace('stroke="#1F3A40" stroke-width="1.4"', 'stroke="#46656B" stroke-width="1.4"')
              .replace('fill="#4E8B5C" opacity=".2"', 'fill="#7FD18B" opacity=".16"').replace('stroke="#4E8B5C" stroke-width="2.4"', 'class="draw" pathLength="1" stroke="#7FD18B" stroke-width="2.4"')
              .replace('fill="#A9783A" stroke="#fff"', 'fill="#E4B64C" stroke="#24434A"'))
-    return ('<div class="mx"><div class="mxstatus">Morning brief · 06:30</div>'
-            f'<div class="mxrow">{_stat("Grade A today", "$2.74–2.90", GOLDV)}{_stat("Buyers this week", "4")}{_stat("Gleno road", "flooded", CORAL)}</div>'
-            f'<div class="mxbox"><div class="mxh">Coffee A · cleared prices <i>each dot: one auction</i></div>{chart}</div></div>')
+    return (f'<div class="mx"><div class="mxrow">{_stat("Grade A today", "$2.74–2.90", GOLDV)}{_stat("Buyers", "4")}{_stat("Gleno road", "flooded", CORAL)}</div>'
+            f'<div class="mxbox"><div class="mxh">Coffee A · cleared prices <i>12 weeks</i></div>{chart}</div></div>')
 
 
 def mx_photo(photo=''):
-    rows = [('Black or mouldy beans', 'none'), ('Insect holes', 'none'), ('Broken beans', 'few'), ('Drying, colour', 'even')]
-    return (f'<div class="mx">{photo}'
-            f'<div class="mxrow">{_stat("Preliminary grade", "A", GOLDV)}{_stat("Confidence", "93%")}</div>'
-            '<div class="mxbox"><div class="mxh">Defects a photo can show <i>SCA classification</i></div>' + ''.join(_li(a, b, col=GREEN) for a, b in rows) +
-            '</div><div class="mxnote">The rest is checked by hand. A person checks every sack at pickup.</div></div>')
+    rows = [('Black, mouldy', 'none'), ('Insect holes', 'none'), ('Broken', 'few'), ('Drying, colour', 'even')]
+    return (f'<div class="mx"><div class="mxrow">{_stat("First look", "Grade A", GOLDV)}{_stat("Confidence", "93%")}</div>'
+            '<div class="mxbox"><div class="mxh">Defects a photo can show <i>SCA</i></div><div class="mxg">' +
+            ''.join(f'<span>{a}<b>{b}</b></span>' for a, b in rows) + '</div></div></div>')
 
 
 def mx_pool():
-    return ('<div class="mx"><div class="mxstatus">Pool closed · 1,890 kg · 22 farms</div>'
-            '<div class="mxbox"><div class="mxh">One lot <i>bidding opens $2.74/kg</i></div><div class="mxbar"><i style="flex:1000;background:#D29A50"><b>A</b></i><i style="flex:600;background:#B4825A"><b>B</b></i><i style="flex:400;background:#8A6A55"><b>C</b></i></div>'
-            '<div class="mxleg"><span><b style="color:#D29A50">■</b> A 1,000 kg</span><span><b style="color:#B4825A">■</b> B 600 kg</span><span><b style="color:#8A6A55">■</b> C 400 kg</span></div></div>'
-            '<div class="mxnote">Every grade goes into one lot; buyers bid on the whole lot.</div></div>')
+    return ('<div class="mx"><div class="mxbox"><div class="mxh">Pool closed · 1,890 kg · 22 farms <i>opens $2.74</i></div>'
+            '<div class="mxbar"><i style="flex:1000;background:#D29A50"><b>A 1,000</b></i><i style="flex:600;background:#B4825A"><b>B 600</b></i><i style="flex:400;background:#8A6A55"><b>C 400</b></i></div></div></div>')
 
 
 def mx_book():
-    rows = [('Exporter', 'Dili · this phone', '$2.81', 'lead'), ('Roaster', 'Dili', '$2.79', 'dim'), ('Exporter', 'Dili', '$2.76', 'dim'), ('Café chain', 'Dili', '$2.74', 'dim')]
-    return ('<div class="mx"><div class="mxstatus">Cleared at $2.81 · 17:00</div>'
-            '<div class="mxbox"><div class="mxh">Order book <i>opened at $2.74</i></div>' + ''.join(_li(n, p, c, s) for n, s, p, c in rows) +
-            '</div><div class="mxnote">At 17:00 the best bid takes the whole lot.</div></div>')
+    rows = [('Exporter', 'this phone', '$2.81', 'lead'), ('Roaster', '', '$2.79', 'dim'), ('Exporter', '', '$2.76', 'dim'), ('Café chain', '', '$2.74', 'dim')]
+    return ('<div class="mx"><div class="mxbox"><div class="mxh">Order book · cleared at 17:00 <i>all in Dili</i></div>' + ''.join(_li(n, p, c, s) for n, s, p, c in rows) + '</div></div>')
 
 
 def mx_vote():
@@ -336,32 +330,23 @@ def mx_vote():
     col = {'A': '#D29A50', 'B': '#B4825A', 'C': '#8A6A55'}
     rows = ''.join(f'<div class="mxvg"><b style="color:{col[g]}">{g} {price[g]}</b><span>' + ''.join(
         f'<i class="{c}" style="--c:{col[g]};--k:{k}"></i>' for k, c in enumerate(s)) + '</span></div>' for g, s in seq.items())
-    return ('<div class="mx"><div class="mxstatus">Each farmer decides</div>'
-            f'<div class="mxbox"><div class="mxh">One lot · 22 farms <i><b style="color:{GREEN}">18 YES</b> · 4 NO</i></div>{rows}</div>'
-            f'<div class="mxbox you"><div class="mxh">You · Noor</div>{_li("40 kg · grade A · min $2.84", "in ✓", col=GREEN)}</div>'
-            '<div class="mxnote">Price at or above your minimum: you are in. Below: you choose YES or NO.</div></div>')
+    return (f'<div class="mx"><div class="mxbox"><div class="mxh">Each farmer decides <i><b style="color:{GREEN}">18 YES</b> · 4 NO · Noor in ✓</i></div>{rows}</div></div>')
 
 
 def mx_pick(scene):
-    return (f'<div class="mx">{scene}<div class="mxrow">{_stat("Sack #0412", "40 kg")}{_stat("Grade, by hand", "A ✓", GREEN)}</div>'
-            '<div class="mxnote">Pickup Thu 07:00, Letefoho church. The hand-checked grade is the one paid.</div></div>')
+    return scene
 
 
 def mx_pay():
-    rows = [('You · Noor', '40 kg · A', '+$125.60 ✓', 'lead'), ('8 grade A farms', '$3.14/kg', '✓', ''), ('6 grade B farms', '$2.78/kg', '✓', ''), ('4 grade C farms', '$2.11/kg', '✓', '')]
-    return ('<div class="mx"><div class="mxstatus">One payment in, 18 payments out</div>'
-            f'<div class="mxrow">{_stat("Exporter paid", "$4,250.85", GOLDV)}{_stat("Wallets paid", "18 / 18", GREEN)}</div>'
-            '<div class="mxbox tick">' + ''.join(_li(a, b, c, s, GREEN) for a, s, b, c in rows) +
-            '</div><div class="mxnote">Split by grade and kilos. Farmers without mobile money are paid by the truck driver at the next pickup.</div></div>')
+    rows = [('Noor', '40 kg · A', '+$125.60', 'lead'), ('8 grade A farms', '$3.14/kg', '✓', ''), ('6 grade B farms', '$2.78/kg', '✓', ''), ('4 grade C farms', '$2.11/kg', '✓', '')]
+    return ('<div class="mx"><div class="mxrow">' + _stat("In, from the exporter", "$4,250.85", GOLDV) + _stat("Wallets paid", "18 / 18", GREEN) + '</div>'
+            '<div class="mxbox tick">' + ''.join(_li(a, b, c, s_, GREEN) for a, s_, b, c in rows) + '</div></div>')
 
 
 def mx_score():
     bars = [('Grades confirmed', 92), ('On time', 93), ('Likely to deliver', 83)]
-    return ('<div class="mx"><div class="mxstatus">Noor\'s record</div>'
-            f'<div class="mxrow">{_stat("Sales", "14")}{_stat("On time", "13 / 14", GREEN)}{_stat("Disputes", "1", CORAL)}</div>'
-            '<div class="mxbox"><div class="mxh">Reputation <i>flood weeks never count</i></div>' + ''.join(
-                f'<div class="mxpb"><span>{l}</span><i><u style="--w:{v}%"></u></i><b>{v}%</b></div>' for l, v in bars) +
-            '</div><div class="mxnote">Farm size isn\'t counted. Better trust, better deals.</div></div>')
+    return ('<div class="mx"><div class="mxbox"><div class="mxh">Noor\'s record <i>14 sales · 1 dispute · floods never count</i></div>' + ''.join(
+        f'<div class="mxpb"><span>{l}</span><i><u style="--w:{v}%"></u></i><b>{v}%</b></div>' for l, v in bars) + '</div></div>')
 
 
 # ---------------------------------------------------------------- progressive disclosure: everything stays, less shows at first
@@ -384,3 +369,78 @@ def more(summary, body, cls=''):
 def dsum(text):
     """the one-line reading of a How it works dashboard, shown before it is opened"""
     return f'<span class="ds">{text}</span><span class="dl">Dashboard</span>'
+
+
+# ---------------------------------------------------------------- walkthrough, condensed (same facts, less height)
+def grade_compact():
+    defs = [('1', 'Black beans', 'found'), ('2', 'Mould', 'found'), ('3', 'Broken beans', 'found'), ('', 'Uneven drying', 'slight')]
+    cmp_ = [('A', 3, 21, [70, 18, 6, 1, 5]), ('B', 18, 22, [48, 24, 16, 4, 8]), ('C', 79, 23, [30, 20, 22, 18, 10])]
+    return ('<div class="nf nf-gc dk" role="img" aria-label="Black beans, mould and broken beans found; closest graded photos: C 79%; preliminary grade C">'
+            '<p class="st"><i>1</i>Find the beans <span class="ok">done</span></p>'
+            '<p class="st"><i>2</i>Look for defects</p><div class="dg">' + ''.join(f'<span class="{"dim" if not n else ""}"><i>{n}</i>{l}<b>{r}</b></span>' for n, l, r in defs) + '</div>'
+            '<p class="st"><i>3</i>Compare with graded photos</p><div class="cg">' + ''.join(
+                f'<div class="{"hi" if g == "C" else ""}">{tile(s, m)}<b class="g{g}">{g}</b><span>{v}%</span></div>' for g, v, s, m in cmp_) +
+            '<div class="pg"><small>Preliminary</small><b>C</b></div></div></div>')
+
+
+def market_compact():
+    asks = [2.20, 2.25, 2.31, 2.31, 2.37, 2.37, 2.37, 2.43, 2.43, 2.43, 2.47, 2.47, 2.49, 2.49, 2.51, 2.53, 2.53, 2.55, 2.55, 2.55, 2.61, 2.67, 2.78]
+    Y = lambda v: 150 - (v - 2.15) / (2.85 - 2.15) * 140
+    seen, d = {}, ''
+    for v in asks:
+        j = seen.get(v, 0); seen[v] = j + 1
+        d += f'<circle cx="{60+j*11}" cy="{Y(v):.1f}" r="4.2" fill="{"#7FD18B" if v <= 2.55 else "#8FA1A3"}"/>'
+    ax = ''.join(f'<text x="30" y="{Y(v)+4:.1f}" text-anchor="end" class="t s" fill="#B9C8C6">{v:.2f}</text>' for v in (2.3, 2.5, 2.7))
+    svg = (f'<svg viewBox="0 0 340 160" role="img" aria-label="Each dot is one farmer\'s ask; fair price 2.55, bidding opens at 2.43; 21 in">{ax}'
+           f'<path d="M38 8 V156" stroke="#5E7B80" stroke-width="1.4"/><rect x="110" y="{Y(2.63):.1f}" width="226" height="{Y(2.47)-Y(2.63):.1f}" fill="#7FD18B" fill-opacity=".14"/>'
+           f'<path d="M92 {Y(2.55):.1f} H336" stroke="#7FD18B" stroke-width="1.6" stroke-dasharray="5 4"/><text x="336" y="{Y(2.55)-7:.1f}" text-anchor="end" class="t s" fill="#7FD18B">fair 2.55</text>'
+           f'<path d="M110 {Y(2.43):.1f} H336" stroke="{GOLD}" stroke-width="2"/><text x="336" y="{Y(2.43)+15:.1f}" text-anchor="end" class="t s" fill="{GOLD}">opens 2.43</text>{d}</svg>')
+    rows = [('Recent sales', '2.47–2.63'), ('Buyers this week', '5'), ('Road to Dili', 'open'), ('Rain this week', 'light')]
+    return ('<div class="nf nf-mk dk"><p class="hd">Each dot: one farmer\'s ask <span><b style="color:#7FD18B">●</b> in · <b style="color:#8FA1A3">●</b> sits out</span></p>' + svg +
+            '<div class="mxg">' + ''.join(f'<span>{a}<b>{b}</b></span>' for a, b in rows) + '</div>'
+            '<div class="fr2"><span>fair <b>$2.55</b></span><span>opens <b class="g">$2.43</b></span><span>cleared <b class="g">$2.55 · 21 in</b></span></div></div>')
+
+
+def rep_compact(who):
+    if who == 'noor':
+        name, sub, sc, col, rows, av = 'Noor', '2 ha', 92, LEAF, [('14', 'sales', 1, 0), ('13', 'on time', 13/14, 0), ('92%', 'grades confirmed', .92, 0), ('1', 'dispute', 1/14, 1), ('1', 'flood week, not counted', 1/14, 2)], zoom('econ0.noor', '17 19 54 54', 'avn')
+    else:
+        name, sub, sc, col, rows, av = 'Big grower', '30 ha', 64, '#C9A06A', [('12', 'sales', 1, 0), ('9', 'on time', 9/12, 0), ('75%', 'grades confirmed', .75, 0), ('3', 'disputes', 3/12, 1), ('0', 'flood weeks', 0, 2)], zoom('econ0.big', '357 19 54 54', 'avb')
+    li = ''.join(f'<li class="{["", "bad", "fm"][b]}"><b>{v}</b><span>{l}</span><s><i style="width:{f*100:.0f}%"></i></s></li>' for v, l, f, b in rows)
+    return (f'<div class="nf nf-rc" style="--c:{col}" role="img" aria-label="{name}: {sc}% likely to deliver">'
+            f'<div class="rh"><span class="av">{av}</span><b>{name}</b><small>{sub}</small><strong>{sc}%<small>likely to deliver</small></strong></div><ul>{li}</ul></div>')
+
+
+# ---------------------------------------------------------------- why cooperating pays: one diagram, two states
+BASKET = ('<svg class="bk" viewBox="-14 -12 28 26" aria-hidden="true"><circle cx="-6" cy="-3" r="3.6" fill="#C23A2E"/><circle cx="1" cy="-5" r="3.6" fill="#9E2A24"/><circle cx="7" cy="-3" r="3.6" fill="#C23A2E"/>'
+          '<path d="M-12 -1 H12 L9 13 H-9Z" fill="#C58B4E"/><path d="M-11 4 H11 M-10 9 H10" stroke="#9E6834" stroke-width="1.4"/></svg>')
+ICON = {
+    'basket': BASKET,
+    'rain': '<svg viewBox="0 0 28 26" aria-hidden="true"><path d="M7 14 a6 6 0 0 1 1-12 a8 8 0 0 1 14 3 a5 5 0 0 1-1 9Z" fill="#8FA7B5"/><path d="M8 18 l-2 6 M14 18 l-2 6 M20 18 l-2 6" stroke="#4F7A93" stroke-width="2" stroke-linecap="round"/></svg>',
+    'slide': '<svg viewBox="0 0 28 26" aria-hidden="true"><path d="M2 24 L14 4 L26 24Z" fill="#A9B98F"/><path d="M14 4 C12 12 8 18 3 24 H17 C15 18 15 12 14 4Z" fill="#A07550"/><circle cx="20" cy="21" r="2.6" fill="#6F6A60"/><circle cx="24" cy="23" r="1.8" fill="#6F6A60"/></svg>',
+    'truck': '<svg viewBox="0 0 30 22" aria-hidden="true"><rect x="1" y="3" width="17" height="12" rx="1.5" fill="#8B6A43"/><path d="M18 7 H24 L28 11 V15 H18Z" fill="#A8452A"/><circle cx="7" cy="17" r="3" fill="#2A2522"/><circle cx="23" cy="17" r="3" fill="#2A2522"/></svg>',
+}
+
+
+def story_beats():
+    rows = [('basket', 'Harvest season.', 'Noor has <b>40 kg</b> of fine coffee, and needs cash within <b>three days</b> for her daughter\'s school fees.', ''),
+            ('rain', 'Flood.', 'Rains wash out roads and bridges <span class="src">(Asian Development Bank)</span>.', 'hit'),
+            ('slide', 'Landslide.', 'No truck from Dili will risk the road.', 'hit'),
+            ('truck', 'One trader comes.', 'He names his price, <b>and she has to accept it.</b>', 'end')]
+    return '<ol class="sb">' + ''.join(f'<li class="rv {c}"><span class="ic">{ICON[i]}</span><div><b class="w">{w}</b><p>{t}</p></div></li>' for i, w, t, c in rows) + '</ol>'
+
+
+def alone_together():
+    X = lambda v: (v - 2.0) / 1.0 * 100   # $2.00 .. $3.00 across the scale
+    farms = ''.join(f'<i style="--k:{k}">{BASKET}</i>' for k in range(22))
+    buyers = [('Trader', 'on the road', '$2.25', 'only'), ('Exporter', 'Dili', '$2.81', 'win'), ('Roaster', 'Dili', '$2.79', ''), ('Exporter', 'Dili', '$2.76', ''), ('Café chain', 'Dili', '$2.74', '')]
+    bl = ''.join(f'<li class="{c}"><span>{n}<small>{w}</small></span><b>{p}</b></li>' for n, w, p, c in buyers)
+    return f'''<div class="at" data-m="a" role="group" aria-label="Alone versus together">
+  <div class="tl at-t" role="tablist" aria-label="Selling alone or together"><button type="button" role="tab" aria-selected="true" data-m="a">Alone</button><button type="button" role="tab" aria-selected="false" data-m="t">Together</button></div>
+  <div class="row"><span class="lb">Coffee</span><div class="v"><div class="farms">{farms}</div><p><b class="sa">40 kg · Noor</b><b class="st">1,890 kg · 22 farms</b></p></div></div>
+  <div class="row"><span class="lb">Road</span><div class="v"><p class="sa">Flooded. Only one trader's truck makes it.</p><p class="st">One truck, booked for the whole lot.</p></div></div>
+  <div class="row"><span class="lb">Buyers</span><div class="v"><ul class="by">{bl}</ul></div></div>
+  <div class="row pr"><span class="lb">Price</span><div class="v"><div class="sc"><i class="mk" style="--a:{X(2.25):.0f}%;--t:{X(2.81):.0f}%"></i><span>$2.00</span><span>$3.00</span></div>
+    <p class="big"><b class="sa">$2.25</b><b class="st">$2.81</b><small>per kg</small><em class="st">+25%</em></p></div></div>
+  <p class="foot">Same coffee. More of it, and buyers compete. <span>Illustrative example.</span></p>
+</div>'''
