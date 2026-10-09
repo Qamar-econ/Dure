@@ -158,7 +158,7 @@ TRAIN = re.findall(r'<img src="(assets/train/t\d+\.jpg)"[^>]*title="([^"]*)"', w
 
 def tw_block(i, figs):
     n, h3, p, c = TW[i]
-    return (f'<div class="tw rv"><div class="kick">{n}</div><h3>{h3}</h3><p>{p}</p>{figs}<p class="note">{c}</p></div>')
+    return (f'<div class="tw rv"><div class="twt"><div class="kick">{n}</div><h3>{h3}</h3><p>{p}</p><p class="note">{c}</p></div><div class="twf">{figs}</div></div>')
 
 
 PARSER = ('<div class="panel parser"><div class="ph"><span>Dure AI · message parser</span><span><i class="ok"></i>Tetum · 2 spellings fixed</span></div>'
@@ -222,7 +222,7 @@ PAGE = f'''<!doctype html>
 </section>
 
 <!-- 2 · the buyers -->
-<section class="txt" data-c="2" data-t="The buyers">
+<section class="txt split" data-c="2" data-t="The buyers">
   <p class="kick rv">Where she farms</p>
   <h2 class="rv">The buyers who pay properly <em>are in Dili.</em></h2>
   <p class="rv">Ermera grows close to half of Timor-Leste's coffee.</p>
@@ -323,9 +323,11 @@ PAGE = f'''<!doctype html>
   <p class="chapno rv">10 · From the slope to the ministry</p>
   <h2 class="rv">An automated Registry <em>and AI policy suggestions.</em></h2>
   <p class="lead rv">A farmer Registry is important and effective, but labour-intensive and expensive to keep. Dure works as a market itself, and every deal leaves a footprint. <b>So the Registry builds itself.</b></p>
+  <div class="regs">
   <div class="reg rv">{fig('ledger.grid', 380, 'Daily accumulated trades per farmer')}</div>
   <div class="reg rv">{fig('ledger.chart', 380, 'Quality signals by week for the whole pool')}</div>
   <div class="reg rv">{fig('ledger.brief', 370, "Monday's brief: Lebudu, mould on 60% of photos after the rain")}</div>
+  </div>
   <p class="rv">Policy makers and extension officers get accurate, good-quality information on limited resources.</p>
   <p class="rv"><b>AI is not a silver bullet.</b> Noor knows farming better than Dure, so Dure stays out of how she farms. But when the extension officer visits Noor twice a year, they can make the best of it.</p>
   <a class="btn ghost rv" href="sheet.html">Open the sample Registry<span>→</span></a>

@@ -222,3 +222,50 @@ blockquote cite{margin-top:8px;font-size:14px}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.msg{opacity:1!important;transform:none!important;animation:none!important}.rain i{animation:none}.bench .bar i{clip-path:none;transition:none}}
 /* tablets: same single column, more air */
 @media (min-width:700px){:root{--g:40px}body{font-size:19.5px}h2{font-size:42px}.hero .mark{width:400px}.big .n{font-size:110px}.portrait,.map{margin-left:0;margin-right:0}.dash,.panelwrap,.cards,.panel,.reg{margin-left:0;margin-right:0}.vids{grid-template-columns:1fr 1fr 1fr}.road .cap{width:min(46%,330px)}}
+
+/* tablets in landscape: use the width. Notes move into the margin beside the maps, step titles stay pinned
+   beside the message thread, figures sit next to their text. */
+@media (min-width:1000px) and (orientation:landscape){
+  :root{--g:48px}
+  body{font-size:19px}
+  .txt,.how,.hero{max-width:860px}
+  .hero{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr auto auto 1fr;column-gap:40px;text-align:left;min-height:calc(100svh - 50px);max-width:1180px;padding:0 var(--g)}
+  .hero .mark{grid-column:1;grid-row:2;margin:0;width:400px}
+  .hero .tag{grid-column:1;grid-row:3;align-self:start}
+  .hero .def{grid-column:1;grid-row:4;align-self:start}
+  .hero .portrait{grid-column:2;grid-row:1/span 4;margin:0;align-self:end;max-width:540px;justify-self:center;width:100%}
+  .split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);column-gap:56px;max-width:1180px;align-items:start}
+  .split > *{grid-column:1}
+  .split > .map{grid-column:2;grid-row:1/span 6;margin:0;align-self:center}
+  /* aerial maps on the right, their notes in the left margin, pointing at the place they describe */
+  .road{background:var(--ivory)}
+  .road .sky{max-width:600px;margin:0 7vw 0 auto}
+  .road .cap,.road .bang{left:auto;right:calc(100% + 44px);width:min(330px,calc(100vw - 600px - 7vw - 96px))}
+  .road .cap{background:none;box-shadow:none;padding:0;border-top:1px solid var(--line);padding-top:12px}
+  .road .cap::after{content:"";position:absolute;right:-44px;top:-1px;width:36px;border-top:1px solid rgba(31,58,64,.35)}
+  .road .cap p{font-size:18px}
+  .bang{font-size:64px;text-shadow:none;text-align:right}
+  .tog .sign{left:58%}
+  /* how it works: the step stays pinned on the left while its messages run on the right */
+  .how{max-width:1120px}
+  .how > h2,.how > .chapno,.how > .lead2{max-width:640px}
+  .hstep{display:grid;grid-template-columns:300px minmax(0,1fr);column-gap:60px;margin-top:72px}
+  .hstep header{position:sticky;top:84px;align-self:start}
+  .hstep h3{font-size:28px}
+  .dash{margin-left:0;margin-right:0}
+  /* walkthrough: text left, its figures right */
+  .twsec{max-width:1120px}
+  .tw{display:grid;grid-template-columns:330px minmax(0,1fr);column-gap:56px;align-items:start;margin-bottom:96px}
+  .tw .twt{position:sticky;top:84px}
+  .twf .panelwrap,.twf .cards,.twf .panel{margin:0}
+  .twf .cards{flex-direction:row;align-items:flex-start}
+  .twf .cards .fig{flex:1 1 0;min-width:0}
+  .twf .panelwrap{flex-direction:row;align-items:stretch}
+  .twf .panelwrap .fig{flex:1 1 0;min-width:0}
+  .twf .train{margin-top:14px}
+  /* registry: the three pieces side by side */
+  .regs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:28px calc(-1*(1180px - 860px)/2 + 0px) 0;max-width:none}
+  .regs .reg{margin:0}
+  .dark .in{max-width:860px}
+  .close .vids{grid-template-columns:repeat(3,1fr)}
+}
