@@ -601,3 +601,74 @@ svg.mximg{background:#7C5B3A}
 .night .bench .bar i{background:#3D6068}
 .night .bench li.me .bar i{background:#C9603F}
 .night .bench li.dim .bar i{background:#6E6A62}
+
+/* ---------- progressive disclosure: tabs for parallel views, details for supporting panels ---------- */
+.tabs{margin:20px 0 0}
+.tl{display:flex;gap:4px;padding:4px;border-radius:12px;background:rgba(127,127,127,.12);margin:0 0 12px;overflow-x:auto;scrollbar-width:none}
+.tl button{all:unset;cursor:pointer;flex:1 0 auto;text-align:center;padding:8px 12px;border-radius:9px;font:600 13.5px var(--sans);color:var(--ink2);white-space:nowrap}
+.tl button[aria-selected="true"]{background:var(--paper);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.tl button:focus-visible{outline:2px solid var(--gold)}
+.tp > .nf{max-width:none}
+details.more{margin:12px 0 0;border-radius:12px;background:rgba(127,127,127,.1)}
+details.more > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:11px 14px;font:600 14px var(--sans);color:var(--ink)}
+details.more > summary::-webkit-details-marker{display:none}
+details.more > summary span{flex:1}
+details.more > summary i{width:9px;height:9px;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg);margin:-4px 4px 0 0;transition:transform .25s;opacity:.7}
+details.more[open] > summary i{transform:rotate(-135deg);margin-top:4px}
+details.more .mb{padding:0 8px 10px}
+details.more .mb > .nf,details.more .mb > .panel{margin:0;max-width:none}
+/* a How it works dashboard: its one-line reading, the card opens below */
+.conv .dash{padding:0;overflow:hidden}
+details.dsh{margin:0;background:none}
+details.dsh > summary{color:#F6EFE0;padding:11px 14px;font:400 13.5px/1.35 var(--sans)}
+details.dsh > summary .ds b{color:var(--gold);font-weight:600}
+details.dsh > summary .dl{flex:none;font:600 11px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:#7FD18B}
+details.dsh .mb{padding:0 12px 4px}
+/* videos: one row you swipe */
+.vids{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:24px calc(-1*var(--g)) 8px;padding:0 var(--g) 6px;scrollbar-width:none}
+.vids .vid{flex:0 0 72%;scroll-snap-align:start}
+@media (min-width:700px){.vids .vid{flex-basis:calc((100% - 24px)/3)}.vids{margin-left:0;margin-right:0;padding:0}}
+
+/* phones: What stays / What goes as tabs; wider screens keep the two lists side by side */
+.swtabs{display:block}.sw{display:none!important}
+.swl{margin:0;padding:0 0 0 18px;font-size:17px;line-height:1.7;color:#E3D7C0}
+.swl.go li{text-decoration:line-through;text-decoration-color:rgba(229,143,110,.7)}
+.dark .tl button{color:#D9CDB6}.dark .tl button[aria-selected="true"]{background:#3A302A;color:#F4EBDA}
+@media (min-width:700px){.swtabs{display:none}.sw{display:grid!important}}
+.conv details.cont{background:none;margin:2px 0 0}
+.conv details.cont > summary{justify-content:center;font:600 12.5px var(--sans);color:var(--soft);padding:8px}
+.conv details.cont > summary span{flex:none}
+.conv details.cont .mb{padding:0}
+.parser details.more{background:rgba(255,255,255,.05);margin:0 0 10px}
+.parser details.more > summary{color:#EDE3CF}
+@media (max-width:699px){.txt,.how{padding-top:44px;padding-bottom:40px}.dark .in{padding:40px var(--g) 44px}.hstep{margin-top:34px}}
+
+details.more.src{background:none;margin:6px 0 0}
+details.more.src > summary{padding:4px 0;font:500 12.5px var(--sans);color:var(--soft);justify-content:flex-start}
+details.more.src > summary span{flex:none}
+details.more.src .mb{padding:0}
+@media (max-width:699px){
+  .nf-rep li{padding:6px 0 5px;font-size:14px}.nf-rep .rh{padding-bottom:8px}
+  .nf-pool .pr{padding:1px 0}.nf-pool .fr{margin-bottom:6px}.nf-pool .fb{padding:6px 8px}
+  .hstep header{margin-bottom:12px}.hstep header p{font-size:15px}
+}
+
+/* How it works: on phones and upright tablets, the eight steps are a row you swipe through, one step per screen */
+.swipe{display:none}
+@media all{
+  .hsteps{display:flex;align-items:flex-start;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 calc(-1*var(--g));padding:0 var(--g) 8px;scroll-padding:0 var(--g);scrollbar-width:none;overscroll-behavior-x:contain}
+  .hsteps::-webkit-scrollbar{display:none}
+  .hsteps .hstep{flex:0 0 100%;scroll-snap-align:start;margin-top:18px;display:block}
+  .hsteps .hstep header{position:static}
+  .swipe{display:flex;justify-content:space-between;align-items:center;font:600 12.5px var(--sans);color:var(--soft);margin:18px 0 0}
+  .swipe span{color:var(--gold);font-size:16px;animation:nudge 1.6s ease-in-out infinite}
+  @keyframes nudge{50%{transform:translateX(5px)}}
+}
+
+.conv .msg.F,.conv .msg.B{background:var(--leaf);color:#fff}   /* Dure, on either side */
+.conv .msg.F.me,.conv .msg.B.me{background:#fff;color:#141414}
+.hsteps .conv{margin:0}
+details.dsh > summary .dl{margin-left:10px}
+@media (min-width:1000px) and (orientation:landscape){.hsteps .hstep{display:grid;grid-template-columns:300px minmax(0,1fr);column-gap:60px}.hsteps .hstep header{position:static}}
+
+.hsteps{margin:0!important;padding:0 0 8px!important;scroll-padding:0!important;transition:height .35s ease}

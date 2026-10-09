@@ -108,7 +108,7 @@ SAY = {
     ('4', 'B', 0): '<b>Lot locked</b> · 1,530 kg · 18 farms<br><span class="paybtn">Pay $4,250.85</span>',
     ('4', 'B', 1): 'Paid ✓ Truck booked: Thu 07:00, Letefoho church.',
     ('5', 'F', 1): 'Got it ✓ Sack #0412, truck at 07:00.',
-    ('5', 'F', 2): '<b>Picked up ✓</b> 40 kg<br>Grade A confirmed by hand',
+    ('5', 'F', 2): '<b>Picked up ✓</b> 40 kg<br>Grade A confirmed by hand[sack]',
     ('5', 'B', 0): '<b>Picked up ✓</b> 1,530 kg, hand-checked',
     ('6', 'F', 0): '<b>Paid ✓</b> +$125.60 to your mobile wallet',
     ('6', 'B', 0): '<b>Delivered ✓</b> 1,530 kg to your warehouse',
@@ -118,15 +118,15 @@ SAY = {
 }
 DUR = [4.4, 10.5, 5.4, 4.2, 4.2, 5.2, 5.6, 3.6]
 # where each step's dashboard sits in its thread (after this many messages), and what it is
-FIGS = {
-    0: (2, lambda: N.mx_price(price_chart())),
-    1: (3, lambda: N.mx_photo(PART['photoA'].replace('<svg ', '<svg class="mximg" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Noor\'s photo of her beans" ', 1))),
-    2: (2, N.mx_pool),
-    3: (4, N.mx_book),
-    4: (1, N.mx_vote),
-    5: (2, lambda: N.mx_pick(N.zoom('how5.pick', '0 70 380 257', 'pk', 'Pickup at the church: Noor beside her three sacks').replace('class="zm"', 'class="zm mximg"', 1))),
-    6: (2, N.mx_pay),
-    7: (2, N.mx_score),
+FIGS = {   # (after how many messages, what): each dashboard shows its one-line reading; the full card opens on tap
+    0: (2, lambda: N.more(N.dsum('Grade A today <b>$2.74–2.90</b> · 4 buyers · road flooded'), N.mx_price(price_chart()), 'dsh')),
+    1: (3, lambda: N.more(N.dsum('First look <b>grade A</b> · 93% · defects: none, none, few, even'), N.mx_photo(), 'dsh')),
+    2: (2, lambda: N.more(N.dsum('One lot <b>1,890 kg</b> · A 1,000 · B 600 · C 400'), N.mx_pool(), 'dsh')),
+    3: (2, lambda: N.more(N.dsum('Cleared at <b>$2.81</b> · 4 buyers bid'), N.mx_book(), 'dsh')),
+    4: (1, lambda: N.more(N.dsum('<b>18 YES</b> · 4 NO · Noor is in'), N.mx_vote(), 'dsh')),
+    5: (9, lambda: ''),
+    6: (2, lambda: N.more(N.dsum('<b>$4,250.85</b> in · 18 wallets paid · Noor +$125.60'), N.mx_pay(), 'dsh')),
+    7: (2, lambda: N.more(N.dsum('Grades confirmed <b>92%</b> · on time 13 / 14'), N.mx_score(), 'dsh')),
 }
 
 
@@ -159,7 +159,9 @@ def thread():
         body, lastside, n = [], None, 0
         for k, (t, side, m) in enumerate(items):
             if k == at:
-                body.append(f'<figure class="dash">{figf()}</figure>')
+                f = figf()
+                if f:
+                    body.append(f'<figure class="dash">{f}</figure>')
                 lastside = None
             hm = m['html']
             if side == 'F':
@@ -170,15 +172,23 @@ def thread():
             mine = m['me']
             if side == 'F' and text.strip() == '[photo sent]':
                 text = PART['photoA'].replace('<svg ', '<svg class="ph" role="img" aria-label="Noor\'s photo of her coffee beans in a basket" ', 1)
+            if '[sack]' in text:   # the truck driver's photo of her sack at pickup, as in the demo
+                text = text.replace('[sack]', PART['sackA'].replace('<svg class="ph"', '<svg class="ph" role="img" aria-label="The driver\'s photo of sack #0412: 40 kg, grade A, checked"', 1))
             if '[img]' in text:
                 text = '<span class="imgs">' + ''.join(f'<span>{PART["photo" + g].replace("<svg ", f"<svg class=ph aria-label=\"Grade {g} photo\" ", 1)}<i>{g}</i></span>' for g in 'ABC') + '</span>'
             who = ''
             cls = f'msg {side}{" me" if mine else ""}'
             body.append(f'{who}<div class="{cls}" style="--i:{n}"><span class="sd">{html.escape(re.sub("<[^>]+>", "", sender)) if not mine else ("Noor" if side == "F" else "Buyer")}</span>{bubble_text(text)}</div>')
             n += 1
-        if at >= len(items):
+        if at >= len(items) and figf():
             body.append(f'<figure class="dash">{figf()}</figure>')
         t, p = HOW[s]
+        # the opening of each exchange and its dashboard show; the rest of the conversation opens on tap
+        cut = next((k + 1 for k, b in enumerate(body) if b.startswith('<figure')), min(2, len(body)))
+        rest = body[cut:]
+        if len(rest) >= 2:
+            nm = sum(1 for b in rest if 'class="msg' in b)
+            body = body[:cut] + [f'<details class="more cont"><summary><span>Continue the exchange · {nm} more</span><i aria-hidden="true"></i></summary><div class="mb">{"".join(rest)}</div></details>']
         if s == 0:
             body.insert(0, '<div class="sides" aria-hidden="true"><span>Noor</span><span>Buyer</span></div>')
         out.append(f'<article class="hstep rv"><header><span class="no">{s+1}<i>/8</i></span><h3>{t}</h3><p>{p}</p></header><div class="conv">{"".join(body)}</div></article>')
@@ -213,15 +223,16 @@ TRAIN = re.findall(r'<img src="(assets/train/t\d+\.jpg)"[^>]*title="([^"]*)"', w
 
 def tw_block(i, figs):
     n, h3, p, c = TW[i]
-    return (f'<div class="tw rv"><div class="twt"><div class="kick">{n}</div><h3>{h3}</h3><p>{p}</p><p class="note">{c}</p></div><div class="twf">{figs}</div></div>')
+    note = N.more('Notes and sources', f'<p class="note">{c}</p>', 'src') if c else ''
+    return (f'<div class="tw rv"><div class="twt"><div class="kick">{n}</div><h3>{h3}</h3><p>{p}</p>{note}</div><div class="twf">{figs}</div></div>')
 
 
 PARSER = ('<div class="panel parser"><div class="ph"><span>Dure AI · message parser</span><span><i class="ok"></i>Tetum · 2 spellings fixed</span></div>'
           '<div class="raw"><mark>bondia!</mark> <mark class="k0">kafe</mark> <mark class="k1">40kilu</mark> <mark class="k2">diak los..</mark> <mark class="k3">fan 2.84</mark> <mark>bele? ok</mark></div>'
-          '<dl>' + ''.join(f'<div><dt><span>{a}</span></dt><dd><small>{b}</small><b>{c}</b></dd></div>' for a, b, c in [
+          '<details class="more"><summary><span>What it picked out</span><i aria-hidden="true"></i></summary><dl>' + ''.join(f'<div><dt><span>{a}</span></dt><dd><small>{b}</small><b>{c}</b></dd></div>' for a, b, c in [
               ('kafe', 'Crop', 'coffee'), ('40kilu', 'Quantity', '40 kg'), ('diak los..', 'Grade', 'A · preliminary'),
               ('fan 2.84', 'Ask (hidden)', '$2.84 / kg'), ('bondia! bele? ok', 'Intent', 'offer to sell')]) +
-          '</dl><div class="reply"><small>reply sent</small><span>Diak! Haruka foto ida? (a photo?)</span></div></div>')
+          '</dl></details><div class="reply"><small>reply sent</small><span>Diak! Haruka foto ida? (a photo?)</span></div></div>')
 
 BUYERS = ('<div class="panel buyers"><div><small>Buyers too · likely to pay on time</small><b>Exporter, Dili</b><span>9 purchases · 9 paid on time · 0 disputes</span></div><strong>88%</strong></div>'
           '<p class="est">Dure AI\'s estimate, ± a few points. Land and volume aren\'t counted.</p>')
@@ -342,6 +353,7 @@ PAGE = f'''<!doctype html>
     <div class="pt"><p class="kick">Introducing</p><div class="dmark">{LOGO.replace('fill="#1F3A40"', 'fill="#F4EBDA"')}</div><h3>Cooperating through <em>messages.</em></h3></div>
   </div>
   <div class="in">
+    <div class="swtabs rv">{N.tabs([('What stays', '<ul class="swl"><li>Pooling the harvest</li><li>Buyers bidding for the whole lot</li><li>One shared truck and pickup point</li><li>A record that earns trust</li></ul>'), ('What goes', '<ul class="swl go"><li>A legal entity</li><li>$1,000 in share capital</li><li>Fifteen founders who must agree</li><li>A board to run, a leader to fight over</li></ul>')], 'What changes')}</div>
     <div class="sw rv">
       <div><h4>What stays</h4><ul><li>Pooling the harvest</li><li>Buyers bidding for the whole lot</li><li>One shared truck and pickup point</li><li>A record that earns trust</li></ul></div>
       <div class="go"><h4>What goes</h4><ul><li>A legal entity</li><li>$1,000 in share capital</li><li>Fifteen founders who must agree</li><li>A board to run, a leader to fight over</li></ul></div>
@@ -356,7 +368,8 @@ PAGE = f'''<!doctype html>
   <p class="chapno rv">8 · How it works</p>
   <h2 class="rv">One week, <em>by text message.</em></h2>
   <p class="rv lead2">Noor on a basic phone, a buyer on a smartphone. In between, Dure does a cooperative office's work.</p>
-  {thread()}
+  <p class="swipe" aria-hidden="true">Swipe for each step <span>→</span></p>
+  <div class="hsteps">{thread()}</div>
   <p class="illus">Illustrative example — names, volumes and prices are not real data.</p>
 </section>
 
@@ -364,10 +377,10 @@ PAGE = f'''<!doctype html>
 <section class="txt twsec" data-c="9" data-t="Technical walkthrough">
   <p class="chapno rv">9 · Technical walkthrough</p>
   {tw_block(0, PARSER)}
-  {tw_block(1, '<div class="panelwrap">' + N.photo() + N.steps() + '</div>' + '<div class="train">' + ''.join(f'<img src="{a}" alt="" title="{t}" loading="lazy" width="60" height="60">' for a, t in TRAIN) + '</div><p class="tcap">Some of our training photos · Wikimedia Commons: H. Ulver, M. C. Wright, F. Quijano (CC BY-SA 4.0); Forest &amp; Kim Starr (CC BY 3.0)</p>')}
-  {tw_block(2, '<div class="panelwrap">' + N.weighs() + N.dots() + '</div>')}
-  {tw_block(3, '<div class="cards">' + N.rep('noor') + N.rep('big') + '</div>' + BUYERS)}
-  {tw_block(4, '<div class="cards">' + N.blend() + N.fixed() + '</div>')}
+  {tw_block(1, '<div class="panelwrap">' + N.photo() + N.more('How it reaches a grade', N.steps()) + '</div>' + N.more('Some of our training photos', '<div class="train">' + ''.join(f'<img src="{a}" alt="" title="{t}" loading="lazy" width="60" height="60">' for a, t in TRAIN) + '</div><p class="tcap">Wikimedia Commons: H. Ulver, M. C. Wright, F. Quijano (CC BY-SA 4.0); Forest &amp; Kim Starr (CC BY 3.0)</p>'))}
+  {tw_block(2, '<div class="panelwrap">' + N.dots() + N.more('What the opening price weighs', N.weighs()) + '</div>')}
+  {tw_block(3, N.tabs([('Noor · 2 ha', N.rep('noor')), ('Big grower · 30 ha', N.rep('big'))], 'Two farmers') + N.more('Buyers are scored too', BUYERS))}
+  {tw_block(4, N.tabs([('Blended pool', N.blend()), ('Fixed pool', N.fixed())], 'Two markets'))}
 </section>
 
 <!-- 10 · registry -->
@@ -375,11 +388,7 @@ PAGE = f'''<!doctype html>
   <p class="chapno rv">10 · From the slope to the ministry</p>
   <h2 class="rv">An automated Registry <em>and AI policy suggestions.</em></h2>
   <p class="lead rv">A farmer Registry is costly to keep by hand. Every Dure deal leaves a record, <b>so the Registry builds itself.</b></p>
-  <div class="regs">
-  <div class="reg rv">{N.ledger()}</div>
-  <div class="reg rv">{N.qchart()}</div>
-  <div class="reg rv">{N.brief()}</div>
-  </div>
+  <div class="reg rv">{N.tabs([('1 · Trades', N.ledger()), ('2 · Analysis', N.qchart()), ("3 · Monday's brief", N.brief())], 'The Registry')}</div>
   <p class="rv"><b>AI is not a silver bullet.</b> Noor knows farming better than Dure. Dure helps the extension officer make the most of two visits a year.</p>
   <a class="btn ghost rv" href="sheet.html">Open the sample Registry<span>→</span></a>
   <p class="src rv">Synthetic data for eight weeks in Letefoho.</p>
@@ -404,11 +413,11 @@ PAGE = f'''<!doctype html>
     <div class="rv"><h4>The power or the server goes down.</h4><p>The rules engine keeps taking offers by text. The small model rechecks them later, and any change goes back to the farmer to confirm.</p></div>
   </div>
   <h3 class="sub rv">Electricity is a real problem in Timor-Leste.</h3>
-  <dl class="costs ev">
+  {N.more('Power cuts: three numbers', '''<dl class="costs ev">
     <div class="rv"><dt>40%</dt><dd>of firms had power cuts in a year, losing <b>9.4%</b> of sales.<cite>World Bank Enterprise Survey, 2015</cite></dd></div>
     <div class="rv"><dt>24 h</dt><dd>outages in Viqueque. Dili's hospital runs on generators each time.<cite>Tatoli, 2022–23</cite></dd></div>
     <div class="rv"><dt>36%</dt><dd>of Dili customers never report an outage.<cite>TANE survey, 2022</cite></dd></div>
-  </dl>
+  </dl>''')}
 </section>
 
 </div>

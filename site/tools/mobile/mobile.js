@@ -71,6 +71,23 @@ const hero=$('.hero'),layers=hero?[['_pCloud',.32],['_pMount',.16]].flatMap(([id
 if(layers.length&&!RM){let hr=0;const par=()=>{hr=0;const y=scrollY;if(y>innerHeight*1.2)return;layers.forEach(([el,f])=>el.setAttribute('transform',`translate(0 ${(y*f).toFixed(1)})`))};
   addEventListener('scroll',()=>{if(!hr)hr=requestAnimationFrame(par)},{passive:true})}
 
+/* tabs: one view shows, the others are a tap (or an arrow key) away */
+$$('.tabs').forEach(tb=>{const bs=[...tb.querySelectorAll('[role=tab]')],ps=[...tb.querySelectorAll('[role=tabpanel]')];
+  const sel=i=>{bs.forEach((b,k)=>{b.setAttribute('aria-selected',k===i);b.tabIndex=k===i?0:-1});ps.forEach((p,k)=>{p.hidden=k!==i;if(k===i)p.querySelectorAll('.nf').forEach(n=>n.classList.add('on'))})};
+  bs.forEach((b,i)=>{b.addEventListener('click',()=>sel(i));b.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){const j=(i+(e.key==='ArrowRight'?1:bs.length-1))%bs.length;sel(j);bs[j].focus()}})});sel(0)});
+/* an opened detail plays its card's entrance */
+$$('details.more').forEach(d=>d.addEventListener('toggle',()=>{if(d.open)requestAnimationFrame(()=>d.querySelectorAll('.nf,.dash').forEach(n=>n.classList.add('on')))}));
+$$('details.dsh').forEach(d=>d.addEventListener('toggle',()=>{if(d.open)requestAnimationFrame(()=>d.closest('.dash').classList.remove('on')||requestAnimationFrame(()=>d.closest('.dash').classList.add('on')))}));
+
+/* on a wide screen there is room: whole conversations show from the start */
+
+
+/* the step row is as tall as the step on screen, so a short step leaves no gap below it */
+$$('.hsteps').forEach(h=>{const st=[...h.children];let t=0;
+  const fit=()=>{const i=Math.round(h.scrollLeft/h.clientWidth),el=st[Math.max(0,Math.min(st.length-1,i))];h.style.height=(el.offsetHeight+26)+'px'};
+  h.addEventListener('scroll',()=>{clearTimeout(t);t=setTimeout(fit,90)},{passive:true});addEventListener('resize',fit);
+  h.addEventListener('toggle',fit,true);new ResizeObserver(fit).observe(st[0]);fit()});
+
 /* videos load only when tapped */
 $$('.vid').forEach(b=>b.addEventListener('click',()=>{if(b.classList.contains('on'))return;b.classList.add('on');
   b.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${b.dataset.id}?autoplay=1&rel=0" title="${b.textContent.trim()}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`}));
