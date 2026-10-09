@@ -55,27 +55,28 @@ section{position:relative}
 .map svg{width:100%;height:auto}
 
 /* the aerial road */
-.road{--h:1840;overflow:hidden;background:#C2CC9E}
-.road .sky{position:relative;max-width:640px;margin:0 auto}
-.aerial{width:100%;height:auto}
+.road{--h:1840;--core:150vw;overflow-x:clip;overflow-y:visible;position:relative;background:#C2CC9E}   /* road and gathering share one scale, so they read as one map */
+.road .sky{position:relative}
+.aerial{display:block;width:100%;height:auto}
+/* the map is drawn 2.5x wider than the story's strip; the strip is --core wide on screen, the rest is land to either side */
+.pan{width:calc(var(--core) * 2.5);transform:translate3d(calc(50vw - var(--core) * 1.25),0,0)}
 .road .cap{position:absolute;top:calc(var(--y) / var(--h) * 100%);left:calc(var(--x) * 1%);width:min(54%,330px);background:rgba(247,241,228,.95);padding:13px 15px 12px;border-radius:2px;box-shadow:0 10px 26px -14px rgba(40,50,30,.45)}
 .road .cap p{font-size:17px;line-height:1.48;margin:0}
 .road .cap .kick{font-size:16px;margin:0 0 4px}
 .road .cap cite{font-size:13.5px;margin-top:6px}
 .bang{position:absolute;top:calc(var(--y) / var(--h) * 100%);left:calc(var(--x) * 1%);font:italic 700 56px/1 var(--serif);color:var(--rust);letter-spacing:-.02em;text-shadow:0 2px 0 rgba(247,241,228,.85),0 0 22px rgba(247,241,228,.7)}
-.road .sky{overflow:hidden}
+.road .sky{overflow-x:clip;overflow-y:visible}
+.road.tog{z-index:2}   /* the gathering's first walker may stand over the road's last stretch */
 .pan{position:relative;will-change:transform}
-.road.zoom .pan{width:150%}
 .sp{position:absolute;left:0;top:0;will-change:transform;pointer-events:none}
 .sp svg{display:block;overflow:visible}
 .sp.left svg{transform:scaleX(-1)}
-.heap{position:absolute;left:calc(var(--hx) / 400 * 100%);top:calc(var(--hy) / var(--h) * 100%);width:34%;transform-origin:50% 100%;transform:translate(-50%,-86%) scale(.12);will-change:transform}
+.heap{position:absolute;left:calc((var(--hx) + 300) / 1000 * 100%);width:16%;top:calc(var(--hy) / var(--h) * 100%);transform:translate(-50%,-78%)}
+.heap .hb{transition:opacity .35s}
 .heap svg{width:100%;height:auto;overflow:visible}
 /* where the two maps meet, the ground runs on */
 .road.zoom{margin-bottom:-1px}
-.road.zoom::after,.tog::before{content:"";position:absolute;left:0;right:0;height:70px;z-index:3;pointer-events:none}
-.road.zoom::after{bottom:0;background:linear-gradient(rgba(194,204,158,0),#C2CC9E)}
-.tog::before{top:0;background:linear-gradient(#C2CC9E,rgba(194,204,158,0))}
+
 .rain{position:absolute;left:0;right:0;top:calc(500 / var(--h) * 100%);height:calc(980 / var(--h) * 100%);overflow:hidden;pointer-events:none;
   -webkit-mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent)}
 .rain::before{content:"";position:absolute;inset:0;background:rgba(48,60,70,.34)}   /* the storm darkens the ground and the road */
@@ -84,7 +85,7 @@ section{position:relative}
   background-size:90px 120px;animation:rain .55s linear infinite;animation-play-state:paused}
 .rain.on i{animation-play-state:running}
 @keyframes rain{to{transform:translate3d(-32px,120px,0)}}
-.tog .sign{position:absolute;left:58%;top:calc(690 / var(--h) * 100%);transform:rotate(-4deg);background:#C9A06A;border:2px solid #A67E4B;border-radius:3px;padding:5px 10px 6px;text-align:center;box-shadow:0 8px 18px -10px rgba(0,0,0,.45);font:600 20px/1.05 var(--serif);color:#2A2522}
+.tog .sign{position:absolute;left:calc((var(--hx) + 340) / 1000 * 100%);top:calc(690 / var(--h) * 100%);transform:rotate(-4deg);background:#C9A06A;border:2px solid #A67E4B;border-radius:3px;padding:5px 10px 6px;text-align:center;box-shadow:0 8px 18px -10px rgba(0,0,0,.45);font:600 20px/1.05 var(--serif);color:#2A2522}
 .tog .sign b{display:block;font-weight:700;font-variant-numeric:tabular-nums}
 .tog .sign span{display:block;font:italic 500 15px var(--serif);color:#7A3322}
 
@@ -99,8 +100,9 @@ blockquote cite{margin-top:8px;font-size:14px}
 .q{font:italic 600 24px/1.3 var(--serif);margin:30px 0 0}
 
 /* 6: three facts, set as a table */
-.costs{margin:24px 0 10px}
-.costs > div{display:grid;grid-template-columns:118px 1fr;gap:14px;align-items:baseline;padding:16px 0;border-top:1px solid var(--line)}
+.costs{margin:24px 0 10px;display:grid;grid-template-columns:minmax(100px,max-content) 1fr;column-gap:clamp(22px,4vw,40px)}
+/* rows share one figure column as wide as the widest figure, so the words never crowd the numbers */
+.costs > div{grid-column:1/-1;display:grid;grid-template-columns:subgrid;align-items:baseline;padding:16px 0;border-top:1px solid var(--line)}
 .costs > div:last-child{border-bottom:1px solid var(--line)}
 .costs dt{font:600 38px/1 var(--serif);color:var(--ink);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .costs dt small{display:block;font:500 13px var(--sans);letter-spacing:.02em;color:var(--soft);margin-top:6px}
@@ -147,7 +149,23 @@ blockquote cite{margin-top:8px;font-size:14px}
 .hstep .no i{font-style:normal;color:var(--soft)}
 .hstep h3{font-size:25px;line-height:1.15;margin:0 0 8px}
 .hstep header p{font-size:16.5px;line-height:1.5;color:var(--ink2);margin:0}
-.conv{position:relative;padding:4px 0}
+.conv{position:relative;padding:12px 8px 10px;margin:0 calc(-1*var(--g) + 6px);border-radius:14px;
+  background:linear-gradient(90deg,rgba(78,139,92,.07) 0 50%,rgba(44,95,106,.07) 50% 100%)}   /* Noor's half, the buyer's half */
+.conv::before{content:"";position:absolute;left:50%;top:10px;bottom:10px;border-left:1.5px dashed rgba(31,58,64,.16)}
+.sides{display:grid;grid-template-columns:1fr 1fr;text-align:center;font:italic 600 21px var(--serif);color:rgba(31,58,64,.38);margin:0 0 10px}
+.conv .msg,.conv .dash{position:relative;z-index:1}
+/* who is talking: Dure always green, the person always white */
+.conv .msg{max-width:76%;font-size:13.5px;line-height:1.36;padding:7px 11px 8px;background:var(--leaf);color:#fff;box-shadow:none}
+.conv .msg .sd{color:rgba(255,255,255,.78);font-size:10.5px}
+.conv .msg hr{border-color:rgba(255,255,255,.3)}
+.conv .msg.me.me{background:#fff;color:#141414;box-shadow:0 1px 0 rgba(31,58,64,.12),0 0 0 1px rgba(31,58,64,.08)}
+.conv .msg.me.me .sd{color:rgba(0,0,0,.45)}
+.conv .msg .pay{background:#fff;color:var(--leaf)}
+.conv .msg svg.ph{display:block;width:180px;max-width:100%;height:auto;border-radius:10px;margin:4px 0 2px}
+.conv .msg .imgs{display:flex;gap:6px;margin-top:5px}
+.conv .msg .imgs > span{position:relative}
+.conv .msg .imgs svg.ph{width:60px;height:45px;margin:0;border-radius:6px}
+.conv .msg .imgs i{display:block;position:absolute;left:4px;bottom:3px;font:700 11px var(--sans);font-style:normal;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}
 .who{font:600 11.5px var(--sans);letter-spacing:.04em;color:var(--soft);margin:16px 0 6px}
 .who.B{text-align:right}
 .msg{position:relative;width:fit-content;max-width:82%;margin:0 0 6px;padding:8px 12px 9px;border-radius:18px;font:400 15.5px/1.38 var(--device);color:#141414;background:#E7E3DA;
@@ -249,35 +267,39 @@ blockquote cite{margin-top:8px;font-size:14px}
 
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.msg{opacity:1!important;transform:none!important;animation:none!important}.rain i{animation:none}.bench .bar i{clip-path:none;transition:none}}
 /* tablets: same single column, more air */
-@media (min-width:700px){:root{--g:40px}body{font-size:19.5px}h2{font-size:42px}.hero .mark{width:400px}.big .n{font-size:110px}.portrait,.map{margin-left:0;margin-right:0}.dash,.panelwrap,.cards,.panel,.reg{margin-left:0;margin-right:0}.vids{grid-template-columns:1fr 1fr 1fr}.road .cap{width:min(46%,330px)}}
+@media (min-width:700px){
+  /* tablets: the opening picture fills the screen, Noor kept in view whatever its shape */
+  .hero{height:100svh;min-height:640px;overflow:hidden}
+  .hero .portrait{display:none}
+  .hero .portrait.wide{display:block;position:absolute;inset:0}
+  .hero .portrait.wide svg{position:absolute;inset:0;width:100%;height:100%}
+  .htxt{z-index:1}
+}
+@media (min-width:700px){.conv{margin:0}.conv .msg{max-width:47%;font-size:14px}.road,.road.zoom{--core:min(76vw,700px)}:root{--g:40px}body{font-size:19.5px}h2{font-size:42px}.hero .mark{width:400px}.big .n{font-size:110px}.portrait,.map{margin-left:0;margin-right:0}.dash,.panelwrap,.cards,.panel,.reg{margin-left:0;margin-right:0}.vids{grid-template-columns:1fr 1fr 1fr}.road .cap{width:min(46%,330px)}}
 
 /* tablets in landscape: use the width. Notes move into the margin beside the maps, step titles stay pinned
    beside the message thread, figures sit next to their text. */
 @media (min-width:1000px) and (orientation:landscape){
   :root{--g:48px}
   body{font-size:19px}
-  .txt,.how,.hero{max-width:860px}
-  .hero .portrait{display:none}
-  .hero .portrait.wide{display:block}
-  .htxt{padding-top:7vh}
-  .hero .mark{width:380px}
+  .txt,.how{max-width:860px}
+  .htxt{left:46%;right:5vw;top:15vh;padding:0;text-align:left}
+  .hero .mark{width:min(420px,40vw);margin:0}
+  .hero .tag{font-size:30px}
   .split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);column-gap:56px;max-width:1180px;align-items:start}
   .split > *{grid-column:1}
   .split > .map{grid-column:2;grid-row:1/span 6;margin:0;align-self:center}
-  /* aerial maps on the right, their notes in the left margin, pointing at the place they describe */
-  .road{background:var(--ivory)}
-  .road .sky{max-width:600px;margin:0 7vw 0 auto}
-  .road.zoom::after,.tog::before{display:none}
-  .road .cap,.road .bang{left:auto;right:calc(100% + 44px);width:min(330px,calc(100vw - 600px - 7vw - 96px))}
-  .road .cap{background:none;box-shadow:none;padding:0;border-top:1px solid var(--line);padding-top:12px}
-  .road .cap::after{content:"";position:absolute;right:-44px;top:-1px;width:36px;border-top:1px solid rgba(31,58,64,.35)}
+  /* the map fills the screen; its notes sit on the land beside the road */
+  .road,.road.zoom{--core:54vw}
+  .road .cap{width:min(30vw,360px)}
   .road .cap p{font-size:18px}
-  .bang{font-size:64px;text-shadow:none;text-align:right}
-  .tog .sign{left:58%}
+  .bang{font-size:72px}
   /* how it works: the step stays pinned on the left while its messages run on the right */
   .how{max-width:1120px}
   .how > h2,.how > .chapno,.how > .lead2{max-width:640px}
   .hstep{display:grid;grid-template-columns:300px minmax(0,1fr);column-gap:60px;margin-top:72px}
+  .conv{margin:0}
+  .conv .msg{max-width:47%}
   .hstep header{position:sticky;top:84px;align-self:start}
   .hstep h3{font-size:28px}
   .dash{margin-left:0;margin-right:0}
@@ -483,3 +505,63 @@ blockquote cite{margin-top:8px;font-size:14px}
   .twf .panelwrap > .nf,.twf .cards > .nf{flex:1 1 0;min-width:0;align-self:flex-start}
   .regs .nf{margin:0;max-width:none;height:100%}
 }
+
+/* ---------- How it works dashboards: the demo's card design (demo.html .mx*), in this page's type ---------- */
+.conv .dash{background:#1F3A40;border:0;border-radius:16px;margin:10px 0;padding:12px 12px 4px}
+.mx{display:flex;flex-direction:column;gap:10px;padding:0 0 10px;color:#F6EFE0;font-family:var(--sans);text-align:left}
+.mxrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}
+.mxs{background:#2C4F57;border-radius:12px;padding:9px 11px}
+.mxs span{display:block;font-size:11.5px;color:#BFD0CC}
+.mxs b{display:block;font:600 21px/1.15 var(--serif);margin-top:2px}
+.mxbox{background:#24434A;border-radius:12px;padding:10px 12px}
+.mxh{font:600 13px var(--sans);color:#F6EFE0;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.mxh i{font-weight:400;font-style:italic;font-family:var(--serif);color:#BFD0CC;font-size:13px}
+.mxli{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:7px 0;border-top:1px solid rgba(191,208,204,.12);font-size:14px}
+.mxh + .mxli{border-top:0}
+.mxli span{color:#DDE6E3;min-width:0}
+.mxli small{color:#8FA7A9;font-size:12px;margin-left:4px}
+.mxli b{color:var(--gold);font:600 15.5px var(--serif);white-space:nowrap}
+.mxli.lead{background:rgba(228,182,76,.14);margin:0 -8px;padding:7px 8px;border-radius:8px}
+.mxli.dim{opacity:.45}
+.mxnote{font:italic 12.5px/1.4 var(--serif);color:#BFD0CC;padding:0 4px}
+.mxstatus{font:600 16px var(--serif);color:#F6EFE0;padding:2px 4px}
+.mxbar{display:flex;height:30px;border-radius:8px;overflow:hidden;gap:2px}
+.mxbar i{display:flex;align-items:center;justify-content:center;min-width:22px}
+.mxbar i b{font:700 13px var(--serif);color:#1F3A40}
+.mxleg{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:13px;color:#DDE6E3}
+.mxbox.you{border:1.5px solid rgba(246,239,224,.4)}
+.mximg{display:block;width:100%;height:auto;aspect-ratio:4/3;max-height:260px;object-fit:cover;border-radius:12px}
+svg.mximg{background:#7C5B3A}
+.mxcap2{font:italic 12px var(--serif);color:#BFD0CC;margin-top:-4px}
+.mxpb{display:grid;grid-template-columns:118px 1fr 40px;align-items:center;gap:8px;padding:4px 0;font-size:13.5px;color:#DDE6E3}
+.mxpb i{height:10px;border-radius:5px;background:#18302F;overflow:hidden}
+.mxpb u{display:block;height:100%;width:var(--w);background:var(--gold)}
+.mxpb b{text-align:right;font-family:var(--serif)}
+.mxvg{display:grid;grid-template-columns:74px 1fr;gap:8px;align-items:center;padding:6px 0;border-top:1px solid rgba(191,208,204,.12)}
+.mxh + .mxvg{border-top:0}
+.mxvg > b{font:600 14px var(--serif)}
+.mxvg span{display:flex;flex-wrap:wrap;gap:4px}
+.mxvg i{width:20px;height:14px;border-radius:4px;background:var(--c)}
+.mxvg i.n{background:transparent;border:1.5px dashed #6F8C90}
+.conv .dash .chart{width:100%;height:auto;display:block}
+
+/* ---------- scroll effects: each plays once, when its card arrives; all transform/opacity, nothing heavy ---------- */
+@media (prefers-reduced-motion:no-preference){
+  .mx .mxbar i{transform:scaleX(0);transform-origin:left;transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+  .mx .mxbar i:nth-child(2){transition-delay:.15s}.mx .mxbar i:nth-child(3){transition-delay:.3s}
+  .mx .mxpb u{transform:scaleX(0);transform-origin:left;transition:transform 1.1s cubic-bezier(.2,.8,.2,1)}
+  .mx .mxpb:nth-child(3) u{transition-delay:.15s}.mx .mxpb:nth-child(4) u{transition-delay:.3s}
+  .mx .draw{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.6s ease-out .2s}
+  .mx .tick .mxli{opacity:0;transform:translateY(6px);transition:opacity .4s,transform .4s}
+  .mx .tick .mxli:nth-child(2){transition-delay:.25s}.mx .tick .mxli:nth-child(3){transition-delay:.5s}.mx .tick .mxli:nth-child(4){transition-delay:.75s}
+  .mxvg i{opacity:0;transform:scale(.4);transition:opacity .3s,transform .3s;transition-delay:calc(var(--k) * 60ms)}
+  .dash.on .mxbar i,.dash.on .mxpb u{transform:none}
+  .dash.on .draw{stroke-dashoffset:0}
+  .dash.on .tick .mxli{opacity:1;transform:none}
+  .dash.on .mxvg i{opacity:1;transform:none}
+  .nf-steps .cmp s i,.nf-rep li s i,.nf-pool s i{transform:scaleX(0);transform-origin:left;transition:transform 1s cubic-bezier(.2,.8,.2,1) .2s}
+  .on .nf-steps .cmp s i,.nf-rep.on li s i,.nf-pool.on s i,.nf-steps.on .cmp s i{transform:none}
+  .nf-card polyline{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.6s ease-out}
+  .nf-card.on polyline{stroke-dashoffset:0}
+}
+@media (min-width:700px){.conv .dash{max-width:520px;margin-left:auto;margin-right:auto}}

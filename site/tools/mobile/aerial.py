@@ -114,18 +114,49 @@ def person(x, y, rot, jacket, hair='#241A16', baskets=False, scale=1):
 
 # --------------------------------------------------------------------------- the road
 ROAD_H = 1960
+E = 300   # extra land drawn on both sides: phones pan into it, tablets show it, so a wide screen never shows an edge
+
+
+def margins(H, seed, avoid=()):
+    """farms, gardens, houses and trees beside the story's own strip of map (x < 0 and x > W)"""
+    out = []
+    for side, (xa, xb) in enumerate([(-E, -10), (W + 10, W + E)]):
+        cw, ch = 150, 165
+        for j in range(int(H // ch) + 1):
+            for i in range(int((xb - xa) // cw)):
+                k = seed + side * 500 + j * 7 + i * 3
+                x = xa + i * cw + 10 + rnd(k) * 24
+                y = j * ch + 8 + rnd(k + 1) * 24
+                if any(a - 40 < y + ch / 2 < b + 40 for a, b in avoid):
+                    out.append(tree(x + 40 + rnd(k + 2) * 60, y + 30, 11 + rnd(k + 3) * 5, k))
+                    continue
+                t = int(rnd(k + 4) * 6)
+                if t in (0, 1):     # coffee garden
+                    out.append(f'<rect x="{x-6:.0f}" y="{y-6:.0f}" width="{7*15+10}" height="{5*17+10}" rx="4" fill="{C["field2"]}" opacity=".9"/>' + coffee_rows(x, y, 7, 5, seed=k))
+                elif t == 2:        # a ploughed field
+                    out.append(f'<rect x="{x:.0f}" y="{y:.0f}" width="120" height="96" rx="3" fill="{C["field"]}" transform="rotate({rnd(k+5)*10-5:.1f} {x+60:.0f} {y+48:.0f})"/>' +
+                               ''.join(f'<path d="M{x+6+r*10:.0f} {y+6:.0f} V{y+90:.0f}" stroke="{C["row"]}" stroke-width="1.8" opacity=".5"/>' for r in range(11)))
+                elif t == 3:        # a farmhouse in its yard
+                    roof = [(C['rust'], C['rust2']), (C['teal'], C['teal2']), (C['tan'], C['tan2'])][int(rnd(k + 6) * 3)]
+                    out.append(f'<ellipse cx="{x+55:.0f}" cy="{y+50:.0f}" rx="58" ry="36" fill="{C["soil"]}" opacity=".8"/>' + house(x + 50, y + 44, 34, 26, *roof, int(rnd(k + 7) * 30) - 15) + tree(x + 104, y + 22, 12, k))
+                else:               # a stand of trees
+                    out.extend(tree(x + 30 + rnd(k + 8 + n) * 80, y + 20 + rnd(k + 11 + n) * 90, 11 + rnd(k + 14 + n) * 5, k + n) for n in range(3))
+    return ''.join(out)
+
+
+def ground(H, seed, n):
+    return (f'<rect x="{-E}" width="{W+2*E}" height="{H}" fill="{C["ground"]}"/>' + ''.join(
+        f'<ellipse cx="{-E + rnd(i+seed) * (W+2*E):.0f}" cy="{rnd(i+seed+40) * H:.0f}" rx="{90+rnd(i+seed+5)*90:.0f}" ry="{50+rnd(i+seed+9)*60:.0f}" '
+        f'fill="{C["ground2"] if i % 2 else C["ground3"]}" opacity=".7"/>' for i in range(n)))
 ROAD_D = ("M 300 196 C 300 262, 252 300, 196 326 S 92 404, 112 482 S 258 560, 268 650 "
           "S 232 760, 222 838 S 160 958, 142 1040 S 172 1162, 232 1232 S 300 1342, 262 1424 "
           "S 168 1520, 180 1604 S 226 1676, 222 1712 S 200 1860, 200 1970")
 
 
 def road_svg():
-    s = [f'<svg class="aerial" viewBox="0 0 {W} {ROAD_H}" preserveAspectRatio="xMidYMin slice" aria-hidden="true">']
-    s.append(f'<rect width="{W}" height="{ROAD_H}" fill="{C["ground"]}"/>')
-    # soft terrain variation
-    for i in range(18):
-        x, y = rnd(i) * W, rnd(i + 40) * ROAD_H
-        s.append(f'<ellipse cx="{x:.0f}" cy="{y:.0f}" rx="{90+rnd(i+5)*90:.0f}" ry="{50+rnd(i+9)*60:.0f}" fill="{C["ground2"] if i % 2 else C["ground3"]}" opacity=".7" transform="rotate({rnd(i+3)*60-30:.0f} {x:.0f} {y:.0f})"/>')
+    s = [f'<svg class="aerial" viewBox="{-E} 0 {W+2*E} {ROAD_H}" aria-hidden="true">']
+    s.append(ground(ROAD_H, 0, 44))
+    s.append(margins(ROAD_H, 300, avoid=[(740, 900), (1640, 1830)]))
     # --- village and Noor's coffee garden (harvest)
     s.append(f'<path d="M14 40 L230 24 L246 286 L22 300 Z" fill="{C["field2"]}"/>')
     s.append(f'<path d="M14 40 L230 24 L246 286 L22 300 Z" fill="none" stroke="{C["row"]}" stroke-width="1.2" opacity=".6"/>')
@@ -149,8 +180,10 @@ def road_svg():
     for i, (x, y) in enumerate([(40, 430), (200, 420), (360, 600), (330, 700), (60, 760), (380, 960), (20, 980), (90, 1150), (40, 1300)]):
         s.append(palm(x, y, 15, i) if i % 3 == 1 else tree(x, y, 12 + (i % 3) * 2, i))
     # --- the river and the flooded bridge
-    s.append(f'<path d="M -20 788 C 70 760, 150 838, 226 820 S 352 766, 420 796 L 420 858 C 352 830, 300 884, 226 878 S 78 824, -20 852 Z" fill="{C["water"]}"/>')
-    s.append(f'<path d="M -20 788 C 70 760, 150 838, 226 820 S 352 766, 420 796" stroke="{C["ripple"]}" stroke-width="2" fill="none" opacity=".7"/>')
+    river = (f'M {-E-20} 800 C {-E+90} 830, -120 770, -20 788 C 70 760, 150 838, 226 820 S 352 766, 420 796 C 500 812, 600 770, {W+E+20} 792 '
+             f'L {W+E+20} 856 C 600 834, 500 874, 420 858 C 352 830, 300 884, 226 878 S 78 824, -20 852 C -120 836, {-E+90} 894, {-E-20} 862 Z')
+    s.append(f'<path d="{river}" fill="{C["water"]}"/>')
+    s.append(f'<path d="M {-E-20} 800 C {-E+90} 830, -120 770, -20 788 C 70 760, 150 838, 226 820 S 352 766, 420 796 C 500 812, 600 770, {W+E+20} 792" stroke="{C["ripple"]}" stroke-width="2" fill="none" opacity=".7"/>')
     s.append(''.join(f'<ellipse cx="{x:.0f}" cy="{y:.0f}" rx="{r:.1f}" ry="{r*.7:.1f}" fill="#B9B3A3" stroke="#8E8A80" stroke-width=".8"/>' for x, y, r in
                      [(40, 778, 4), (64, 772, 3), (330, 790, 4.5), (360, 784, 3), (90, 846, 3.5), (372, 858, 4), (300, 880, 3)]))
     s.append(road_path(ROAD_D))
@@ -201,11 +234,9 @@ HEAP = (214, 790)   # where the lot is piled
 
 
 def together_svg():
-    s = [f'<svg class="aerial" viewBox="0 0 {W} {TOG_H}" preserveAspectRatio="xMidYMin slice" aria-hidden="true">']
-    s.append(f'<rect width="{W}" height="{TOG_H}" fill="{C["ground"]}"/>')
-    for i in range(10):
-        x, y = rnd(i + 200) * W, rnd(i + 240) * TOG_H
-        s.append(f'<ellipse cx="{x:.0f}" cy="{y:.0f}" rx="{80+rnd(i+5)*80:.0f}" ry="{50+rnd(i+9)*50:.0f}" fill="{C["ground2"] if i % 2 else C["ground3"]}" opacity=".7"/>')
+    s = [f'<svg class="aerial" viewBox="{-E} 0 {W+2*E} {TOG_H}" aria-hidden="true">']
+    s.append(ground(TOG_H, 200, 24))
+    s.append(margins(TOG_H, 700))
     s.append(coffee_rows(10, 140, 4, 6, seed=60) + coffee_rows(300, 140, 6, 5, seed=90) + coffee_rows(12, 430, 5, 5, seed=120) + coffee_rows(270, 450, 8, 5, seed=150))
     for (hx, hy), d, _ in PATHS:
         s.append(f'<path d="{d}" stroke="{C["soil"]}" stroke-width="7" fill="none" stroke-linecap="round"/>'
@@ -233,18 +264,19 @@ def walker_svg(jacket, baskets=True):
 
 
 def heap_svg():
-    """a heap of red coffee cherries, drawn once; the page grows it as the neighbours arrive"""
-    out = ['<svg viewBox="-80 -60 160 76" aria-hidden="true"><ellipse cx="4" cy="8" rx="76" ry="12" fill="#2F2A20" opacity=".18"/>']
-    for i in range(170):
-        a = rnd(i + 900) * math.pi
-        rr = rnd(i + 950)
-        x = math.cos(a) * 70 * rr
-        top = -52 * (1 - (x / 72) ** 2)            # a mound: higher in the middle
-        y = 6 + (top - 6) * rnd(i + 990) ** .7
-        col = ['#C23A2E', '#9E2A24', '#B8352A', '#7A2A20', '#D04A36'][i % 5]
-        out.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{4.2 + rnd(i + 1030) * 1.6:.1f}" fill="{col}"/>')
-    for i in range(40):
-        x, y = (rnd(i + 1100) - .5) * 110, -rnd(i + 1150) * 40
-        out.append(f'<circle cx="{x-1.2:.1f}" cy="{y-1.2:.1f}" r="1.4" fill="#fff" opacity=".35"/>')
+    """baskets of cherries stacked into a pyramid; the page shows one more as each neighbour arrives (bottom row first)"""
+    def basket(x, y, k):
+        cher = ''.join(f'<circle cx="{x+cx:.1f}" cy="{y+cy:.1f}" r="4.6" fill="{c}"/>' for cx, cy, c in
+                       [(-16,-1,'#9E2A24'),(-8,-3,'#C23A2E'),(0,-4,'#C23A2E'),(8,-3,'#9E2A24'),(16,-1,'#C23A2E'),(-12,-7,'#C23A2E'),(-3,-9,'#9E2A24'),(6,-8,'#C23A2E'),(13,-6,'#C23A2E')])
+        leaf = f'<path d="M{x-14} {y-2} C {x-22} {y-10} {x-22} {y-18} {x-14} {y-22} C {x-10} {y-14} {x-10} {y-8} {x-14} {y-2}Z" fill="#2F5E3A"/>' if k % 2 else ''
+        return (f'<g class="hb" style="opacity:0">{leaf}{cher}<path d="M{x-26} {y} L {x+26} {y} L {x+21} {y+34} L {x-21} {y+34}Z" fill="#C58B4E"/>'
+                f'<path d="M{x-25} {y+9} H{x+25} M{x-24} {y+18} H{x+24} M{x-22} {y+27} H{x+22}" stroke="#9E6834" stroke-width="1.6"/>'
+                f'<path d="M{x-16} {y} L{x-13} {y+34} M{x-6} {y} L{x-5} {y+34} M{x+4} {y} L{x+4} {y+34} M{x+14} {y} L{x+12} {y+34}" stroke="#9E6834" stroke-width="1.2" opacity=".8"/>'
+                f'<path d="M{x-27} {y} H{x+27}" stroke="#9E6834" stroke-width="3"/></g>')
+    rows = [(4, 0), (3, -30), (2, -60), (1, -90)]
+    out, k = ['<svg viewBox="-112 -110 224 152" aria-hidden="true"><ellipse cx="0" cy="36" rx="112" ry="10" fill="#2F2A20" opacity=".18"/>'], 0
+    for n, y in rows:
+        for c in range(n):
+            out.append(basket((c - (n - 1) / 2) * 56, y, k)); k += 1
     out.append('</svg>')
     return ''.join(out)
