@@ -166,7 +166,7 @@ def photo():
     bx = ''.join(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="rgba(228,182,76,.16)" stroke="{GOLD}" stroke-width="2.4"/>'
                  f'<circle cx="{x+w}" cy="{y}" r="10" fill="{GOLD}"/><text x="{x+w}" y="{y+4.5}" text-anchor="middle" class="t b s" fill="{INK}">{n}</text>'
                  for n, x, y, w, h, _ in boxes)
-    return ('<div class="nf nf-photo dk"><svg viewBox="0 0 340 236" role="img" aria-label="Photo check: three boxes where the model found defects">'
+    return ('<div class="nf nf-photo dk"><svg viewBox="0 18 340 200" role="img" aria-label="Photo check: three boxes where the model found defects">'
             f'<rect width="340" height="236" fill="#47708F"/><path d="M0 80 H340 M0 160 H340 M110 0 V236 M226 0 V236" stroke="#3B5F7B" stroke-width="3"/>{f}'
             f'<rect x="22" y="40" width="292" height="164" fill="none" stroke="#F4EBDA" stroke-width="2" stroke-dasharray="7 5"/>'
             f'<rect x="22" y="22" width="96" height="20" fill="#F4EBDA"/><text x="30" y="36" class="t b s" fill="{INK}">coffee · 98%</text>{bx}</svg>'
@@ -308,9 +308,9 @@ def mx_price(chart):
             f'<div class="mxbox"><div class="mxh">Coffee A · cleared prices <i>each dot: one auction</i></div>{chart}</div></div>')
 
 
-def mx_photo(photo):
+def mx_photo(photo=''):
     rows = [('Black or mouldy beans', 'none'), ('Insect holes', 'none'), ('Broken beans', 'few'), ('Drying, colour', 'even')]
-    return (f'<div class="mx">{photo}<div class="mxcap2">Noor · first look on the photo</div>'
+    return (f'<div class="mx">{photo}'
             f'<div class="mxrow">{_stat("Preliminary grade", "A", GOLDV)}{_stat("Confidence", "93%")}</div>'
             '<div class="mxbox"><div class="mxh">Defects a photo can show <i>SCA classification</i></div>' + ''.join(_li(a, b, col=GREEN) for a, b in rows) +
             '</div><div class="mxnote">The rest is checked by hand. A person checks every sack at pickup.</div></div>')
@@ -362,3 +362,25 @@ def mx_score():
             '<div class="mxbox"><div class="mxh">Reputation <i>flood weeks never count</i></div>' + ''.join(
                 f'<div class="mxpb"><span>{l}</span><i><u style="--w:{v}%"></u></i><b>{v}%</b></div>' for l, v in bars) +
             '</div><div class="mxnote">Farm size isn\'t counted. Better trust, better deals.</div></div>')
+
+
+# ---------------------------------------------------------------- progressive disclosure: everything stays, less shows at first
+_TAB = [0]
+
+
+def tabs(items, label):
+    """parallel views side by side on a PC become tabs on a phone: one shows, the others are a tap away"""
+    _TAB[0] += 1; t = f't{_TAB[0]}'
+    bar = ''.join(f'<button type="button" role="tab" id="{t}b{i}" aria-controls="{t}p{i}" aria-selected="{"true" if i == 0 else "false"}">{n}</button>' for i, (n, _) in enumerate(items))
+    panes = ''.join(f'<div class="tp" role="tabpanel" id="{t}p{i}" aria-labelledby="{t}b{i}"{"" if i == 0 else " hidden"}>{c}</div>' for i, (_, c) in enumerate(items))
+    return f'<div class="tabs"><div class="tl" role="tablist" aria-label="{label}">{bar}</div>{panes}</div>'
+
+
+def more(summary, body, cls=''):
+    """a detail that supports the point but isn't the point: one line shows, the rest opens on tap"""
+    return f'<details class="more {cls}"><summary><span>{summary}</span><i aria-hidden="true"></i></summary><div class="mb">{body}</div></details>'
+
+
+def dsum(text):
+    """the one-line reading of a How it works dashboard, shown before it is opened"""
+    return f'<span class="ds">{text}</span><span class="dl">Dashboard</span>'
