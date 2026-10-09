@@ -1,0 +1,47 @@
+# GitHub -> Cloudflare Pages (project dure-ai, Direct Upload).
+#   push to main           -> production   https://dure-ai.pages.dev
+#   push to any other branch -> preview    https://<branch>.dure-ai.pages.dev  (check before merging)
+# Needs one repository secret: CLOUDFLARE_API_TOKEN (Account > Cloudflare Pages > Edit).
+# Until that secret exists the deploy step is skipped, so nothing fails.
+name: Deploy to Cloudflare Pages
+on:
+  push:
+    paths:
+      - 'site/**'
+      - '.github/workflows/deploy-cloudflare.yml'
+  workflow_dispatch:
+concurrency:
+  group: cloudflare-pages-${{ github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    env:
+      HAS_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build
+        run: cd site && python3 build.py
+      - name: Prepare upload (same file set as the live site)
+        run: |
+          rm -f site/dist/demo_classic.html site/dist/grader.onnx
+          if grep -rIlE 'cfat_[A-Za-z0-9]{20,}|sk-ant-[A-Za-z0-9_-]{20,}' site/dist; then
+            echo "Secret-looking string found in dist; refusing to deploy"; exit 1
+          fi
+      - name: Deploy
+        if: env.HAS_TOKEN == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 748cd74d417e36a33191cf6e6c236418
+          command: pages deploy site/dist --project-name=dure-ai --branch=${{ github.ref_name }} --commit-dirty=true
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: No token yet
+        if: env.HAS_TOKEN != 'true'
+        run: echo "::notice::CLOUDFLARE_API_TOKEN secret is not set; built but did not deploy."
