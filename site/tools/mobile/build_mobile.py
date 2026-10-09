@@ -1,7 +1,7 @@
 """Builds site/src/m_proto.html: the phone and tablet edition of the Dure story.
 
 A plain vertical read. Illustrations are vector: the aerial road is drawn in aerial.py, and the dashboards and
-walkthrough figures are the PC story's own SVGs, cut into phone-sized pieces (src/m_figs.json, see extract_figs.py).
+walkthrough figures are rebuilt at phone size from the PC story's own numbers and drawings (native.py).
 
 Type rules
   Newsreader       everything you read: headings, paragraphs, quotes, captions
@@ -9,13 +9,30 @@ Type rules
   system font      only inside a phone screen (the messages), as on a real phone
 """
 import json, os, re, html
-from aerial import road_svg, together_svg, walker_svg, ROAD_H, TOG_H, PATHS, W as AW
+import native as N
+from aerial import road_svg, together_svg, heap_svg, ROAD_H, TOG_H, PATHS, HEAP, W as AW
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, '..', '..', 'src')
 FIG = json.load(open(os.path.join(SRC, 'm_figs.json')))
 MSG = json.load(open(os.path.join(HERE, 'how_msgs.json')))
 TXT = json.load(open(os.path.join(HERE, 'texts.json')))
+PART = json.load(open(os.path.join(SRC, 'm_parts.json')))
+
+
+def sprite(part, key, scale, cls='', attrs='', flip_ids=True):
+    """a standing figure from the PC story, in its own small SVG layer"""
+    x, y, w, h = part['bb']
+    body = part['defs'] + part['html']
+    if flip_ids:   # each copy needs its own ids
+        body = re.sub(r' id="([^"]+)"', lambda m: f' id="{key}_{m.group(1)}"', body)
+        body = re.sub(r'url\(#([^)]+)\)', lambda m: f'url(#{key}_{m.group(1)})', body)
+        body = re.sub(r'href="#([^"]+)"', lambda m: f'href="#{key}_{m.group(1)}"', body)
+    pw, ph = w * scale, h * scale
+    foot = (y + h - 8) * scale - y * scale   # px from the top of the box to the feet
+    return (f'<div class="sp {cls}" {attrs} style="width:{pw:.0f}px;height:{ph:.0f}px;--fx:{pw/2:.1f}px;--fy:{foot:.1f}px">'
+            f'<svg viewBox="{x:.1f} {y:.1f} {w:.1f} {h:.1f}" width="{pw:.0f}" height="{ph:.0f}" aria-hidden="true">{body}</svg></div>')
+
 
 
 def fig(key, mw=None, label=''):
@@ -76,13 +93,13 @@ DUR = [4.4, 10.5, 5.4, 4.2, 4.2, 5.2, 5.6, 3.6]
 # where each step's dashboard sits in its thread (after this many messages), and what it is
 FIGS = {
     0: (2, lambda: price_chart() + '<figcaption>Coffee A, cleared prices · each dot is one cleared auction. <b>Today\'s reference: $2.74–2.90.</b></figcaption>'),
-    1: (3, lambda: fig('how1.checks', 250, 'Four photo-visible defects checked: none, none, few, even; grade A') + '<figcaption>Four photo-visible defects from the SCA green coffee defect classification. The rest is checked by hand.</figcaption>'),
-    2: (2, lambda: fig('how2.pool', 380, 'One blended lot of 2,000 kg: A 1,000, B 600, C 400')),
-    3: (4, lambda: fig('how3.book', 410, 'Order book closed at 17:00; best bid $2.81 per kg')),
-    4: (1, lambda: '<div class="duo">' + fig('how4.vote', 210, 'One lot: 18 yes, 4 no; A $3.14, B $2.78, C $2.11') + '</div>'),
-    5: (2, lambda: fig('how5.pick', 560, 'Pickup: the grade is confirmed by hand')),
-    6: (2, lambda: fig('how6.pay', 390, 'One payment in, 18 payments out') + '<figcaption><b>$4,250.85 in · 18 farmers paid</b> · each by grade and weight.</figcaption>'),
-    7: (2, lambda: fig('how7.score', 420, 'Reputation: 92% grades confirmed; 14 sales, 13 of 14 on time, 1 dispute')),
+    1: (3, lambda: N.checks() + '<figcaption>Four photo-visible defects from the SCA green coffee defect classification. The rest is checked by hand.</figcaption>'),
+    2: (2, N.pool),
+    3: (4, N.book),
+    4: (1, N.vote),
+    5: (2, N.pick),
+    6: (2, lambda: N.pay() + '<figcaption><b>$4,250.85 in · 18 farmers paid</b> · each by grade and weight.</figcaption>'),
+    7: (2, N.score),
 }
 
 
@@ -186,7 +203,7 @@ bench = ''.join(bench_row(*r) for r in BENCH)
 VIDS = [('981bf_9D56U', 'Meet the founder'), ('7GsosgZ9X-s', 'Product demo'), ('WSlZaQtR0n0', 'Technical walkthrough')]
 vids = ''.join(f'<button class="vid" data-id="{i}" type="button"><img src="https://i.ytimg.com/vi/{i}/hqdefault.jpg" alt="" loading="lazy" width="480" height="360"><span>{t}</span></button>' for i, t in VIDS)
 
-walkers = ''.join(f'<div class="wk nb" data-p="nb{i}">{walker_svg(j)}</div>' for i, (_, _, j) in enumerate(PATHS))
+walkers = ''.join(sprite(PART['farmers'][i % len(PART['farmers'])], f'nb{i}', .25, 'walker nb', f'data-p="nb{i}"') for i in range(len(PATHS)))
 
 CSS = open(os.path.join(HERE, 'mobile.css')).read().replace('__TAIS__', TAIS)
 JS = open(os.path.join(HERE, 'mobile.js')).read()
@@ -204,16 +221,20 @@ PAGE = f'''<!doctype html>
 <style>{CSS}</style>
 </head>
 <body>
+{N.SYMBOLS}
 <div class="prog" aria-hidden="true"><i id="prog"></i></div>
 <header class="bar"><a href="#top" class="logo" aria-label="Dure, back to top">{LOGO}</a><div class="chap" id="chap" aria-live="polite"><b>1</b>The field</div></header>
 
 <main id="top">
 <!-- 1 · the field -->
 <section class="hero" data-c="1" data-t="The field">
-  <div class="mark">{LOGO}</div>
-  <p class="tag">Cooperate through messaging.</p>
-  <p class="def"><b>Dure</b>: the Korean tradition of mutual aid between farmers.</p>
   <div class="portrait">{fig('hero.noor', None, 'Noor, a coffee farmer in Letefoho, holding a basket of ripe cherries')}</div>
+  <div class="portrait wide">{fig('hero.wide', None, 'Noor in her coffee field below the mountains')}</div>
+  <div class="htxt">
+    <div class="mark">{LOGO}</div>
+    <p class="tag">Cooperate through messaging.</p>
+    <p class="def"><b>Dure</b>: the Korean tradition of mutual aid between farmers.</p>
+  </div>
 </section>
 <section class="txt" data-c="1" data-t="The field">
   <p class="kick rv">Ermera, Timor-Leste — the coffee highlands</p>
@@ -224,15 +245,15 @@ PAGE = f'''<!doctype html>
 <!-- 2 · the buyers -->
 <section class="txt split" data-c="2" data-t="The buyers">
   <p class="kick rv">Where she farms</p>
-  <h2 class="rv">The buyers who pay a fair price <em>are in Dili.</em></h2>
+  <h2 class="rv">The buyers are mostly in the capital, <em>Dili.</em></h2>
   <p class="rv">Ermera grows close to half of Timor-Leste's coffee.</p>
   <div class="map rv">{fig('map.route', None, 'Map: Letefoho to Gleno 19 km, Gleno to Dili 45 km, 64 km by road')}</div>
   <div class="big rv"><span class="n"><span class="cnt" data-to="98">98</span>%</span><p>of Ermera's coffee is bought by just four traders in the capital <span class="soft">(survey of 100 farmers, 2014)</span>.</p><cite>Cristovão, Bogor Agricultural University, 2015</cite></div>
 </section>
 
 <!-- 3-4 · the road, seen from above -->
-<section class="road" id="road" data-c="3" data-t="The road" style="--h:{ROAD_H}">
-  <div class="sky">{road_svg()}<div class="rain" aria-hidden="true"><i></i></div><div class="wk noor" data-p="roadLine">{walker_svg('#3F8B5C')}</div>
+<section class="road zoom" id="road" data-c="3" data-t="The road" style="--h:{ROAD_H}">
+  <div class="sky"><div class="pan">{road_svg()}{sprite(PART['trader'], 'tr', .27, 'still', 'data-at="250,1722"')}{sprite(PART['walker'], 'nr', .25, 'walker noor', 'data-p="roadLine"')}</div><div class="rain" aria-hidden="true"><i></i></div>
     <div class="cap" style="--y:16;--x:4"><p class="kick">Harvest season</p><p>Noor has harvested fine Timor-Leste coffee. <em>She needs cash within three days to pay her daughter's school fees.</em></p></div>
     <div class="cap r" style="--y:300;--x:46"><p class="kick">Monsoon</p><p>Timor-Leste's rainy season is notorious.</p></div>
     <div class="bang" style="--y:700;--x:4">Flood.</div>
@@ -245,7 +266,7 @@ PAGE = f'''<!doctype html>
 
 <!-- 5 · together -->
 <section class="road tog" id="tog" data-c="5" data-t="Together" style="--h:{TOG_H}">
-  <div class="sky">{together_svg()}{walkers}<div class="wk noor" data-p="mainLine">{walker_svg('#3F8B5C')}</div>
+  <div class="sky"><div class="pan">{together_svg()}<div class="heap" id="heap" style="--hx:{HEAP[0]};--hy:{HEAP[1]}">{heap_svg()}</div>{walkers}{sprite(PART['walker'], 'nt', .23, 'walker noor', 'data-p="mainLine"')}</div>
     <div class="sign" id="sign"><b id="kg">40 kg</b><span>best offer?</span></div>
     <div class="cap" style="--y:150;--x:24"><p class="kick">The magic of cooperation</p><p>Noor isn't the only one on that road. <em>Her neighbours are carrying coffee baskets too.</em></p></div>
     <div class="cap" style="--y:440;--x:40"><p class="kick">Collective bargaining</p><p>More farmers, more bargaining power. <em>Only the quantity went up, yet the price got better.</em></p></div>
@@ -256,9 +277,9 @@ PAGE = f'''<!doctype html>
   <div class="big rv"><span class="n"><span class="cnt" data-to="58">58</span>%</span><p>of 239 studies found that farmer organisations raised their members' incomes.</p><cite>Bizikova et al., “A scoping review of the contributions of farmers' organizations to smallholder agriculture”, Nature Food, 2020</cite></div>
   <h3 class="sub rv">How cooperatives work</h3>
   <ol class="ways">
-    <li class="rv"><b>Bargaining power.</b> One farm takes the price it's given. A full truck names its own.</li>
-    <li class="rv"><b>One route to market.</b> One shipment to where the fair prices are, instead of every family making the trip.</li>
-    <li class="rv"><b>Buying together.</b> Seed, fertiliser and transport cost less, bought for twenty farms at once.</li>
+    <li class="rv"><span class="ic">{PART['trio'][0]}</span><div><b>Bargaining power.</b> One farm takes the price it's given. A full truck names its own.</div></li>
+    <li class="rv"><span class="ic">{PART['trio'][1]}</span><div><b>One route to market.</b> One shipment to where the fair prices are, instead of every family making the trip.</div></li>
+    <li class="rv"><span class="ic">{PART['trio'][2]}</span><div><b>Buying together.</b> Seed, fertiliser and transport cost less, bought for twenty farms at once.</div></li>
   </ol>
   <blockquote class="rv">“Farmers who are already marginalized … require additional support before they are able to benefit.”<cite>Bizikova et al., Nature Food, 2020</cite></blockquote>
   <p class="q rv">So why isn't she benefiting from the Letefoho coffee cooperative?</p>
@@ -275,7 +296,9 @@ PAGE = f'''<!doctype html>
   </dl>
   <p class="src rv">A cooperative formed under a KOICA agricultural value-chain project, Timor-Leste; Decree-Law No. 16/2004 on cooperatives. Coffee income: The Irish Times, 2013.</p>
   <h3 class="power rv">And then, <em>power.</em></h3>
-  <p class="rv">Women farmers are easily left out. For a while, it was one village; then the members and the opposition.</p>
+  <p class="rv">Women farmers are easily left out.</p>
+  <figure class="scene rv">{fig('split5.village', None, 'Villagers standing together in one line')}<figcaption>For a while, it was one village.</figcaption></figure>
+  <figure class="scene dim rv">{fig('split75.power', None, 'The village split: members under a Kooperativa banner, the opposition under a $2.40/kg sign, a crack between them')}<figcaption><b>Power game.</b> Members on one side, the opposition on the other.</figcaption></figure>
   <ol class="three">
     <li class="rv"><b>One.</b> The cooperative copies the village pecking order.</li>
     <li class="rv"><b>Two.</b> Joining stops being a choice.</li>
@@ -288,8 +311,13 @@ PAGE = f'''<!doctype html>
 <section class="dark" data-c="7" data-t="Dure">
   <div class="tais" aria-hidden="true"></div>
   <div class="in">
-    <p class="kick rv">Introducing Dure</p>
     <h2 class="rv">What if the village kept the cooperative's advantages, <em>but dropped the cooperative?</em></h2>
+  </div>
+  <div class="phoneNoor">
+    <div class="pn">{PART['phoneNoor']['html'].replace('<svg', '<svg aria-label="Noor holding up her basic phone"', 1).replace('</svg>', '<defs>' + PART['phoneNoor']['defs'] + '</defs></svg>')}</div>
+    <div class="pt"><p class="kick">Introducing Dure</p><h3>Cooperating through <em>messages.</em></h3></div>
+  </div>
+  <div class="in">
     <p class="lead rv">Dure works just like a cooperative. A simple text from any phone is all it takes to help Noor get a fair price.</p>
     <div class="sw rv">
       <div><h4>What stays</h4><ul><li>Pooling the harvest</li><li>Buyers bidding for the whole lot</li><li>One shared truck and pickup point</li><li>A record that earns trust</li></ul></div>
@@ -312,10 +340,10 @@ PAGE = f'''<!doctype html>
 <section class="txt twsec" data-c="9" data-t="Technical walkthrough">
   <p class="chapno rv">9 · Technical walkthrough</p>
   {tw_block(0, PARSER)}
-  {tw_block(1, '<div class="panelwrap">' + fig('wai1.photo', 380, 'Photo check: three boxes where the model found defects') + fig('wai1.list', 330, 'Black beans, mould and broken beans found; preliminary grade C') + '</div>' + '<div class="train">' + ''.join(f'<img src="{a}" alt="" title="{t}" loading="lazy" width="60" height="60">' for a, t in TRAIN) + '</div><p class="tcap">Some of our training photos · Wikimedia Commons: H. Ulver, M. C. Wright, F. Quijano (CC BY-SA 4.0); Forest &amp; Kim Starr (CC BY 3.0)</p>')}
-  {tw_block(2, '<div class="panelwrap">' + fig('wai2.list', 320, 'What the opening price weighs: recent sales, buyers, road, rain, farmers asks; fair price $2.55, opens at $2.43') + fig('wai2.dots', 380, 'Each dot is one farmer\'s ask; cleared at $2.55 with 21 in') + '</div>')}
-  {tw_block(3, '<div class="cards">' + fig('econ0.noor', 340, 'Noor: 92% likely to deliver') + fig('econ0.big', 340, 'A big grower: 64% likely to deliver') + '</div>' + BUYERS)}
-  {tw_block(4, '<div class="cards">' + fig('econ1.blend', 340, 'Blended pool: every farmer sells here, every week, to Dili traders') + fig('econ1.fixed', 380, 'Fixed pool: one grade, a fixed buyer, every week') + '</div>')}
+  {tw_block(1, '<div class="panelwrap">' + N.photo() + N.steps() + '</div>' + '<div class="train">' + ''.join(f'<img src="{a}" alt="" title="{t}" loading="lazy" width="60" height="60">' for a, t in TRAIN) + '</div><p class="tcap">Some of our training photos · Wikimedia Commons: H. Ulver, M. C. Wright, F. Quijano (CC BY-SA 4.0); Forest &amp; Kim Starr (CC BY 3.0)</p>')}
+  {tw_block(2, '<div class="panelwrap">' + N.weighs() + N.dots() + '</div>')}
+  {tw_block(3, '<div class="cards">' + N.rep('noor') + N.rep('big') + '</div>' + BUYERS)}
+  {tw_block(4, '<div class="cards">' + N.blend() + N.fixed() + '</div>')}
 </section>
 
 <!-- 10 · registry -->
@@ -324,9 +352,9 @@ PAGE = f'''<!doctype html>
   <h2 class="rv">An automated Registry <em>and AI policy suggestions.</em></h2>
   <p class="lead rv">A farmer Registry is important and effective, but labour-intensive and expensive to keep. Dure works as a market itself, and every deal leaves a footprint. <b>So the Registry builds itself.</b></p>
   <div class="regs">
-  <div class="reg rv">{fig('ledger.grid', 380, 'Daily accumulated trades per farmer')}</div>
-  <div class="reg rv">{fig('ledger.chart', 380, 'Quality signals by week for the whole pool')}</div>
-  <div class="reg rv">{fig('ledger.brief', 370, "Monday's brief: Lebudu, mould on 60% of photos after the rain")}</div>
+  <div class="reg rv">{N.ledger()}</div>
+  <div class="reg rv">{N.qchart()}</div>
+  <div class="reg rv">{N.brief()}</div>
   </div>
   <p class="rv">Policy makers and extension officers get accurate, good-quality information on limited resources.</p>
   <p class="rv"><b>AI is not a silver bullet.</b> Noor knows farming better than Dure, so Dure stays out of how she farms. But when the extension officer visits Noor twice a year, they can make the best of it.</p>

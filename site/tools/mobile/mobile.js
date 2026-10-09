@@ -15,26 +15,38 @@ const chap=$('#chap');let last='';
 const io2=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const c=e.target.dataset.c,t=e.target.dataset.t;if(c+t!==last){last=c+t;chap.innerHTML=`<b>${c}</b>${t}`}}),{rootMargin:'-40% 0px -55% 0px'});
 $$('[data-c]').forEach(m=>io2.observe(m));
 
-/* walkers: each follows its path as its section scrolls by */
-const scenes=$$('.road').map(sec=>{const svg=sec.querySelector('svg.aerial'),vb=svg.viewBox.baseVal;
-  const ws=[...sec.querySelectorAll('.wk')].map(el=>{const p=svg.getElementById(el.dataset.p);return {el,p,L:p.getTotalLength()}});
-  return {sec,svg,vb,ws,on:false,rain:sec.querySelector('.rain'),sign:sec.querySelector('#kg')}});
+/* walkers: standing figures from the story follow their paths as their section scrolls by.
+   Each is its own small layer: moving it, or swinging its legs, never redraws the map. On the zoomed road the map
+   slides sideways to keep Noor in view. */
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const scenes=$$('.road').map(sec=>{const svg=sec.querySelector('svg.aerial'),vb=svg.viewBox.baseVal,pan=sec.querySelector('.pan'),sky=sec.querySelector('.sky');
+  const ws=[...sec.querySelectorAll('.sp.walker')].map(el=>{const p=svg.getElementById(el.dataset.p);
+    return {el,p,L:p.getTotalLength(),fx:parseFloat(el.style.getPropertyValue('--fx')),fy:parseFloat(el.style.getPropertyValue('--fy')),
+      legF:el.querySelector('[id$="_legF"],.lf'),legB:el.querySelector('[id$="_legB"],.lb'),last:null,ph:0,still:0}});
+  const st=[...sec.querySelectorAll('.sp.still')].map(el=>{const [x,y]=el.dataset.at.split(',').map(Number);return {el,x,y,fx:parseFloat(el.style.getPropertyValue('--fx')),fy:parseFloat(el.style.getPropertyValue('--fy'))}});
+  return {sec,svg,vb,pan,sky,ws,st,zoom:sec.classList.contains('zoom'),on:false,rain:sec.querySelector('.rain'),sign:sec.querySelector('#kg'),heap:sec.querySelector('.heap')}});
 const ioS=new IntersectionObserver(es=>es.forEach(e=>{const s=scenes.find(x=>x.sec===e.target);s.on=e.isIntersecting;if(s.rain)s.rain.classList.toggle('on',e.isIntersecting&&!RM);if(s.on)tick()}),{rootMargin:'20% 0px'});
 scenes.forEach(s=>ioS.observe(s.sec));
 let raf=0;
+function step(w,a,k){   // legs swing with the distance actually walked
+  if(w.last){const d=Math.hypot(a.x-w.last.x,a.y-w.last.y)*k;w.ph+=d/11;w.moving=d>.4}
+  w.last={x:a.x,y:a.y};const sw=w.moving&&!RM?Math.sin(w.ph)*16:0;
+  if(w.legF)w.legF.setAttribute('transform',`rotate(${sw.toFixed(1)} 4 -44)`);if(w.legB)w.legB.setAttribute('transform',`rotate(${(-sw).toFixed(1)} -6 -44)`)}
 function place(s){const r=s.svg.getBoundingClientRect(),k=r.width/s.vb.width,H=innerHeight;
-  // progress: the walker stays a little below the middle of the screen while the map scrolls under it
-  const prog=Math.min(1,Math.max(0,(H*.58-r.top)/r.height));
-  s.ws.forEach((w,i)=>{
-    let u=prog;
-    if(w.el.classList.contains('nb')){u=Math.min(1,Math.max(0,(prog-.08-i*.035)/.62))}   // neighbours set off one after another and reach the lot
-    else if(s.sign){u=Math.min(1,Math.max(0,(prog-.02)/.7))}
-    else{const P=w.p,L=w.L;let lo=0,hi=L,yT=(H*.58-r.top)/k;   // Noor on the long road: put her where the road is at that height
-      for(let n=0;n<22;n++){const m=(lo+hi)/2;if(P.getPointAtLength(m).y<yT)lo=m;else hi=m}u=lo/L}
-    const a=w.p.getPointAtLength(u*w.L),b=w.p.getPointAtLength(Math.min(w.L,u*w.L+2));
-    const ang=Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI+90;
-    w.el.style.transform=`translate3d(${(a.x*k).toFixed(1)}px,${(a.y*k).toFixed(1)}px,0) rotate(${ang.toFixed(1)}deg)`});
-  if(s.sign){const n=Math.round(40+Math.min(1,Math.max(0,(prog-.1)/.6))*460);s.sign.textContent=`${n} kg`}}
+  const prog=clamp((H*.58-r.top)/r.height,0,1);let noorX=null;
+  s.ws.forEach((w,i)=>{let u;
+    if(w.el.classList.contains('nb'))u=clamp((prog-.06-i*.04)/.6,0,1);             // neighbours set off one after another
+    else if(s.heap)u=clamp((prog-.02)/.66,0,1);
+    else{let lo=0,hi=w.L;const yT=(H*.58-r.top)/k;                                      // Noor on the long road: where the road is at that height
+      for(let n=0;n<22;n++){const m=(lo+hi)/2;if(w.p.getPointAtLength(m).y<yT)lo=m;else hi=m}u=lo/w.L}
+    const a=w.p.getPointAtLength(u*w.L),b=w.p.getPointAtLength(Math.min(w.L,u*w.L+3)),c=w.p.getPointAtLength(Math.max(0,u*w.L-3));
+    const dx=b.x-c.x;if(Math.abs(dx)>.6)w.el.classList.toggle('left',dx<0);
+    w.el.style.transform=`translate3d(${(a.x*k-w.fx).toFixed(1)}px,${(a.y*k-w.fy).toFixed(1)}px,0)`;
+    step(w,a,k);if(w.el.classList.contains('noor'))noorX=a.x*k});
+  s.st.forEach(t=>{t.el.style.transform=`translate3d(${(t.x*k-t.fx).toFixed(1)}px,${(t.y*k-t.fy).toFixed(1)}px,0)`});
+  if(s.zoom&&noorX!=null){const vw=s.sky.clientWidth,pw=s.pan.offsetWidth;s.pan.style.transform=`translate3d(${clamp(vw/2-noorX,vw-pw,0).toFixed(1)}px,0,0)`}
+  if(s.heap){const g=clamp((prog-.12)/.62,0,1);s.heap.style.transform=`translate(-50%,-86%) scale(${(.12+.88*g).toFixed(3)})`;
+    if(s.sign)s.sign.textContent=`${Math.round(40+g*460)} kg`}}
 function tick(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;scenes.forEach(s=>{if(s.on)place(s)});
   const h=document.documentElement.scrollHeight-innerHeight;$('#prog').style.transform=`scaleX(${h>0?scrollY/h:0})`})}
 addEventListener('scroll',tick,{passive:true});addEventListener('resize',tick);
