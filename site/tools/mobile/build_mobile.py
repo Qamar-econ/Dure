@@ -203,7 +203,7 @@ bench = ''.join(bench_row(*r) for r in BENCH)
 VIDS = [('981bf_9D56U', 'Meet the founder'), ('7GsosgZ9X-s', 'Product demo'), ('WSlZaQtR0n0', 'Technical walkthrough')]
 vids = ''.join(f'<button class="vid" data-id="{i}" type="button"><img src="https://i.ytimg.com/vi/{i}/hqdefault.jpg" alt="" loading="lazy" width="480" height="360"><span>{t}</span></button>' for i, t in VIDS)
 
-walkers = ''.join(sprite(PART['farmers'][i % len(PART['farmers'])], f'nb{i}', .25, 'walker nb', f'data-p="nb{i}"') for i in range(len(PATHS)))
+walkers = ''.join(sprite(PART['fnb'][i % len(PART['fnb'])], f'nb{i}', .2, 'walker nb front', f'data-p="nb{i}"') for i in range(len(PATHS)))
 
 CSS = open(os.path.join(HERE, 'mobile.css')).read().replace('__TAIS__', TAIS)
 JS = open(os.path.join(HERE, 'mobile.js')).read()
@@ -217,7 +217,7 @@ PAGE = f'''<!doctype html>
 <meta name="theme-color" content="#F2EADA">
 <title>Dure · Cooperate through messaging</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=Libre+Franklin:wght@400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=Libre+Franklin:wght@400;500;600;700&family=VT323&family=Gochi+Hand&display=swap" rel="stylesheet">
 <style>{CSS}</style>
 </head>
 <body>
@@ -253,7 +253,7 @@ PAGE = f'''<!doctype html>
 
 <!-- 3-4 · the road, seen from above -->
 <section class="road zoom" id="road" data-c="3" data-t="The road" style="--h:{ROAD_H}">
-  <div class="sky"><div class="pan">{road_svg()}{sprite(PART['trader'], 'tr', .27, 'still', 'data-at="250,1722"')}{sprite(PART['walker'], 'nr', .25, 'walker noor', 'data-p="roadLine"')}</div><div class="rain" aria-hidden="true"><i></i></div>
+  <div class="sky"><div class="pan">{road_svg()}{sprite(PART['trader'], 'tr', .27, 'still', 'data-at="250,1722"')}{sprite(PART['fnoor'], 'nr', .24, 'walker noor front', 'data-p="roadLine"')}</div><div class="rain" aria-hidden="true"><i></i></div>
     <div class="cap" style="--y:16;--x:4"><p class="kick">Harvest season</p><p>Noor has harvested fine Timor-Leste coffee. <em>She needs cash within three days to pay her daughter's school fees.</em></p></div>
     <div class="cap r" style="--y:300;--x:46"><p class="kick">Monsoon</p><p>Timor-Leste's rainy season is notorious.</p></div>
     <div class="bang" style="--y:700;--x:4">Flood.</div>
@@ -266,7 +266,7 @@ PAGE = f'''<!doctype html>
 
 <!-- 5 · together -->
 <section class="road tog" id="tog" data-c="5" data-t="Together" style="--h:{TOG_H}">
-  <div class="sky"><div class="pan">{together_svg()}<div class="heap" id="heap" style="--hx:{HEAP[0]};--hy:{HEAP[1]}">{heap_svg()}</div>{walkers}{sprite(PART['walker'], 'nt', .23, 'walker noor', 'data-p="mainLine"')}</div>
+  <div class="sky"><div class="pan">{together_svg()}<div class="heap" id="heap" style="--hx:{HEAP[0]};--hy:{HEAP[1]}">{heap_svg()}</div>{walkers}{sprite(PART['fnoor'], 'nt', .21, 'walker noor front', 'data-p="mainLine"')}</div>
     <div class="sign" id="sign"><b id="kg">40 kg</b><span>best offer?</span></div>
     <div class="cap" style="--y:150;--x:24"><p class="kick">The magic of cooperation</p><p>Noor isn't the only one on that road. <em>Her neighbours are carrying coffee baskets too.</em></p></div>
     <div class="cap" style="--y:440;--x:40"><p class="kick">Collective bargaining</p><p>More farmers, more bargaining power. <em>Only the quantity went up, yet the price got better.</em></p></div>
@@ -297,8 +297,7 @@ PAGE = f'''<!doctype html>
   <p class="src rv">A cooperative formed under a KOICA agricultural value-chain project, Timor-Leste; Decree-Law No. 16/2004 on cooperatives. Coffee income: The Irish Times, 2013.</p>
   <h3 class="power rv">And then, <em>power.</em></h3>
   <p class="rv">Women farmers are easily left out.</p>
-  <figure class="scene rv">{fig('split5.village', None, 'Villagers standing together in one line')}<figcaption>For a while, it was one village.</figcaption></figure>
-  <figure class="scene dim rv">{fig('split75.power', None, 'The village split: members under a Kooperativa banner, the opposition under a $2.40/kg sign, a crack between them')}<figcaption><b>Power game.</b> Members on one side, the opposition on the other.</figcaption></figure>
+  <figure class="scene pw rv">{PART['power']}</figure>
   <ol class="three">
     <li class="rv"><b>One.</b> The cooperative copies the village pecking order.</li>
     <li class="rv"><b>Two.</b> Joining stops being a choice.</li>
@@ -314,8 +313,9 @@ PAGE = f'''<!doctype html>
     <h2 class="rv">What if the village kept the cooperative's advantages, <em>but dropped the cooperative?</em></h2>
   </div>
   <div class="phoneNoor">
-    <div class="pn">{PART['phoneNoor']['html'].replace('<svg', '<svg aria-label="Noor holding up her basic phone"', 1).replace('</svg>', '<defs>' + PART['phoneNoor']['defs'] + '</defs></svg>')}</div>
-    <div class="pt"><p class="kick">Introducing Dure</p><h3>Cooperating through <em>messages.</em></h3></div>
+    <svg class="pn" viewBox="-86 -536 256 410" role="img" aria-label="Noor holding up her basic phone"><defs>{PART['tais']}<radialGradient id="pnGlow"><stop offset="0" stop-color="#E9D9B4" stop-opacity=".30"/><stop offset=".6" stop-color="#E9D9B4" stop-opacity=".10"/><stop offset="1" stop-color="#E9D9B4" stop-opacity="0"/></radialGradient></defs>
+      <circle cx="30" cy="-400" r="190" fill="url(#pnGlow)"/>{PART['fphone']}</svg>
+    <div class="pt"><p class="kick">Introducing</p><div class="dmark">{LOGO.replace('fill="#1F3A40"', 'fill="#F4EBDA"')}</div><h3>Cooperating through <em>messages.</em></h3></div>
   </div>
   <div class="in">
     <p class="lead rv">Dure works just like a cooperative. A simple text from any phone is all it takes to help Noor get a fair price.</p>

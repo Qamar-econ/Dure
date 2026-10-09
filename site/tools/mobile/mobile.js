@@ -22,15 +22,20 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const scenes=$$('.road').map(sec=>{const svg=sec.querySelector('svg.aerial'),vb=svg.viewBox.baseVal,pan=sec.querySelector('.pan'),sky=sec.querySelector('.sky');
   const ws=[...sec.querySelectorAll('.sp.walker')].map(el=>{const p=svg.getElementById(el.dataset.p);
     return {el,p,L:p.getTotalLength(),fx:parseFloat(el.style.getPropertyValue('--fx')),fy:parseFloat(el.style.getPropertyValue('--fy')),
-      legF:el.querySelector('[id$="_legF"],.lf'),legB:el.querySelector('[id$="_legB"],.lb'),last:null,ph:0,still:0}});
+      legF:el.querySelector('[id$="_legF"],.lf'),legB:el.querySelector('[id$="_legB"],.lb'),bd:el.querySelector('.bd'),front:el.classList.contains('front'),last:null,ph:0,still:0}});
   const st=[...sec.querySelectorAll('.sp.still')].map(el=>{const [x,y]=el.dataset.at.split(',').map(Number);return {el,x,y,fx:parseFloat(el.style.getPropertyValue('--fx')),fy:parseFloat(el.style.getPropertyValue('--fy'))}});
   return {sec,svg,vb,pan,sky,ws,st,zoom:sec.classList.contains('zoom'),on:false,rain:sec.querySelector('.rain'),sign:sec.querySelector('#kg'),heap:sec.querySelector('.heap')}});
 const ioS=new IntersectionObserver(es=>es.forEach(e=>{const s=scenes.find(x=>x.sec===e.target);s.on=e.isIntersecting;if(s.rain)s.rain.classList.toggle('on',e.isIntersecting&&!RM);if(s.on)tick()}),{rootMargin:'20% 0px'});
 scenes.forEach(s=>ioS.observe(s.sec));
 let raf=0;
-function step(w,a,k){   // legs swing with the distance actually walked
+function step(w,a,k){   // feet step with the distance actually walked
   if(w.last){const d=Math.hypot(a.x-w.last.x,a.y-w.last.y)*k;w.ph+=d/11;w.moving=d>.4}
-  w.last={x:a.x,y:a.y};const sw=w.moving&&!RM?Math.sin(w.ph)*16:0;
+  w.last={x:a.x,y:a.y};const sn=w.moving&&!RM?Math.sin(w.ph):0;
+  if(w.front){   // walking toward the reader: one foot lifts, then the other, and the body rises a little on each step
+    if(w.legF)w.legF.setAttribute('transform',`translate(0 ${(-Math.max(0,sn)*16).toFixed(1)})`);
+    if(w.legB)w.legB.setAttribute('transform',`translate(0 ${(-Math.max(0,-sn)*16).toFixed(1)})`);
+    if(w.bd)w.bd.setAttribute('transform',`translate(0 ${(-Math.abs(sn)*6).toFixed(1)}) rotate(${(sn*1.2).toFixed(2)} 0 -200)`);return}
+  const sw=sn*16;
   if(w.legF)w.legF.setAttribute('transform',`rotate(${sw.toFixed(1)} 4 -44)`);if(w.legB)w.legB.setAttribute('transform',`rotate(${(-sw).toFixed(1)} -6 -44)`)}
 function place(s){const r=s.svg.getBoundingClientRect(),k=r.width/s.vb.width,H=innerHeight;
   const prog=clamp((H*.58-r.top)/r.height,0,1);let noorX=null;
@@ -40,7 +45,7 @@ function place(s){const r=s.svg.getBoundingClientRect(),k=r.width/s.vb.width,H=i
     else{let lo=0,hi=w.L;const yT=(H*.58-r.top)/k;                                      // Noor on the long road: where the road is at that height
       for(let n=0;n<22;n++){const m=(lo+hi)/2;if(w.p.getPointAtLength(m).y<yT)lo=m;else hi=m}u=lo/w.L}
     const a=w.p.getPointAtLength(u*w.L),b=w.p.getPointAtLength(Math.min(w.L,u*w.L+3)),c=w.p.getPointAtLength(Math.max(0,u*w.L-3));
-    const dx=b.x-c.x;if(Math.abs(dx)>.6)w.el.classList.toggle('left',dx<0);
+    const dx=b.x-c.x;if(!w.front&&Math.abs(dx)>.6)w.el.classList.toggle('left',dx<0);   // front-facing figures never turn
     w.el.style.transform=`translate3d(${(a.x*k-w.fx).toFixed(1)}px,${(a.y*k-w.fy).toFixed(1)}px,0)`;
     step(w,a,k);if(w.el.classList.contains('noor'))noorX=a.x*k});
   s.st.forEach(t=>{t.el.style.transform=`translate3d(${(t.x*k-t.fx).toFixed(1)}px,${(t.y*k-t.fy).toFixed(1)}px,0)`});
