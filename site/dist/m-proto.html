@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Dure · mobile prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,600;0,700;1,400&family=VT323&display=swap" rel="stylesheet">
+<style>
+/* Dure design tokens (same as the story site) */
+:root{--ivory:#F2EADA;--paper:#F6EFE0;--ink:#1F3A40;--ink-2:#5B5345;--rust:#A8452A;--gold:#E4B64C;--leaf:#4E8B5C;--teal:#2C4F57;--lcd:#B7CF9A;--line:rgba(31,58,64,.18);
+  --f-d:Newsreader,Georgia,serif;--f-b:"Atkinson Hyperlegible Next",system-ui,-apple-system,sans-serif;--g:20px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--ink);font:400 17px/1.55 var(--f-b);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+/* paper grain: one static layer, no blending (cheap on phones) */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:40;opacity:.10;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .33  0 0 0 0 .26  0 0 0 0 .18  0 0 0 1 -.1'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+img{display:block;max-width:100%}
+em{font-style:italic}
+a{color:inherit}
+
+/* header */
+.bar{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px var(--g) 10px;padding-top:calc(12px + env(safe-area-inset-top,0px));background:rgba(242,234,218,.96);border-bottom:1px solid rgba(31,58,64,.08)}
+.bar svg{height:26px;width:auto;display:block}
+.chap{font:italic 16px var(--f-d);color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chap b{font-style:normal;font-weight:600;color:var(--ink);margin-right:7px}
+.prog{position:fixed;left:0;right:0;top:0;height:2px;z-index:31;background:rgba(31,58,64,.12)}
+.prog i{display:block;height:100%;background:var(--ink);transform-origin:0 50%;transform:scaleX(0)}
+
+/* sections */
+section{padding:56px var(--g) 64px;position:relative}
+.k{font:italic 16px var(--f-d);color:var(--rust);margin:0 0 6px}
+h1,h2,h3{font-family:var(--f-d);font-weight:650;line-height:1.08;letter-spacing:-.01em;margin:0}
+h2{font-size:34px;margin:0 0 14px}
+h2 em,h3 em{color:var(--rust);font-weight:500}
+h3{font-size:24px;margin:0 0 8px}
+p{margin:0 0 14px}
+.lead{font-size:19px;color:var(--ink-2)}
+.lead em{color:var(--ink)}
+cite,.src{display:block;font:italic 13.5px/1.4 var(--f-d);color:var(--ink-2)}
+.art{margin:18px calc(-1*var(--g));overflow:hidden}
+.art img{width:100%;height:auto}
+.card{background:rgba(251,247,238,.85);border:1px solid var(--line);border-radius:16px;padding:16px 16px 14px}
+.sep{height:1px;background:var(--line);margin:0 var(--g)}
+.chapnum{font:600 13px var(--f-b);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:10px}
+
+/* reveal on scroll: opacity/transform only */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.m,.dash *{animation:none!important;opacity:1!important;transform:none!important}}
+
+/* 1 hero */
+.hero{padding:22px var(--g) 0;text-align:center;min-height:calc(100svh - 52px);display:flex;flex-direction:column}
+.hero .logo{margin:13svh auto 0;width:min(78vw,340px)}
+.hero .logo svg{width:100%;height:auto}
+.hero .tag{font:italic 500 27px/1.15 var(--f-d);color:var(--rust);margin:14px 0 8px}
+.hero .def{font:400 17px var(--f-d);color:var(--ink-2)}
+.hero .def b{color:var(--ink)}
+.hero .art{margin-top:auto;margin-bottom:0}
+.down{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);font:italic 14px var(--f-d);color:var(--ivory);text-shadow:0 1px 6px rgba(0,0,0,.35);animation:bob 2s ease-in-out infinite}
+@keyframes bob{50%{transform:translate(-50%,5px)}}
+
+/* stat */
+.stat{display:flex;align-items:baseline;gap:8px;font:650 84px/1 var(--f-d);color:var(--rust);margin:6px 0 4px;font-variant-numeric:tabular-nums}
+.stat small{font-size:40px}
+.quote{font:500 25px/1.25 var(--f-d);margin:8px 0 10px}
+
+/* 3-5 the road, drawn as a vertical path: the PC walk goes left to right, here it goes down */
+.road{position:relative;padding-left:34px}
+.road::before{content:"";position:absolute;left:11px;top:6px;bottom:6px;width:6px;border-radius:3px;background:repeating-linear-gradient(#D5BD93 0 18px,#C4A87A 18px 26px)}
+.stop{position:relative;margin:0 0 30px}
+.stop:last-child{margin-bottom:0}
+.stop::before{content:"";position:absolute;left:-29px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--ivory);border:3px solid var(--ink)}
+.stop.bad::before{border-color:var(--rust);background:var(--rust)}
+.stop .lbl{font:600 12.5px var(--f-b);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px}
+.stop .pic{position:relative;border-radius:14px;overflow:hidden;margin:6px 0 10px;border:1px solid var(--line)}
+.stop .pic img{width:100%;aspect-ratio:780/600;object-fit:cover}
+.bang{position:absolute;left:12px;top:6px;font:italic 700 46px/1 var(--f-d);color:var(--rust);text-shadow:0 2px 0 rgba(242,234,218,.6)}
+.endnote{font:italic 18px/1.4 var(--f-d);color:var(--ink);margin-top:6px}
+
+/* 6 together */
+.tiles{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}
+.tile{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:start}
+.tile b{font:650 30px/1 var(--f-d);color:var(--rust)}
+.tile p{margin:0;font-size:15.5px}
+
+/* 7 the catch */
+.costs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+.costs div{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 8px;text-align:center}
+.costs .v{font:650 26px/1 var(--f-d);color:var(--ink);margin:6px 0}
+.costs .h{font:600 11.5px var(--f-b);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.costs p{font-size:12.5px;line-height:1.35;margin:0;color:var(--ink-2)}
+.fight{font:italic 600 26px/1.15 var(--f-d);color:var(--rust);margin:20px 0 8px}
+
+/* 8 introducing Dure: the tais */
+.tais{margin:0 calc(-1*var(--g));height:120px;background:url(assets/m/tais.webp) center/cover}
+.dure{background:#231C17;color:#F2EADA;padding-top:0}
+.dure .k{color:var(--gold)}
+.dure h2 em{color:var(--gold)}
+.dure .lead{color:#D9CDB6}
+.sw{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+.sw div{border-radius:14px;padding:14px 12px;background:rgba(242,234,218,.06);border:1px solid rgba(242,234,218,.16)}
+.sw h4{margin:0 0 8px;font:600 12px var(--f-b);letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.sw ul{margin:0;padding:0;list-style:none;font-size:14.5px;line-height:1.35}
+.sw li{margin:0 0 7px}
+.sw .go li{color:#B6A98F;text-decoration:line-through;text-decoration-color:var(--rust);text-decoration-thickness:2px}
+.nokia{font:italic 18px/1.45 var(--f-d);color:#F2EADA}
+
+/* 9 how it works: the two phones and the dashboard become one timeline.
+   Noor's texts come from the left, the buyer's from the right, the dashboard sits in between: space across becomes time down. */
+.wk{position:relative;margin-top:22px}
+.wk::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:linear-gradient(var(--line),var(--line))}
+.day{position:relative;margin:0 0 34px}
+.when{position:relative;z-index:1;display:table;margin:0 auto 12px;padding:4px 12px;border-radius:999px;background:var(--ink);color:#F2EADA;font:600 12.5px var(--f-b);letter-spacing:.06em}
+.day h3{text-align:center;font-size:23px;margin:0 0 6px;background:var(--ivory);position:relative;z-index:1;padding:2px 0}
+.day .why{text-align:center;font-size:15px;color:var(--ink-2);margin:0 0 14px;background:var(--ivory);position:relative;z-index:1}
+.who{font:600 11px var(--f-b);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin:12px 0 5px;position:relative;z-index:1}
+.who.r{text-align:right}
+.m{position:relative;z-index:1;max-width:84%;margin:0 0 8px;padding:9px 12px;border-radius:14px;font-size:14.5px;line-height:1.38;opacity:0;transform:translateY(8px)}
+.in .m{animation:pop .45s ease forwards;animation-delay:calc(var(--i,0)*.75s + .2s)}
+@keyframes pop{to{opacity:1;transform:none}}
+/* Noor's basic phone: LCD green, pixel font */
+.m.n{background:var(--lcd);color:#1E2A16;font:20px/1.08 VT323,ui-monospace,monospace;border-radius:6px 14px 14px 14px;box-shadow:inset 0 0 0 2px rgba(30,42,22,.15)}
+.m.n.me{background:#1E2A16;color:var(--lcd)}
+.m.n .f{display:block;font-size:15px;opacity:.7}
+/* the buyer's smartphone */
+.m.b{margin-left:auto;background:#E7EAEE;color:#1B2228;border-radius:14px 6px 14px 14px;font-family:system-ui,-apple-system,sans-serif}
+.m.b.me{background:var(--teal);color:#fff}
+.m hr{border:0;border-top:1px dashed currentColor;opacity:.35;margin:5px 0}
+/* dashboard cards between the two */
+.dash{position:relative;z-index:1;margin:12px 0 10px;border-radius:16px;background:var(--teal);color:#F2EADA;padding:14px 14px 12px;box-shadow:0 14px 30px -18px rgba(20,32,36,.6)}
+.dash .t{font:600 11px var(--f-b);letter-spacing:.12em;text-transform:uppercase;color:#9FC0C6;margin-bottom:10px;display:flex;justify-content:space-between}
+.band{display:grid;grid-template-columns:22px 1fr 86px;gap:8px;align-items:center;margin:6px 0;font-size:14px}
+.band .g{font:700 15px var(--f-d)}
+.band .tr{height:10px;border-radius:5px;background:rgba(255,255,255,.12);position:relative;overflow:hidden}
+.band .tr i{position:absolute;top:0;bottom:0;border-radius:5px;background:var(--gold);transform:scaleX(0);transform-origin:0 50%}
+.in .band .tr i{animation:grow 1s .3s ease forwards}
+@keyframes grow{to{transform:none}}
+.band .v{text-align:right;font-variant-numeric:tabular-nums}
+.grade{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:center}
+.grade img{width:96px;height:72px;object-fit:cover;border-radius:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips span{font-size:13px;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.12)}
+.chips span b{color:var(--gold);font-weight:600}
+.pool{height:16px;border-radius:8px;background:rgba(255,255,255,.12);overflow:hidden;margin:6px 0 4px;position:relative}
+.pool i{position:absolute;inset:0 auto 0 0;width:94.5%;background:linear-gradient(90deg,#4E8B5C 0 45%,#C9A06A 45% 80%,#B7462E 80%);transform:scaleX(0);transform-origin:0 50%}
+.in .pool i{animation:grow 1.8s .4s ease-out forwards}
+.pool + .row{display:flex;justify-content:space-between;font-size:13px;color:#C9D9DC}
+.book div{display:grid;grid-template-columns:1fr auto;padding:6px 8px;border-radius:8px;font-size:14px;margin:3px 0;background:rgba(255,255,255,.06);opacity:0}
+.in .book div{animation:pop .4s ease forwards;animation-delay:calc(var(--i)*.45s + .3s)}
+.book div.win{background:rgba(228,182,76,.22);box-shadow:inset 0 0 0 1px var(--gold)}
+.votes{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin:4px 0 8px}
+.votes i{aspect-ratio:1;border-radius:4px;background:rgba(255,255,255,.14);transition:background .3s}
+.in .votes i.y{animation:yes .3s ease forwards;animation-delay:calc(var(--i)*.07s + .3s)}
+.in .votes i.no{animation:nope .3s ease forwards;animation-delay:calc(var(--i)*.07s + .3s)}
+@keyframes yes{to{background:var(--leaf)}}@keyframes nope{to{background:#8A8E8C;opacity:.5}}
+.route{position:relative;height:46px;margin:6px 4px 2px}
+.route::before{content:"";position:absolute;left:8px;right:8px;top:21px;height:4px;border-radius:2px;background:repeating-linear-gradient(90deg,#D5BD93 0 12px,transparent 12px 18px)}
+.route .a,.route .z{position:absolute;top:14px;width:18px;height:18px;border-radius:50%;background:#F2EADA;border:3px solid var(--gold)}
+.route .a{left:0}.route .z{right:0}
+.route .tk{position:absolute;left:0;top:6px;font-size:26px;line-height:1;transform:translateX(0)}
+.in .route .tk{animation:drive 2.4s .4s ease-in-out forwards}
+@keyframes drive{to{transform:translateX(calc(min(86vw,520px) - 90px))}}
+.ends{display:flex;justify-content:space-between;font-size:12.5px;color:#C9D9DC}
+.pay{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:14px}
+.pay b{font:650 26px var(--f-d);color:var(--gold)}
+.ring{--v:83;width:92px;height:92px;border-radius:50%;background:conic-gradient(var(--leaf) calc(var(--v)*1%),rgba(255,255,255,.12) 0);display:grid;place-items:center;flex:none}
+.ring span{width:70px;height:70px;border-radius:50%;background:var(--teal);display:grid;place-items:center;font:650 26px var(--f-d)}
+.trust{display:flex;gap:14px;align-items:center;font-size:14px}
+.illus{font:italic 13px var(--f-d);color:var(--ink-2);text-align:center;margin-top:10px}
+
+/* 10 technical walkthrough + benchmark */
+.ai{margin:0 0 22px}
+.ai .n{font:600 11.5px var(--f-b);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:4px}
+.parse{font-family:VT323,monospace;font-size:21px;background:var(--lcd);color:#1E2A16;border-radius:10px;padding:10px 12px;margin:10px 0 8px}
+.parse mark{background:rgba(228,182,76,.75);color:inherit;border-radius:3px;padding:0 2px}
+.fields{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14.5px}
+.fields span:nth-child(odd){color:var(--ink-2)}
+.fields b{font-weight:600}
+.tbi{margin-top:16px}
+.tbi div{margin:0 0 12px}
+.tbi .l{display:flex;justify-content:space-between;font-size:14.5px;margin-bottom:4px}
+.tbi .l span{color:var(--ink-2);font-size:12.5px}
+.tbi .bb{height:14px;border-radius:7px;background:rgba(31,58,64,.1);overflow:hidden}
+.tbi .bb i{display:block;height:100%;width:var(--w);border-radius:7px;background:var(--ink);transform:scaleX(0);transform-origin:0 50%}
+.tbi .me .bb i{background:var(--rust)}
+.tbi .dim{opacity:.6}
+.in .tbi .bb i{animation:grow 1s .2s ease forwards}
+.btns{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.btn{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-radius:999px;background:var(--rust);color:#FBF7EE;text-decoration:none;font:600 16px var(--f-b);box-shadow:0 14px 28px -16px rgba(168,69,42,.9)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
+.foot{padding:28px var(--g) calc(36px + env(safe-area-inset-bottom,0px));font:13px/1.5 var(--f-d);color:var(--ink-2)}
+.proto{margin:0 var(--g) 0;padding:10px 14px;border-radius:12px;background:rgba(228,182,76,.22);font-size:13.5px;line-height:1.4}
+
+/* iPad and wider phones in landscape: same single column, a little wider and larger */
+@media (min-width:700px){:root{--g:max(40px,calc((100vw - 640px)/2))}body{font-size:18px}h2{font-size:42px}.hero .logo{width:420px}.costs p{font-size:14px}}
+</style>
+</head>
+<body>
+<div class="prog"><i id="prog"></i></div>
+<header class="bar">
+  <svg viewBox="-2 0 336 130" aria-label="Dure."><text x="0" y="104" font-family="Newsreader" font-size="130" font-weight="680" letter-spacing="-5.8" fill="#1F3A40" style="font-variation-settings:'opsz' 72">Dure</text><g transform="translate(316 89)"><g transform="rotate(-28)"><ellipse rx="11.5" ry="15" fill="#6B4226"/><ellipse cx="-3.6" cy="-4.5" rx="4" ry="6.4" fill="#8F5E38" opacity=".55"/><path d="M0.6 -13.6 C -5.2 -7.4 5.2 -1.6 0 4 C -4.2 8.4 1.2 11.2 0.2 13.8" stroke="#2B180C" stroke-width="2.2" fill="none" stroke-linecap="round"/></g></g></svg>
+  <div class="chap" id="chap"><b>1</b>The field</div>
+</header>
+<div class="proto">Mobile prototype · 10 sample scenes, for feedback. Not the live site.</div>
+
+<!-- 1 · the field -->
+<section class="hero" data-c="1" data-t="The field">
+  <div class="logo"><svg viewBox="-2 0 336 130" aria-label="Dure."><text x="0" y="104" font-family="Newsreader" font-size="130" font-weight="680" letter-spacing="-5.8" fill="#1F3A40" style="font-variation-settings:'opsz' 72">Dure</text><g transform="translate(316 89)"><g transform="rotate(-28)"><ellipse rx="11.5" ry="15" fill="#6B4226"/><ellipse cx="-3.6" cy="-4.5" rx="4" ry="6.4" fill="#8F5E38" opacity=".55"/><path d="M0.6 -13.6 C -5.2 -7.4 5.2 -1.6 0 4 C -4.2 8.4 1.2 11.2 0.2 13.8" stroke="#2B180C" stroke-width="2.2" fill="none" stroke-linecap="round"/></g></g></svg></div>
+  <div class="tag">Cooperate through messaging.</div>
+  <div class="def"><b>Dure</b>: the Korean tradition of mutual aid between farmers.</div>
+  <div class="art"><img src="assets/m/hero.webp" alt="Noor, a coffee farmer, holding a basket of ripe cherries" width="780" height="1288"></div>
+  <div class="down">Scroll ↓</div>
+</section>
+
+<section data-c="1" data-t="The field">
+  <div class="k rv">Ermera, Timor-Leste — the coffee highlands</div>
+  <h2 class="rv">A good harvest is <em>not a good price.</em></h2>
+  <p class="lead rv">Noor is an ambitious mother growing coffee on the slopes of Letefoho. She's capable. <em>But is the market treating her well?</em></p>
+  <div class="art rv"><img src="assets/m/harvest.webp" alt="Noor picking coffee cherries" loading="lazy" width="780" height="602"></div>
+  <p class="rv">Noor has harvested fine Timor-Leste coffee. <b>She needs cash within three days</b> to pay her daughter's school fees.</p>
+</section>
+
+<!-- 2 · the buyers -->
+<section data-c="2" data-t="The buyers">
+  <div class="k rv">Where she farms</div>
+  <h2 class="rv">The buyers who pay properly <em>are in Dili.</em></h2>
+  <p class="rv">Ermera grows close to half of Timor-Leste's coffee.</p>
+  <div class="art rv"><img src="assets/m/map.webp" alt="Map: Letefoho to Gleno 19 km, Gleno to Dili 45 km" loading="lazy" width="780" height="700"></div>
+  <div class="card rv">
+    <div class="k" style="margin:0">Who buys Ermera's coffee</div>
+    <div class="stat"><span class="cnt" data-to="98">0</span><small>%</small></div>
+    <p style="margin:0 0 6px">bought by just four traders in the capital (survey of 100 farmers, 2014).</p>
+    <cite>— Cristovão, Bogor Agricultural University, 2015</cite>
+  </div>
+</section>
+
+<!-- 3-4 · the road, as one vertical path -->
+<section data-c="3" data-t="The road">
+  <div class="k rv">The road to market</div>
+  <h2 class="rv">Letefoho to Dili is <em>64 km of mountain road.</em></h2>
+  <p class="rv">“Recent heavy rains have damaged many roads and bridges in the country, disrupting people's access to markets.”</p>
+  <cite class="rv" style="margin-bottom:26px">— Asian Development Bank, Timor-Leste</cite>
+  <div class="road">
+    <div class="stop rv"><div class="lbl">Setting off</div><div class="pic"><img src="assets/m/flood.webp" alt="Noor carrying coffee towards a bridge in heavy rain" loading="lazy"><div class="bang">Flood.</div></div>
+      <p>Timor-Leste's rainy season is notorious. The bridge is under water.</p></div>
+    <div class="stop bad rv"><div class="lbl">Further on</div><div class="pic"><img src="assets/m/landslide.webp" alt="A landslide blocks the road" loading="lazy"><div class="bang">Landslide.</div></div>
+      <p><em>And no truck from Dili will risk the road.</em></p></div>
+    <div class="stop bad rv" data-c="4" data-t="The buyer"><div class="lbl">Unfair pricing</div><div class="pic"><img src="assets/m/trader.webp" alt="A trader holding a sign: $2.25/kg" loading="lazy"></div>
+      <p>One trader's truck makes it up the hill. <b>He names his price.</b> She can't check it, and there's no one else to ask.</p></div>
+  </div>
+</section>
+
+<div class="sep"></div>
+<!-- 5 · together -->
+<section data-c="5" data-t="Together">
+  <div class="k rv">The magic of cooperation</div>
+  <h2 class="rv">Noor isn't the only one <em>on that road.</em></h2>
+  <div class="art rv"><img src="assets/m/together.webp" alt="Neighbours carrying coffee together; a sign reads 500 kg, best offer?" loading="lazy" width="780" height="602"></div>
+  <p class="rv"><b>Collective bargaining.</b> More farmers, more bargaining power. <em>Only the quantity went up, yet the price got better.</em></p>
+  <div class="card rv">
+    <div class="stat" style="font-size:64px"><span class="cnt" data-to="58">0</span><small>%</small></div>
+    <p style="margin:0 0 6px">of 239 studies found that farmer organisations raised their members' incomes.</p>
+    <cite>Bizikova et al., Nature Food, 2020</cite>
+  </div>
+  <div class="tiles">
+    <div class="tile rv"><b>1</b><p><b>Bargaining power.</b> One farm takes the price it's given. A full truck names its own.</p></div>
+    <div class="tile rv"><b>2</b><p><b>One route to market.</b> One shipment to where the fair prices are.</p></div>
+    <div class="tile rv"><b>3</b><p><b>Buying together.</b> Seed, fertiliser and transport cost less for twenty farms at once.</p></div>
+  </div>
+</section>
+
+<div class="sep"></div>
+<!-- 6 · the catch -->
+<section data-c="6" data-t="The catch">
+  <div class="k rv">The catch</div>
+  <h2 class="rv">Running a cooperative in Timor-Leste is <em>not easy.</em></h2>
+  <div class="costs rv">
+    <div><div class="h">Time</div><div class="v">3–4 yrs</div><p>Members, then legal paperwork</p></div>
+    <div><div class="h">Capital</div><div class="v">$1,000</div><p>A household earns about $250 a year</p></div>
+    <div><div class="h">Founders</div><div class="v">15</div><p>Then an assembly, elections, an audit</p></div>
+  </div>
+  <div class="fight rv">And then, power.</div>
+  <p class="rv">The cooperative copies the village pecking order. Joining stops being a choice. Whoever is left out undercuts prices to sink it.</p>
+  <cite class="rv">KOICA value-chain cooperative; Decree-Law No. 16/2004; The Irish Times, 2013.</cite>
+</section>
+
+<!-- 7 · Dure -->
+<section class="dure" data-c="7" data-t="Dure">
+  <div class="tais"></div>
+  <div style="height:36px"></div>
+  <div class="k rv">Introducing Dure</div>
+  <h2 class="rv">What if the village kept the cooperative's advantages, <em>but dropped the cooperative?</em></h2>
+  <p class="lead rv">Dure works just like a cooperative. A simple text from any phone is all it takes to help Noor get a fair price.</p>
+  <div class="sw rv">
+    <div><h4>What stays</h4><ul><li>Pooling the harvest</li><li>Buyers bidding for the whole lot</li><li>One shared truck and pickup point</li><li>A record that earns trust</li></ul></div>
+    <div class="go"><h4>What goes</h4><ul><li>A legal entity</li><li>$1,000 in share capital</li><li>Fifteen founders who must agree</li><li>A board to run, a leader to fight over</li></ul></div>
+  </div>
+  <p class="nokia rv">Any phone. No internet. No app. Dure works even on an old Nokia.</p>
+</section>
+
+<!-- 8 · how it works -->
+<section data-c="8" data-t="How it works">
+  <div class="chapnum rv">8 · How it works</div>
+  <h2 class="rv">One week, <em>by text message.</em></h2>
+  <p class="rv" style="font-size:15.5px;color:var(--ink-2)">Noor's texts on the left, a buyer's on the right, and what Dure does in between.</p>
+  <div class="wk">
+
+    <div class="day rv">
+      <div class="when">Mon · 06:30</div>
+      <h3>A price to start the day</h3>
+      <p class="why">Dure briefs a fair price from past trades, weather and road.</p>
+      <div class="who">Noor</div>
+      <div class="m n" style="--i:0"><span class="f">Dure AI 06:30</span>Coffee this week, per kg<hr>A $3.17–3.23<br>B $2.80–2.86<br>C $2.12–2.18<hr>Selling? Reply in your own words.</div>
+      <div class="dash" style="--i:1"><div class="t"><span>Morning price</span><span>4 lots · rain</span></div>
+        <div class="band"><span class="g">A</span><span class="tr"><i style="left:62%;right:30%"></i></span><span class="v">$3.17–3.23</span></div>
+        <div class="band"><span class="g">B</span><span class="tr"><i style="left:44%;right:46%"></i></span><span class="v">$2.80–2.86</span></div>
+        <div class="band"><span class="g">C</span><span class="tr"><i style="left:12%;right:78%"></i></span><span class="v">$2.12–2.18</span></div></div>
+      <div class="who r">A buyer in Dili</div>
+      <div class="m b" style="--i:2"><b>Buyer brief · 06:30</b><br>Lot ~1,800 kg · A 45% · B 35% · C 20%. Suggested bid <b>$2.69–2.94/kg</b>.</div>
+    </div>
+
+    <div class="day rv">
+      <div class="when">Mon · 08:10</div>
+      <h3>From Tetum text to a grade</h3>
+      <p class="why">She writes the way she talks. Dure reads it, then grades one photo.</p>
+      <div class="who">Noor</div>
+      <div class="m n me" style="--i:0">bondia! kafe 40kilu diak los.. fan 2.84 bele?</div>
+      <div class="m n" style="--i:1"><span class="f">Dure AI</span>Got it ✓<hr>Coffee · 40 kg · grade A<br>Your ask: $2.84/kg<hr>Now send one photo of your beans.</div>
+      <div class="dash" style="--i:2"><div class="t"><span>Photo grader</span></div>
+        <div class="grade"><img src="assets/samples/sample_A.jpg" alt="Noor's coffee beans" loading="lazy"><div><div class="chips"><span>first look: grade <b>A</b></span><span><b>93%</b></span></div><div style="font-size:12.5px;color:#C9D9DC;margin-top:6px">A person checks every sack at pickup.</div></div></div></div>
+    </div>
+
+    <div class="day rv">
+      <div class="when">Tue</div>
+      <h3>One blended basket</h3>
+      <p class="why">Coffee of every grade goes into one lot. Together, smallholders gain bargaining power.</p>
+      <div class="dash"><div class="t"><span>Letefoho pool</span><span>22 farms</span></div>
+        <div class="pool"><i></i></div><div class="row"><span>A · B · C</span><span><b>1,890</b> of 2,000 kg</span></div></div>
+      <div class="who">Noor</div>
+      <div class="m n" style="--i:1"><span class="f">Dure AI</span>Pool closed<hr>1,890 kg · 22 farms<br>Bidding opens $2.74/kg</div>
+    </div>
+
+    <div class="day rv">
+      <div class="when">Tue · until 17:00</div>
+      <h3>A fair auction</h3>
+      <p class="why">Buyers bid against each other. Dure opens a little under a fair price.</p>
+      <div class="who r">A buyer in Dili</div>
+      <div class="m b" style="--i:0">Outbid: Specialty roaster bids $2.79. Raise?</div>
+      <div class="m b me" style="--i:1">2.81</div>
+      <div class="dash"><div class="t"><span>Order book</span><span>closed 17:00</span></div>
+        <div class="book"><div class="win" style="--i:3"><span>Exporter, Dili (this buyer)</span><b>$2.81</b></div><div style="--i:2"><span>Roaster, Dili</span><span>$2.79</span></div><div style="--i:1"><span>Exporter, Dili</span><span>$2.76</span></div><div style="--i:0"><span>Café chain, Dili</span><span>$2.74</span></div></div></div>
+    </div>
+
+    <div class="day rv">
+      <div class="when">Wed</div>
+      <h3>Everyone decides</h3>
+      <p class="why">No one is forced to trade. Farmers whose ask is above the price sit out.</p>
+      <div class="dash"><div class="t"><span>One lot</span><span>16 yes · 4 no</span></div>
+        <div class="votes" id="votes"></div></div>
+      <div class="who">Noor</div>
+      <div class="m n" style="--i:1"><span class="f">Dure AI</span>Sold ✓<hr>40 kg · grade A<br>$3.14/kg = $125.60<hr>Pickup Thu 07:00, church</div>
+    </div>
+
+    <div class="day rv">
+      <div class="when">Thu · 07:00</div>
+      <h3>One truck for the village</h3>
+      <p class="why">Noor leaves her sack at the church. The grade is confirmed by hand.</p>
+      <div class="dash"><div class="t"><span>Pickup</span><span>1,530 kg</span></div>
+        <div class="route"><span class="a"></span><span class="tk">🚚</span><span class="z"></span></div><div class="ends"><span>Letefoho church</span><span>Dili warehouse</span></div></div>
+      <div class="who">Noor</div>
+      <div class="m n" style="--i:1"><span class="f">Dure AI</span>Picked up ✓<hr>Sack #0412 · 40 kg<br>Grade A confirmed by hand</div>
+    </div>
+
+    <div class="day rv">
+      <div class="when">Fri</div>
+      <h3>Paid, simply</h3>
+      <p class="why">The buyer prepaid. After delivery each farmer gets her share.</p>
+      <div class="dash"><div class="pay"><span>Buyer's $4,250.85, released to 18 farmers</span><b>+$125.60</b></div></div>
+      <div class="who">Noor</div>
+      <div class="m n" style="--i:1"><span class="f">Dure AI</span>Paid ✓<hr>+$125.60 to your mobile wallet</div>
+    </div>
+
+    <div class="day rv" style="margin-bottom:0">
+      <div class="when">Sat</div>
+      <h3>Every deal builds trust</h3>
+      <p class="why">On time, and the grade matched the photo.</p>
+      <div class="dash"><div class="trust"><div class="ring"><span>83</span></div><div>Likely to deliver: <b>83%</b><br><span style="color:#C9D9DC">was 79% · flood weeks never count</span></div></div></div>
+    </div>
+  </div>
+  <p class="illus">Illustrative example — names, volumes and prices are not real data.</p>
+</section>
+
+<div class="sep"></div>
+<!-- 9 · technical walkthrough + 11 benchmark -->
+<section data-c="9" data-t="Technical walkthrough">
+  <div class="chapnum rv">9 · Technical walkthrough</div>
+  <div class="ai rv">
+    <div class="n">1</div>
+    <h2 style="font-size:30px">AI that <em>understands Tetum.</em></h2>
+    <p>A small model (Qwen2.5-0.5B) and a rules engine, trained on about 3,000 Tetum and English messages. Spelling slips are fine.</p>
+    <div class="parse">bondia! kafe <mark>40kilu</mark> <mark>diak los</mark>.. fan <mark>2.84</mark> <mark>bele?</mark></div>
+    <div class="fields"><span>Quantity</span><b>40 kg</b><span>Grade</span><b>A</b><span>Ask</span><b>$2.84/kg</b><span>Intent</span><b>offer to sell</b></div>
+  </div>
+  <div class="ai rv">
+    <div class="n">2</div>
+    <h2 style="font-size:30px">AI that <em>knows coffee.</em></h2>
+    <p>Taught on 1,200 real bean photos to sort coffee into three grades. It names the exact grade 79% of the time; the final grade is a hand check at pickup.</p>
+  </div>
+  <div class="ai rv" data-c="11" data-t="Tetum Benchmark Index">
+    <div class="n">11 · Tetum Benchmark Index</div>
+    <h2 style="font-size:30px">How well does AI read <em>Tetum texts?</em></h2>
+    <div class="tbi">
+      <div class="me"><div class="l"><b>Dure</b><span>rules + small model · no server</span></div><div class="bb"><i style="--w:80%"></i></div><div class="l" style="margin-top:2px"><span></span><b>80%</b></div></div>
+      <div><div class="l"><b>Claude Haiku 4.5</b><span>large model, needs network</span></div><div class="bb"><i style="--w:87%"></i></div><div class="l" style="margin-top:2px"><span></span><b>87%</b></div></div>
+      <div><div class="l"><b>Small model alone</b><span>fine-tuned</span></div><div class="bb"><i style="--w:75%"></i></div><div class="l" style="margin-top:2px"><span></span><b>75%</b></div></div>
+      <div><div class="l"><b>Rules engine alone</b><span>instant</span></div><div class="bb"><i style="--w:70%"></i></div><div class="l" style="margin-top:2px"><span></span><b>70%</b></div></div>
+      <div class="dim"><div class="l"><b>Untrained small model</b><span>why training matters</span></div><div class="bb"><i style="--w:7%"></i></div><div class="l" style="margin-top:2px"><span></span><b>7%</b></div></div>
+    </div>
+    <cite>60 test SMS written by Claude Sonnet, frozen before scoring. Exact match on every field.</cite>
+  </div>
+  <div class="btns rv">
+    <a class="btn" href="demo.html">Try the demo <span>→</span></a>
+    <a class="btn ghost" href="sheet.html">Open the sample Registry <span>→</span></a>
+  </div>
+</section>
+<div class="foot">Tae Yoon Moon · taeyoonmoon@uos.ac.kr<br>© 2026 Tae Yoon Moon. Illustrations and text may not be reused without permission.</div>
+
+<script>
+/* light scroll behaviour only: reveal once, chapter label, progress bar, two counters. No per-frame drawing. */
+(()=>{const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* vote grid: 16 yes, 4 no */
+  const v=document.getElementById('votes');if(v){const no=[5,11,14,18];v.innerHTML=Array.from({length:20},(_,i)=>`<i class="${no.includes(i)?'no':'y'}" style="--i:${i}"></i>`).join('')}
+  const count=el=>{const to=+el.dataset.to;if(RM){el.textContent=to;return}const t0=performance.now();const f=t=>{const u=Math.min(1,(t-t0)/1100);el.textContent=Math.round(to*(1-Math.pow(1-u,3)));if(u<1)requestAnimationFrame(f)};requestAnimationFrame(f)};
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;e.target.classList.add('in');e.target.querySelectorAll('.cnt').forEach(count);io.unobserve(e.target)}),{rootMargin:'0px 0px -12% 0px'});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+  /* chapter label follows the section in view */
+  const chap=document.getElementById('chap');let last='';
+  const marks=[...document.querySelectorAll('[data-c]')];
+  const io2=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const c=e.target.dataset.c,t=e.target.dataset.t;if(c+t!==last){last=c+t;chap.innerHTML=`<b>${c}</b>${t}`}}),{rootMargin:'-45% 0px -50% 0px'});
+  marks.forEach(m=>io2.observe(m));
+  const prog=document.getElementById('prog');let tk=0;
+  addEventListener('scroll',()=>{if(tk)return;tk=requestAnimationFrame(()=>{tk=0;const h=document.documentElement.scrollHeight-innerHeight;prog.style.transform=`scaleX(${h>0?scrollY/h:0})`})},{passive:true});
+})();
+</script>
+</body>
+</html>
