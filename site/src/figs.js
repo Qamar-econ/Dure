@@ -699,7 +699,8 @@ FIG.folk = function(o){
   };
   let back='', s=`<ellipse cx="0" cy="4" rx="74" ry="9" fill="#3E2E1E" opacity=".18"/>`;
   // ---------- legs ----------
-  const foot=(x,f)=>`<path d="M${x-15} -2 C ${x-16} -12 ${x-8} -16 ${x} -16 C ${x+10} -16 ${x+18*f+2} -10 ${x+18*f} -2Z" fill="${sk}"/><path d="M${x-15} -4 H${x+18*f}" stroke="#4A3222" stroke-width="5" stroke-linecap="round"/><path d="M${x-4} -15 l4 11" stroke="#4A3222" stroke-width="3"/>`;
+  // one foot drawn toes-right, mirrored for the left foot (f=-1) so heel and toes both flip
+  const foot=(x,f)=>`<g transform="translate(${x} 0) scale(${f} 1)"><path d="M-15 -2 C -16 -12 -8 -16 0 -16 C 10 -16 20 -10 18 -2Z" fill="${sk}"/><path d="M-15 -4 H18" stroke="#4A3222" stroke-width="5" stroke-linecap="round"/><path d="M-4 -15 l4 11" stroke="#4A3222" stroke-width="3"/></g>`;
   if(o.male){
     s+=`<path d="M-26 -40 L -26 -14 M26 -40 L 26 -14" stroke="${sk}" stroke-width="20" stroke-linecap="round"/>`+foot(-26,-1)+foot(26,1);
     // wide trousers rolled at the shin

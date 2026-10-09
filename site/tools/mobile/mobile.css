@@ -109,9 +109,9 @@ blockquote cite{margin-top:8px;font-size:14px}
 .costs.ev dt{color:var(--rust)}
 .power{font-size:30px;margin:44px 0 12px}
 .scene{margin:20px calc(-1*var(--g)) 18px}
-.scene .fig{width:100%;height:auto}
-.scene figcaption{font:italic 17px var(--serif);color:var(--ink2);padding:10px var(--g) 0}
-.scene.dim figcaption b{font-style:normal;color:var(--rust)}
+.scene svg{display:block;width:100%;height:auto}
+.scene.pw{margin:22px calc(-1*var(--g)) 16px}
+@media (min-width:700px){.scene.pw{max-width:600px;margin:22px auto 16px}}
 
 /* 7: the tais and the dark pages */
 .dark{background:#231C17;color:#EDE3CF}
@@ -128,13 +128,14 @@ blockquote cite{margin-top:8px;font-size:14px}
 .sw .go li{color:#A99C84;text-decoration:line-through;text-decoration-color:var(--rust);text-decoration-thickness:2px}
 .nokia{font-size:18px;color:#E3D7C0;margin:0}
 .dark .in + .phoneNoor{margin-top:0}
-.phoneNoor{position:relative;background:linear-gradient(#F2EADA 0 62%,#A9C493 62% 70%,#9DBA86 70% 78%,#93B37C 78%);padding:28px 0 0;overflow:hidden}
-.phoneNoor .pn{width:min(78vw,380px);margin:0 auto}
-.phoneNoor .pn svg{width:100%;height:auto;display:block}
-.phoneNoor .pt{position:absolute;left:var(--g);top:28px;max-width:48%;text-align:left}
-.phoneNoor .pt .kick{color:var(--rust);margin:0 0 4px}
-.phoneNoor .pt h3{font-size:27px;line-height:1.1;color:var(--ink)}
-.phoneNoor .pt h3 em{color:var(--rust)}
+.phoneNoor{position:relative;overflow:hidden;max-width:620px;margin:0 auto}
+.phoneNoor .pn{display:block;width:66%;height:auto;margin-left:-4%}
+.phoneNoor::after{content:"";position:absolute;left:0;right:0;bottom:0;height:90px;background:linear-gradient(rgba(35,28,23,0),#231C17)}   /* the skirt fades into the night rather than ending on a line */
+.phoneNoor .pt{position:absolute;left:56%;right:var(--g);top:9%}
+.phoneNoor .pt .kick{color:var(--gold);margin:0 0 2px}
+.phoneNoor .dmark svg{width:100%;max-width:200px;height:auto;display:block}
+.phoneNoor .pt h3{font:500 21px/1.15 var(--serif);color:#F4EBDA;margin:8px 0 0}
+.phoneNoor .pt h3 em{color:var(--gold)}
 .dark .in:first-of-type{padding-bottom:40px}
 .nokia b{color:#F4EBDA}
 
