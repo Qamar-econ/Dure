@@ -12,7 +12,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Cg%20transform%3D%27translate%2832%2032%29%20rotate%28-28%29%27%3E%3Cellipse%20rx%3D%2720%27%20ry%3D%2727%27%20fill%3D%27%236B4226%27/%3E%3Cellipse%20cx%3D%27-6%27%20cy%3D%27-8%27%20rx%3D%277%27%20ry%3D%2711%27%20fill%3D%27%238F5E38%27%20opacity%3D%27.55%27/%3E%3Cpath%20d%3D%27M1%20-24%20C%20-9%20-13%209%20-3%200%207%20C%20-7%2015%202%2020%200%2025%27%20stroke%3D%27%232B180C%27%20stroke-width%3D%274%27%20fill%3D%27none%27%20stroke-linecap%3D%27round%27/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Atkinson+Hyperlegible+Mono:wght@400;500;600&family=Gochi+Hand&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Gochi+Hand&family=VT323&display=swap" rel="stylesheet">
 <style>
 /* ===== Dure shared design tokens + components (site and demo) ===== */
 :root{
@@ -64,11 +64,14 @@ body{font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif;-webkit-font-
 .chap{font-family:Newsreader,serif;font-style:italic;font-size:19px;color:var(--ink-2)}
 .chap b{font-style:normal;font-weight:600;color:var(--ink);margin-right:10px}
 .progress{position:fixed;left:0;right:0;top:0;height:2px;background:rgba(31,58,64,.14);z-index:30}
-.progress span{display:block;height:100%;width:0;background:var(--ink)}
+.progress span{display:block;height:100%;width:100%;transform:scaleX(0);transform-origin:0 50%;background:var(--ink)}
 
 .pin{position:relative}
 .stage{position:sticky;top:0;height:100vh;overflow:hidden}
-@media (max-width:760px){.stage{height:100svh}.bar.flowbg{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(242,234,218,.97)}}
+.pin.off .stage{visibility:hidden!important}   /* scenes off screen drop out of painting: fewer layers to build each frame */
+.pin.off .stage [style*=will-change],.pin.off .stage .rs,.pin.off .drape{will-change:auto!important}.pin.off .stage [style*=translate3d]{transform:none!important}   /* and drop their GPU layers: hidden layers still made every visible shape above them a layer of its own */   /* scenes well off screen drop out of painting: fewer layers to build each frame */.bar.flowbg{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(242,234,218,.97)}}
+@media (max-width:760px){.stage{height:100svh}
+.bar.flowbg{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(242,234,218,.97)}}
 #nav,#hint{display:none!important}
 .after,.cue2{display:none!important}
 /* navigation — always visible, one tap = one scene */
@@ -91,7 +94,7 @@ body{font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif;-webkit-font-
 #hint{position:fixed;z-index:40;left:50%;bottom:86px;transform:translateX(-50%);font-family:Newsreader,serif;font-style:italic;font-size:16px;color:var(--ink-2);transition:opacity .5s;pointer-events:none;text-align:center;white-space:nowrap}
 #hint.gone{opacity:0}
 .stage > svg{position:absolute;inset:0;width:100%;height:100%;display:block}
-#road .rs{overflow:visible}#road .lay{will-change:transform;backface-visibility:hidden}
+#road .rs{overflow:visible}#road .lay{will-change:transform;backface-visibility:hidden;contain:paint}
 .grain{position:absolute;inset:0;pointer-events:none;z-index:8;opacity:.16;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .33  0 0 0 0 .26  0 0 0 0 .18  0 0 0 1.1 -.1'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 
@@ -146,6 +149,7 @@ body.in .scrollcue{opacity:1}
 #map{height:260vh}
 #map .b{left:5vw;top:50%;width:min(440px,34vw);transform:translateY(calc(-50% + 24px))}
 #map .b.on{transform:translateY(-50%)}
+@media (min-width:761px) and (max-width:1100px) and (orientation:portrait){#map .b{left:9vw;right:9vw;width:auto;top:auto;bottom:6vh;transform:translateY(24px)}#map .b.on{transform:none}#mapSvg{-webkit-mask-image:linear-gradient(#000 82%,transparent);mask-image:linear-gradient(#000 82%,transparent)}}
 .km{font-family:Newsreader,serif;font-weight:700;letter-spacing:-.045em;font-size:clamp(90px,10vw,170px);line-height:.88;font-variant-numeric:tabular-nums}
 .km span{font-size:.3em;font-weight:500;letter-spacing:-.01em;margin-left:.12em;color:var(--ink-2)}
 
@@ -180,6 +184,7 @@ body.in .scrollcue{opacity:1}
 .cons div{text-shadow:0 1px 12px rgba(60,20,10,.55);font-family:Newsreader,serif;font-size:clamp(24px,2.4vw,36px);line-height:1.2;color:var(--ivory);opacity:0;transform:translateY(16px);transition:opacity .6s,transform .8s;margin-bottom:14px;text-align:center}
 .cons div b{font-style:italic;font-weight:500;color:#F2C7A8;margin-right:12px}
 .cons div.on{opacity:1;transform:none}
+@media (min-width:761px) and (min-aspect-ratio:17/10){.cons div{font-size:clamp(18px,min(2.4vw,3.2vh),36px)}}   /* wide, short windows: the signs scale with the height, so the last line must too or it runs into them */
 .verdict{position:absolute;z-index:12;inset:0;display:grid;place-items:center;background:var(--ivory);opacity:0;transition:opacity .8s;pointer-events:none;text-align:center;padding:0 6vw}
 .verdict.on{opacity:1}
 .verdict p{font-family:Newsreader,serif;font-weight:400;font-size:clamp(34px,4vw,64px);line-height:1.1;letter-spacing:-.025em;max-width:22ch}
@@ -193,6 +198,7 @@ body.in .scrollcue{opacity:1}
 @keyframes jab{from{transform:translateX(0)}to{transform:translateX(7px)}}
 @keyframes sway2{from{transform:rotate(-2deg)}to{transform:rotate(2deg)}}
 @media (prefers-reduced-motion:reduce){#split .wave,#split .jab,#split .sway2{animation:none}}
+#split.idle .wave,#split.idle .jab,#split.idle .sway2{animation-play-state:paused}   /* off screen: these SVG loops repainted the scene every frame */
 
 /* curtain (E) */
 #curtain{height:330vh}
@@ -238,6 +244,11 @@ body.in .scrollcue{opacity:1}
 .pin.flow .ec-head,.pin.flow .ec-fig{position:relative;left:auto;right:auto;top:auto;bottom:auto;width:auto;opacity:1;transform:none;pointer-events:auto}
 .pin.flow .ec-head h3{font-size:36px}.pin.flow .ec-head p{font-size:17px}
 @media (max-width:760px){#wai .ec-head,#econ .ec-head{top:66px}#wai .ec-head h3,#econ .ec-head h3{font-size:28px;margin:4px 0 8px}#wai .ec-head p,#econ .ec-head p{font-size:15px;line-height:1.38}#wai .ec-head cite,#econ .ec-head cite{font-size:12.5px;margin-top:6px}#wai .ec-head .n,#econ .ec-head .n{font-size:15px}}
+@media (min-width:761px) and (max-width:1100px) and (orientation:portrait){
+  #wai .ec-head,#econ .ec-head{left:9vw;right:9vw;width:auto;top:96px}
+  #wai .ec-head h3,#econ .ec-head h3{font-size:44px;margin:8px 0 12px}
+  #wai .ec-head p,#econ .ec-head p{font-size:20px;max-width:60ch}
+  #wai .ec-fig,#econ .ec-fig{left:7vw;right:7vw;width:auto;top:auto}}
 
 /* how it works (F) — farmer candybar · stage · buyer Android */
 #how{height:820vh}
@@ -246,6 +257,7 @@ body.in .scrollcue{opacity:1}
 .how-cap .n{font-family:Newsreader,serif;font-style:italic;font-size:20px;color:var(--rust)}
 .how-cap h3{font-family:Newsreader,serif;font-weight:600;font-size:clamp(28px,2.8vw,44px);letter-spacing:-.025em;line-height:1.1;margin-top:6px}
 .how-cap p{margin-top:8px;font-size:23.5px;line-height:1.35;color:var(--ink-2)}
+@media (min-width:761px) and (max-height:900px) and (orientation:landscape){.how-cap{top:max(66px,8vh)}.how-cap h3{font-size:clamp(24px,2.3vw,34px)}.how-cap p{font-size:clamp(16px,1.5vw,21px);line-height:1.3;margin-top:6px}.how-cap .n{font-size:17px}}   /* short laptop windows: the caption must end above the figure */
 .how-note{position:absolute;left:4vw;bottom:5vh;font-family:Newsreader,serif;font-style:italic;font-size:15px;color:var(--ink-2)}
 .who{font-family:Newsreader,serif;font-style:italic;font-size:18px;color:var(--ink-2);text-align:center;margin-bottom:12px}
 .who b{font-style:normal;font-weight:600;color:var(--ink)}
@@ -390,8 +402,8 @@ body.in .scrollcue{opacity:1}
   .wt td{font-size:12px;padding:4px 0}.wt th{font-size:13px}.wt-n{font-size:11px}
   .ec-fig{left:12px;right:12px;width:auto;top:64px;bottom:auto}.ec-idx{display:none}
   .how-wrap{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;padding:150px 10px 30px;gap:8px 10px;align-content:start}
-  .how-wrap .stagebox{grid-column:1/-1;grid-row:1;max-width:none;height:24vh;display:grid;place-items:center}
-  .how-wrap .stagebox > svg{height:100%;width:auto;max-width:100%}
+  .how-wrap .stagebox{grid-column:1/-1;grid-row:1;max-width:none;height:24vh;display:block}
+  .how-wrap .stagebox > svg{height:100%;width:100%;max-width:100%}   /* definite size (the viewBox still centres it): an auto width made every attribute change re-measure the whole figure */
   .how-wrap > .fcol{grid-row:2}
   .fp{width:40vw;border-radius:28px}.ad{width:42vw;border-radius:26px;padding:6px}.ad .in{border-radius:21px}
   .how-cap{top:62px}.how-cap h3{font-size:21px}.how-cap p{font-size:13px}.how-cap .n{font-size:15px}
@@ -401,7 +413,7 @@ body.in .scrollcue{opacity:1}
   .how-cap p{display:none}
   .how-wrap{padding-top:118px;align-items:start}.how-wrap .stagebox{height:34vh}
   .how-wrap{bottom:0;height:100%;box-sizing:border-box;grid-template-rows:min(29svh,calc(100svh - 138px - 320px)) minmax(0,1fr);padding-top:138px!important;padding-bottom:max(16px,env(safe-area-inset-bottom));align-content:stretch}
-  .how-wrap .stagebox{height:100%;min-height:0;overflow:hidden}
+  .how-wrap .stagebox{height:100%;min-height:0;overflow:hidden;contain:strict}   /* sized by its grid row: isolating it stops text changes in the phones from re-laying-out the whole figure */
   .how-wrap > .fcol{display:flex;flex-direction:column;align-items:center;min-height:0;height:100%}
   .fp,.ad{width:44vw!important;flex:0 1 auto;min-height:0;height:calc(44vw*2.1)!important;max-height:100%;aspect-ratio:auto!important;box-sizing:border-box;overflow:hidden}
   .ad .in{height:100%}
@@ -420,8 +432,8 @@ body.in .scrollcue{opacity:1}
   .bars{grid-template-columns:1fr 1fr;width:88vw}.bars .v{font-size:76px}
   .how-cap{top:78px;width:88vw}.how-cap p{font-size:18px}
   .how-wrap{grid-template-columns:1fr 1fr;grid-template-rows:min(27svh,calc(100svh - 240px - 470px)) minmax(0,1fr);padding:240px 7vw 36px;gap:14px 5vw;height:100%;box-sizing:border-box;align-content:stretch}
-  .how-wrap .stagebox{grid-column:1/-1;grid-row:1;max-width:none;height:100%;min-height:0;display:grid;place-items:center;overflow:hidden}
-  .how-wrap .stagebox > svg{height:100%;width:auto;max-width:100%}
+  .how-wrap .stagebox{grid-column:1/-1;grid-row:1;max-width:none;height:100%;min-height:0;display:block;overflow:hidden;contain:strict}
+  .how-wrap .stagebox > svg{height:100%;width:100%;max-width:100%}   /* definite size (the viewBox still centres it): an auto width made every attribute change re-measure the whole figure */
   .how-wrap > .fcol{grid-row:2;display:flex;flex-direction:column;align-items:center;min-height:0;height:100%}
   .fp,.ad{width:min(300px,36vw)!important;height:calc(min(300px,36vw)*2.12)!important;max-height:100%;aspect-ratio:auto!important;box-sizing:border-box;overflow:hidden}
   .fp .m{font-size:15px}.fp .m.lg{font-size:13.5px}.fp .sb{font-size:13px}.fp .keys span{height:18px;font-size:10px}
@@ -602,6 +614,7 @@ h1.hero .ln>span{white-space:nowrap}
 .vids{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;width:min(1240px,calc(100% - 32px));margin:44px auto 10px}.vids figure{margin:0}.vids .vf{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#1F3A40;box-shadow:0 24px 48px -28px rgba(31,58,64,.55)}.vids iframe{position:absolute;inset:0;width:100%;height:100%;border:0}.vids figcaption{margin-top:10px;font:italic 500 18px Newsreader,serif;color:var(--ink-2,#5B5345);text-align:center}@media(max-width:820px){.vids{grid-template-columns:1fr}}
 .credit{position:absolute;z-index:12;left:28px;bottom:22px;max-width:520px;font-family:Newsreader,serif;font-size:13px;line-height:1.5;color:var(--ink-2)}
 .credit a{color:var(--ink);text-decoration:none;border-bottom:1px solid rgba(31,58,64,.3)}
+@media (pointer:coarse){.credit a{position:relative}.credit a::after{content:'';position:absolute;inset:-14px -8px}}   /* touch: a bigger invisible hit area, same look */
 @media (max-width:760px){.credit{left:16px;right:16px;bottom:14px;font-size:11px}}
 /* line breaks: balanced headings, no orphans in body copy */
 h2,h3,h4,.q,.big,.verdict p,.bars-h,.cu-title .big,.how-cap h3{text-wrap:balance}
@@ -620,7 +633,7 @@ p,li,small,blockquote,cite,.k,.principle p{text-wrap:pretty}
 </head>
 <body>
 
-<div id="taisDefs"></div>
+<div id="taisDefs"></div><svg id="sharedDefs" width="0" height="0" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><defs></defs></svg>
 <header class="bar">
   <svg viewBox="-2 0 336 130" aria-label="Dure."><text x="0" y="104" font-family="Newsreader" font-size="130" font-weight="680" letter-spacing="-5.8" fill="#1F3A40" style="font-variation-settings:'opsz' 72">Dure</text><g transform="translate(316 89)"><g transform="rotate(-28)"><ellipse rx="11.5" ry="15" fill="#6B4226"/><ellipse cx="-3.6" cy="-4.5" rx="4" ry="6.4" fill="#8F5E38" opacity=".55"/><path d="M0.6 -13.6 C -5.2 -7.4 5.2 -1.6 0 4 C -4.2 8.4 1.2 11.2 0.2 13.8" stroke="#2B180C" stroke-width="2.3" fill="none" stroke-linecap="round"/></g></g></svg>
   <div class="barr"><div class="chap label-i" id="chap"><b>1</b>The field</div></div>
@@ -1763,7 +1776,20 @@ FIG.folk = function(o){
 };
 </script>
 <script>
+/* The scenes redraw every frame and re-send mostly unchanged values; each rewrite still made the browser re-lay-out the SVG.
+   Skip writes that would not change anything (same idea as dedupe() in the demo). */
+(()=>{const sa=Element.prototype.setAttribute;Element.prototype.setAttribute=function(n,v){v=String(v);if(this.getAttribute(n)===v)return;sa.call(this,n,v)};
+  const tc=Object.getOwnPropertyDescriptor(Node.prototype,'textContent');Object.defineProperty(Node.prototype,'textContent',{configurable:true,get(){return tc.get.call(this)},set(v){v=v==null?'':String(v);if(this.nodeType===1&&this.childNodes.length===1&&this.firstChild.nodeType===3&&this.firstChild.data===v)return;tc.set.call(this,v)}});
+  const ih=Object.getOwnPropertyDescriptor(Element.prototype,'innerHTML');Object.defineProperty(Element.prototype,'innerHTML',{configurable:true,get(){return ih.get.call(this)},set(v){v=String(v);if(this.__ih===v&&this.__ihN===this.childNodes.length&&this.__ihF===this.firstChild)return;ih.set.call(this,v);this.__ih=v;this.__ihN=this.childNodes.length;this.__ihF=this.firstChild}});
+  const nv=Object.getOwnPropertyDescriptor(Node.prototype,'nodeValue');Object.defineProperty(Node.prototype,'nodeValue',{configurable:true,get(){return nv.get.call(this)},set(v){v=v==null?'':String(v);if(nv.get.call(this)===v)return;nv.set.call(this,v)}});
+})();
 (()=>{
+/* scene loops ask for the same groups of shapes every frame: look each one up once and reuse it.
+   The cache is dropped whenever the page's elements are added or removed, and an entry is re-read if its first or last element has left the page. */
+const _QA=new WeakMap();let _qaGen=0;
+new MutationObserver(ms=>{if(ms.some(m=>[...m.addedNodes,...m.removedNodes].some(x=>x.nodeType===1)))_qaGen++}).observe(document.documentElement,{childList:true,subtree:true});
+function QA(root,sel){let m=_QA.get(root);if(!m||m.g!==_qaGen){m={g:_qaGen,c:new Map()};_QA.set(root,m)}let a=m.c.get(sel);
+  if(!a||(a.length&&(!a[0].isConnected||!a[a.length-1].isConnected))){a=[...root.querySelectorAll(sel)];m.c.set(sel,a)}return a}
 const $=id=>document.getElementById(id);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
@@ -1913,8 +1939,15 @@ const roadSvg=$('roadSvg');
 const AK=[[0,420],[.06,420],[.14,1700],[.17,2300],[.30,2300],[.36,3260],[.62,4930],[.73,4930],[.80,5640],[.88,6120],[1,6120]];
 function ax(p){for(let i=1;i<AK.length;i++){if(p<=AK[i][0]){const[a,xa]=AK[i-1],[b,xb]=AK[i];return lerp(xa,xb,(p-a)/(b-a))}}return AK[AK.length-1][1]}
 function pileH(x){const[s0,s1]=WX.slide;if(x<s0||x>s1)return 0;return Math.sin((x-s0)/(s1-s0)*Math.PI)*100}
+let _SY=scrollY,_IW=innerWidth,_IH=innerHeight,_DH=0;   /* viewport + scroll read once per frame: reading them after style writes forced a full layout each time */
 let vbW=1600,vbH=900,mobile=false;
-function sizeRoad(){const vw=innerWidth,vh=innerHeight;mobile=vw<=760;vbH=mobile?1350:900;vbW=vbH*vw/vh;const vb=`0 ${900-vbH+60} ${vbW} ${vbH}`;document.querySelectorAll('#road .rs').forEach(v=>v.setAttribute('viewBox',vb));RS=vh/vbH}
+function sizeRoad(){const vw=innerWidth,vh=innerHeight;mobile=vw<=760;vbH=mobile?1350:900;vbW=vbH*vw/vh;const vb=`0 ${900-vbH+60} ${vbW} ${vbH}`;document.querySelectorAll('#road .rs:not(.lay)').forEach(v=>v.setAttribute('viewBox',vb));RS=vh/vbH;
+  /* parallax layers: each layer's box is made just wide enough to cover the screen over the whole walk, then paint-contained.
+     Same picture as before (content used to spill out of a screen-sized box), but Chrome no longer splits every hill and tree into its own GPU layer. */
+  const cams=Array.from({length:201},(_,i)=>ax(i/200)-vbW*(mobile?.4:.46)),cmin=Math.min(...cams),cmax=Math.max(...cams);
+  [.06,.18,.45,1,1.25].forEach((k,i)=>{const el=document.getElementById('sv'+i);if(!el)return;
+    const E=Math.ceil(Math.max(0,-cmin*k*RS))+64,R=Math.ceil(Math.max(0,cmax*k*RS))+64,W=vw+E+R;
+    el.style.left=-E+'px';el.style.width=W+'px';el.style.right='auto';el.setAttribute('viewBox',`${(-E/RS).toFixed(3)} ${900-vbH+60} ${(W/RS).toFixed(3)} ${vbH}`)})}
 let RS=1;   // screen pixels per scene unit
 const LAY=[0,1,2,3,4].map(i=>document.getElementById('sv'+i));
 const tx=(el,u)=>{el.style.transform=`translate3d(${(u*RS).toFixed(2)}px,0,0)`};
@@ -1967,10 +2000,10 @@ function road(p){
   $('pole').setAttribute('transform',`rotate(${moving?Math.sin(phase*2)*1.1:0} 0 -194)`);
   const storm=Math.max(seg(p,.13,.18)*(1-seg(p,.30,.36)), seg(p,.62,.66)*(1-seg(p,.74,.8))*.8);
   $('svS').style.opacity=(storm*.75).toFixed(3);$('svR').style.opacity=storm.toFixed(3);$('svR').style.visibility=storm>0?'visible':'hidden';
-  $('rainG').setAttribute('transform',`translate(0 ${((p*30000)%400)-400})`);
+  if(storm>0)$('rainG').setAttribute('transform',`translate(0 ${((p*30000)%400)-400})`);   // rain only moves while it is visible (otherwise it repaints a hidden layer every frame)
   const lvl=lerp(GY+120,GY-46,ease(seg(p,.155,.24)))+(GY+100-(GY-46))*ease(seg(p,.26,.31));
   $('water').setAttribute('y',lvl.toFixed(1));
-  (road.wv||(road.wv=[...document.querySelectorAll('.wv')])).forEach((w,i)=>w.setAttribute('transform',`translate(${((p*4000)+i*50)%36-36} ${lvl+10+(+w.dataset.o)})`));
+  if(!road.wv||(f1+300>cam&&f0-300<cam+vbW))(road.wv||(road.wv=[...document.querySelectorAll('.wv')])).forEach((w,i)=>w.setAttribute('transform',`translate(${((p*4000)+i*50)%36-36} ${lvl+10+(+w.dataset.o)})`));   // waves only ripple while the flood basin is on screen: they share the big ground layer, so a ripple repaints all of it
   const wash=seg(p,.2,.26);
   (road.pk||(road.pk=[...document.querySelectorAll('.plank')])).forEach(pl=>{const i=+pl.dataset.i;const gone=[6,7,8,13,14,17].includes(i);const t=gone?wash:0;pl.setAttribute('transform',`translate(${t*(60+i*4)} ${t*(40+rnd(i)*30)}) rotate(${t*(rnd(i+5)*60-30)} ${f0+i*30} ${GY})`);pl.style.opacity=gone?1-t:1});
   $('debris').setAttribute('transform',`translate(${lerp(f0-200,f1+200,seg(p,.2,.3))} ${lvl-4})`);$('debris').setAttribute('opacity',seg(p,.19,.21)*(1-seg(p,.29,.31)));
@@ -2034,7 +2067,7 @@ const TF=[ // [startX, endX, enterFrom, enterTo, variant]
 }
 const togSvg=$('togSvg');
 function together(p){
-  const vw=innerWidth,vh=innerHeight,mob=vw<=760,H=mob?1350:Math.max(900,1660*vh/vw),W=H*vw/vh;
+  const vw=_IW,vh=_IH,mob=vw<=760,pt=!mob&&vh>vw*1.05,H=mob?1350:pt?1150*vh/vw:Math.max(900,1660*vh/vw),W=H*vw/vh;   /* pt: portrait tablet, a closer crop so the walkers fill the screen */
   const cx=mob?720:810;
   togSvg.setAttribute('viewBox',`${cx-W/2} ${900-H+(mob?60:110)} ${W} ${H}`);
   document.querySelectorAll('#Tfarmers .tf').forEach(g=>{const f=TF[+g.dataset.i];const t=ease(seg(p,f[2],f[3]||.001));const x=f[2]===0&&f[3]===0?f[1]:lerp(f[0],f[1],t);
@@ -2103,7 +2136,7 @@ const SG=720;
 const crack=$('crack'),CL=crack.getTotalLength();crack.style.strokeDasharray=CL;
 const spSvg=$('spSvg');
 function split(p){
-  const vw=innerWidth,vh=innerHeight,mob=vw<=760,H=mob?1350:Math.max(900,1700*vh/vw),W=H*vw/vh;
+  const vw=_IW,vh=_IH,mob=vw<=760,pt=!mob&&vh>vw*1.05,H=mob?1350:pt?1340*vh/vw:Math.max(900,1700*vh/vw),W=H*vw/vh;
   spSvg.setAttribute('viewBox',`${800-W/2} ${900-H+(mob?60:-30)} ${W} ${H}`);
   // part 1: barriers over veil
   $('spVeil').classList.toggle('on',p<.44);
@@ -2401,7 +2434,7 @@ function payFlow(u){
   const inn=seg(u,.65,.74);$('pfIn').setAttribute('opacity',(.16+.2*inn).toFixed(2));
   $('pfPk').setAttribute('opacity',u>.65&&u<.76?1:0);$('pfPk').setAttribute('stroke-dashoffset',(-u*900).toFixed(1));
   let paid=0;
-  document.querySelectorAll('#payFlow .ws').forEach(p=>{const k=+p.dataset.k,t0=.74+k*.005,v=ease(seg(u,t0,t0+.06));
+  QA(document,'#payFlow .ws').forEach(p=>{const k=+p.dataset.k,t0=.74+k*.005,v=ease(seg(u,t0,t0+.06));
     p.setAttribute('stroke-dashoffset',(1-v).toFixed(3));
     const done=v>=.999;if(done)paid++;
     const n=document.querySelector(`#payFlow .wn[data-k="${k}"]`);n.querySelector('rect').setAttribute('fill',done?CG[WAL[k].g]:'#E4DACB');n.querySelector('.wk').setAttribute('opacity',done?1:0);});
@@ -2416,8 +2449,8 @@ function clearing(i,u){
   $('clr').setAttribute('opacity',lotIn);
   const au=i===2?u:1, vu=i===3?u:0;
   $('cIn').setAttribute('opacity',seg(au,.04,.14));
-  document.querySelectorAll('#cBuy .by').forEach((b,k)=>b.setAttribute('opacity',seg(au,.08+k*.02,.14+k*.02)*(au>=CLOSE+.04&&k!==0?.35:1)));
-  document.querySelectorAll('#cInv .inv').forEach((l,k)=>l.setAttribute('opacity',seg(au,.1+k*.02,.16+k*.02)*(1-seg(au,CLOSE,CLOSE+.05))*.7));
+  QA(document,'#cBuy .by').forEach((b,k)=>b.setAttribute('opacity',seg(au,.08+k*.02,.14+k*.02)*(au>=CLOSE+.04&&k!==0?.35:1)));
+  QA(document,'#cInv .inv').forEach((l,k)=>l.setAttribute('opacity',seg(au,.1+k*.02,.16+k*.02)*(1-seg(au,CLOSE,CLOSE+.05))*.7));
   // bids travel into the server; the order book re-ranks
   const best=[0,0,0,0];let lastK=-1;
   BIDS.forEach(([t,b,v],k)=>{const pl=document.querySelector(`#cPulse .pl[data-k="${k}"]`);const tr=seg(au,t-.08,t);
@@ -2425,12 +2458,12 @@ function clearing(i,u){
     if(au>=t){best[b]=v;lastK=k}});
   const book=BUY.map((b,k)=>({k,v:best[k]})).filter(x=>x.v).sort((a,b)=>b.v-a.v);
   const fresh=lastK>=0?BIDS[lastK][1]:-1, flash=lastK>=0&&au<BIDS[lastK][0]+.05;
-  document.querySelectorAll('#cSrv .row').forEach((r,ri)=>{const e=book[ri];r.querySelector('.rv').textContent=e?'$'+e.v.toFixed(2):'';r.querySelector('.rn').textContent=e?BUY[e.k].n:'';
+  QA(document,'#cSrv .row').forEach((r,ri)=>{const e=book[ri];r.querySelector('.rv').textContent=e?'$'+e.v.toFixed(2):'';r.querySelector('.rn').textContent=e?BUY[e.k].n:'';
     r.querySelector('rect').setAttribute('fill',e&&flash&&e.k===fresh?'#3E6E76':'#2C4F57');
     r.querySelector('.led').setAttribute('fill',!e?'#3F6A70':ri===0?'#7FD18B':'#E4B64C');
     r.setAttribute('opacity',au>=CLOSE+.03&&ri>0?.45:1);});
   $('cHead').textContent=au<CLOSE?'order book · live':'order book · closed';
-  document.querySelectorAll('#cBuy .by').forEach((g,k)=>{g.querySelector('.bv').textContent=best[k]?'$'+best[k].toFixed(2):'';g.querySelector('.bv').setAttribute('fill',book[0]&&book[0].k===k?'#A8452A':'#1F3A40')});
+  QA(document,'#cBuy .by').forEach((g,k)=>{g.querySelector('.bv').textContent=best[k]?'$'+best[k].toFixed(2):'';g.querySelector('.bv').setAttribute('fill',book[0]&&book[0].k===k?'#A8452A':'#1F3A40')});
   // at closing time the whole lot flows through the server to the top bid
   ribbonTo(BUY[0].c);
   const cl=seg(au,CLOSE,CLOSE+.08);$('cRib').setAttribute('opacity',cl);$('cWin').setAttribute('opacity',seg(au,CLOSE,CLOSE+.05));
@@ -2446,7 +2479,7 @@ function clearing(i,u){
     sl.setAttribute('transform',ans&&f.no?`translate(${-10*seg(vu,t0+.08,t0+.14)} 0)`:'');});
   $('tYes').textContent=`${yes} YES`;$('tNo').textContent=`${no} NO`;
   $('cPay').setAttribute('opacity',seg(vu,.72,.8));
-  document.querySelectorAll('#cPay .pp').forEach(p=>{const m=document.querySelector(`#cRib .rb[data-g="${p.dataset.g}"]`)._m;const k=p.dataset.g;const [x,y]=bz([LX+LW,(LSEG[k][0]+LSEG[k][1])/2],[SV.x,(m[2]+m[3])/2],.3);p.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})`)});
+  QA(document,'#cPay .pp').forEach(p=>{const m=document.querySelector(`#cRib .rb[data-g="${p.dataset.g}"]`)._m;const k=p.dataset.g;const [x,y]=bz([LX+LW,(LSEG[k][0]+LSEG[k][1])/2],[SV.x,(m[2]+m[3])/2],.3);p.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})`)});
   // the rule in force
   let rule='';if(i===2){rule=RULES[3][au<.18?0:au<CLOSE?1:2]}else if(i===3){rule=RULES[4][vu<.7?0:1]}
   if($('cRule').textContent!==rule)$('cRule').textContent=rule;
@@ -2477,7 +2510,7 @@ function clearing(i,u){
 }
 function renderPrice(u){
   const {band,PY,WX}=window.__PB, W=Math.min(12,seg(u,.05,.55)*12);
-  document.querySelectorAll('#sPrice .pd').forEach(d=>d.setAttribute('opacity',+d.dataset.w<=W?1:0));
+  QA(document,'#sPrice .pd').forEach(d=>d.setAttribute('opacity',+d.dataset.w<=W?1:0));
   const bs=band.filter(b=>b[0]<=Math.floor(W));
   if(bs.length){const top=bs.map(b=>`${WX(b[0]).toFixed(1)} ${PY(b[3]).toFixed(1)}`),bot=bs.slice().reverse().map(b=>`${WX(b[0]).toFixed(1)} ${PY(b[2]).toFixed(1)}`);
     $('pBand').setAttribute('d',`M${top.join(' L')} L${bot.join(' L')}Z`);$('pMid').setAttribute('d','M'+bs.map(b=>`${WX(b[0]).toFixed(1)} ${PY(b[1]).toFixed(1)}`).join(' L'));}
@@ -2489,7 +2522,7 @@ const MECH=.72, PLAYED={};
 const DUR=[4.4,10.5,5.4,4.2,4.2,5.2,5.6,3.6];
 const fpEl=document.querySelector('#how .fp');
 function renderOffer(a){
-  const mob=innerWidth<=760;
+  const mob=_IW<=760;
   // 1. phone lifts toward the coffee, flash, returns
   const go=ease(seg(a,0,.8))*(1-ease(seg(a,1.15,1.7)));
   fpEl.style.transform=mob?`translate(${go*18}px,${-go*70}px) rotate(${-go*6}deg)`:`translate(${go*70}px,${-go*16}px) rotate(${go*9}deg)`;
@@ -2503,7 +2536,7 @@ function renderOffer(a){
   $('card').setAttribute('transform',`translate(${lerp(300,490,ft)} ${lerp(220,215,ft)-Math.sin(ft*Math.PI)*70}) rotate(${lerp(0,-4,ft)}) scale(${lerp(2.15,.5,ft)})`);
   $('sig').setAttribute('opacity',a>1.4&&a<2.4?1:0);
   const ins=seg(a,2.7,3.0); $('hub').setAttribute('opacity',a<1.15?0:1-ins);
-  document.querySelectorAll('#hub .led').forEach((l,k)=>l.setAttribute('opacity',a>2.3&&a<2.8?((Math.floor(a*12)+k)%2?1:.2):1));
+  QA(document,'#hub .led').forEach((l,k)=>l.setAttribute('opacity',a>2.3&&a<2.8?((Math.floor(a*12)+k)%2?1:.2):1));
   // 3. inspection
   $('insp').setAttribute('opacity',ins);
   const en=ease(seg(a,3.2,4.2));   // upscaling wipe (design: shown in the story, not built into the demo)
@@ -2514,15 +2547,15 @@ function renderOffer(a){
   const pts=[[150,120],[230,150],[310,175],[200,178]], mt=seg(a,5.1,7.1)*4, mi=Math.min(3,Math.floor(mt)), mf=mt-mi;
   const A=pts[mi],B=pts[Math.min(3,mi+1)],e=ease(clamp((mf-.55)/.45,0,1));
   $('mag').setAttribute('transform',`translate(${lerp(A[0],B[0],e)} ${lerp(A[1],B[1],e)})`);$('mag').setAttribute('opacity',a>5.1&&a<7.2?1:0);
-  document.querySelectorAll('#insp .ck').forEach(g=>{const k=+g.dataset.i,on=a>5.1+(k+.45)*.5;g.setAttribute('opacity',on?1:.25);g.querySelector('.tk').setAttribute('opacity',on?1:0)});
+  QA(document,'#insp .ck').forEach(g=>{const k=+g.dataset.i,on=a>5.1+(k+.45)*.5;g.setAttribute('opacity',on?1:.25);g.querySelector('.tk').setAttribute('opacity',on?1:0)});
   const st=seg(a,7.25,7.5);$('stamp').setAttribute('opacity',st);$('stamp').setAttribute('transform',`translate(500 370) rotate(-12) scale(${1.7-.7*ease(st)})`);
 }
 function how(p){_lastP=p;
   const n=HOW.length, x=p*n, k=Math.min(n-1,Math.floor(x)), w=clamp(x-k,0,1), st=HOW[k], i=k-1;
   aT=w*DUR[k];
   if(_hs!==k){_hs=k;$('hN').textContent=`Step ${k+1} of ${n}`;$('hT').textContent=st.t;$('hP').textContent=st.p;}
-  const show=(sel,keep)=>{const on=[];document.querySelectorAll(sel).forEach(m=>{const s=+m.dataset.s,ts=m.dataset.t,isA=ts[0]==='a',isP=ts[0]==='p',t=(isA||isP)?+ts.slice(1):+ts*DUR[s];if(s<k||(s===k&&(isP?offerT:aT)>=t))on.push(m)});
-    const vis=new Set(on.slice(-keep));document.querySelectorAll(sel).forEach(m=>{const v=vis.has(m);if(m.classList.contains('on')!==v)m.classList.toggle('on',v)});};
+  const show=(sel,keep)=>{const on=[];QA(document,sel).forEach(m=>{const s=+m.dataset.s,ts=m.dataset.t,isA=ts[0]==='a',isP=ts[0]==='p',t=(isA||isP)?+ts.slice(1):+ts*DUR[s];if(s<k||(s===k&&(isP?offerT:aT)>=t))on.push(m)});
+    const vis=new Set(on.slice(-keep));QA(document,sel).forEach(m=>{const v=vis.has(m);if(m.classList.contains('on')!==v)m.classList.toggle('on',v)});};
   show('#mF .m',3);show('#mB .b',5);
   const sc={sPrice:k===0,sOffer:i===0,sPool:i>=1&&i<=3,sPick:i===4,sDrive:i===5,sScore:i===6};
   for(const k in sc)$(k).setAttribute('opacity',sc[k]?1:0);
@@ -2535,7 +2568,7 @@ function how(p){_lastP=p;
   // pool: automatic fill → sort once the step is reached
   if(i>=1&&i<=3){
     const fillT=i===1?seg(poolT,.2,3.0):1, sortT=i===1?ease(seg(poolT,3.3,4.3)):1;
-    document.querySelectorAll('#sPool .blk').forEach(g=>{const k=+g.dataset.k,a=clamp(fillT*40-k,0,1);
+    QA(document,'#sPool .blk').forEach(g=>{const k=+g.dataset.k,a=clamp(fillT*40-k,0,1);
       const x=lerp(+g.dataset.x0,+g.dataset.x1,sortT), y=lerp(+g.dataset.y0,+g.dataset.y1,sortT)-(1-ease(a))*260;
       g.setAttribute('transform',`translate(${x} ${y})`);g.setAttribute('opacity',a>0?1:0)});
     $('silo').removeAttribute('transform');
@@ -2651,12 +2684,15 @@ function how(p){_lastP=p;
 function fitFig(R,i,raw){
   if(R.classList.contains('flow'))return;
   const f=R.querySelector(`.ec-fig[data-i="${i}"]`), h=R.querySelector(`.ec-head[data-i="${i}"]`);
-  if(innerWidth>760){if(f.style.top){f.style.top='';f.style.bottom='';f.style.transform='';f.style.transition='';h.style.transform='';h.style.clipPath='';}return;}
+  const key=_IW+'x'+_IH+(document.documentElement.classList.contains('tapm')?'t':'')+'|'+(document.fonts?document.fonts.status:'');
+  if(f._fit===key)return;f._fit=key;   /* the fit only changes with the screen: measuring every frame forced a layout per frame */
+  const PT=_IW>760&&_IW<=1100&&_IH>_IW*1.05;   /* portrait tablet: stack the text over the picture too, like phones */
+  if(_IW>760&&!PT){if(f.style.top){f.style.top='';f.style.bottom='';f.style.transform='';f.style.transition='';h.style.transform='';h.style.clipPath='';}return;}
   // phones: one full screen per panel, like the How-it-works steps.
   // text on top, the picture scaled to fit underneath; scrolling plays the picture, then the next panel replaces it
   f.style.transition='opacity .4s';f.style.transformOrigin='top center';f.style.bottom='auto';
   h.style.transform='';h.style.clipPath='';
-  const st=R.querySelector('.stage'),VH=(st&&st.clientHeight)||innerHeight,foot=document.documentElement.classList.contains('tapm')?44:0;   /* the visible stage, minus the tap strip */
+  const st=R.querySelector('.stage'),VH=(st&&st.clientHeight)||_IH,foot=document.documentElement.classList.contains('tapm')?44:0;   /* the visible stage, minus the tap strip */
   const bar=62, hh=h.offsetHeight, avail=VH-bar-foot-hh-14-20;
   const fh=f.scrollHeight, sc=Math.min(1,avail/fh), total=hh+14+fh*sc;
   const top=bar+Math.max(8,(VH-bar-foot-total)/2);   // centre the text + picture block on the screen
@@ -2664,30 +2700,30 @@ function fitFig(R,i,raw){
 }
 // on phones each panel is one column: read the text, keep scrolling, the picture follows
 const MOB_SPLIT=.45;
-function panelState(p,N){const i=Math.min(N-1,Math.floor(p*N)),raw=clamp(p*N-i,0,1),mob=innerWidth<=760;
+function panelState(p,N){const i=Math.min(N-1,Math.floor(p*N)),raw=clamp(p*N-i,0,1),mob=_IW<=760;
   return {i,mob,raw,showHead:true,showFig:true,u:mob?clamp((raw-.08)/.8,0,1):raw};}
 function econ(p){
   const R=$('econ'), N=2, P=panelState(p,N), i=P.i;
-  R.querySelectorAll('.ec-head').forEach(e=>e.classList.toggle('on',+e.dataset.i===i&&p>=0&&p<1.01&&P.showHead));
-  R.querySelectorAll('.ec-fig').forEach(e=>e.classList.toggle('on',+e.dataset.i===i&&p>=0&&P.showFig));
-  R.querySelectorAll('#ecIdx span').forEach((e,k)=>e.classList.toggle('on',k===i));
+  QA(R,'.ec-head').forEach(e=>e.classList.toggle('on',+e.dataset.i===i&&p>=0&&p<1.01&&P.showHead));
+  QA(R,'.ec-fig').forEach(e=>e.classList.toggle('on',+e.dataset.i===i&&p>=0&&P.showFig));
+  QA(R,'#ecIdx span').forEach((e,k)=>e.classList.toggle('on',k===i));
   fitFig(R,i,P.raw);
   const te=P.u*[3,6.5,3][i];
   const t=ease(seg(te,.25,1.5));
-  if(i===0)R.querySelectorAll('.ec-fig[data-i="0"] .grow').forEach(r=>r.setAttribute('width',(+r.dataset.w*t).toFixed(1)));
+  if(i===0)QA(R,'.ec-fig[data-i="0"] .grow').forEach(r=>r.setAttribute('width',(+r.dataset.w*t).toFixed(1)));
   if(i===1){
-    document.querySelectorAll('.ec-fig[data-i="1"] .frow').forEach(g=>{const r=+g.dataset.r;g.setAttribute('opacity',seg(te,.1+r*.08,.4+r*.08));});
+    QA(document,'.ec-fig[data-i="1"] .frow').forEach(g=>{const r=+g.dataset.r;g.setAttribute('opacity',seg(te,.1+r*.08,.4+r*.08));});
     const fillT=ease(seg(te,.8,2.2));
-    document.querySelectorAll('.ec-fig[data-i="1"] .rbar').forEach(b=>b.setAttribute('width',(60*fillT*+b.dataset.sc/100).toFixed(1)));
+    QA(document,'.ec-fig[data-i="1"] .rbar').forEach(b=>b.setAttribute('width',(60*fillT*+b.dataset.sc/100).toFixed(1)));
     // the share of each harvest that goes to steady orders
     let gi=0;
-    document.querySelectorAll('.ec-fig[data-i="1"] .fc').forEach(c=>{const r=+c.dataset.r,i2=+c.dataset.i;c.setAttribute('opacity',seg(te,.1+r*.08,.4+r*.08));
+    QA(document,'.ec-fig[data-i="1"] .fc').forEach(c=>{const r=+c.dataset.r,i2=+c.dataset.i;c.setAttribute('opacity',seg(te,.1+r*.08,.4+r*.08));
       let m=0;if(+c.dataset.go){const t0=2.5+gi*.16;gi++;m=ease(seg(te,t0,t0+.7));}
       c.setAttribute('transform',`translate(${lerp(+c.dataset.x,+c.dataset.tx,m).toFixed(1)} ${(lerp(+c.dataset.y,+c.dataset.ty,m)-Math.sin(m*Math.PI)*46).toFixed(1)}) scale(${lerp(.82,1.05,m).toFixed(2)})`);});
-    document.querySelectorAll('.ec-fig[data-i="1"] .lnk').forEach(l=>{const k=+l.dataset.k;l.setAttribute('stroke-dashoffset',(36*(1-ease(seg(te,4.6+k*.25,5.2+k*.25)))).toFixed(1))});
-    document.querySelectorAll('.ec-fig[data-i="1"] .flow').forEach((c,j)=>{const k=+c.dataset.k,on=te>5.4+k*.25;const ph=((te*.8+(j%2)*.5)%1);c.setAttribute('cx',512+36*ph);c.setAttribute('opacity',on?1:0)});
+    QA(document,'.ec-fig[data-i="1"] .lnk').forEach(l=>{const k=+l.dataset.k;l.setAttribute('stroke-dashoffset',(36*(1-ease(seg(te,4.6+k*.25,5.2+k*.25)))).toFixed(1))});
+    QA(document,'.ec-fig[data-i="1"] .flow').forEach((c,j)=>{const k=+c.dataset.k,on=te>5.4+k*.25;const ph=((te*.8+(j%2)*.5)%1);if(on)c.setAttribute('cx',(512+36*ph).toFixed(1));c.setAttribute('opacity',on?1:0)});   // hidden dots stay put (moving them repainted the figure every frame)
   }
-  if(i===2)R.querySelectorAll('.step').forEach(g=>g.setAttribute('opacity',te>.3+(+g.dataset.i)*.45?1:.12));
+  if(i===2)QA(R,'.step').forEach(g=>g.setAttribute('opacity',te>.3+(+g.dataset.i)*.45?1:.12));
 }
 
 
@@ -2760,32 +2796,32 @@ function econ(p){
 }
 function wai(p){
   const R=$('wai'), N=3, P=panelState(p,N), i=P.i;
-  R.querySelectorAll('.ec-head').forEach(e=>e.classList.toggle('on',+e.dataset.i===i&&p>=0&&p<1.01&&P.showHead));
-  R.querySelectorAll('.ec-fig').forEach(e=>e.classList.toggle('on',+e.dataset.i===i&&p>=0&&P.showFig));
-  R.querySelectorAll('#waIdx span').forEach((e,k)=>e.classList.toggle('on',k===i));
+  QA(R,'.ec-head').forEach(e=>e.classList.toggle('on',+e.dataset.i===i&&p>=0&&p<1.01&&P.showHead));
+  QA(R,'.ec-fig').forEach(e=>e.classList.toggle('on',+e.dataset.i===i&&p>=0&&P.showFig));
+  QA(R,'#waIdx span').forEach((e,k)=>e.classList.toggle('on',k===i));
   fitFig(R,i,P.raw);
   const te=P.u*5;
   if(i===0){
-    R.querySelectorAll('.prow').forEach(r=>{const k=+r.dataset.k;r.setAttribute('opacity',te>.6+k*.6?1:.18)});
-    R.querySelectorAll('.rwh').forEach(r=>{const k=+r.dataset.k;const on=te>.6+k*.6&&te<1.2+k*.6;r.setAttribute('opacity',on?.9:(te>.6+k*.6&&k<4?.35:0))});
+    QA(R,'.prow').forEach(r=>{const k=+r.dataset.k;r.setAttribute('opacity',te>.6+k*.6?1:.18)});
+    QA(R,'.rwh').forEach(r=>{const k=+r.dataset.k;const on=te>.6+k*.6&&te<1.2+k*.6;r.setAttribute('opacity',on?.9:(te>.6+k*.6&&k<4?.35:0))});
     $('wAsk').setAttribute('opacity',seg(te,3.9,4.2));
   }
   if(i===1){
     $('pFind').setAttribute('opacity',seg(te,.3,.6));R.querySelector('.pst').setAttribute('opacity',seg(te,.5,.7));
-    R.querySelectorAll('.pdef').forEach(g=>{const k=+g.dataset.k;g.setAttribute('opacity',seg(te,.9+k*.45,1.1+k*.45))});
-    R.querySelectorAll('.pchk').forEach(g=>{const k=+g.dataset.k;g.setAttribute('opacity',te>.9+k*.45?1:.2)});
-    R.querySelectorAll('.pref').forEach(g=>{const k=+g.dataset.k,pc=+g.dataset.pc;g.setAttribute('opacity',seg(te,2.9+k*.15,3.1+k*.15));const f=ease(seg(te,3.2,4));
+    QA(R,'.pdef').forEach(g=>{const k=+g.dataset.k;g.setAttribute('opacity',seg(te,.9+k*.45,1.1+k*.45))});
+    QA(R,'.pchk').forEach(g=>{const k=+g.dataset.k;g.setAttribute('opacity',te>.9+k*.45?1:.2)});
+    QA(R,'.pref').forEach(g=>{const k=+g.dataset.k,pc=+g.dataset.pc;g.setAttribute('opacity',seg(te,2.9+k*.15,3.1+k*.15));const f=ease(seg(te,3.2,4));
       g.querySelector('.pcb').setAttribute('width',(64*pc/100*f).toFixed(1));g.querySelector('.pcv').textContent=Math.round(pc*f)+'%'});
     $('pRes').setAttribute('opacity',seg(te,4.2,4.5));
   }
   if(i===2){
     const PV=v=>368-(v-2.16)/(2.94-2.16)*300;
-    R.querySelectorAll('.pin_').forEach(g=>{const k=+g.dataset.k;g.setAttribute('opacity',seg(te,.2+k*.25,.4+k*.25))});
+    QA(R,'.pin_').forEach(g=>{const k=+g.dataset.k;g.setAttribute('opacity',seg(te,.2+k*.25,.4+k*.25))});
     $('pOut').setAttribute('opacity',seg(te,1.6,1.9));$('pFair').setAttribute('opacity',seg(te,1.8,2.1));$('pOpen').setAttribute('opacity',seg(te,2.2,2.5));
     const b=2.43+.12*ease(seg(te,2.7,3.8));$('pBid').setAttribute('opacity',seg(te,2.6,2.8));
     $('pBidD').setAttribute('cy',PV(b).toFixed(1));$('pBidT').setAttribute('y',(PV(b)+4).toFixed(1));$('pBidT').textContent=b.toFixed(2);
     const done=te>3.9;$('pCl').setAttribute('opacity',seg(te,3.9,4.2));$('pAskK').setAttribute('opacity',seg(te,3.9,4.2));
-    R.querySelectorAll('.pask').forEach(c=>c.setAttribute('fill',done?(+c.dataset.v<=2.55?'#7FD18B':'#8A9A9E'):'#46656B'));
+    QA(R,'.pask').forEach(c=>c.setAttribute('fill',done?(+c.dataset.v<=2.55?'#7FD18B':'#8A9A9E'):'#46656B'));
   }
 }
 /* ---------- clocks: scroll triggers, time plays ---------- */
@@ -2822,42 +2858,55 @@ const CUTS={
 /* ---------- loop ---------- */
 const secs=['hero','map','road','together','split','curtain','how','wai','econ'].map($);
 const chap=$('chap'),prog=$('prog');
-function pr_(el){const r=el.getBoundingClientRect();return clamp(-r.top/(el.offsetHeight-innerHeight),0,1)}
+function pr_(el){const r=el.getBoundingClientRect();return clamp(-r.top/(el.offsetHeight-_IH),0,1)}
+/* Patterns/gradients that one scene borrows from another (the road's #soil is the ground of 'together' and 'split') live in one
+   shared <defs> outside the scenes, so hiding an off-screen scene never blanks a neighbour's fill. */
+function hoistSharedDefs(){const D=document.querySelector('#sharedDefs defs');if(!D)return;
+  const RES='pattern,linearGradient,radialGradient,filter,clipPath,mask,symbol,marker';
+  document.querySelectorAll('.pin').forEach(sec=>sec.querySelectorAll(RES).forEach(r=>{if(!r.id||r.closest('#sharedDefs'))return;
+    const sel=`[fill="url(#${r.id})"],[stroke="url(#${r.id})"],[clip-path="url(#${r.id})"],[mask="url(#${r.id})"],[filter="url(#${r.id})"],[href="#${r.id}"]`;
+    let used=false;try{document.querySelectorAll(sel).forEach(u=>{if(!sec.contains(u))used=true})}catch(e){}
+    if(!used&&document.body.innerHTML.indexOf(`url(#${r.id})`)>=0){/* refs written into style strings: check by section text */
+      document.querySelectorAll('.pin,.flow,.closing').forEach(o=>{if(o!==sec&&o.innerHTML.indexOf(`#${r.id})`)>=0)used=true})}
+    if(used)D.appendChild(r)}))}
+hoistSharedDefs();addEventListener('load',hoistSharedDefs);
 function frame(){
+  _SY=scrollY;_IW=innerWidth;_IH=innerHeight;_DH=document.documentElement.scrollHeight;const BAR=document.querySelector('.bar');
   _clkLive=false;_busy=false;
   const ph=PS.hero,pm=PS.map,pr=PS.road,pt=PS.together,psp=PS.split,pcu=PS.curtain,phw=PS.how,pwa=PS.wai,pec=PS.econ;
   /* only the scenes on or next to the screen are redrawn (phones could not keep up redrawing all of them every frame) */
-  const VIS=id=>{const S=SEC[id];if(!S||S.top==null)return true;const t=S.top-scrollY;return t<innerHeight*1.15&&t+S.h>-innerHeight*.15};
+  const VIS=id=>{const S=SEC[id];if(!S||S.top==null)return true;const t=S.top-_SY;return t<_IH*1.15&&t+S.h>-_IH*.15};
   secs.forEach((s,i)=>{if(!VIS(s.id))return;const p=[ph,pm,pr,pt,psp,pcu,phw,pwa,pec][i];s.querySelectorAll('.beat').forEach(b=>b.classList.toggle('on',p>=+b.dataset.from&&p<+b.dataset.to))});
   // opening: logo lifts away, scene rises in layers, Aurelia last
   const th=seg(ph,0,.48)*6.6;const o=ease(seg(th,0,1.1));
   $('openWrap').style.transform=`translateY(${-o*28}vh) scale(${1-o*.35})`;$('openWrap').style.opacity=1-seg(th,.3,1.0);$('credit').style.opacity=(1-seg(th,.05,.5)).toFixed(2);
   $('cue').classList.toggle('gone',ph>.02);
-  document.querySelector('.bar').classList.toggle('show',th>1.1||pm>0||pr>0);
-  document.querySelector('.bar').classList.toggle('solid',th>1.1||pm>0||pr>0);
-  {const ec=$('econ');document.querySelector('.bar').classList.toggle('flowbg',!!ec&&scrollY>ec.offsetTop+ec.offsetHeight-80)}   // text sections scroll under the logo; give the bar a backing there
+  BAR.classList.toggle('show',th>1.1||pm>0||pr>0);
+  BAR.classList.toggle('solid',th>1.1||pm>0||pr>0);
+  {const E=SEC.econ;BAR.classList.toggle('flowbg',!!E&&E.top!=null&&_SY>E.top+E.h-80)}   // text sections scroll under the logo; give the bar a backing there
   if(VIS('hero')){const r1=ease(seg(th,.3,1.6)),r2=ease(seg(th,.5,1.9)),r3=ease(seg(th,.8,2.5));
   $('heroScene').style.opacity=seg(th,.2,.9);
   $('pCloud').setAttribute('transform',`translate(${(1-r1)*-40} ${(1-r1)*60})`);
   $('pMount').setAttribute('transform',`translate(0 ${(1-r1)*160})`);
   $('pFields').setAttribute('transform',`translate(0 ${(1-r2)*320})`);
   $('pFig').setAttribute('transform',`translate(0 ${(1-r3)*620})`);
-  const hv=$('heroSvg'); if(innerWidth<=760){const w=900*innerWidth/innerHeight;hv.setAttribute('viewBox',`${470-w*.5} 0 ${w} 900`);hv.setAttribute('preserveAspectRatio','xMidYMax meet')}else{hv.setAttribute('viewBox','0 0 1440 900');hv.setAttribute('preserveAspectRatio','xMidYMax slice')}
+  const hv=$('heroSvg'); if(_IW>760&&_IH>_IW*1.05){/* portrait tablet: frame Noor instead of cropping her at the left edge */const w=900*_IW/_IH;hv.setAttribute('viewBox',`${600-w*.5} 0 ${w} 900`);hv.setAttribute('preserveAspectRatio','xMidYMax meet')}else if(_IW<=760){const w=900*_IW/_IH;hv.setAttribute('viewBox',`${470-w*.5} 0 ${w} 900`);hv.setAttribute('preserveAspectRatio','xMidYMax meet')}else{hv.setAttribute('viewBox','0 0 1440 900');hv.setAttribute('preserveAspectRatio','xMidYMax slice')}
   }
   if(VIS('map')){const z=ease(seg(pm,.04,.26));
-  const zoomTo=innerWidth<=760?[310,-130,400,560]:[370,85,300,107];
+  const zoomTo=_IW<=760?[310,-130,400,560]:(_IW<=1100&&_IH>_IW*1.05)?[335,-5,360,340]:[370,85,300,107];   /* middle: portrait tablet, map on top, text below */
   $('mapSvg').setAttribute('viewBox',[0,0,1000,595].map((v,i)=>lerp(v,zoomTo[i],z)).join(' '));
-  if(innerWidth>760){$('mapSvg').style.left='36vw';$('mapSvg').style.width='62vw'}else{$('mapSvg').style.left='0';$('mapSvg').style.width='100%';$('mapSvg').style.height='62%';$('mapSvg').style.top='40px'}
+  const PTm=_IW>760&&_IW<=1100&&_IH>_IW*1.05;
+  if(PTm){$('mapSvg').style.left='0';$('mapSvg').style.width='100%';$('mapSvg').style.height='66%';$('mapSvg').style.top='64px'}else if(_IW>760){$('mapSvg').style.left='36vw';$('mapSvg').style.width='62vw'}else{$('mapSvg').style.left='0';$('mapSvg').style.width='100%';$('mapSvg').style.height='62%';$('mapSvg').style.top='40px'}
   const draw=ease(seg(pm,.34,.7));route.style.strokeDashoffset=RL*(1-draw);
   $('km').firstChild.nodeValue=Math.round(98*draw);
   $('hazards').setAttribute('opacity',seg(pm,.78,.88));
   $('dist').setAttribute('opacity',seg(pm,.6,.7));
   ['lblTL','lblSea','lblSea2'].forEach(id=>$(id).setAttribute('opacity',1-z));}
-  if(VIS('road'))road(pr);if(VIS('together'))together(pt);if(VIS('split'))split(psp);if(VIS('curtain'))curtain(pcu);if(VIS('how'))how(phw);
-  if(FLOW){flowRun('wai',wai);flowRun('econ',econ)}else{wai(pwa);econ(pec)}
+  secs.forEach(s=>{if(!s.classList.contains('pin'))return;const S=SEC[s.id];if(!S||S.top==null)return;const t=S.top-_SY;s.classList.toggle('off',t>_IH*1.1||t+S.h<-_IH*.1)});   /* a scene's stage only paints while it can be on screen (shared patterns live in #sharedDefs, so neighbours keep their fills) */$('split').classList.toggle('idle',!VIS('split'));if(VIS('road'))road(pr);if(VIS('together'))together(pt);if(VIS('split'))split(psp);if(VIS('curtain'))curtain(pcu);if(VIS('how'))how(phw);
+  if(FLOW){flowRun('wai',wai);flowRun('econ',econ)}else{if(VIS('wai'))wai(pwa);if(VIS('econ'))econ(pec)}
   swapStages();
-  prog.style.width=(scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight)*100).toFixed(2)+'%';
-  let ci=SCN[cur].c;CH.forEach((c,k)=>{if(c[2]&&TOPS[c[2]]&&TOPS[c[2]][0]-scrollY<innerHeight*.5)ci=k});if(SWAP&&($('wai').classList.contains('act')||$('econ').classList.contains('act')))ci=8;const c=CH[ci];
+  prog.style.transform=`scaleX(${(_SY/Math.max(1,_DH-_IH)).toFixed(4)})`;   /* transform, not width: no layout per frame */
+  let ci=SCN[cur].c;CH.forEach((c,k)=>{if(c[2]&&TOPS[c[2]]&&TOPS[c[2]][0]-_SY<_IH*.5)ci=k});if(SWAP&&($('wai').classList.contains('act')||$('econ').classList.contains('act')))ci=8;const c=CH[ci];
   if(chap.dataset.c!==c[1]){chap.dataset.c=c[1];chap.innerHTML=`<b>${c[0]}</b>${c[1]}`}
 
 }
@@ -2887,7 +2936,7 @@ const SWAP=innerWidth<=760;   // phones: the six AI panels share one fixed scree
 function sizeSecs(){Object.values(SEC).forEach(S=>S.el.style.height=S.el.classList.contains('flow')?'':(SWAP&&(S.el.id==='wai'||S.el.id==='econ'))?`${S.len}vh`:`calc(${S.len}vh + 100vh)`);measure()}
 const TOPS={};function measure(){Object.values(SEC).forEach(S=>{S.top=S.el.offsetTop;S.h=S.el.offsetHeight});['risks','wai','econ','hybrid','ledger10'].forEach(id=>{const e=$(id);if(e)TOPS[id]=[e.offsetTop,e.offsetHeight]})}
 addEventListener('load',()=>{measure();req()});document.fonts&&document.fonts.ready.then(()=>{measure();req()});
-function swapStages(){if(!SWAP)return;const H=innerHeight,r=id=>{const[t,h]=TOPS[id];return{top:t-scrollY,bottom:t+h-scrollY}},a=r('wai'),b=r('econ');
+function swapStages(){if(!SWAP)return;const H=_IH,r=id=>{const[t,h]=TOPS[id];return{top:t-_SY,bottom:t+h-_SY}},a=r('wai'),b=r('econ');
   const onA=a.top<H*.55&&b.top>0, onB=b.top<=0&&b.bottom>H*.25;
   $('wai').classList.toggle('act',onA);$('econ').classList.toggle('act',onB);}
 /* phones: the six "How Dure AI works" panels are ordinary full-screen blocks that scroll normally;
@@ -2930,8 +2979,11 @@ function tickCtl(){
 }
 addEventListener('scroll',()=>req(),{passive:true});
 /* smooth scrolling like the reference site: Lenis, 1.2 s exponential ease-out, softer wheel steps; touch stays native */
-(()=>{if(!window.Lenis||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-  const lenis=new Lenis({duration:1.2,easing:t=>Math.min(1,1.001-Math.pow(2,-10*t)),smoothWheel:true,wheelMultiplier:.7,syncTouch:false,touchMultiplier:1});
+(()=>{if(!window.Lenis)return;
+  /* "Show animations" switched off in Windows reports reduced motion; plain wheel steps then jump 100px at a time, which reads as stutter in the scroll-driven scenes.
+     So reduced motion keeps a short, light smoothing (0.5 s, no extra travel) instead of none at all. */
+  const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const lenis=new Lenis({duration:RM?.5:1.2,easing:t=>Math.min(1,1.001-Math.pow(2,-10*t)),smoothWheel:true,wheelMultiplier:RM?1:.7,syncTouch:false,touchMultiplier:1});
   window.__lenis=lenis;lenis.on('scroll',()=>req());
   (function raf(t){lenis.raf(t);requestAnimationFrame(raf)})(performance.now());
 })();
@@ -2943,7 +2995,8 @@ $('chap').onclick=e=>{e.stopPropagation();$('menu').classList.toggle('on');[...$
 $('menu').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=+b.dataset.i;$('menu').classList.remove('on');if(CH[i][2]){$(CH[i][2]).scrollIntoView({behavior:'smooth'});return;}const k=SCN.findIndex(x=>x.c===i);const n=SCN[k];scrollTo({top:SEC[n.s].el.offsetTop+n.o*innerHeight/100,behavior:'smooth'});};
 addEventListener('click',e=>{if(!e.target.closest('#menu'))$('menu').classList.remove('on')});
 /* ---------- tap-through mode (phones and tablets): one tap plays one scene, then holds on its last frame ---------- */
-const TAPQ=new URLSearchParams(location.search).get('tap'),COARSE=matchMedia('(pointer:coarse)').matches,RMOT=matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* tap mode is the default only on phones and tablets: Windows/ChromeOS/Linux desktops (even touch-screen laptops, which report a coarse pointer) start in scroll mode; the Tap mode button and ?tap=1 still switch it on */
+const TAPQ=new URLSearchParams(location.search).get('tap'),COARSE=matchMedia('(pointer:coarse)').matches&&!/Windows NT|CrOS|X11/.test(navigator.userAgent),RMOT=matchMedia('(prefers-reduced-motion: reduce)').matches;
 let TAP=TAPQ==='1'||(COARSE&&TAPQ!=='0');try{const v=sessionStorage.getItem('dure-tap');if(v!=null&&TAPQ==null)TAP=v==='1'}catch(e){}
 /* one tap = one piece of text. Scenes whose text stays the same (Noor walking in the monsoon) run on by themselves;
    scenes whose text only builds on the last (the How-it-works chats) run on too, with a reading pause in between. */
@@ -3062,7 +3115,7 @@ function centreGroups(){const P=innerWidth<=760;const bar=60,foot=document.docum
 addEventListener('resize',()=>requestAnimationFrame(centreGroups));document.fonts&&document.fonts.ready.then(centreGroups);setTimeout(centreGroups,600);
 /* the Registry figure only takes the finger on phones, where it scrolls sideways; elsewhere the page scroll passes straight through it */
 if(innerWidth<=760)$('lgFig').setAttribute('data-lenis-prevent','');
-window.__dure={at(sec,p){const S=SEC[sec];const n=S.slots.find(n=>p>=n.a&&p<=n.b)||S.slots[S.slots.length-1];scrollTo(0,S.el.offsetTop+(n.o+clamp((p-n.a)/(n.b-n.a),0,1)*n.l*PLAY)*innerHeight/100);req();},go:goScene,get cur(){return cur},get n(){return SCN.length},get busy(){return Object.keys(PS).some(id=>Math.abs(PS[id]-TG_[id])>.0004)},SEC,SCN};
+window.__dure={at(sec,p){const S=SEC[sec];const n=S.slots.find(n=>p>=n.a&&p<=n.b)||S.slots[S.slots.length-1];scrollTo(0,S.el.offsetTop+(n.o+clamp((p-n.a)/(n.b-n.a),0,1)*n.l*PLAY)*innerHeight/100);req();},go:goScene,step:j=>goStep(j),stepY:j=>stopY(j),steps:()=>STEPS.length,get cur(){return cur},get n(){return SCN.length},get busy(){return Object.keys(PS).some(id=>Math.abs(PS[id]-TG_[id])>.0004)},SEC,SCN};
 function show(){}
 if('scrollRestoration' in history)history.scrollRestoration='manual';
 sizeSecs();sizeRoad();req();
@@ -3119,9 +3172,10 @@ Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1200))]).then(()=
 </script>
 
 <script>/* Warm the demo while the story is read: download the two on-device models (photo grader 89 MB, small AI ~500 MB)
-   into the browser's cache in the background, so the demo starts instantly. Skipped on data-saver connections. */
+   into the browser's cache in the background (starts right after the page loads), so the demo starts instantly. Files already cached are never fetched again. Skipped on data-saver / cellular connections. */
 (()=>{const go=async()=>{try{
-  if(!('caches' in self)||(navigator.connection&&(navigator.connection.saveData||navigator.connection.type==='cellular'))||matchMedia('(pointer:coarse)').matches||innerWidth<=760)return;   // never on phones / mobile data
+  if(!('caches' in self)||(navigator.connection&&(navigator.connection.saveData||navigator.connection.type==='cellular'))||(navigator.connection&&navigator.connection.effectiveType&&/^(slow-2g|2g)$/.test(navigator.connection.effectiveType)))return;   // never on data-saver / cellular / 2G
+  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}   // ask the browser to keep the models
   let f16=false;try{if(navigator.gpu){const a=await navigator.gpu.requestAdapter();f16=!!(a&&a.features&&a.features.has('shader-f16'))}}catch(e){}
   const HF='https://huggingface.co/onnx-community/Qwen2.5-0.5B-Instruct/resolve/main/';
   const jobs=[['dure-grader-v2','https://huggingface.co/Xenova/clip-vit-base-patch32/resolve/main/onnx/vision_model_quantized.onnx'],
@@ -3129,7 +3183,7 @@ Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1200))]).then(()=
   for(const [name,url] of jobs){const c=await caches.open(name);if(await c.match(url))continue;
     const r=await fetch(url,{priority:'low'});if(r.ok)await c.put(url,r)}
 }catch(e){console.info('model pre-download skipped',e)}};
-addEventListener('load',()=>setTimeout(()=>('requestIdleCallback' in self?requestIdleCallback(go,{timeout:8000}):go()),4000))})();
+addEventListener('load',()=>setTimeout(()=>('requestIdleCallback' in self?requestIdleCallback(go,{timeout:3000}):go()),1200))})();
 </script>
 </body>
 </html>
