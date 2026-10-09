@@ -1,0 +1,214 @@
+{
+"0": {
+"F": [
+{
+"t": "0.4",
+"me": false,
+"html": "<span class=\"f\">Dure AI 06:30</span><span>Bondia! Coffee prices this week, per kg<br>------------<br>A $3.17–3.23<br>B $2.80–2.86<br>C $2.12–2.18<br>------------<br>Selling? Reply in your own words.</span>"
+},
+{
+"t": "0.75",
+"me": false,
+"html": "<span class=\"f\">Dure AI</span><span><b>Dure's suggestion</b><br>1 Recent trades: last 4 lots 3× grade A, avg $2.62. Record 79%.<br>2 Market: A $3.17–3.23, up 21% on last week.<br>3 Weather &amp; road: heavy rain, Gleno road flooded: only 4 buyers.<br>4 Suggest: minimum near $3.17, photo before 10:00.</span>"
+}
+],
+"B": [
+{
+"t": "0.4",
+"me": false,
+"html": "Bondia! Coffee prices this week, per kg<br>------------<br><b>A</b> $3.17–3.23<br><b>B</b> $2.80–2.86<br><b>C</b> $2.12–2.18"
+},
+{
+"t": "0.75",
+"me": false,
+"html": "<b>Buyer brief · 06:30</b><br>Lot: ~1,800 kg expected · A 45% · B 35% · C 20%.<br>Last week cleared $2.34 (B basis). 4 buyers; Gleno road flooded.<br>Suggested bid: <b>$2.69–2.94/kg</b> (B basis)."
+}
+]
+},
+"1": {
+"F": [
+{
+"t": "a0.2",
+"me": true,
+"html": "<span class=\"f\">Noor</span><span>bondia! kafe 40kilu diak los.. fan 2.84 bele?</span>"
+},
+{
+"t": "a0.9",
+"me": false,
+"html": "<span class=\"f\">Dure AI</span><span>Got it ✓<br>------------<br>Crop: coffee<br>Quantity: 40 kg<br>Grade: A<br>Your ask: $2.84/kg<br>------------<br>Now send one photo of your coffee beans, spread out.</span>"
+},
+{
+"t": "p1.2",
+"me": true,
+"html": "<span class=\"f\">Noor</span><span>[photo sent]</span>"
+},
+{
+"t": "p7.8",
+"me": false,
+"html": "<span class=\"f\">Dure AI</span><span>First look: grade A (93%)<br>------------<br>A person checks every sack at pickup. That grade is final.</span>"
+}
+],
+"B": []
+},
+"2": {
+"F": [
+{
+"t": "a1.2",
+"me": false,
+"html": "<span class=\"f\">Dure AI</span><span>You're in this week's Letefoho pool<br>------------<br>190 of 2,000 kg so far · 3 farms<br>I'll text you when it's full.</span>"
+},
+{
+"t": "a4.6",
+"me": false,
+"html": "<span class=\"f\">Dure AI</span><span>Pool closed<br>------------<br>1,890 kg · 22 farms<br>Bidding opens $2.74/kg<br>Closes 17:00</span>"
+}
+],
+"B": [
+{
+"t": "a3.0",
+"me": false,
+"html": "<b>New pool · Letefoho coffee</b><br>------------<br>1,890 kg · 22 farms<br>First-look photo grades:"
+},
+{
+"t": "a4.0",
+"me": false,
+"html": "[img][img][img]"
+},
+{
+"t": "a4.8",
+"me": false,
+"html": "<b>Pool closed</b><br>------------<br>1,890 kg · 22 farms<br>Bidding opens $2.74/kg · closes 17:00"
+}
+]
+},
+"3": {
+"F": [
+{
+"t": "0.93",
+"me": false,
+"html": "<span class=\"f\">Dure AI</span><span>Auction closed<br>------------<br>4 buyers bid<br>Lot price $2.81/kg<br>A $3.14 · B $2.78 · C $2.11</span>"
+}
+],
+"B": [
+{
+"t": "0.1",
+"me": false,
+"html": "<b>Auction open</b> until 17:00<br>Opening price $2.74/kg (grade B basis)<br>Reply with your price per kg."
+},
+{
+"t": "0.42",
+"me": true,
+"html": "2.77"
+},
+{
+"t": "0.58",
+"me": false,
+"html": "Outbid: Specialty roaster bids $2.79. Raise?"
+},
+{
+"t": "0.7",
+"me": true,
+"html": "2.81"
+},
+{
+"t": "0.9",
+"me": false,
+"html": "<b>Auction closed</b><br>------------<br>You won at $2.81/kg<br>A $3.14 · B $2.78 · C $2.11"
+}
+]
+},
+"4": {
+"F": [
+{
+"t": "0.1",
+"me": false,
+"html": "<span class=\"f\">Dure AI</span><span>Sold ✓<br>------------<br>40 kg · grade A<br>$3.14/kg = $125.60<br>------------<br>Pickup Thu 07:00, church</span>"
+}
+],
+"B": [
+{
+"t": "0.6",
+"me": false,
+"html": "<b>Lot locked</b><br>------------<br>1,530 kg · 18 farms sold<br>Prepay to book the truck: <span class=\"paybtn\">Pay $4,250.85</span>"
+},
+{
+"t": "0.9",
+"me": false,
+"html": "Prepayment received ✓ Truck booked for Thu 07:00, Letefoho church."
+}
+]
+},
+"5": {
+"F": [
+{
+"t": "0.3",
+"me": true,
+"html": "<span class=\"f\">Noor</span><span>tau ona iha igreja</span>"
+},
+{
+"t": "0.5",
+"me": false,
+"html": "<span class=\"f\">Dure AI</span><span>Got it ✓<br>------------<br>Sack #0412 at the pickup point.<br>Truck comes at 07:00.</span>"
+},
+{
+"t": "0.85",
+"me": false,
+"html": "<span class=\"f\">Dure AI</span><span>Picked up ✓<br>------------<br>Sack #0412 · 40 kg<br>Grade A confirmed by hand<br>On truck 2 to Dili</span>"
+}
+],
+"B": [
+{
+"t": "0.86",
+"me": false,
+"html": "<b>Picked up ✓</b><br>------------<br>Hand-checked: 1,530 kg from 18 farms<br>On the truck to Dili"
+}
+]
+},
+"6": {
+"F": [
+{
+"t": "0.87",
+"me": false,
+"html": "<span class=\"f\">Dure AI</span><span>Paid ✓<br>------------<br>+$125.60 to your mobile wallet<br>Balance $169.57</span>"
+}
+],
+"B": [
+{
+"t": "0.3",
+"me": false,
+"html": "<b>Delivered ✓</b><br>------------<br>1,530 kg to your warehouse, Dili"
+},
+{
+"t": "0.8",
+"me": false,
+"html": "Your $4,250.85 prepayment is now released: 18 farmers paid their share."
+}
+]
+},
+"7": {
+"F": [
+{
+"t": "0.15",
+"me": true,
+"html": "<span class=\"f\">Noor</span><span>SCORE</span>"
+},
+{
+"t": "0.45",
+"me": false,
+"html": "<span class=\"f\">Dure AI</span><span>Your record<br>------------<br>On time · grade matched the photo<br>Likely to deliver: 83% (was 79%)</span>"
+}
+],
+"B": [
+{
+"t": "0.55",
+"me": true,
+"html": "SCORE"
+},
+{
+"t": "0.75",
+"me": false,
+"html": "<b>Your record</b><br>------------<br>Buys: 9 · prepaid on time: 9<br>Reliability: 100%"
+}
+]
+}
+}
