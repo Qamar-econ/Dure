@@ -36,6 +36,7 @@ shutil.copy(os.path.join(S, 'grader.onnx'), os.path.join(D, 'grader.onnx'))
 if os.path.exists(os.path.join(ROOT, 'og.png')):
     shutil.copy(os.path.join(ROOT, 'og.png'), os.path.join(D, 'og.png'))
 shutil.copy(os.path.join(S, '_headers'), os.path.join(D, '_headers'))
-if os.path.exists(os.path.join(S, 'm_proto.html')):   # mobile prototype, for review only
+if os.path.exists(os.path.join(S, 'm_proto.html')):   # phone and tablet edition
     shutil.copy(os.path.join(S, 'm_proto.html'), os.path.join(D, 'm-proto.html'))
+    shutil.copy(os.path.join(S, 'm_proto.html'), os.path.join(D, 'm.html'))   # the phone and tablet edition; index.html sends touch devices here
 print('built', len(site) // 1024, 'KB site,', len(demo) // 1024, 'KB demo')

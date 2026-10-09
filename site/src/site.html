@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* phones and tablets get the phone and tablet edition; ?full=1 keeps this animated version (the edition links back here with it) */
+(function(){try{if(/[?&]full=1/.test(location.search))return;var M=function(q){return matchMedia(q).matches};
+if(M('(max-width: 1024px)')||(M('(pointer: coarse)')&&M('(hover: none)')))location.replace('m.html'+location.hash)}catch(e){}})();</script>
 <title>Dure — Cooperate through messaging</title>
 <meta name="description" content="Dure does the job of a coffee cooperative by text message: farmers in Ermera, Timor-Leste pool their coffee, buyers bid for it, and a small AI reads plain SMS in Tetum and English, even when the power is out.">
 <meta name="theme-color" content="#F2EADA">

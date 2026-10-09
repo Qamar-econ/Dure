@@ -18,6 +18,7 @@ FIG = json.load(open(os.path.join(SRC, 'm_figs.json')))
 MSG = json.load(open(os.path.join(HERE, 'how_msgs.json')))
 TXT = json.load(open(os.path.join(HERE, 'texts.json')))
 PART = json.load(open(os.path.join(SRC, 'm_parts.json')))
+BEAT = json.load(open(os.path.join(SRC, 'm_beats.json')))
 
 
 def sprite(part, key, scale, cls='', attrs='', flip_ids=True):
@@ -118,15 +119,15 @@ SAY = {
 }
 DUR = [4.4, 10.5, 5.4, 4.2, 4.2, 5.2, 5.6, 3.6]
 # where each step's dashboard sits in its thread (after this many messages), and what it is
-FIGS = {   # (after how many messages, what): each dashboard shows its one-line reading; the full card opens on tap
-    0: (2, lambda: N.more(N.dsum('Grade A today <b>$2.74–2.90</b> · 4 buyers · road flooded'), N.mx_price(price_chart()), 'dsh')),
-    1: (3, lambda: N.more(N.dsum('First look <b>grade A</b> · 93% · defects: none, none, few, even'), N.mx_photo(), 'dsh')),
-    2: (2, lambda: N.more(N.dsum('One lot <b>1,890 kg</b> · A 1,000 · B 600 · C 400'), N.mx_pool(), 'dsh')),
-    3: (2, lambda: N.more(N.dsum('Cleared at <b>$2.81</b> · 4 buyers bid'), N.mx_book(), 'dsh')),
-    4: (1, lambda: N.more(N.dsum('<b>18 YES</b> · 4 NO · Noor is in'), N.mx_vote(), 'dsh')),
-    5: (9, lambda: ''),
-    6: (2, lambda: N.more(N.dsum('<b>$4,250.85</b> in · 18 wallets paid · Noor +$125.60'), N.mx_pay(), 'dsh')),
-    7: (2, lambda: N.more(N.dsum('Grades confirmed <b>92%</b> · on time 13 / 14'), N.mx_score(), 'dsh')),
+FIGS = {   # each step's dashboard, condensed to its essentials
+    0: (0, lambda: N.mx_price(price_chart())),
+    1: (0, N.mx_photo),
+    2: (0, N.mx_pool),
+    3: (0, N.mx_book),
+    4: (0, N.mx_vote),
+    5: (0, lambda: ''),
+    6: (0, N.mx_pay),
+    7: (0, N.mx_score),
 }
 
 
@@ -156,13 +157,8 @@ def thread():
                 items.append((tsec(s, m['t']), side, m))
         items.sort(key=lambda x: x[0])
         at, figf = FIGS[s]
-        body, lastside, n = [], None, 0
+        cols, n = {'F': [], 'B': []}, 0
         for k, (t, side, m) in enumerate(items):
-            if k == at:
-                f = figf()
-                if f:
-                    body.append(f'<figure class="dash">{f}</figure>')
-                lastside = None
             hm = m['html']
             if side == 'F':
                 sender = re.search(r'<span class="f">(.*?)</span>', hm).group(1)
@@ -176,19 +172,17 @@ def thread():
                 text = text.replace('[sack]', PART['sackA'].replace('<svg class="ph"', '<svg class="ph" role="img" aria-label="The driver\'s photo of sack #0412: 40 kg, grade A, checked"', 1))
             if '[img]' in text:
                 text = '<span class="imgs">' + ''.join(f'<span>{PART["photo" + g].replace("<svg ", f"<svg class=ph aria-label=\"Grade {g} photo\" ", 1)}<i>{g}</i></span>' for g in 'ABC') + '</span>'
-            who = ''
             cls = f'msg {side}{" me" if mine else ""}'
-            body.append(f'{who}<div class="{cls}" style="--i:{n}"><span class="sd">{html.escape(re.sub("<[^>]+>", "", sender)) if not mine else ("Noor" if side == "F" else "Buyer")}</span>{bubble_text(text)}</div>')
+            cols[side].append(f'<div class="{cls}" style="--i:{n}"><span class="sd">{html.escape(re.sub("<[^>]+>", "", sender)) if not mine else ("Noor" if side == "F" else "Buyer")}</span>{bubble_text(text)}</div>')
             n += 1
-        if at >= len(items) and figf():
-            body.append(f'<figure class="dash">{figf()}</figure>')
+        # Noor's side and the buyer's side run next to each other; a step with only one side uses the full width
+        both = cols['F'] and cols['B']
+        body = [f'<div class="cols{"" if both else " one " + ("F" if cols["F"] else "B")}">' +
+                (f'<div class="cF">{"".join(cols["F"])}</div>' if cols['F'] else '') + (f'<div class="cB">{"".join(cols["B"])}</div>' if cols['B'] else '') + '</div>']
+        f = figf()
+        if f:
+            body.append(f'<figure class="dash">{f}</figure>')
         t, p = HOW[s]
-        # the opening of each exchange and its dashboard show; the rest of the conversation opens on tap
-        cut = next((k + 1 for k, b in enumerate(body) if b.startswith('<figure')), min(2, len(body)))
-        rest = body[cut:]
-        if len(rest) >= 2:
-            nm = sum(1 for b in rest if 'class="msg' in b)
-            body = body[:cut] + [f'<details class="more cont"><summary><span>Continue the exchange · {nm} more</span><i aria-hidden="true"></i></summary><div class="mb">{"".join(rest)}</div></details>']
         if s == 0:
             body.insert(0, '<div class="sides" aria-hidden="true"><span>Noor</span><span>Buyer</span></div>')
         out.append(f'<article class="hstep rv"><header><span class="no">{s+1}<i>/8</i></span><h3>{t}</h3><p>{p}</p></header><div class="conv">{"".join(body)}</div></article>')
@@ -223,16 +217,16 @@ TRAIN = re.findall(r'<img src="(assets/train/t\d+\.jpg)"[^>]*title="([^"]*)"', w
 
 def tw_block(i, figs):
     n, h3, p, c = TW[i]
-    note = N.more('Notes and sources', f'<p class="note">{c}</p>', 'src') if c else ''
+    note = f'<p class="note">{c}</p>' if c else ''
     return (f'<div class="tw rv"><div class="twt"><div class="kick">{n}</div><h3>{h3}</h3><p>{p}</p>{note}</div><div class="twf">{figs}</div></div>')
 
 
 PARSER = ('<div class="panel parser"><div class="ph"><span>Dure AI · message parser</span><span><i class="ok"></i>Tetum · 2 spellings fixed</span></div>'
           '<div class="raw"><mark>bondia!</mark> <mark class="k0">kafe</mark> <mark class="k1">40kilu</mark> <mark class="k2">diak los..</mark> <mark class="k3">fan 2.84</mark> <mark>bele? ok</mark></div>'
-          '<details class="more"><summary><span>What it picked out</span><i aria-hidden="true"></i></summary><dl>' + ''.join(f'<div><dt><span>{a}</span></dt><dd><small>{b}</small><b>{c}</b></dd></div>' for a, b, c in [
+          '<dl>' + ''.join(f'<div><dt><span>{a}</span></dt><dd><small>{b}</small><b>{c}</b></dd></div>' for a, b, c in [
               ('kafe', 'Crop', 'coffee'), ('40kilu', 'Quantity', '40 kg'), ('diak los..', 'Grade', 'A · preliminary'),
               ('fan 2.84', 'Ask (hidden)', '$2.84 / kg'), ('bondia! bele? ok', 'Intent', 'offer to sell')]) +
-          '</dl></details><div class="reply"><small>reply sent</small><span>Diak! Haruka foto ida? (a photo?)</span></div></div>')
+          '</dl><div class="reply"><small>reply sent</small><span>Diak! Haruka foto ida? (a photo?)</span></div></div>')
 
 BUYERS = ('<div class="panel buyers"><div><small>Buyers too · likely to pay on time</small><b>Exporter, Dili</b><span>9 purchases · 9 paid on time · 0 disputes</span></div><strong>88%</strong></div>'
           '<p class="est">Dure AI\'s estimate, ± a few points. Land and volume aren\'t counted.</p>')
@@ -297,25 +291,13 @@ PAGE = f'''<!doctype html>
   <div class="big rv"><span class="n"><span class="cnt" data-to="98">98</span>%</span><p>of Ermera's coffee is bought by just four traders in the capital <span class="soft">(survey of 100 farmers, 2014)</span>.</p><cite>Cristovão, Bogor Agricultural University, 2015</cite></div>
 </section>
 
-<!-- 3-4 · the road, seen from above -->
-<section class="road zoom" id="road" data-c="3" data-t="The road" style="--h:{ROAD_H}">
-  <div class="sky"><div class="pan">{road_svg()}{sprite(PART['trader'], 'tr', .27, 'still', 'data-at="250,1722"')}{sprite(PART['fnoor'], 'nr', .24, 'walker noor front', 'data-p="roadLine"')}</div><div class="rain" aria-hidden="true"><i></i></div>
-    <div class="cap" style="--y:110;--x:4"><p class="kick">Harvest season</p><p>Noor needs cash within three days <em>for her daughter's school fees.</em></p></div>
-    <div class="bang" style="--y:700;--x:4">Flood.</div>
-    <div class="cap" style="--y:900;--x:40"><p>“Recent heavy rains have damaged many roads and bridges in the country, disrupting people's access to markets.”</p><cite>Asian Development Bank, Timor-Leste</cite></div>
-    <div class="bang" style="--y:1150;--x:4">Landslide.</div>
-    <div class="cap" style="--y:1470;--x:4" data-c="4" data-t="The buyer"><p class="kick">Unfair pricing</p><p>No truck from Dili risks the road, except one trader's. <b>He names his price, and she has to accept it.</b></p></div>
-  </div>
-</section>
-
-<!-- 5 · together -->
-<section class="road tog" id="tog" data-c="5" data-t="Together" style="--h:{TOG_H}">
-  <div class="sky"><div class="pan">{together_svg()}<div class="heap" id="heap" style="--hx:{HEAP[0]};--hy:{HEAP[1]}">{heap_svg()}</div>{walkers}{sprite(PART['fnoor'], 'nt', .21, 'walker noor front', 'data-p="mainLine"')}<div class="sign" id="sign" style="--hx:{HEAP[0]}"><b id="kg">40 kg</b><span>best offer?</span></div></div>
-    <div class="cap" style="--y:150;--x:24"><p class="kick">The magic of cooperation</p><p>Noor isn't alone on that road.</p></div>
-    <div class="cap" style="--y:440;--x:40"><p class="kick">Collective bargaining</p><p>Same coffee, more of it. <em>A better price.</em></p></div>
-  </div>
+<!-- 3-5 · what happens to Noor, and what changes when she isn't alone -->
+<section class="txt" data-c="3" data-t="The road">
+  {N.story_beats()}
 </section>
 <section class="txt" data-c="5" data-t="Together">
+  <h2 class="rv">What if her neighbours <em>sold with her?</em></h2>
+  <div class="rv">{N.alone_together()}</div>
   <p class="lead rv">This is cooperation. <b>This is Dure.</b></p>
   <div class="big rv"><span class="n"><span class="cnt" data-to="58">58</span>%</span><p>of 239 studies found that farmer organisations raised their members' incomes.</p><cite>Bizikova et al., “A scoping review of the contributions of farmers' organizations to smallholder agriculture”, Nature Food, 2020</cite></div>
   <p class="q rv">So why isn't she benefiting from the Letefoho coffee cooperative?</p>
@@ -368,7 +350,6 @@ PAGE = f'''<!doctype html>
   <p class="chapno rv">8 · How it works</p>
   <h2 class="rv">One week, <em>by text message.</em></h2>
   <p class="rv lead2">Noor on a basic phone, a buyer on a smartphone. In between, Dure does a cooperative office's work.</p>
-  <p class="swipe" aria-hidden="true">Swipe for each step <span>→</span></p>
   <div class="hsteps">{thread()}</div>
   <p class="illus">Illustrative example — names, volumes and prices are not real data.</p>
 </section>
@@ -377,9 +358,9 @@ PAGE = f'''<!doctype html>
 <section class="txt twsec" data-c="9" data-t="Technical walkthrough">
   <p class="chapno rv">9 · Technical walkthrough</p>
   {tw_block(0, PARSER)}
-  {tw_block(1, '<div class="panelwrap">' + N.photo() + N.more('How it reaches a grade', N.steps()) + '</div>' + N.more('Some of our training photos', '<div class="train">' + ''.join(f'<img src="{a}" alt="" title="{t}" loading="lazy" width="60" height="60">' for a, t in TRAIN) + '</div><p class="tcap">Wikimedia Commons: H. Ulver, M. C. Wright, F. Quijano (CC BY-SA 4.0); Forest &amp; Kim Starr (CC BY 3.0)</p>'))}
-  {tw_block(2, '<div class="panelwrap">' + N.dots() + N.more('What the opening price weighs', N.weighs()) + '</div>')}
-  {tw_block(3, N.tabs([('Noor · 2 ha', N.rep('noor')), ('Big grower · 30 ha', N.rep('big'))], 'Two farmers') + N.more('Buyers are scored too', BUYERS))}
+  {tw_block(1, N.grade_compact() + '<div class="train">' + ''.join(f'<img src="{a}" alt="" title="{t}" loading="lazy" width="60" height="60">' for a, t in TRAIN) + '</div><p class="tcap">Some of our training photos · Wikimedia Commons: H. Ulver, M. C. Wright, F. Quijano (CC BY-SA 4.0); Forest &amp; Kim Starr (CC BY 3.0)</p>')}
+  {tw_block(2, N.market_compact())}
+  {tw_block(3, N.tabs([('Noor · 2 ha', N.rep_compact('noor')), ('Big grower · 30 ha', N.rep_compact('big'))], 'Two farmers') + BUYERS)}
   {tw_block(4, N.tabs([('Blended pool', N.blend()), ('Fixed pool', N.fixed())], 'Two markets'))}
 </section>
 
@@ -413,11 +394,11 @@ PAGE = f'''<!doctype html>
     <div class="rv"><h4>The power or the server goes down.</h4><p>The rules engine keeps taking offers by text. The small model rechecks them later, and any change goes back to the farmer to confirm.</p></div>
   </div>
   <h3 class="sub rv">Electricity is a real problem in Timor-Leste.</h3>
-  {N.more('Power cuts: three numbers', '''<dl class="costs ev">
+  <dl class="costs ev">
     <div class="rv"><dt>40%</dt><dd>of firms had power cuts in a year, losing <b>9.4%</b> of sales.<cite>World Bank Enterprise Survey, 2015</cite></dd></div>
     <div class="rv"><dt>24 h</dt><dd>outages in Viqueque. Dili's hospital runs on generators each time.<cite>Tatoli, 2022–23</cite></dd></div>
     <div class="rv"><dt>36%</dt><dd>of Dili customers never report an outage.<cite>TANE survey, 2022</cite></dd></div>
-  </dl>''')}
+  </dl>
 </section>
 
 </div>

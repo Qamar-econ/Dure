@@ -82,11 +82,11 @@ $$('details.dsh').forEach(d=>d.addEventListener('toggle',()=>{if(d.open)requestA
 /* on a wide screen there is room: whole conversations show from the start */
 
 
-/* the step row is as tall as the step on screen, so a short step leaves no gap below it */
-$$('.hsteps').forEach(h=>{const st=[...h.children];let t=0;
-  const fit=()=>{const i=Math.round(h.scrollLeft/h.clientWidth),el=st[Math.max(0,Math.min(st.length-1,i))];h.style.height=(el.offsetHeight+26)+'px'};
-  h.addEventListener('scroll',()=>{clearTimeout(t);t=setTimeout(fit,90)},{passive:true});addEventListener('resize',fit);
-  h.addEventListener('toggle',fit,true);new ResizeObserver(fit).observe(st[0]);fit()});
+/* alone vs together: tap to switch; the first time it comes into view it switches by itself */
+$$('.at').forEach(at=>{const bs=[...at.querySelectorAll('.at-t button')];let touched=false;
+  const set=m=>{at.dataset.m=m;bs.forEach(b=>b.setAttribute('aria-selected',b.dataset.m===m))};
+  bs.forEach(b=>b.addEventListener('click',()=>{touched=true;set(b.dataset.m)}));
+  if(!RM){const o=new IntersectionObserver(es=>{if(es[0].isIntersecting){o.disconnect();setTimeout(()=>{if(!touched)set('t')},1800)}},{threshold:.6});o.observe(at)}});
 
 /* videos load only when tapped */
 $$('.vid').forEach(b=>b.addEventListener('click',()=>{if(b.classList.contains('on'))return;b.classList.add('on');
