@@ -25,10 +25,15 @@ def rnd(i):
 
 
 def tree(x, y, r, k=0):
-    """a tree seen from above: canopy, a lighter crown, a soft shadow"""
-    return (f'<ellipse cx="{x+r*.35:.1f}" cy="{y+r*.4:.1f}" rx="{r:.1f}" ry="{r*.9:.1f}" fill="#5F7A4E" opacity=".28"/>'
-            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r:.1f}" fill="{C["tree"] if k % 2 else C["treeD"]}"/>'
-            f'<circle cx="{x-r*.25:.1f}" cy="{y-r*.3:.1f}" r="{r*.55:.1f}" fill="{C["tree2"]}" opacity=".75"/>')
+    """a tree seen from above: a soft shadow, a lobed canopy, a lit crown and a few leaf clusters"""
+    base = C["tree"] if k % 2 else C["treeD"]
+    lobes = ''.join(f'<circle cx="{x+math.cos(a)*r*.42:.1f}" cy="{y+math.sin(a)*r*.42:.1f}" r="{r*.62:.1f}" fill="{base}"/>'
+                    for a in [i * 2 * math.pi / 6 + k for i in range(6)])
+    lit = ''.join(f'<circle cx="{x-r*.28+math.cos(a)*r*.22:.1f}" cy="{y-r*.3+math.sin(a)*r*.22:.1f}" r="{r*.3:.1f}" fill="{C["tree2"]}" opacity=".8"/>'
+                  for a in [i * 2 * math.pi / 3 + k for i in range(3)])
+    dots = ''.join(f'<circle cx="{x+(rnd(k*7+i)-.5)*r*1.2:.1f}" cy="{y+(rnd(k*7+i+3)-.5)*r*1.2:.1f}" r="{r*.09:.1f}" fill="#3F6A45" opacity=".55"/>' for i in range(5))
+    return (f'<ellipse cx="{x+r*.45:.1f}" cy="{y+r*.5:.1f}" rx="{r*1.05:.1f}" ry="{r*.95:.1f}" fill="#4F6B42" opacity=".26"/>'
+            f'{lobes}<circle cx="{x:.1f}" cy="{y:.1f}" r="{r*.7:.1f}" fill="{base}"/>{lit}{dots}')
 
 
 def palm(x, y, r, k=0):
@@ -40,12 +45,14 @@ def palm(x, y, r, k=0):
 
 
 def house(x, y, w, h, roof, ridge, rot=0):
-    """a pitched roof from above: two planes and a ridge"""
+    """a pitched roof from above: shadow, two planes with corrugation, ridge cap, a porch and a doorstep"""
+    ribs = ''.join(f'<path d="M{-w/2+i*w/9:.1f} {-h/2} V{h/2}" stroke="#000" stroke-opacity=".07" stroke-width="1"/>' for i in range(1, 9))
     return (f'<g transform="translate({x} {y}) rotate({rot})">'
-            f'<rect x="{-w/2+3}" y="{-h/2+4}" width="{w}" height="{h}" fill="#000" opacity=".12" rx="1.5"/>'
+            f'<rect x="{-w/2+4}" y="{-h/2+5}" width="{w}" height="{h}" fill="#2F2A20" opacity=".2" rx="2"/>'
+            f'<rect x="{-w*.18}" y="{h/2-2}" width="{w*.36}" height="9" fill="#BFA67C" rx="1"/>'
             f'<rect x="{-w/2}" y="{-h/2}" width="{w}" height="{h/2}" fill="{roof}" rx="1.5"/>'
-            f'<rect x="{-w/2}" y="0" width="{w}" height="{h/2}" fill="{ridge}" rx="1.5"/>'
-            f'<path d="M{-w/2} 0 H{w/2}" stroke="#000" stroke-opacity=".18" stroke-width="1.2"/></g>')
+            f'<rect x="{-w/2}" y="0" width="{w}" height="{h/2}" fill="{ridge}" rx="1.5"/>{ribs}'
+            f'<rect x="{-w/2}" y="-1.6" width="{w}" height="3.2" fill="#000" opacity=".22"/></g>')
 
 
 def coffee_rows(x0, y0, cols, rows, dx=15, dy=17, seed=0, ripe=.35):
@@ -62,6 +69,11 @@ def coffee_rows(x0, y0, cols, rows, dx=15, dy=17, seed=0, ripe=.35):
     return s
 
 
+def tufts(d_pts, seed=0):
+    return ''.join(f'<path d="M{x:.1f} {y:.1f} l-2 -5 M{x+2:.1f} {y:.1f} l0 -6 M{x+4:.1f} {y:.1f} l2 -5" stroke="#7E9A62" stroke-width="1.3" stroke-linecap="round"/>'
+                   for i, (x, y) in enumerate(d_pts))
+
+
 def road_path(d, w=15, track=True):
     s = (f'<path d="{d}" stroke="{C["roadEdge"]}" stroke-width="{w+5}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
          f'<path d="{d}" stroke="{C["road"]}" stroke-width="{w}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>')
@@ -76,12 +88,14 @@ def truck(x, y, rot, body, cab, load=True):
         for r in range(4):
             for c in range(2):
                 sacks += f'<rect x="{-22+c*23}" y="{-36+r*21}" width="20" height="18" rx="6" fill="#D9C29A" stroke="#B89E72" stroke-width="1"/>'
+    wheels = ''.join(f'<rect x="{sx}" y="{wy}" width="7" height="17" rx="2.5" fill="#2A2522"/>' for sx in (-33, 26) for wy in (-62, 20, 36))
     return (f'<g transform="translate({x} {y}) rotate({rot})">'
-            f'<rect x="-27" y="-62" width="60" height="140" rx="6" fill="#000" opacity=".14"/>'
-            f'<rect x="-29" y="-44" width="58" height="96" rx="3" fill="{body}"/>{sacks}'
-            f'<rect x="-27" y="-74" width="54" height="34" rx="7" fill="{cab}"/>'
-            f'<rect x="-21" y="-71" width="42" height="11" rx="3" fill="#5D7B86"/>'
-            f'<rect x="-31" y="-66" width="4" height="9" rx="1.5" fill="#2A2522"/><rect x="27" y="-66" width="4" height="9" rx="1.5" fill="#2A2522"/></g>')
+            f'<rect x="-25" y="-64" width="62" height="142" rx="6" fill="#2F2A20" opacity=".18"/>{wheels}'
+            f'<rect x="-29" y="-44" width="58" height="96" rx="3" fill="{body}"/>'
+            f'<rect x="-29" y="-44" width="58" height="96" rx="3" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="2"/>{sacks}'
+            f'<rect x="-27" y="-76" width="54" height="36" rx="8" fill="{cab}"/>'
+            f'<rect x="-21" y="-73" width="42" height="12" rx="3" fill="#5D7B86"/><path d="M-19 -71 L-8 -71" stroke="#fff" stroke-opacity=".4" stroke-width="2"/>'
+            f'<rect x="-33" y="-66" width="5" height="8" rx="1.5" fill="#2A2522"/><rect x="28" y="-66" width="5" height="8" rx="1.5" fill="#2A2522"/></g>')
 
 
 def person(x, y, rot, jacket, hair='#241A16', baskets=False, scale=1):
@@ -99,10 +113,10 @@ def person(x, y, rot, jacket, hair='#241A16', baskets=False, scale=1):
 
 
 # --------------------------------------------------------------------------- the road
-ROAD_H = 1840
+ROAD_H = 1960
 ROAD_D = ("M 300 196 C 300 262, 252 300, 196 326 S 92 404, 112 482 S 258 560, 268 650 "
           "S 232 760, 222 838 S 160 958, 142 1040 S 172 1162, 232 1232 S 300 1342, 262 1424 "
-          "S 168 1520, 180 1604 S 226 1676, 222 1712")
+          "S 168 1520, 180 1604 S 226 1676, 222 1712 S 200 1860, 200 1970")
 
 
 def road_svg():
@@ -137,7 +151,10 @@ def road_svg():
     # --- the river and the flooded bridge
     s.append(f'<path d="M -20 788 C 70 760, 150 838, 226 820 S 352 766, 420 796 L 420 858 C 352 830, 300 884, 226 878 S 78 824, -20 852 Z" fill="{C["water"]}"/>')
     s.append(f'<path d="M -20 788 C 70 760, 150 838, 226 820 S 352 766, 420 796" stroke="{C["ripple"]}" stroke-width="2" fill="none" opacity=".7"/>')
+    s.append(''.join(f'<ellipse cx="{x:.0f}" cy="{y:.0f}" rx="{r:.1f}" ry="{r*.7:.1f}" fill="#B9B3A3" stroke="#8E8A80" stroke-width=".8"/>' for x, y, r in
+                     [(40, 778, 4), (64, 772, 3), (330, 790, 4.5), (360, 784, 3), (90, 846, 3.5), (372, 858, 4), (300, 880, 3)]))
     s.append(road_path(ROAD_D))
+    s.append(f'<path id="roadMeasure" d="{ROAD_D}" fill="none" stroke="none"/>')
     # bridge planks across the river, then the flood over them
     s.append('<g transform="translate(224 834) rotate(-8)">' + ''.join(
         f'<rect x="-14" y="{-40+i*7}" width="28" height="5" rx="1" fill="#A5774A"/>' for i in range(12)) +
@@ -146,6 +163,9 @@ def road_svg():
     s.append(''.join(f'<path d="M{150+rnd(i)*150:.0f} {800+rnd(i+5)*90:.0f} q 9 -4 18 0 t 18 0" stroke="{C["ripple"]}" stroke-width="1.6" fill="none" opacity=".85"/>' for i in range(12)))
     s.append('<g transform="translate(276 862) rotate(24)"><rect x="-14" y="-2.5" width="28" height="5" rx="1" fill="#A5774A"/></g>'
              '<g transform="translate(176 812) rotate(-30)"><rect x="-12" y="-2.5" width="24" height="5" rx="1" fill="#A5774A"/></g>')
+    # puddles on the road where the rain falls
+    s.append(''.join(f'<ellipse cx="{x}" cy="{y}" rx="{rx}" ry="{ry}" fill="{C["water2"]}" opacity=".75" transform="rotate({a} {x} {y})"/>'
+                     for x, y, rx, ry, a in [(268, 640, 7, 3.5, 70), (178, 990, 8, 4, 50), (146, 1060, 6, 3, 80), (214, 1210, 7, 3.5, 40), (284, 1400, 6, 3, 75)]))
     # --- the hill and the landslide
     for i, (rx, ry, f) in enumerate([(150, 170, '#AFC28E'), (122, 140, '#A2B783'), (94, 110, '#95AC77'), (66, 80, '#889F6B'), (38, 48, '#7C935F')]):
         s.append(f'<ellipse cx="392" cy="1196" rx="{rx}" ry="{ry}" fill="{f}"/>')
@@ -160,9 +180,8 @@ def road_svg():
     # --- the trader at the end of the road
     s.append(f'<ellipse cx="236" cy="1730" rx="168" ry="78" fill="{C["soil"]}"/>')
     s.append(truck(320, 1742, 6, '#8B6A43', C['rust']))
-    s.append(person(262, 1716, -170, '#E3D6BA', hair='#3E7552'))
-    s.append('<g transform="translate(212 1668) rotate(-5)"><rect x="-46" y="-19" width="92" height="38" rx="3" fill="#C9A06A" stroke="#A67E4B" stroke-width="2"/>'
-             '<text x="0" y="7" text-anchor="middle" font-family="Newsreader" font-style="italic" font-weight="600" font-size="20" fill="#2A2522">$2.25/kg</text></g>')
+    pts = [(102, 470), (118, 500), (280, 640), (258, 700), (132, 1080), (150, 1010), (250, 1250), (270, 1300), (172, 1580), (190, 1630), (212, 1880), (190, 1920)]
+    s.append(tufts(pts))
     s.append(f'<path id="roadLine" d="{ROAD_D}" fill="none" stroke="none"/>')
     s.append('</svg>')
     return ''.join(s)
@@ -170,14 +189,15 @@ def road_svg():
 
 # --------------------------------------------------------------------------- together: the neighbours' paths join one road
 TOG_H = 980
-MAIN_D = "M 200 -10 C 200 120, 214 260, 206 400 S 192 600, 200 720"
-PATHS = [  # (start house, path into the main road, jacket)
-    ((58, 70), "M 58 96 C 70 190, 150 230, 204 300 S 200 600, 200 712", '#2E5E8A'),
-    ((340, 56), "M 336 82 C 320 170, 240 230, 208 330 S 196 610, 202 716", '#C9A06A'),
-    ((40, 330), "M 64 336 C 120 360, 170 400, 206 450 S 196 640, 198 718", '#6B5238'),
-    ((360, 330), "M 336 340 C 290 380, 240 420, 206 480 S 200 650, 202 722", '#5B6F7A'),
-    ((84, 590), "M 104 586 C 140 600, 176 640, 196 724", '#B7462E'),
+MAIN_D = "M 200 -10 C 200 120, 214 260, 206 400 S 192 600, 236 738"
+PATHS = [  # (start house, path to their place around the lot, jacket)
+    ((58, 70), "M 58 96 C 70 190, 150 230, 204 300 S 196 600, 132 748", '#2E5E8A'),
+    ((340, 56), "M 336 82 C 320 170, 240 230, 208 330 S 214 600, 300 752", '#C9A06A'),
+    ((40, 330), "M 64 336 C 120 360, 170 400, 206 450 S 190 680, 112 800", '#6B5238'),
+    ((360, 330), "M 336 340 C 290 380, 240 420, 206 480 S 222 680, 318 806", '#5B6F7A'),
+    ((84, 590), "M 104 586 C 140 600, 176 640, 168 830", '#B7462E'),
 ]
+HEAP = (214, 790)   # where the lot is piled
 
 
 def together_svg():
@@ -198,8 +218,6 @@ def together_svg():
         s.append(tree(x, y, r, i))
     # the gathering point: one big lot, and buyers arriving from Dili
     s.append(f'<ellipse cx="200" cy="772" rx="150" ry="62" fill="{C["soil"]}"/>')
-    s.append('<g id="pile">' + ''.join(
-        f'<rect x="{214+(i%5)*19}" y="{742+(i//5)*17}" width="17" height="15" rx="5" fill="#D9C29A" stroke="#B89E72" stroke-width="1"/>' for i in range(20)) + '</g>')
     s.append(truck(122, 900, -4, '#8B6A43', C['teal'], load=False))
     s.append(truck(278, 912, 5, '#8B6A43', C['tan'], load=False))
     s.append(f'<path id="mainLine" d="{MAIN_D}" fill="none" stroke="none"/>')
@@ -212,3 +230,21 @@ def together_svg():
 def walker_svg(jacket, baskets=True):
     """the moving figure, drawn once in its own small SVG so moving it never repaints the map"""
     return (f'<svg viewBox="-24 -24 48 48" width="48" height="48" aria-hidden="true">{person(0, 0, 0, jacket, baskets=baskets)}</svg>')
+
+
+def heap_svg():
+    """a heap of red coffee cherries, drawn once; the page grows it as the neighbours arrive"""
+    out = ['<svg viewBox="-80 -60 160 76" aria-hidden="true"><ellipse cx="4" cy="8" rx="76" ry="12" fill="#2F2A20" opacity=".18"/>']
+    for i in range(170):
+        a = rnd(i + 900) * math.pi
+        rr = rnd(i + 950)
+        x = math.cos(a) * 70 * rr
+        top = -52 * (1 - (x / 72) ** 2)            # a mound: higher in the middle
+        y = 6 + (top - 6) * rnd(i + 990) ** .7
+        col = ['#C23A2E', '#9E2A24', '#B8352A', '#7A2A20', '#D04A36'][i % 5]
+        out.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{4.2 + rnd(i + 1030) * 1.6:.1f}" fill="{col}"/>')
+    for i in range(40):
+        x, y = (rnd(i + 1100) - .5) * 110, -rnd(i + 1150) * 40
+        out.append(f'<circle cx="{x-1.2:.1f}" cy="{y-1.2:.1f}" r="1.4" fill="#fff" opacity=".35"/>')
+    out.append('</svg>')
+    return ''.join(out)
