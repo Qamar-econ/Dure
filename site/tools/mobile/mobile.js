@@ -34,7 +34,8 @@ function step(w,a,k){   // feet step with the distance actually walked
   if(w.front){   // walking toward the reader: one foot lifts, then the other, and the body rises a little on each step
     if(w.legF)w.legF.setAttribute('transform',`translate(0 ${(-Math.max(0,sn)*16).toFixed(1)})`);
     if(w.legB)w.legB.setAttribute('transform',`translate(0 ${(-Math.max(0,-sn)*16).toFixed(1)})`);
-    if(w.bd)w.bd.setAttribute('transform',`translate(0 ${(-Math.abs(sn)*6).toFixed(1)}) rotate(${(sn*1.2).toFixed(2)} 0 -200)`);return}
+    if(w.bd)w.bd.setAttribute('transform',`translate(0 ${(-Math.abs(sn)*6).toFixed(1)}) rotate(${(sn*1.2).toFixed(2)} 0 -200)`);
+    w.bks=w.bks||[...w.el.querySelectorAll('.bk')];w.bks.forEach(b=>b.setAttribute('transform',`rotate(${(-sn*5).toFixed(1)} ${b.dataset.x} -300)`));return}   // baskets swing from the pole
   const sw=sn*16;
   if(w.legF)w.legF.setAttribute('transform',`rotate(${sw.toFixed(1)} 4 -44)`);if(w.legB)w.legB.setAttribute('transform',`rotate(${(-sw).toFixed(1)} -6 -44)`)}
 function place(s){const r=s.svg.getBoundingClientRect(),k=r.width/s.vb.width,H=innerHeight;
@@ -42,20 +43,32 @@ function place(s){const r=s.svg.getBoundingClientRect(),k=r.width/s.vb.width,H=i
   s.ws.forEach((w,i)=>{let u;
     if(w.el.classList.contains('nb'))u=clamp((prog-.06-i*.04)/.6,0,1);             // neighbours set off one after another
     else if(s.heap)u=clamp((prog-.02)/.66,0,1);
-    else{let lo=0,hi=w.L;const yT=(H*.58-r.top)/k;                                      // Noor on the long road: where the road is at that height
+    else{let lo=0,hi=w.L;const yT=Math.min((H*.58-r.top)/k,1760);   // she stops at the trader's plaza                                      // Noor on the long road: where the road is at that height
       for(let n=0;n<22;n++){const m=(lo+hi)/2;if(w.p.getPointAtLength(m).y<yT)lo=m;else hi=m}u=lo/w.L}
     const a=w.p.getPointAtLength(u*w.L),b=w.p.getPointAtLength(Math.min(w.L,u*w.L+3)),c=w.p.getPointAtLength(Math.max(0,u*w.L-3));
     const dx=b.x-c.x;if(!w.front&&Math.abs(dx)>.6)w.el.classList.toggle('left',dx<0);   // front-facing figures never turn
-    w.el.style.transform=`translate3d(${(a.x*k-w.fx).toFixed(1)}px,${(a.y*k-w.fy).toFixed(1)}px,0)`;
-    step(w,a,k);if(w.el.classList.contains('noor'))noorX=a.x*k});
-  s.st.forEach(t=>{t.el.style.transform=`translate3d(${(t.x*k-t.fx).toFixed(1)}px,${(t.y*k-t.fy).toFixed(1)}px,0)`});
-  if(s.zoom&&noorX!=null){const vw=s.sky.clientWidth,pw=s.pan.offsetWidth;s.pan.style.transform=`translate3d(${clamp(vw/2-noorX,vw-pw,0).toFixed(1)}px,0,0)`}
-  if(s.heap){const g=clamp((prog-.12)/.62,0,1);s.heap.style.transform=`translate(-50%,-86%) scale(${(.12+.88*g).toFixed(3)})`;
+    w.el.style.transform=`translate3d(${((a.x-s.vb.x)*k-w.fx).toFixed(1)}px,${(a.y*k-w.fy).toFixed(1)}px,0)`;
+    step(w,a,k);if(w.el.classList.contains('noor'))noorX=(a.x-s.vb.x)*k});
+  s.st.forEach(t=>{t.el.style.transform=`translate3d(${((t.x-s.vb.x)*k-t.fx).toFixed(1)}px,${(t.y*k-t.fy).toFixed(1)}px,0)`});
+  {const vw=s.sky.clientWidth,pw=s.pan.offsetWidth,mid=(200-s.vb.x)*k,e=clamp((prog-.8)/.2,0,1),fx=s.zoom&&noorX!=null?noorX*(1-e)+mid*e:mid;   // at the road's end the view eases back to centre, where the gathering map picks up   // the road follows Noor; the gathering stays centred on the lot
+    s.pan.style.transform=`translate3d(${clamp(vw/2-fx,vw-pw,0).toFixed(1)}px,0,0)`}
+  if(s.heap){const g=clamp((prog-.12)/.62,0,1);   // one more basket on the stack as each neighbour arrives
+    if(!s.hb)s.hb=[...s.heap.querySelectorAll('.hb')];const n=Math.max(1,Math.ceil(g*s.hb.length));
+    if(n!==s.hn){s.hn=n;s.hb.forEach((b,i)=>b.style.opacity=i<n?1:0)}
     if(s.sign)s.sign.textContent=`${Math.round(40+g*460)} kg`}}
 function tick(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;scenes.forEach(s=>{if(s.on)place(s)});
   const h=document.documentElement.scrollHeight-innerHeight;$('#prog').style.transform=`scaleX(${h>0?scrollY/h:0})`})}
 addEventListener('scroll',tick,{passive:true});addEventListener('resize',tick);
 scenes.forEach(place);
+
+/* cards play their small entrance once, when they come into view */
+const io3=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io3.unobserve(e.target)}}),{rootMargin:'0px 0px -15% 0px'});
+$$('.dash,.nf').forEach(el=>io3.observe(el));
+
+/* the opening picture: clouds and mountains drift at different speeds as the page leaves it */
+const hero=$('.hero'),layers=hero?[['_pCloud',.32],['_pMount',.16]].flatMap(([id,f])=>[...hero.querySelectorAll(`[id$="${id}"]`)].map(el=>[el,f])):[];
+if(layers.length&&!RM){let hr=0;const par=()=>{hr=0;const y=scrollY;if(y>innerHeight*1.2)return;layers.forEach(([el,f])=>el.setAttribute('transform',`translate(0 ${(y*f).toFixed(1)})`))};
+  addEventListener('scroll',()=>{if(!hr)hr=requestAnimationFrame(par)},{passive:true})}
 
 /* videos load only when tapped */
 $$('.vid').forEach(b=>b.addEventListener('click',()=>{if(b.classList.contains('on'))return;b.classList.add('on');

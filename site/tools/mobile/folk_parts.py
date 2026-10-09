@@ -7,7 +7,7 @@ SRC = os.path.join(HERE, '..', '..', 'src')
 P = json.load(open(os.path.join(SRC, 'm_parts.json')))
 
 JS = r"""
-(PHONE) => {
+([PHONE,BASKET]) => {
 const F = FIG;
 const NOOR = {jk:'#3F8B5C',jkD:'#2D6B46',tais:'taisR',sel:'taisB',head:'cloth',clothC:'#2E5E8A',cuff:'#B7462E'};
 const M=(jk,jkD,bot,botD,extra)=>Object.assign({male:1,jk,jkD,bot,botD,inner:'#EFD9B0'},extra);
@@ -20,10 +20,13 @@ const NB=[M('#2F5C85','#244A6C','#5A4632','#46362A',{head:'cloth',clothC:'#A8452
 const tais0=F.taisDefs().replace(/^<svg[^>]*><defs>/,'').replace(/<\/defs><\/svg>$/,'');
 const clip=tais0+'<clipPath id="cL"><rect x="-200" y="-120" width="200" height="160"/></clipPath><clipPath id="cR"><rect x="0" y="-120" width="200" height="160"/></clipPath>';
 // legs get their own layers so the feet can step; the rest bobs as one body
-const walker=o=>{const s=F.folk(Object.assign({L:'down',R:'down',bag:1},o));
+// a carrying pole across the shoulders, a basket of cherries hanging from each end
+const bk=(x,c)=>`<g class="bk ${c}" data-x="${x}"><g transform="translate(${x} -244) scale(1.4)">${BASKET}</g></g>`;
+const POLE=`<path d="M-176 -300 L 176 -300" stroke="#8A6238" stroke-width="7" stroke-linecap="round"/>`+bk(-140,'l')+bk(140,'r');
+const walker=o=>{const s=F.folk(Object.assign({L:'down',R:'down'},o));
   const a=s.indexOf('/>')+2, b=s.indexOf(o.male?'<path d="M-54 -176':'<path d="M-52 -196');
   const legs=s.slice(a,b);
-  const html=s.slice(0,a)+`<g class="lb"><g clip-path="url(#cR)">${legs}</g></g><g class="lf"><g clip-path="url(#cL)">${legs}</g></g><g class="bd">${s.slice(b)}</g>`;
+  const html=s.slice(0,a)+`<g class="lb"><g clip-path="url(#cR)">${legs}</g></g><g class="lf"><g clip-path="url(#cL)">${legs}</g></g><g class="bd">${POLE}${s.slice(b)}</g>`;
   const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');document.body.appendChild(svg);svg.innerHTML=html;const bb=svg.getBBox();svg.remove();
   return {html, defs:'<defs>'+clip+'</defs>', bb:[bb.x-6, bb.y-6, bb.width+12, 8-(bb.y-6)]}};
 const tais=F.taisDefs().replace(/^<svg[^>]*><defs>/,'').replace(/<\/defs><\/svg>$/,'');
@@ -58,7 +61,13 @@ with sync_playwright() as p:
     pg.set_content('<body></body>'); pg.add_script_tag(path=os.path.join(SRC, 'figs.js'))
     site = open(os.path.join(SRC, 'site.html'), encoding='utf-8').read()
     i = site.index('const phone=`') + len('const phone=`'); j = site.index('`;', i)
-    r = pg.evaluate(JS, site[i:j])
+    w = P['walker']['html']; a = w.index('<g transform="translate(-100 -150)">') + len('<g transform="translate(-100 -150)">')
+    depth, k = 1, a
+    import re
+    for m in re.finditer(r'<g\b|</g>', w[a:]):
+        depth += 1 if m.group(0) == '<g' else -1
+        if depth == 0: k = a + m.start(); break
+    r = pg.evaluate(JS, [site[i:j], w[a:k]])
     b.close()
 P['fnoor'] = r['noor']; P['fnb'] = r['nb']; P['tais'] = r['tais']; P['power'] = r['power']; P['fphone'] = r['phoneNoor']
 json.dump(P, open(os.path.join(SRC, 'm_parts.json'), 'w'))

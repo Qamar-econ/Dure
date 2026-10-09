@@ -80,26 +80,53 @@ def price_chart():
 
 # ------------------------------------------------------------------ How it works as one message thread
 HOW = [
-    ('A price and a plan to start the day', 'At 6:30 every morning, Dure AI briefs a fair price from past trades and weather and road conditions. Noor uses it to decide her strategy.'),
-    ('From Tetum text to quality grading', 'An AI model trained on about 3,000 Tetum messages and 1,200 coffee bean photos helps Noor decide how to sell.'),
-    ('Leverage with a blended basket', 'Coffee of every grade goes into one basket. Together, smallholders gain bargaining power.'),
-    ('Interactive fair auction', 'When the basket reaches its threshold, the auction opens. Dure acts as a skilled broker: it offers buyers a reasonable starting price and adjusts it when demand is weak.'),
-    ('Democracy: the essence of a cooperative', 'Once the top bid is set, each farmer decides whether to sell. No one is forced to trade; Dure helps everyone make a sound choice.'),
-    ('Collective supply chain', 'Dure books the truck the moment the deal closes. Noor only leaves the agreed amount at the agreed place, and the grade is confirmed by hand at pickup.'),
-    ('Simple and credible payment', 'The buyer prepays. After delivery, each farmer gets her share. Noor has mobile money; farmers without it are paid by the truck driver at the next pickup.'),
-    ('Every deal builds trust', 'Dure AI builds a reputation score from the number of trades, punctuality and accurate quality. Better trust means better deals.'),
+    ('A price and a plan to start the day', 'At 6:30 Dure sends a fair price, built from past trades, weather and the road.'),
+    ('From Tetum text to quality grading', 'Noor writes in her own words and sends one photo. Dure reads both.'),
+    ('Leverage with a blended basket', 'Every grade goes into one lot. Together, smallholders have bargaining power.'),
+    ('Interactive fair auction', 'When the lot is full, buyers bid. Dure sets a reasonable opening price.'),
+    ('Democracy: the essence of a cooperative', 'Each farmer decides whether to sell at the final price. No one is forced.'),
+    ('Collective supply chain', 'Dure books one truck. The grade is confirmed by hand at pickup.'),
+    ('Simple and credible payment', 'The buyer prepays; after delivery each farmer gets her share.'),
+    ('Every deal builds trust', 'Trades, punctuality and accurate quality build a reputation score.'),
 ]
+# the phone edition's messages, cut to what each one has to say (None: dropped, it repeats another)
+SAY = {
+    ('0', 'F', 0): 'Bondia! This week, per kg<hr>A $3.17–3.23 · B $2.80–2.86 · C $2.12–2.18<hr>Selling? Reply in your own words.',
+    ('0', 'F', 1): '<b>Suggestion</b><br>Heavy rain, Gleno road flooded: only 4 buyers.<br>Ask at least $3.17; photo before 10:00.',
+    ('0', 'B', 0): None,
+    ('0', 'B', 1): '<b>Buyer brief · 06:30</b><br>~1,800 kg expected · A 45% · B 35% · C 20%<br>Suggested bid <b>$2.69–2.94/kg</b>',
+    ('1', 'F', 1): 'Got it ✓<hr>Coffee · 40 kg · grade A · ask $2.84/kg<hr>Now send one photo of your beans.',
+    ('1', 'F', 3): '<b>First look: grade A</b> (93%)<br>A person checks every sack at pickup.',
+    ('2', 'F', 0): 'You\'re in this week\'s pool · 190 of 2,000 kg',
+    ('2', 'F', 1): '<b>Pool closed</b> · 1,890 kg · 22 farms<br>Bidding opens $2.74/kg, closes 17:00',
+    ('2', 'B', 0): '<b>New pool</b> · 1,890 kg · 22 farms<br>First-look photo grades:',
+    ('2', 'B', 2): None,
+    ('3', 'F', 0): '<b>Auction closed</b> · $2.81/kg<br>A $3.14 · B $2.78 · C $2.11',
+    ('3', 'B', 0): '<b>Auction open</b> until 17:00 · opens $2.74/kg<br>Reply with your price.',
+    ('3', 'B', 4): '<b>You won</b> at $2.81/kg',
+    ('4', 'F', 0): '<b>Sold ✓</b> 40 kg · A · $125.60<br>Pickup Thu 07:00, church',
+    ('4', 'B', 0): '<b>Lot locked</b> · 1,530 kg · 18 farms<br><span class="paybtn">Pay $4,250.85</span>',
+    ('4', 'B', 1): 'Paid ✓ Truck booked: Thu 07:00, Letefoho church.',
+    ('5', 'F', 1): 'Got it ✓ Sack #0412, truck at 07:00.',
+    ('5', 'F', 2): '<b>Picked up ✓</b> 40 kg<br>Grade A confirmed by hand',
+    ('5', 'B', 0): '<b>Picked up ✓</b> 1,530 kg, hand-checked',
+    ('6', 'F', 0): '<b>Paid ✓</b> +$125.60 to your mobile wallet',
+    ('6', 'B', 0): '<b>Delivered ✓</b> 1,530 kg to your warehouse',
+    ('6', 'B', 1): 'Your prepayment is released: 18 farmers paid.',
+    ('7', 'F', 1): '<b>Your record</b> on time, grade matched<br>Likely to deliver: 83% (was 79%)',
+    ('7', 'B', 1): '<b>Your record</b> 9 buys, all prepaid on time',
+}
 DUR = [4.4, 10.5, 5.4, 4.2, 4.2, 5.2, 5.6, 3.6]
 # where each step's dashboard sits in its thread (after this many messages), and what it is
 FIGS = {
-    0: (2, lambda: price_chart() + '<figcaption>Coffee A, cleared prices · each dot is one cleared auction. <b>Today\'s reference: $2.74–2.90.</b></figcaption>'),
-    1: (3, lambda: N.checks() + '<figcaption>Four photo-visible defects from the SCA green coffee defect classification. The rest is checked by hand.</figcaption>'),
-    2: (2, N.pool),
-    3: (4, N.book),
-    4: (1, N.vote),
-    5: (2, N.pick),
-    6: (2, lambda: N.pay() + '<figcaption><b>$4,250.85 in · 18 farmers paid</b> · each by grade and weight.</figcaption>'),
-    7: (2, N.score),
+    0: (2, lambda: N.mx_price(price_chart())),
+    1: (3, lambda: N.mx_photo(PART['photoA'].replace('<svg ', '<svg class="mximg" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Noor\'s photo of her beans" ', 1))),
+    2: (2, N.mx_pool),
+    3: (4, N.mx_book),
+    4: (1, N.mx_vote),
+    5: (2, lambda: N.mx_pick(N.zoom('how5.pick', '0 70 380 257', 'pk', 'Pickup at the church: Noor beside her three sacks').replace('class="zm"', 'class="zm mximg"', 1))),
+    6: (2, N.mx_pay),
+    7: (2, N.mx_score),
 }
 
 
@@ -120,7 +147,12 @@ def thread():
         d = MSG[str(s)]
         items = []
         for side in 'FB':
-            for m in d[side]:
+            for q, m in enumerate(d[side]):
+                key = (str(s), side, q)
+                if key in SAY:
+                    if SAY[key] is None:
+                        continue
+                    m = dict(m, html=(f'<span class="f">Dure AI</span><span>{SAY[key]}</span>' if side == 'F' else SAY[key]))
                 items.append((tsec(s, m['t']), side, m))
         items.sort(key=lambda x: x[0])
         at, figf = FIGS[s]
@@ -137,19 +169,18 @@ def thread():
                 sender, text = ('Buyer' if m['me'] else 'Dure AI'), hm
             mine = m['me']
             if side == 'F' and text.strip() == '[photo sent]':
-                text = '<img src="assets/samples/sample_A.jpg" alt="Photo of Noor\'s coffee beans" width="200" height="150" loading="lazy">'
+                text = PART['photoA'].replace('<svg ', '<svg class="ph" role="img" aria-label="Noor\'s photo of her coffee beans in a basket" ', 1)
             if '[img]' in text:
-                text = '<span class="imgs">' + ''.join(f'<img src="assets/samples/sample_{g}.jpg" alt="Grade {g} sample" loading="lazy"><i>{g}</i>' for g in 'ABC') + '</span>'
+                text = '<span class="imgs">' + ''.join(f'<span>{PART["photo" + g].replace("<svg ", f"<svg class=ph aria-label=\"Grade {g} photo\" ", 1)}<i>{g}</i></span>' for g in 'ABC') + '</span>'
             who = ''
-            if side != lastside:
-                who = f'<div class="who {side}">{"Noor’s phone" if side == "F" else "A buyer’s phone · exporter, Dili"}</div>'
-                lastside = side
             cls = f'msg {side}{" me" if mine else ""}'
             body.append(f'{who}<div class="{cls}" style="--i:{n}"><span class="sd">{html.escape(re.sub("<[^>]+>", "", sender)) if not mine else ("Noor" if side == "F" else "Buyer")}</span>{bubble_text(text)}</div>')
             n += 1
         if at >= len(items):
             body.append(f'<figure class="dash">{figf()}</figure>')
         t, p = HOW[s]
+        if s == 0:
+            body.insert(0, '<div class="sides" aria-hidden="true"><span>Noor</span><span>Buyer</span></div>')
         out.append(f'<article class="hstep rv"><header><span class="no">{s+1}<i>/8</i></span><h3>{t}</h3><p>{p}</p></header><div class="conv">{"".join(body)}</div></article>')
     return ''.join(out)
 
@@ -170,6 +201,13 @@ def head(hh):
     n = re.search(r'<div class="n">(.*?)</div>', hh).group(1)
     return n, h3, p, (c.group(1) if c else '')
 TW = [head(x) for x in wa + ec]
+# the phone edition says each step in fewer words; citations stay as they are
+SHORT = ["A small model (Qwen2.5-0.5B) plus a rules engine, trained on about 3,000 Tetum and English texts. Dialects and spelling slips are fine.",
+         "A small vision model, trained on 1,200 real bean photos, sorts coffee into three grades on SCA defect criteria. It is exactly right 79% of the time; a hand check at pickup sets the final grade.",
+         "Dure estimates a fair price from recent sales, buyers, road and rain. Bidding opens a little under it.",
+         "Trust comes from trades, punctuality and steady quality, not farm size. Floods and other force majeure never count.",
+         "The blended pool is an open market with scale. The fixed pool links part of trusted farmers' output to steady buyers."]
+TW = [(n, h, SHORT[i], c) for i, (n, h, p, c) in enumerate(TW)]
 TRAIN = re.findall(r'<img src="(assets/train/t\d+\.jpg)"[^>]*title="([^"]*)"', wa[1])
 
 
@@ -229,7 +267,7 @@ PAGE = f'''<!doctype html>
 <!-- 1 · the field -->
 <section class="hero" data-c="1" data-t="The field">
   <div class="portrait">{fig('hero.noor', None, 'Noor, a coffee farmer in Letefoho, holding a basket of ripe cherries')}</div>
-  <div class="portrait wide">{fig('hero.wide', None, 'Noor in her coffee field below the mountains')}</div>
+  <div class="portrait wide">{fig('hero.tab', None, 'Noor in her coffee field below the mountains').replace('<svg ', '<svg preserveAspectRatio="xMinYMax slice" ', 1)}</div>
   <div class="htxt">
     <div class="mark">{LOGO}</div>
     <p class="tag">Cooperate through messaging.</p>
@@ -237,16 +275,13 @@ PAGE = f'''<!doctype html>
   </div>
 </section>
 <section class="txt" data-c="1" data-t="The field">
-  <p class="kick rv">Ermera, Timor-Leste — the coffee highlands</p>
   <h2 class="rv">A good harvest is <em>not a good price.</em></h2>
-  <p class="lead rv">Noor is an ambitious mother growing coffee on the slopes of Letefoho, Timor-Leste. She's capable. <em>But is the market treating her well?</em></p>
+  <p class="lead rv">Noor grows coffee on the slopes of Letefoho, Timor-Leste. <em>Is the market treating her well?</em></p>
 </section>
 
 <!-- 2 · the buyers -->
 <section class="txt split" data-c="2" data-t="The buyers">
-  <p class="kick rv">Where she farms</p>
   <h2 class="rv">The buyers are mostly in the capital, <em>Dili.</em></h2>
-  <p class="rv">Ermera grows close to half of Timor-Leste's coffee.</p>
   <div class="map rv">{fig('map.route', None, 'Map: Letefoho to Gleno 19 km, Gleno to Dili 45 km, 64 km by road')}</div>
   <div class="big rv"><span class="n"><span class="cnt" data-to="98">98</span>%</span><p>of Ermera's coffee is bought by just four traders in the capital <span class="soft">(survey of 100 farmers, 2014)</span>.</p><cite>Cristovão, Bogor Agricultural University, 2015</cite></div>
 </section>
@@ -254,34 +289,24 @@ PAGE = f'''<!doctype html>
 <!-- 3-4 · the road, seen from above -->
 <section class="road zoom" id="road" data-c="3" data-t="The road" style="--h:{ROAD_H}">
   <div class="sky"><div class="pan">{road_svg()}{sprite(PART['trader'], 'tr', .27, 'still', 'data-at="250,1722"')}{sprite(PART['fnoor'], 'nr', .24, 'walker noor front', 'data-p="roadLine"')}</div><div class="rain" aria-hidden="true"><i></i></div>
-    <div class="cap" style="--y:16;--x:4"><p class="kick">Harvest season</p><p>Noor has harvested fine Timor-Leste coffee. <em>She needs cash within three days to pay her daughter's school fees.</em></p></div>
-    <div class="cap r" style="--y:300;--x:46"><p class="kick">Monsoon</p><p>Timor-Leste's rainy season is notorious.</p></div>
+    <div class="cap" style="--y:16;--x:4"><p class="kick">Harvest season</p><p>Noor needs cash within three days <em>for her daughter's school fees.</em></p></div>
     <div class="bang" style="--y:700;--x:4">Flood.</div>
     <div class="cap" style="--y:900;--x:40"><p>“Recent heavy rains have damaged many roads and bridges in the country, disrupting people's access to markets.”</p><cite>Asian Development Bank, Timor-Leste</cite></div>
     <div class="bang" style="--y:1150;--x:4">Landslide.</div>
-    <div class="cap" style="--y:1360;--x:42"><p><em>And no truck from Dili will risk the road.</em></p></div>
-    <div class="cap" style="--y:1470;--x:4" data-c="4" data-t="The buyer"><p class="kick">Unfair pricing</p><p>One trader's truck makes it up the hill. <b>He names his price.</b> She can't check it, and there's no one else to ask.</p></div>
+    <div class="cap" style="--y:1470;--x:4" data-c="4" data-t="The buyer"><p class="kick">Unfair pricing</p><p>No truck from Dili risks the road, except one trader's. <b>He names his price.</b></p></div>
   </div>
 </section>
 
 <!-- 5 · together -->
 <section class="road tog" id="tog" data-c="5" data-t="Together" style="--h:{TOG_H}">
-  <div class="sky"><div class="pan">{together_svg()}<div class="heap" id="heap" style="--hx:{HEAP[0]};--hy:{HEAP[1]}">{heap_svg()}</div>{walkers}{sprite(PART['fnoor'], 'nt', .21, 'walker noor front', 'data-p="mainLine"')}</div>
-    <div class="sign" id="sign"><b id="kg">40 kg</b><span>best offer?</span></div>
-    <div class="cap" style="--y:150;--x:24"><p class="kick">The magic of cooperation</p><p>Noor isn't the only one on that road. <em>Her neighbours are carrying coffee baskets too.</em></p></div>
-    <div class="cap" style="--y:440;--x:40"><p class="kick">Collective bargaining</p><p>More farmers, more bargaining power. <em>Only the quantity went up, yet the price got better.</em></p></div>
+  <div class="sky"><div class="pan">{together_svg()}<div class="heap" id="heap" style="--hx:{HEAP[0]};--hy:{HEAP[1]}">{heap_svg()}</div>{walkers}{sprite(PART['fnoor'], 'nt', .21, 'walker noor front', 'data-p="mainLine"')}<div class="sign" id="sign" style="--hx:{HEAP[0]}"><b id="kg">40 kg</b><span>best offer?</span></div></div>
+    <div class="cap" style="--y:150;--x:24"><p class="kick">The magic of cooperation</p><p>Noor isn't alone on that road.</p></div>
+    <div class="cap" style="--y:440;--x:40"><p class="kick">Collective bargaining</p><p>Same coffee, more of it. <em>A better price.</em></p></div>
   </div>
 </section>
 <section class="txt" data-c="5" data-t="Together">
   <p class="lead rv">This is cooperation. <b>This is Dure.</b></p>
   <div class="big rv"><span class="n"><span class="cnt" data-to="58">58</span>%</span><p>of 239 studies found that farmer organisations raised their members' incomes.</p><cite>Bizikova et al., “A scoping review of the contributions of farmers' organizations to smallholder agriculture”, Nature Food, 2020</cite></div>
-  <h3 class="sub rv">How cooperatives work</h3>
-  <ol class="ways">
-    <li class="rv"><span class="ic">{PART['trio'][0]}</span><div><b>Bargaining power.</b> One farm takes the price it's given. A full truck names its own.</div></li>
-    <li class="rv"><span class="ic">{PART['trio'][1]}</span><div><b>One route to market.</b> One shipment to where the fair prices are, instead of every family making the trip.</div></li>
-    <li class="rv"><span class="ic">{PART['trio'][2]}</span><div><b>Buying together.</b> Seed, fertiliser and transport cost less, bought for twenty farms at once.</div></li>
-  </ol>
-  <blockquote class="rv">“Farmers who are already marginalized … require additional support before they are able to benefit.”<cite>Bizikova et al., Nature Food, 2020</cite></blockquote>
   <p class="q rv">So why isn't she benefiting from the Letefoho coffee cooperative?</p>
 </section>
 
@@ -290,9 +315,9 @@ PAGE = f'''<!doctype html>
   <p class="kick rv">The catch</p>
   <h2 class="rv">Running a cooperative in Timor-Leste is <em>not easy.</em></h2>
   <dl class="costs">
-    <div class="rv"><dt>3–4<small>years</small></dt><dd><b>Time.</b> From recruiting members to the legal paperwork, with slow administration at every step.</dd></div>
-    <div class="rv"><dt>$1,000</dt><dd><b>Capital.</b> A typical coffee household earns about $250 a year. $1,000 is a lot.</dd></div>
-    <div class="rv"><dt>15<small>founders</small></dt><dd><b>Structure.</b> Then a cooperative needs an assembly, elections and an audit body.</dd></div>
+    <div class="rv"><dt>3–4<small>years</small></dt><dd><b>Time.</b> Recruiting, then paperwork.</dd></div>
+    <div class="rv"><dt>$1,000</dt><dd><b>Capital.</b> A coffee household earns about $250 a year.</dd></div>
+    <div class="rv"><dt>15<small>founders</small></dt><dd><b>Structure.</b> An assembly, elections, an audit body.</dd></div>
   </dl>
   <p class="src rv">A cooperative formed under a KOICA agricultural value-chain project, Timor-Leste; Decree-Law No. 16/2004 on cooperatives. Coffee income: The Irish Times, 2013.</p>
   <h3 class="power rv">And then, <em>power.</em></h3>
@@ -303,7 +328,6 @@ PAGE = f'''<!doctype html>
     <li class="rv"><b>Two.</b> Joining stops being a choice.</li>
     <li class="rv"><b>Three.</b> Whoever is left out undercuts prices to sink it.</li>
   </ol>
-  <p class="lead rv">The benefits are real. Getting there is slow, expensive and exclusive, <em>and it ends in a fight over power.</em></p>
 </section>
 
 <!-- 7 · Dure -->
@@ -313,17 +337,16 @@ PAGE = f'''<!doctype html>
     <h2 class="rv">What if the village kept the cooperative's advantages, <em>but dropped the cooperative?</em></h2>
   </div>
   <div class="phoneNoor">
-    <svg class="pn" viewBox="-86 -536 256 410" role="img" aria-label="Noor holding up her basic phone"><defs>{PART['tais']}<radialGradient id="pnGlow"><stop offset="0" stop-color="#E9D9B4" stop-opacity=".30"/><stop offset=".6" stop-color="#E9D9B4" stop-opacity=".10"/><stop offset="1" stop-color="#E9D9B4" stop-opacity="0"/></radialGradient></defs>
-      <circle cx="30" cy="-400" r="190" fill="url(#pnGlow)"/>{PART['fphone']}</svg>
+    <svg class="pn" viewBox="-86 -536 256 410" role="img" aria-label="Noor holding up her basic phone"><defs>{PART['tais']}</defs>
+      {PART['fphone']}</svg>
     <div class="pt"><p class="kick">Introducing</p><div class="dmark">{LOGO.replace('fill="#1F3A40"', 'fill="#F4EBDA"')}</div><h3>Cooperating through <em>messages.</em></h3></div>
   </div>
   <div class="in">
-    <p class="lead rv">Dure works just like a cooperative. A simple text from any phone is all it takes to help Noor get a fair price.</p>
     <div class="sw rv">
       <div><h4>What stays</h4><ul><li>Pooling the harvest</li><li>Buyers bidding for the whole lot</li><li>One shared truck and pickup point</li><li>A record that earns trust</li></ul></div>
       <div class="go"><h4>What goes</h4><ul><li>A legal entity</li><li>$1,000 in share capital</li><li>Fifteen founders who must agree</li><li>A board to run, a leader to fight over</li></ul></div>
     </div>
-    <p class="nokia rv"><b>Any phone. No internet. No app.</b> SMS has been around since 1992. Dure works even on an old Nokia, and its central server pairs a small AI with a rules engine, so it runs cheaply and accurately.</p>
+    <p class="nokia rv"><b>Any phone. No internet. No app.</b> Dure works even on an old Nokia.</p>
   </div>
 </section>
 
@@ -331,7 +354,7 @@ PAGE = f'''<!doctype html>
 <section class="how" data-c="8" data-t="How it works">
   <p class="chapno rv">8 · How it works</p>
   <h2 class="rv">One week, <em>by text message.</em></h2>
-  <p class="rv lead2">Noor writes from a basic phone, a buyer from a smartphone. Both talk to Dure; in between, Dure does the work a cooperative office would.</p>
+  <p class="rv lead2">Noor on a basic phone, a buyer on a smartphone. In between, Dure does a cooperative office's work.</p>
   {thread()}
   <p class="illus">Illustrative example — names, volumes and prices are not real data.</p>
 </section>
@@ -350,14 +373,13 @@ PAGE = f'''<!doctype html>
 <section class="txt" data-c="10" data-t="The Registry">
   <p class="chapno rv">10 · From the slope to the ministry</p>
   <h2 class="rv">An automated Registry <em>and AI policy suggestions.</em></h2>
-  <p class="lead rv">A farmer Registry is important and effective, but labour-intensive and expensive to keep. Dure works as a market itself, and every deal leaves a footprint. <b>So the Registry builds itself.</b></p>
+  <p class="lead rv">A farmer Registry is costly to keep by hand. Every Dure deal leaves a record, <b>so the Registry builds itself.</b></p>
   <div class="regs">
   <div class="reg rv">{N.ledger()}</div>
   <div class="reg rv">{N.qchart()}</div>
   <div class="reg rv">{N.brief()}</div>
   </div>
-  <p class="rv">Policy makers and extension officers get accurate, good-quality information on limited resources.</p>
-  <p class="rv"><b>AI is not a silver bullet.</b> Noor knows farming better than Dure, so Dure stays out of how she farms. But when the extension officer visits Noor twice a year, they can make the best of it.</p>
+  <p class="rv"><b>AI is not a silver bullet.</b> Noor knows farming better than Dure. Dure helps the extension officer make the most of two visits a year.</p>
   <a class="btn ghost rv" href="sheet.html">Open the sample Registry<span>→</span></a>
   <p class="src rv">Synthetic data for eight weeks in Letefoho.</p>
 </section>
@@ -366,7 +388,7 @@ PAGE = f'''<!doctype html>
 <section class="txt" data-c="11" data-t="Tetum Benchmark Index">
   <p class="chapno rv">11 · Tetum Benchmark Index</p>
   <h2 class="rv">How well does AI read <em>Tetum texts?</em></h2>
-  <p class="rv">Tetum is one of the languages large language models overlook most. Pairing Qwen's small AI with a rules engine, Dure reads Tetum texts close to the level of a large model.</p>
+  <p class="rv">Large models overlook Tetum. A small model plus a rules engine gets Dure close to a large model.</p>
   <ul class="bench rv">{bench}</ul>
   <p class="src rv"><b>Method.</b> 60 test SMS (44 Tetum, 16 English), written by Claude Sonnet, not by us, and frozen before any reader was scored. A text counts only if crop, quantity, grade, price and intent are all right. On 80 texts we wrote ourselves: rules engine 98%, with the small model 99%. Costs are API list prices. Measured 4 Oct 2026.</p>
 </section>
@@ -386,8 +408,6 @@ PAGE = f'''<!doctype html>
     <div class="rv"><dt>24 h</dt><dd>outages in Viqueque. Dili's hospital runs on generators each time.<cite>Tatoli, 2022–23</cite></dd></div>
     <div class="rv"><dt>36%</dt><dd>of Dili customers never report an outage.<cite>TANE survey, 2022</cite></dd></div>
   </dl>
-  <h3 class="sub rv">Dure always has a backup plan.</h3>
-  <p class="rv">A rules engine reads every text instantly, with no model to load. Only the texts it isn't sure about go to the small model. If the server or the power fails, the rules engine keeps the pool open.</p>
 </section>
 
 <section class="dark close">

@@ -268,7 +268,7 @@ def qchart():
     g += f'<text x="40" y="224" class="t i s" fill="{INK2}">week</text>'
     ends = {17: -4, 19: -4, 12: 4}
     for n, c, v in S:
-        g += f'<polyline points="{" ".join(f"{X(i+1):.0f},{Y(x):.1f}" for i, x in enumerate(v))}" fill="none" stroke="{c}" stroke-width="2.4" stroke-linejoin="round"/>'
+        g += f'<polyline pathLength="1" points="{" ".join(f"{X(i+1):.0f},{Y(x):.1f}" for i, x in enumerate(v))}" fill="none" stroke="{c}" stroke-width="2.4" stroke-linejoin="round"/>'
         g += ''.join(f'<circle cx="{X(i+1):.0f}" cy="{Y(x):.1f}" r="3" fill="{c}"/>' for i, x in enumerate(v))
     for (n, c, v), dy in zip(S, (-1, -12, 6)):
         g += f'<text x="318" y="{Y(v[-1])+4+dy:.1f}" class="t b s" fill="{c}">{v[-1]}%</text>'
@@ -284,3 +284,81 @@ def brief():
             '<ul><li>kg per offer down 35% since week 1</li><li>grade C share 10% → 70%</li><li>7 of 10 offers sat out last week</li></ul>'
             '<p class="rv2"><em>Not a diagnosis. For expert review:</em><b>an extension visit to Lebudu this week and a check on drying space</b></p>'
             '<p class="ft">every number links to its rows in the Registry</p></div>')
+
+
+# ---------------------------------------------------------------- How it works: the demo's dashboard cards (same design as demo.html)
+def _stat(l, v, c='#F6EFE0'):
+    return f'<div class="mxs"><span>{l}</span><b style="color:{c}">{v}</b></div>'
+
+
+def _li(a, b, cls='', small='', col=''):
+    return f'<div class="mxli {cls}"><span>{a}{f" <small>{small}</small>" if small else ""}</span><b{f" style=color:{col}" if col else ""}>{b}</b></div>'
+
+
+GOLDV, GREEN, CORAL = '#E4B64C', '#7FD18B', '#F08A6A'
+
+
+def mx_price(chart):
+    chart = (chart.replace('stroke="#D8CCB2"', 'stroke="#35585F"').replace('fill="#5B5345"', 'fill="#BFD0CC"')
+             .replace('stroke="#1F3A40" stroke-width="1.4"', 'stroke="#46656B" stroke-width="1.4"')
+             .replace('fill="#4E8B5C" opacity=".2"', 'fill="#7FD18B" opacity=".16"').replace('stroke="#4E8B5C" stroke-width="2.4"', 'class="draw" pathLength="1" stroke="#7FD18B" stroke-width="2.4"')
+             .replace('fill="#A9783A" stroke="#fff"', 'fill="#E4B64C" stroke="#24434A"'))
+    return ('<div class="mx"><div class="mxstatus">Morning brief · 06:30</div>'
+            f'<div class="mxrow">{_stat("Grade A today", "$2.74–2.90", GOLDV)}{_stat("Buyers this week", "4")}{_stat("Gleno road", "flooded", CORAL)}</div>'
+            f'<div class="mxbox"><div class="mxh">Coffee A · cleared prices <i>each dot: one auction</i></div>{chart}</div></div>')
+
+
+def mx_photo(photo):
+    rows = [('Black or mouldy beans', 'none'), ('Insect holes', 'none'), ('Broken beans', 'few'), ('Drying, colour', 'even')]
+    return (f'<div class="mx">{photo}<div class="mxcap2">Noor · first look on the photo</div>'
+            f'<div class="mxrow">{_stat("Preliminary grade", "A", GOLDV)}{_stat("Confidence", "93%")}</div>'
+            '<div class="mxbox"><div class="mxh">Defects a photo can show <i>SCA classification</i></div>' + ''.join(_li(a, b, col=GREEN) for a, b in rows) +
+            '</div><div class="mxnote">The rest is checked by hand. A person checks every sack at pickup.</div></div>')
+
+
+def mx_pool():
+    return ('<div class="mx"><div class="mxstatus">Pool closed · 1,890 kg · 22 farms</div>'
+            '<div class="mxbox"><div class="mxh">One lot <i>bidding opens $2.74/kg</i></div><div class="mxbar"><i style="flex:1000;background:#D29A50"><b>A</b></i><i style="flex:600;background:#B4825A"><b>B</b></i><i style="flex:400;background:#8A6A55"><b>C</b></i></div>'
+            '<div class="mxleg"><span><b style="color:#D29A50">■</b> A 1,000 kg</span><span><b style="color:#B4825A">■</b> B 600 kg</span><span><b style="color:#8A6A55">■</b> C 400 kg</span></div></div>'
+            '<div class="mxnote">Every grade goes into one lot; buyers bid on the whole lot.</div></div>')
+
+
+def mx_book():
+    rows = [('Exporter', 'Dili · this phone', '$2.81', 'lead'), ('Roaster', 'Dili', '$2.79', 'dim'), ('Exporter', 'Dili', '$2.76', 'dim'), ('Café chain', 'Dili', '$2.74', 'dim')]
+    return ('<div class="mx"><div class="mxstatus">Cleared at $2.81 · 17:00</div>'
+            '<div class="mxbox"><div class="mxh">Order book <i>opened at $2.74</i></div>' + ''.join(_li(n, p, c, s) for n, s, p, c in rows) +
+            '</div><div class="mxnote">At 17:00 the best bid takes the whole lot.</div></div>')
+
+
+def mx_vote():
+    seq = {'A': 'yyyyynyyyn', 'B': 'yyyyyy', 'C': 'yynyyn'}
+    price = {'A': '$3.14', 'B': '$2.78', 'C': '$2.11'}
+    col = {'A': '#D29A50', 'B': '#B4825A', 'C': '#8A6A55'}
+    rows = ''.join(f'<div class="mxvg"><b style="color:{col[g]}">{g} {price[g]}</b><span>' + ''.join(
+        f'<i class="{c}" style="--c:{col[g]};--k:{k}"></i>' for k, c in enumerate(s)) + '</span></div>' for g, s in seq.items())
+    return ('<div class="mx"><div class="mxstatus">Each farmer decides</div>'
+            f'<div class="mxbox"><div class="mxh">One lot · 22 farms <i><b style="color:{GREEN}">18 YES</b> · 4 NO</i></div>{rows}</div>'
+            f'<div class="mxbox you"><div class="mxh">You · Noor</div>{_li("40 kg · grade A · min $2.84", "in ✓", col=GREEN)}</div>'
+            '<div class="mxnote">Price at or above your minimum: you are in. Below: you choose YES or NO.</div></div>')
+
+
+def mx_pick(scene):
+    return (f'<div class="mx">{scene}<div class="mxrow">{_stat("Sack #0412", "40 kg")}{_stat("Grade, by hand", "A ✓", GREEN)}</div>'
+            '<div class="mxnote">Pickup Thu 07:00, Letefoho church. The hand-checked grade is the one paid.</div></div>')
+
+
+def mx_pay():
+    rows = [('You · Noor', '40 kg · A', '+$125.60 ✓', 'lead'), ('8 grade A farms', '$3.14/kg', '✓', ''), ('6 grade B farms', '$2.78/kg', '✓', ''), ('4 grade C farms', '$2.11/kg', '✓', '')]
+    return ('<div class="mx"><div class="mxstatus">One payment in, 18 payments out</div>'
+            f'<div class="mxrow">{_stat("Exporter paid", "$4,250.85", GOLDV)}{_stat("Wallets paid", "18 / 18", GREEN)}</div>'
+            '<div class="mxbox tick">' + ''.join(_li(a, b, c, s, GREEN) for a, s, b, c in rows) +
+            '</div><div class="mxnote">Split by grade and kilos. Farmers without mobile money are paid by the truck driver at the next pickup.</div></div>')
+
+
+def mx_score():
+    bars = [('Grades confirmed', 92), ('On time', 93), ('Likely to deliver', 83)]
+    return ('<div class="mx"><div class="mxstatus">Noor\'s record</div>'
+            f'<div class="mxrow">{_stat("Sales", "14")}{_stat("On time", "13 / 14", GREEN)}{_stat("Disputes", "1", CORAL)}</div>'
+            '<div class="mxbox"><div class="mxh">Reputation <i>flood weeks never count</i></div>' + ''.join(
+                f'<div class="mxpb"><span>{l}</span><i><u style="--w:{v}%"></u></i><b>{v}%</b></div>' for l, v in bars) +
+            '</div><div class="mxnote">Farm size isn\'t counted. Better trust, better deals.</div></div>')
