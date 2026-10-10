@@ -594,6 +594,9 @@ body.mob #mDim{display:block;position:fixed;inset:0;z-index:45;background:rgba(2
 body.mob #mDim.on{opacity:1;pointer-events:auto}
 body.mob #mSheet{display:flex;flex-direction:column;position:fixed;left:0;right:0;bottom:0;height:90dvh;z-index:50;background:var(--paper);border-radius:18px 18px 0 0;box-shadow:0 -14px 34px -16px rgba(31,58,64,.5);transform:translateY(104%);transition:transform .34s cubic-bezier(.2,.8,.2,1)}
 body.mob #mSheet.open{transform:none}
+body.mob #mSheet.drag{transition:none}
+body.mob #mSheet .mhd{touch-action:none;cursor:grab}body.mob #mDock .mbtns button{touch-action:none}
+body.mob #mBack{display:none}   /* the sheet is put away by dragging it down, tapping outside it, or the dock */
 .mhd{position:relative;display:flex;align-items:center;gap:6px;padding:16px 10px 8px;flex:none}
 .mhd .grab{position:absolute;top:6px;left:50%;width:38px;height:4px;margin-left:-19px;border-radius:2px;background:rgba(31,58,64,.25)}
 .mseg{display:flex;background:rgba(31,58,64,.08);border-radius:10px;padding:2px}
@@ -2533,7 +2536,7 @@ function setupShade(){
     $('infoK').onclick=()=>shade(!sh.classList.contains('open'));
   }
   // show the situation first, then tuck it away
-  if(!document.body.classList.contains('mob')){shade(true);setTimeout(()=>shade(false),6400)}   // phones go straight to the chat: the status bar already shows the step
+  shade(true);setTimeout(()=>shade(false),document.body.classList.contains('mob')?2500:6400);   // the situation first, then it tucks itself away
 }
 function shade(open){const sh=$('shade');if(sh)sh.classList.toggle('open',open);const k=$('infoK');if(k)k.textContent=open?'Back':'Info'}
 
@@ -2606,9 +2609,20 @@ dock.querySelectorAll('.mbtns button').forEach(b=>b.onclick=()=>show(b.dataset.p
 sh.querySelectorAll('.mseg button').forEach(b=>b.onclick=()=>show(b.dataset.p));
 const userHide=()=>{if(typeof mk!=='undefined'&&mk&&mk.phase==='auction')userClosedAuc=true;hide()};$('mBack').onclick=userHide;dim.onclick=userHide;$('mNew').onclick=userHide;
 $('mSkip').onclick=()=>{const b=$('skipbar');if(b)b.click()};
-/* swipe the sheet header down to close */
-let y0=null;sh.querySelector('.mhd').addEventListener('touchstart',e=>{y0=e.touches[0].clientY},{passive:true});
-sh.querySelector('.mhd').addEventListener('touchend',e=>{if(y0!=null&&e.changedTouches[0].clientY-y0>60)hide();y0=null},{passive:true});
+/* the sheet moves under the finger, like the status-bar shade: drag its header down to put it away,
+   drag a dock button up to pull it out; let go past a fifth of the way and it finishes the move, otherwise it springs back */
+{const H=()=>sh.offsetHeight||innerHeight*.9;let d=null,dragged=false;
+ const begin=(e,mode,p)=>{if(land())return;d={y0:e.clientY,mode,p,moved:false,id:e.pointerId,el:e.currentTarget};try{e.currentTarget.setPointerCapture(e.pointerId)}catch(_){}};
+ const move=e=>{if(!d||e.pointerId!==d.id)return;const dy=e.clientY-d.y0;if(!d.moved&&Math.abs(dy)<6)return;
+   if(!d.moved){d.moved=true;sh.classList.add('drag');if(d.mode==='open'){sh.querySelectorAll('[data-p]').forEach(x=>x.classList.toggle('on',x.dataset.p===d.p))}}
+   const off=d.mode==='close'?Math.max(0,dy):Math.max(0,H()+Math.min(0,dy));sh.style.transform=`translateY(${off}px)`;dim.classList.toggle('on',off<H()*.9)};
+ const end=e=>{if(!d||e.pointerId!==d.id)return;const dy=e.clientY-d.y0,was=d;d=null;sh.classList.remove('drag');sh.style.transform='';
+   if(!was.moved)return;dragged=true;setTimeout(()=>dragged=false,50);
+   if(was.mode==='close'){if(dy>H()*.2)userHide();else dim.classList.add('on')}else{if(-dy>H()*.15)show(was.p);else{dim.classList.remove('on')}}};
+ const hd=sh.querySelector('.mhd');hd.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;begin(e,'close')});
+ [hd].forEach(el=>{el.addEventListener('pointermove',move);el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end)});
+ dock.querySelectorAll('.mbtns button').forEach(b=>{b.addEventListener('pointerdown',e=>begin(e,'open',b.dataset.p));b.addEventListener('pointermove',move);b.addEventListener('pointerup',end);b.addEventListener('pointercancel',end);
+   b.addEventListener('click',e=>{if(dragged){e.stopImmediatePropagation();e.preventDefault()}},true)})}
 let lastS=null,lastPh=null,lastN=0,lastKey=0,lastFF=null,userClosedAuc=false;document.addEventListener('input',()=>{lastKey=performance.now()},true);
 /* phone dashboards: the desktop charts are redrawn as phone-sized cards (same live data) */
 const M$=v=>v==null?'—':'$'+v.toFixed(2),esc_=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
