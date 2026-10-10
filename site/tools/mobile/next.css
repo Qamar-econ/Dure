@@ -133,3 +133,16 @@ details.wk .no{width:34px;height:34px;margin-top:0}
 details.wk .no svg{width:20px;height:20px;color:#231C17}
 details.wk > summary{grid-template-columns:34px minmax(0,1fr) 30px;padding-right:2px}
 details.wk .tx b .n{font-style:normal;color:var(--gold);margin-right:2px}
+
+/* an opened step stays light: a slimmer phone, smaller photos and charts, tighter cards */
+details.wk .abar{padding:7px 12px 6px;gap:8px}
+details.wk .abar .av{width:24px;height:24px;font-size:12px}
+details.wk .abar b{display:inline;font-size:13.5px}details.wk .abar small{display:inline;font-size:11px;margin-left:6px}
+details.wk .chat{padding:8px 8px 6px;gap:4px}
+details.wk .conv .msg{font-size:13.5px;line-height:1.33;padding:6px 10px 7px;max-width:86%}
+details.wk .conv .msg .sd{font-size:10.5px}
+details.wk .conv .msg hr{margin:4px 0}
+details.wk .conv .msg svg.ph,details.wk .msg img{width:140px;max-width:70%}
+details.wk .dash{margin-top:8px}
+details.wk .dash svg.chart,details.wk .dash .chart{max-height:150px;width:100%}
+details.wk .dash .mxs{padding:6px 9px}details.wk .dash .mxs b{font-size:16px}

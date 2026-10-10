@@ -70,7 +70,7 @@ TECH = (
 )
 
 BENCH = (f'<p>Large models overlook Tetum. A small model plus a rules engine gets Dure close to a large model.</p>'
-         f'<ul class="bench">{B.bench}</ul>'
+         f'<ul class="bench rv">{B.bench}</ul>'
          '<p class="src"><b>Method.</b> 60 test SMS (44 Tetum, 16 English), written by Claude Sonnet, not by us, and frozen before any reader was scored. '
          'A text counts only if crop, quantity, grade, price and intent are all right. On 80 texts we wrote ourselves: rules engine 98%, with the small model 99%. '
          'Costs are API list prices. Measured 4 Oct 2026.</p>')
