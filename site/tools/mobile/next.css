@@ -12,60 +12,6 @@ html{scroll-behavior:smooth}
 .nxnav a:focus-visible{outline:2px solid var(--rust)}
 @media (max-width:359px){.nxnav a{padding:9px 5px;font-size:12.5px}}
 
-/* level 1: the first screen says what, who, the problem and how */
-.nxhero{padding:22px var(--g) 0;max-width:calc(var(--col) + 2*var(--g));margin:0 auto}
-.award{display:flex;align-items:center;gap:12px;margin:0 0 16px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.7);width:fit-content;max-width:100%}
-.award img{height:22px;width:auto;flex:none}
-.award span{display:flex;flex-direction:column;border-left:1px solid var(--line);padding-left:12px;font:500 11.5px/1.3 var(--sans);color:var(--ink2)}
-.award b{font-weight:700;color:var(--ink);font-size:12.5px}
-@media (max-width:374px){.award img{height:18px}.award span{font-size:10.5px}.award b{font-size:11.5px}}
-.nxhero h1{font:650 38px/1.04 var(--serif);letter-spacing:-.02em;margin:0 0 14px}
-.nxhero h1 em{color:var(--rust);font-weight:500}
-.lede{font-size:18.5px;line-height:1.5;margin:0 0 6px}
-.lede b{font-weight:650}
-.nxhero .cta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 12px}
-.nxhero .cta .btn{margin:0;padding:14px 16px;min-height:50px;font-size:15.5px}
-.pills{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 4px}
-.pills span{font:500 12px var(--sans);color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
-.hpic{height:170px;margin:16px calc(-1*var(--g)) 0;overflow:hidden}
-.hpic svg{width:100%;height:100%}
-@media (min-width:700px){.nxhero h1{font-size:54px}.lede{font-size:21px}.nxhero .cta{max-width:520px}.hpic{height:260px;margin:24px 0 0;border-radius:14px}}
-
-/* level 1 continued: the economics stay in plain view */
-.nx1{padding-top:48px}
-.nx1 .kick{margin-top:44px}.nx1 > .kick:first-child{margin-top:0}
-.thesis{margin:52px 0 0;padding:26px 20px;border-radius:16px;background:var(--ink);color:#F4EBDA}
-.thesis .kick{color:var(--gold);margin:0 0 8px}
-.thesis h2{color:#F4EBDA}.thesis h2 em{color:var(--gold)}
-.sw2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:6px 0 18px;font:14.5px/1.4 var(--sans)}
-.sw2 h4{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin:0 0 6px}
-.sw2 ul{margin:0;padding:0 0 0 16px}.sw2 li{margin:0 0 5px}
-.sw2 .go h4{color:#E58F6E}.sw2 .go li{text-decoration:line-through;text-decoration-color:rgba(229,143,110,.7);color:#CDBFA8}
-.thesis .first{font-size:16.5px;line-height:1.5;margin:0;color:#E8DDC8}
-.thesis .first b{color:#F4EBDA}
-
-/* level 2: five steps, each saying what is real */
-.nx2{padding-top:60px}
-.flow5{list-style:none;margin:22px 0 10px;padding:0;counter-reset:s}
-.flow5 li{display:grid;grid-template-columns:34px 1fr;gap:12px;padding:16px 0;border-top:1px solid var(--line)}
-.flow5 li:last-child{border-bottom:1px solid var(--line)}
-.flow5 .sn{width:30px;height:30px;border-radius:50%;background:var(--gold);color:#231C17;display:grid;place-items:center;font:700 14px var(--sans);margin-top:2px}
-.flow5 h3{font-size:21px;margin:0 0 4px;color:var(--ink)}
-.flow5 p{font-size:16.5px;line-height:1.5;margin:0 0 8px;color:var(--ink2)}
-.flow5 .stl{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0;font:13px/1.4 var(--sans);color:var(--soft)}
-.st{display:inline-block;font:600 11px/1 var(--sans);letter-spacing:.03em;border-radius:5px;padding:5px 7px;white-space:nowrap}
-.st-p{background:#4E8B5C;color:#fff}
-.st-s{background:#E4B64C;color:#231C17}
-.st-f{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px currentColor}
-.status{display:grid;gap:12px;margin:18px 0 8px}
-.stc{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:rgba(255,255,255,.03)}
-.stc .stl{margin:0 0 6px}
-.stc .sub{font:italic 15px/1.4 var(--serif);color:var(--soft);margin:0 0 8px}
-.stc ul{margin:0;padding:0 0 0 18px;font:14.5px/1.45 var(--sans);color:var(--ink2)}
-.stc li{margin:0 0 6px}
-.nx2 .note{font:14px/1.5 var(--sans);color:var(--soft);margin:10px 0 0}
-@media (min-width:860px){.status{grid-template-columns:repeat(3,1fr)}}
-
 /* opt-in depth: big, obvious disclosure rows */
 details.dd{border-top:1px solid var(--line);margin:0}
 details.dd:last-of-type{border-bottom:1px solid var(--line)}
@@ -90,22 +36,46 @@ details.wk{margin-top:18px}
 .nx3 .risks p{font-size:16px;color:var(--ink2);margin:0}
 .nx3 .src a{color:var(--gold)}
 
-/* founder and follow-up */
-.nxcontact .in{padding-top:44px}
-.nxcontact .kick{color:var(--gold)}
-.nxcontact h2{margin:0 0 8px}
-.fwho{font-size:16.5px;color:#D9CDB6;margin:0 0 14px}
-.ct{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
-.ct a{font:600 14px var(--sans);color:#F4EBDA;text-decoration:none;border:1.5px solid rgba(244,235,218,.35);border-radius:999px;padding:9px 14px;min-height:42px;display:inline-flex;align-items:center}
-.links{display:grid;gap:8px;margin:0 0 22px}
-.lk{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;column-gap:12px;text-decoration:none;color:#F4EBDA;border-radius:12px;padding:12px 16px;background:rgba(244,235,218,.07);min-height:56px}
-.lk b{font:600 16px var(--sans)}.lk small{font:13px/1.35 var(--sans);color:#BFB29C;grid-column:1}
-.lk span{grid-row:1/3;grid-column:2;align-self:center;font-size:20px}
-.lk.main{background:var(--rust)}.lk.main small{color:#F6D9C9}
-@media (min-width:700px){.links{grid-template-columns:1fr 1fr}}
-.nx .foot a{color:inherit}
-.nxhero .cta .btn{white-space:nowrap;gap:8px}
-@media (max-width:374px){.nxhero .cta .btn{padding:13px 14px;font-size:14.5px}}
+
 .fwho{font:16.5px/1.5 var(--serif);letter-spacing:0}
 .nightbar .nxnav a{color:#D9CDB6}.nightbar .nxnav a.on{color:var(--gold)}
 .award{background:none;padding:0;border-radius:0}
+
+/* under the opening picture: the one-line promise, the two ways in, the award */
+.nxintro{max-width:calc(var(--col) + 2*var(--g));margin:0 auto;padding:4px var(--g) 8px;text-align:center}
+.nxintro .sms{font:italic 21px/1.3 var(--serif);color:var(--ink2);margin:0 0 14px}
+.nxintro .sms b{font-style:normal;color:var(--ink)}
+.nxintro .cta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 22px}
+.nxintro .cta .btn{margin:0;padding:14px 16px;min-height:50px;font-size:15.5px;white-space:nowrap;gap:8px}
+@media (max-width:374px){.nxintro .cta .btn{padding:13px 12px;font-size:14.5px}}
+.award{display:flex;align-items:center;justify-content:center;gap:12px;margin:0 auto;width:fit-content;max-width:100%;text-align:left}
+.award img{height:22px;width:auto;flex:none}
+.award span{display:flex;flex-direction:column;border-left:1px solid var(--line);padding-left:12px;font:500 11.5px/1.3 var(--sans);color:var(--ink2)}
+.award b{font-weight:700;color:var(--ink);font-size:12.5px}
+@media (min-width:700px){.nxintro{padding-top:20px}.nxintro .cta{max-width:520px;margin:0 auto 26px}.award img{height:28px}.award span{font-size:13px}.award b{font-size:14px}}
+
+/* How it works: the week as eight short steps; each opens onto its messages */
+.wks{margin:22px 0 10px;border-top:1px solid var(--line)}
+details.wk{border-bottom:1px solid var(--line)}
+details.wk > summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:30px 1fr 30px;gap:12px;align-items:start;padding:16px 0}
+details.wk > summary::-webkit-details-marker{display:none}
+details.wk .no{width:28px;height:28px;border-radius:50%;background:var(--gold);color:#231C17;display:grid;place-items:center;font:700 13.5px var(--sans);margin-top:2px}
+details.wk .tx{display:flex;flex-direction:column;gap:3px}
+details.wk .tx b{font:600 19px/1.25 var(--serif);color:var(--ink)}
+details.wk .tx small{font:16px/1.45 var(--serif);color:var(--ink2)}
+details.wk > summary i{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line);position:relative;margin-top:2px}
+details.wk > summary i::before,details.wk > summary i::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:1.8px;margin:-.9px 0 0 -5px;background:var(--ink);transition:transform .2s}
+details.wk > summary i::after{transform:rotate(90deg)}
+details.wk[open] > summary i::after{transform:rotate(0)}
+details.wk > summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+details.wk .wkb{margin:0 0 22px;padding:0}
+@media (min-width:1000px) and (orientation:landscape){details.wk .wkb{display:grid;grid-template-columns:minmax(330px,380px) minmax(0,1fr);column-gap:36px;align-items:start}details.wk .wkb > .conv{margin:0}details.wk .wkb > .dash{margin:0;max-width:none}}
+
+/* founder, inside the closing card */
+.fdr{margin:30px 0 8px;padding-top:22px;border-top:1px solid rgba(244,235,218,.14)}
+.fdr .kick{color:var(--gold);margin:0 0 4px}
+.fname{font:600 26px/1.15 var(--serif);color:#F4EBDA;margin:0 0 4px}
+.fwho{font:16px/1.5 var(--serif);color:#D9CDB6;margin:0 0 14px}
+.ct{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+.ct a{font:600 14px var(--sans);color:#F4EBDA;text-decoration:none;border:1.5px solid rgba(244,235,218,.35);border-radius:999px;padding:9px 14px;min-height:42px;display:inline-flex;align-items:center}
+.nx3 details.dd > summary b em{color:var(--rust);font-weight:500}
