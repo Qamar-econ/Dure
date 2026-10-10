@@ -932,3 +932,17 @@ details.dsh > summary .dl{margin-left:10px}
 .conv .msg.msg::after{left:-26px;width:26px;background:#fff;border-bottom-right-radius:10px}
 .conv .msg.me.me.me::before{left:auto;right:-7px;border-bottom-right-radius:0;border-bottom-left-radius:16px 14px}
 .conv .msg.me.me.me::after{left:auto;right:-26px;border-bottom-right-radius:0;border-bottom-left-radius:10px}
+
+/* Alone / Together: room around the baskets, and the card's rows spread to the even height */
+.at{display:flex;flex-direction:column}
+.at .foot{margin-top:auto;padding-top:6px}
+.at .farms{gap:5px 4px;margin:2px 0 6px}
+.at .farms i{width:15px;height:14px}
+.at .row{padding:9px 0}
+.at .by li span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.at[data-m="a"] .by li.only{grid-column:1/-1}
+.at .pr .v{grid-template-columns:46% 1fr}
+.at .pr .big{border:0;margin:0;padding:0;justify-content:flex-end}
+.at .pr .v{grid-template-columns:40% 1fr}
+.at .pr .big{flex-wrap:wrap;row-gap:2px}
+.at .big small{white-space:nowrap}
