@@ -973,3 +973,6 @@ details.dsh > summary .dl{margin-left:10px}
 .nf-pool .fun .d{animation-duration:2.1s}
 .nf-pool .fun .d:nth-child(2){animation-delay:.7s}.nf-pool .fun .d:nth-child(3){animation-delay:1.4s}
 @keyframes pfall{0%{transform:translateY(-4px);opacity:0}12%{opacity:1}88%{opacity:1}100%{transform:translateY(40px);opacity:0}}
+
+/* ch. 6 ends on its point, as strong as its opening line */
+h2.endline{margin:34px 0 0}
