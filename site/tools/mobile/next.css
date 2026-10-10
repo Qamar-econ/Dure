@@ -108,3 +108,4 @@ details.wk{margin-top:18px}
 @media (max-width:374px){.nxhero .cta .btn{padding:13px 14px;font-size:14.5px}}
 .fwho{font:16.5px/1.5 var(--serif);letter-spacing:0}
 .nightbar .nxnav a{color:#D9CDB6}.nightbar .nxnav a.on{color:var(--gold)}
+.award{background:none;padding:0;border-radius:0}
