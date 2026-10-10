@@ -1230,13 +1230,16 @@ async function llmLoad(){
   try{
     const T=await import(LLM.lib);T.env.allowLocalModels=false;
     /* the story page pre-downloads the model into this cache, so the demo usually starts instantly */
-    try{const C=await caches.open('dure-models');T.env.useCustomCache=true;T.env.customCache={match:k=>C.match(typeof k==='string'?k:k.url),put:(k,r)=>C.put(typeof k==='string'?k:k.url,r).catch(()=>{})}}catch(e){}
-    if(self.crossOriginIsolated&&T.env.backends&&T.env.backends.onnx&&T.env.backends.onnx.wasm)T.env.backends.onnx.wasm.numThreads=Math.min(8,navigator.hardwareConcurrency||4);
-    let dev='wasm';try{if(navigator.gpu){const ad=await navigator.gpu.requestAdapter();if(ad&&ad.features&&ad.features.has('shader-f16'))dev='webgpu'}}catch(e){}   // WebGPU only with f16 support, otherwise WebAssembly
+    /* phones: a 500 MB model held twice (download + cache copy) or run on the phone's GPU can make the browser kill the tab.
+       So on phones: read from the cache but never write a second copy, one WebAssembly thread, no WebGPU, and stop politely on low-memory phones */
+    if(PHONEISH&&navigator.deviceMemory&&navigator.deviceMemory<4)throw new Error('this phone has too little memory; try it on a computer');
+    try{const C=await caches.open('dure-models');T.env.useCustomCache=true;T.env.customCache={match:k=>C.match(typeof k==='string'?k:k.url),put:PHONEISH?(()=>Promise.resolve()):((k,r)=>C.put(typeof k==='string'?k:k.url,r).catch(()=>{}))}}catch(e){}
+    if(self.crossOriginIsolated&&T.env.backends&&T.env.backends.onnx&&T.env.backends.onnx.wasm)T.env.backends.onnx.wasm.numThreads=PHONEISH?1:Math.min(8,navigator.hardwareConcurrency||4);
+    let dev='wasm';try{if(navigator.gpu&&!PHONEISH){const ad=await navigator.gpu.requestAdapter();if(ad&&ad.features&&ad.features.has('shader-f16'))dev='webgpu'}}catch(e){}   // WebGPU only with f16 support, otherwise WebAssembly
     const dt=QS.get('llmdtype')||(dev==='webgpu'?'q4f16':'q8');LLM.device=dev;LLM.dtype=dt;
     const files={};
     LLM.gen=await T.pipeline('text-generation',LLM.model,{dtype:dt,device:dev,progress_callback:x=>{if(x.status==='progress'&&x.total){files[x.file]=[x.loaded,x.total];const a=Object.values(files).reduce((s,v)=>[s[0]+v[0],s[1]+v[1]],[0,0]);LLM.p=a[1]?a[0]/a[1]*100:0;llmSync()}}});
-    try{await llmIntent('is today a good day to sell?')}catch(e){console.warn('warm-up',e)}   // warm-up with the real prompt: compile kernels once
+    if(!PHONEISH){try{await llmIntent('is today a good day to sell?')}catch(e){console.warn('warm-up',e)}}   // phones skip the warm-up run: one less memory peak   // warm-up with the real prompt: compile kernels once
     LLM.st='ready';if(mk)lg(mk.t,`Small AI chat ready on this device (Qwen2.5-0.5B, ${dt}, ${dev})`,'','k-me');
   }catch(e){LLM.st='failed';LLM.err=(e&&e.message||String(e)).slice(0,120);console.warn('small AI chat could not load',e)}
   llmSync();dirty.all=true;
