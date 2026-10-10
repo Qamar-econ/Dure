@@ -3112,17 +3112,39 @@ function play(items,done){if(anim)cancelAnimationFrame(anim.raf);const A=600;let
   const f=now=>{if(!anim){window.__tapPlaying=false;return}const e=now-t0;if(e>=tot){anim=null;window.__tapPlaying=false;scrollTo(0,items[items.length-1].y1);req();done&&done();return}
     let x=items[0];for(const it of items){if(it.t0<=e)x=it;else break}scrollTo(0,x.y0+(x.y1-x.y0)*Math.min(1,prof(e-x.t0,x.ms,x.ein,x.eout)));req();anim.raf=requestAnimationFrame(f)};
   anim.raf=requestAnimationFrame(f)}
+/* Auto as a film: the whole page moves at one steady speed, the pace of the farmers splitting apart in ch. 6
+   (24 ms per vh of scroll), with no stops at text. A chapter only leans a little faster where it reads at a glance
+   or a little slower where there is more to read. ~95 s to the end. */
+const FILMMS=24;
+const FILMF=[1,.9,.9,1,1,1,1,1,1.1,.85,.85,.85];   // per chapter, in the order of CH
+const FILMMIN=[4.5,0,0,3,0,0,0,0,0,0,0,0];          // seconds: the title and the one-line beat of ch. 4 still get a moment
+const CLOSE_S=2;
+function timeline(){const vh=innerHeight/100,K=[];const end=maxY();
+  const range=c=>{if(CH[c][2]){const el=$(CH[c][2]);return [el.offsetTop,el.offsetTop+el.offsetHeight]}
+    let a=Infinity,b=-Infinity;SCN.forEach(n=>{if(n.c!==c)return;const t=SEC[n.s].el.offsetTop;a=Math.min(a,t+n.o*vh);b=Math.max(b,t+(n.o+n.l*PLn(n)+1)*vh)});return [a,b]};
+  let t=0,y=0;K.push([0,0]);
+  CH.forEach((_,c)=>{const [,b]=range(c);const y1=Math.min(end,Math.max(y,b));t+=Math.max(FILMMIN[c]*1000,(y1-y)/vh*FILMMS*FILMF[c]);K.push([y1,t]);y=y1});
+  if(end>y+2){t+=CLOSE_S*1000;K.push([end,t])}
+  return K}
+/* position at time t: piecewise linear, with the corners rounded so the pace eases from one chapter into the next */
+function yAt(K,t){const R=700;const lin=x=>{if(x<=0)return K[0][0];for(let i=1;i<K.length;i++)if(x<=K[i][1]){const [y0,t0]=K[i-1],[y1,t1]=K[i];return y0+(y1-y0)*(x-t0)/Math.max(1,t1-t0)}return K[K.length-1][0]};
+  let s=0,w=0;for(let d=-R;d<=R;d+=R/4){const k=1-Math.abs(d)/(R*1.25);s+=lin(t+d)*k;w+=k}return s/w}
+function tAt(K,y){for(let i=1;i<K.length;i++)if(y<=K[i][0]){const [y0,t0]=K[i-1],[y1,t1]=K[i];return t0+(t1-t0)*(y-y0)/Math.max(1,y1-y0)}return K[K.length-1][1]}
 function startAuto(){autoOn=true;autoB.classList.add('on');autoB.textContent='❚❚ Pause';autoB.setAttribute('aria-pressed','true');
   if(window.__lenis){try{window.__lenis.stop()}catch(e){}}   // smooth-scroll would fight the player
-  if(scrollY>=flowTop()-4)autoFlow();else tapNext()}
-function stopAuto(){autoOn=false;clearTimeout(autoT);if(anim){cancelAnimationFrame(anim.raf);anim=null}window.__tapPlaying=false;
+  const K=timeline(),T=K[K.length-1][1],tStart=tAt(K,scrollY),t0=performance.now();window.__tapPlaying=true;anim={};
+  const ease=x=>x<1?x*x*(3-2*x):1,warm=600;   // a soft start from a standstill
+  const f=now=>{if(!autoOn||!anim)return;const e=now-t0,el=e<warm?warm*ease(e/warm)*.5+0:e-warm*.5,t=tStart+el;
+    if(t>=T){scrollTo(0,K[K.length-1][0]);req();stopAuto();return}scrollTo(0,yAt(K,t));req();anim.raf=requestAnimationFrame(f)};
+  anim.raf=requestAnimationFrame(f)}
+function stopAuto(){autoOn=false;clearTimeout(autoT);if(anim&&anim.raf)cancelAnimationFrame(anim.raf);anim=null;window.__tapPlaying=false;
   autoB.classList.remove('on');autoB.textContent='▶ Auto';autoB.setAttribute('aria-pressed','false');
   if(window.__lenis){try{window.__lenis.start();window.__lenis.scrollTo(scrollY,{immediate:true,force:true})}catch(e){}}}
 autoB.onclick=e=>{e.stopPropagation();autoOn?stopAuto():startAuto()};
 /* any hand on the page takes over from Auto */
 ['wheel','touchstart','mousedown'].forEach(t=>addEventListener(t,e=>{if(autoOn&&!e.target.closest('#autoBtn'))stopAuto()},{passive:true}));
 addEventListener('keydown',e=>{if(autoOn&&!['Shift','Control','Alt','Meta'].includes(e.key))stopAuto()});
-window.__auto={STEPS,stopY,planOf,readMs,secAt,SCN};   // for checking the pacing
+window.__auto={timeline,yAt,tAt,SCN};   // for checking the pacing
 /* phones and portrait tablets: keep each heading with its block, and centre the pair between the top bar and the bottom strip */
 function centreGroups(){const P=innerWidth<=760;const bar=60,foot=document.documentElement.classList.contains('tapm')?44:0;
   const place=(head,body,gap,tail)=>{if(!head||!body)return;if(!P){head.style.top=body.style.top='';body.style.transform='';if(tail){tail.style.top='';tail.style.bottom='';tail.style.transform=''}return}
