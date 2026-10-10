@@ -148,7 +148,7 @@ def thread():
         d = MSG[str(s)]
         items = []
         for side in 'FB':
-            for q, m in enumerate(d[side]):
+            for q, m in enumerate(d[side] if side == 'F' else []):
                 key = (str(s), side, q)
                 if key in SAY:
                     if SAY[key] is None:
@@ -175,16 +175,12 @@ def thread():
             cls = f'msg {side}{" me" if mine else ""}'
             cols[side].append(f'<div class="{cls}" style="--i:{n}"><span class="sd">{html.escape(re.sub("<[^>]+>", "", sender)) if not mine else ("Noor" if side == "F" else "Buyer")}</span>{bubble_text(text)}</div>')
             n += 1
-        # Noor's side and the buyer's side run next to each other; a step with only one side uses the full width
-        both = cols['F'] and cols['B']
-        body = [f'<div class="cols{"" if both else " one " + ("F" if cols["F"] else "B")}">' +
-                (f'<div class="cF">{"".join(cols["F"])}</div>' if cols['F'] else '') + (f'<div class="cB">{"".join(cols["B"])}</div>' if cols['B'] else '') + '</div>']
+        # Noor's phone: Dure on the left, Noor on the right. The buyers show up in what Dure tells her and in the dashboards
+        body = [f'<div class="chat">{"".join(cols["F"])}</div>']
         f = figf()
         if f:
             body.append(f'<figure class="dash">{f}</figure>')
         t, p = HOW[s]
-        if s == 0:
-            body.insert(0, '<div class="sides" aria-hidden="true"><span>Noor</span><span>Buyer</span></div>')
         out.append(f'<article class="hstep rv"><header><span class="no">{s+1}<i>/8</i></span><h3>{t}</h3><p>{p}</p></header><div class="conv">{"".join(body)}</div></article>')
     return ''.join(out)
 
@@ -215,8 +211,12 @@ TW = [(n, h, SHORT[i], c) for i, (n, h, p, c) in enumerate(TW)]
 TRAIN = re.findall(r'<img src="(assets/train/t\d+\.jpg)"[^>]*title="([^"]*)"', wa[1])
 
 
+TWNO = {0: 1, 1: 2, 3: 3, 4: 4}   # 'makes the market' is left out: How it works already shows it
+
+
 def tw_block(i, figs):
     n, h3, p, c = TW[i]
+    n = f'Technical walkthrough — {TWNO[i]}'
     note = f'<p class="note">{c}</p>' if c else ''
     return (f'<div class="tw rv"><div class="twt"><div class="kick">{n}</div><h3>{h3}</h3><p>{p}</p>{note}</div><div class="twf">{figs}</div></div>')
 
@@ -306,25 +306,25 @@ PAGE = f'''<!doctype html>
 <!-- 6 · the catch -->
 <section class="txt" data-c="6" data-t="The catch">
   <p class="kick rv">The catch</p>
-  <h2 class="rv">Running a cooperative in Timor-Leste is <em>not easy.</em></h2>
+  <h2 class="rv">Starting a cooperative in Timor-Leste is <em>not easy.</em></h2>
   <dl class="costs">
     <div class="rv"><dt>3–4<small>years</small></dt><dd><b>Time.</b> Recruiting, then paperwork.</dd></div>
     <div class="rv"><dt>$1,000</dt><dd><b>Capital.</b> A coffee household earns about $250 a year.</dd></div>
     <div class="rv"><dt>15<small>founders</small></dt><dd><b>Structure.</b> An assembly, elections, an audit body.</dd></div>
   </dl>
   <p class="src rv">A cooperative formed under a KOICA agricultural value-chain project, Timor-Leste; Decree-Law No. 16/2004 on cooperatives. Coffee income: The Irish Times, 2013.</p>
-  <h3 class="power rv">And then, <em>power.</em></h3>
-  <p class="rv">Women farmers are easily left out.</p>
+  <h3 class="power rv">And when one finally forms, <em>power moves in.</em></h3>
+  <p class="rv">The village's pecking order becomes the cooperative's. Women farmers like Noor are easily left out.</p>
   <figure class="scene pw rv">{PART['power']}</figure>
   <ol class="three">
-    <li class="rv"><b>One.</b> The cooperative copies the village pecking order.</li>
-    <li class="rv"><b>Two.</b> Joining stops being a choice.</li>
-    <li class="rv"><b>Three.</b> Whoever is left out undercuts prices to sink it.</li>
+    <li class="rv"><b>Then</b> joining stops being a choice,</li>
+    <li class="rv"><b>and</b> whoever is left out undercuts prices to sink it.</li>
   </ol>
+  <p class="lead rv">So Noor still sells alone, <em>at the trader's price.</em></p>
 </section>
 
 <!-- 7 · Dure -->
-<section class="dark" data-c="7" data-t="Dure">
+<section class="dark first" data-c="7" data-t="Dure">
   <div class="tais" aria-hidden="true"></div>
   <div class="in">
     <h2 class="rv">What if the village kept the cooperative's advantages, <em>but dropped the cooperative?</em></h2>
@@ -349,7 +349,7 @@ PAGE = f'''<!doctype html>
 <section class="how" data-c="8" data-t="How it works">
   <p class="chapno rv">8 · How it works</p>
   <h2 class="rv">One week, <em>by text message.</em></h2>
-  <p class="rv lead2">Noor on a basic phone, a buyer on a smartphone. In between, Dure does a cooperative office's work.</p>
+  <p class="rv lead2">Noor's week, on her basic phone. Behind each message, Dure does a cooperative office's work with the buyers.</p>
   <div class="hsteps">{thread()}</div>
   <p class="illus">Illustrative example — names, volumes and prices are not real data.</p>
 </section>
@@ -359,7 +359,6 @@ PAGE = f'''<!doctype html>
   <p class="chapno rv">9 · Technical walkthrough</p>
   {tw_block(0, PARSER)}
   {tw_block(1, N.grade_compact() + '<div class="train">' + ''.join(f'<img src="{a}" alt="" title="{t}" loading="lazy" width="60" height="60">' for a, t in TRAIN) + '</div><p class="tcap">Some of our training photos · Wikimedia Commons: H. Ulver, M. C. Wright, F. Quijano (CC BY-SA 4.0); Forest &amp; Kim Starr (CC BY 3.0)</p>')}
-  {tw_block(2, N.market_compact())}
   {tw_block(3, N.tabs([('Noor · 2 ha', N.rep_compact('noor')), ('Big grower · 30 ha', N.rep_compact('big'))], 'Two farmers') + BUYERS)}
   {tw_block(4, N.tabs([('Blended pool', N.blend()), ('Fixed pool', N.fixed())], 'Two markets'))}
 </section>
@@ -375,9 +374,20 @@ PAGE = f'''<!doctype html>
   <p class="src rv">Synthetic data for eight weeks in Letefoho.</p>
 </section>
 
+</div>
+<section class="dark close">
+  <div class="tais" aria-hidden="true"></div>
+  <div class="in">
+    <h2>Cooperate through <em>messaging.</em></h2>
+    <a class="btn" href="demo.html">Try the demo<span>→</span></a>
+    <div class="vids">{vids}</div>
+    <p class="thanks">Thanks for paying attention, and enjoy the demo!</p>
+  </div>
+</section>
+<div class="night more-info">   <!-- for readers who want the numbers behind it -->
 <!-- 11 · benchmark -->
 <section class="txt" data-c="11" data-t="Tetum Benchmark Index">
-  <p class="chapno rv">11 · Tetum Benchmark Index</p>
+  <p class="chapno rv">For the curious · Tetum Benchmark Index</p>
   <h2 class="rv">How well does AI read <em>Tetum texts?</em></h2>
   <p class="rv">Large models overlook Tetum. A small model plus a rules engine gets Dure close to a large model.</p>
   <ul class="bench rv">{bench}</ul>
@@ -386,7 +396,7 @@ PAGE = f'''<!doctype html>
 
 <!-- 12 · field problems -->
 <section class="txt" data-c="12" data-t="Field problems">
-  <p class="chapno rv">12 · Field problems</p>
+  <p class="chapno rv">For the curious · Field problems</p>
   <h2 class="rv">What are the real <em>field problems?</em></h2>
   <div class="risks">
     <div class="rv"><h4>The road washes out.</h4><p>Dure books the truck and the pickup point. It can't fix the road, and doesn't pretend to.</p></div>
@@ -402,15 +412,6 @@ PAGE = f'''<!doctype html>
 </section>
 
 </div>
-<section class="dark close">
-  <div class="tais" aria-hidden="true"></div>
-  <div class="in">
-    <h2>Cooperate through <em>messaging.</em></h2>
-    <a class="btn" href="demo.html">Try the demo<span>→</span></a>
-    <div class="vids">{vids}</div>
-    <p class="thanks">Thanks for paying attention, and enjoy the demo!</p>
-  </div>
-</section>
 </main>
 <footer class="foot"><p>Tae Yoon Moon · <a href="mailto:taeyoonmoon@uos.ac.kr">taeyoonmoon@uos.ac.kr</a></p><p>© 2026 Tae Yoon Moon. All rights reserved. Illustrations and text may not be reused without permission.</p><p><a href="index.html?full=1">View the animated version</a></p></footer>
 <script>{JS}</script>
