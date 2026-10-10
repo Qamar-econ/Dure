@@ -102,19 +102,20 @@ PAGE = f'''<!doctype html>
 
 <main id="top">
 <section class="hero" data-c="1" data-t="The field">
-  <div class="portrait">{B.fig('hero.noor', None, 'Noor, a coffee farmer in Letefoho, holding a basket of ripe cherries')}</div>
+  <div class="portrait">{B.fig('hero.noor', None, 'Noor, a coffee farmer in Letefoho, holding a basket of ripe cherries').replace('viewBox="180 0 460 900"', 'viewBox="258 0 460 900"', 1)}</div>
   <div class="portrait wide">{B.fig('hero.tab', None, 'Noor in her coffee field below the mountains').replace('<svg ', '<svg preserveAspectRatio="xMinYMax slice" ', 1)}</div>
   <div class="htxt">
+    {AWARD}
     <div class="mark">{LOGO}</div>
     <p class="tag">Cooperate through messaging.</p>
     <p class="def"><b>Dure</b>: the Korean tradition of mutual aid between farmers.</p>
   </div>
+  <div class="nxintro">
+    <p class="sms">No internet. No app. <b>Just SMS.</b></p>
+    <div class="cta"><a class="btn" href="demo.html">Try the demo<span>→</span></a><a class="btn ghost" href="#how">How it works<span>↓</span></a></div>
+  </div>
 </section>
-<section class="nxintro">
-  <p class="sms">No internet. No app. <b>Just SMS.</b></p>
-  <div class="cta"><a class="btn" href="demo.html">Try the demo<span>→</span></a><a class="btn ghost" href="#how">How it works<span>↓</span></a></div>
-  {AWARD}
-</section>
+
 
 <section class="txt" data-c="1" data-t="The field">
   <h2 class="rv">A good harvest is <em>not a good price.</em></h2>
