@@ -3,9 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>/* phones and tablets get the phone and tablet edition; ?full=1 keeps this animated version (the edition links back here with it) */
-(function(){try{if(/[?&]full=1/.test(location.search))return;var M=function(q){return matchMedia(q).matches};
-if(M('(max-width: 1024px)')||(M('(pointer: coarse)')&&M('(hover: none)')))location.replace('m.html'+location.hash)}catch(e){}})();</script>
+<script>/* phones and tablets get the phone and tablet edition; every PC keeps this animated version, whatever its window size.
+   ?full=1 keeps this version on any device (the edition's footer links back here with it) */
+(function(){try{if(/[?&]full=1/.test(location.search))return;var n=navigator,u=n.userAgent||'';
+var touchOnly=matchMedia('(pointer: coarse)').matches&&matchMedia('(hover: none)').matches;
+var ipad=/Macintosh/.test(u)&&n.maxTouchPoints>1;   /* iPadOS presents itself as a Mac */
+if(/Android|iPhone|iPad|iPod|Mobile|Tablet|Silk|Kindle/i.test(u)||ipad||touchOnly)location.replace('m.html'+location.hash)}catch(e){}})();</script>
 <title>Dure — Cooperate through messaging</title>
 <meta name="description" content="Dure does the job of a coffee cooperative by text message: farmers in Ermera, Timor-Leste pool their coffee, buyers bid for it, and a small AI reads plain SMS in Tetum and English, even when the power is out.">
 <meta name="theme-color" content="#F2EADA">
@@ -2229,7 +2232,7 @@ const HOW=[
  {t:'Interactive fair auction',p:'When the basket reaches its threshold, the auction opens. Dure acts as a skilled broker: it offers buyers a reasonable starting price and adjusts it when demand is weak.',
   F:[[.93,'Dure AI','Auction closed<br>------------<br>4 buyers bid<br>Lot price $2.81/kg<br>A $3.14 · B $2.78 · C $2.11',0,1]],
   B:[[.1,'Dure AI','<b>Auction open</b> until 17:00<br>Opening price $2.74/kg (grade B basis)<br>Reply with your price per kg.'],[.42,'','2.77',1],[.58,'Dure AI','Outbid: Specialty roaster bids $2.79. Raise?'],[.7,'','2.81',1],[.9,'Dure AI','<b>Auction closed</b><br>------------<br>You won at $2.81/kg<br>A $3.14 · B $2.78 · C $2.11']]},
- {t:'Democracy: the essence of a cooperative',p:'Once the top bid is set, each farmer decides whether to sell. No one is forced to trade; Dure helps everyone make a sound choice.',
+ {t:'Autonomy: each farmer decides',p:'Once the top bid is set, each farmer decides whether to sell. No one is forced to trade; Dure helps everyone make a sound choice.',
   F:[[.1,'Dure AI','Sold ✓<br>------------<br>40 kg · grade A<br>$3.14/kg = $125.60<br>------------<br>Pickup Thu 07:00, church',0,1]],
   B:[[.6,'Dure AI','<b>Lot locked</b><br>------------<br>1,530 kg · 18 farms sold<br>Prepay to book the truck: <span class="paybtn">Pay $4,250.85</span>'],[.9,'Dure AI','Prepayment received ✓ Truck booked for Thu 07:00, Letefoho church.']]},
  {t:'Collective supply chain',p:'Dure books the truck the moment the deal closes. Noor only leaves the agreed amount at the agreed place, and the grade is confirmed by hand at pickup.',
