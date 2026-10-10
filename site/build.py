@@ -34,4 +34,6 @@ if os.path.exists(os.path.join(ROOT, 'og.png')):
 shutil.copy(os.path.join(S, '_headers'), os.path.join(D, '_headers'))
 if os.path.exists(os.path.join(S, 'm_proto.html')):   # phone and tablet edition
     shutil.copy(os.path.join(S, 'm_proto.html'), os.path.join(D, 'm.html'))   # the phone and tablet edition; index.html sends touch devices here
+if os.path.exists(os.path.join(S, 'm_next.html')):   # summit edition draft (preview branch only)
+    shutil.copy(os.path.join(S, 'm_next.html'), os.path.join(D, 'm-next.html'))
 print('built', len(site) // 1024, 'KB site')
