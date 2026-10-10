@@ -2270,7 +2270,7 @@ function bookSvg(now){
     G.forEach((g,q)=>{const m=mid[q],L_=lab[q],kgG=shown.filter(f=>gOf(f)===g&&f.st==='in').reduce((a,f)=>a+f.kg,0);
       if(Math.abs(L_-m)>3)s+=`<path d="M${LX-8} ${L_.toFixed(1)} L${LX-5} ${m.toFixed(1)}" stroke="${CG[g]}" stroke-width="1.4"/>`;
       s+=`<g transform="translate(${LX-26} ${(L_-3).toFixed(1)})">${BEAN.art(g,.66,-20,q,true)}</g><text x="${LX-10}" y="${(L_+18).toFixed(1)}" text-anchor="end" ${FT} font-style="italic" font-size="12.5" fill="${INK2}">${kgf(kgG)} kg</text>`;
-      if(mk.res&&mk.res.gp&&ph!=='auction')s+=`<g transform="translate(38 ${(L_+2).toFixed(1)})"><rect x="-30" y="-11" width="60" height="22" rx="11" fill="#F6EFE0" stroke="${CG[g]}" stroke-width="2"/><text y="4.5" text-anchor="middle" ${FT} font-size="12" font-weight="700" fill="${INK}">$${mk.res.gp[g].toFixed(2)}</text></g>`})}
+      if(mk.res&&mk.res.gp&&ph!=='auction')s+=`<g transform="translate(68 ${(L_+2).toFixed(1)})"><rect x="-30" y="-11" width="60" height="22" rx="11" fill="#F6EFE0" stroke="${CG[g]}" stroke-width="2"/><text y="4.5" text-anchor="middle" ${FT} font-size="12" font-weight="700" fill="${INK}">$${mk.res.gp[g].toFixed(2)}</text></g>`})}
   const wait=mk.farmers.filter(f=>f.st==='wait');if(wait.length)s+=`<text x="${LX+LW/2}" y="${Y0+H+28}" text-anchor="middle" ${FT} font-style="italic" font-size="13" fill="${INK2}">+${wait.length} ${('waitlist')} · ${kgf(sumKg(wait))} kg</text>`;
   // buyers and bid lines
   const n=mk.buyers.length,cy=cyB;
@@ -2289,7 +2289,7 @@ function bookSvg(now){
   else if(mk.open!=null)s+=`<text x="${SV.x+SV.w/2}" y="84" text-anchor="middle" ${FT} font-size="14.5" fill="${INK2}">${('floor')} $${mk.floor.toFixed(2)} · ${('opens')} $${mk.open.toFixed(2)}</text>`;
   const rule={morning:'Offers from around Letefoho add up. Each grade stays labelled.',auction:("Bids below the farmers' floor don't count. At 17:00 the best bid takes it."),decide:("Price at or above your minimum: you're in. Below: you choose YES or NO."),locked:mk.res&&mk.res.none?('Nothing sold. Nobody is penalised.'):('Places freed by a NO go to the waitlist, first come first served.'),pickup:('A person checks every sack against its photo.'),paid:(`One payment in ($${(mk.paid||0).toFixed(2)}), ${nIn} payments out, by grade and kg.`)}[ph]||'';
   s+=`<path d="M40 ${VH-38} H600" stroke="rgba(31,58,64,.12)"/><text x="320" y="${VH-14}" text-anchor="middle" ${FT} font-size="15" fill="${INK2}">${rule}</text>`;
-  return `<svg viewBox="0 0 640 ${VH}">${s}</svg>`;
+  const ox=mk.res&&mk.res.gp&&ph!=='auction'?20:0;return `<svg viewBox="${ox} 0 640 ${VH}">${s}</svg>`;   // with the grade prices shown the drawing spans 44–636: shift it to sit centred
 }
 let logN=0,buyerView=false,buyerIdx=0;
 function renderLive(){

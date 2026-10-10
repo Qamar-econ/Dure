@@ -8,7 +8,8 @@
 (function(){try{if(/[?&]full=1/.test(location.search))return;var n=navigator,u=n.userAgent||'';
 var touchOnly=matchMedia('(pointer: coarse)').matches&&matchMedia('(hover: none)').matches;
 var ipad=/Macintosh/.test(u)&&n.maxTouchPoints>1;   /* iPadOS presents itself as a Mac */
-if(/Android|iPhone|iPad|iPod|Mobile|Tablet|Silk|Kindle/i.test(u)||ipad||touchOnly)location.replace('m.html'+location.hash)}catch(e){}})();</script>
+var desk=/Windows NT|CrOS|X11/.test(u)&&!/Android/i.test(u);   /* Windows 2-in-1s (even in tablet mode), Chromebooks and Linux are PCs */
+if(!desk&&(/Android|iPhone|iPad|iPod|Mobile|Tablet|Silk|Kindle/i.test(u)||ipad||touchOnly))location.replace('m.html'+location.hash)}catch(e){}})();</script>
 <title>Dure — Cooperate through messaging</title>
 <meta name="description" content="Dure does the job of a coffee cooperative by text message: farmers in Ermera, Timor-Leste pool their coffee, buyers bid for it, and a small AI reads plain SMS in Tetum and English, even when the power is out.">
 <meta name="theme-color" content="#F2EADA">
@@ -141,6 +142,11 @@ body.in .scrollcue{opacity:1}
 .bar svg{opacity:0;transition:opacity .5s}
 .bar{transition:background .3s,box-shadow .3s}
 .barr{display:flex;align-items:center;gap:14px}
+.barr{flex-direction:column;align-items:flex-end;gap:8px}
+#autoBtn{all:unset;pointer-events:auto;cursor:pointer;font:600 12.5px "Atkinson Hyperlegible Next",system-ui,sans-serif;color:var(--ink);border:1px solid rgba(31,58,64,.25);border-radius:999px;padding:4px 12px;background:rgba(242,234,218,.85);transition:background .2s,color .2s}
+#autoBtn:hover{background:#fff}#autoBtn.on{background:var(--ink);color:#F2EADA;border-color:var(--ink)}
+#autoBtn:focus-visible{outline:2px solid var(--rust);outline-offset:2px}
+.bar.ontais #autoBtn{color:#FBF7EE;border-color:rgba(251,247,238,.6);background:rgba(0,0,0,.18)}.bar.ontais #autoBtn.on{background:#FBF7EE;color:#1F3A40}
 .bar.flowbg{background:rgba(242,234,218,.95);box-shadow:0 1px 0 rgba(31,58,64,.1);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 @media (max-width:760px){.bar.solid{background:rgba(242,234,218,.97);box-shadow:0 1px 0 rgba(31,58,64,.1)}}
 .bar.show svg{opacity:1}
@@ -3010,10 +3016,11 @@ $('menu').innerHTML=CH.map((c,i)=>`<button data-i="${i}"><b>${c[0]}</b>${c[1]}</
 $('chap').onclick=e=>{e.stopPropagation();$('menu').classList.toggle('on');[...$('menu').children].forEach((b,i)=>b.classList.toggle('cur',i===SCN[cur].c));};
 $('menu').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=+b.dataset.i;$('menu').classList.remove('on');if(CH[i][2]){$(CH[i][2]).scrollIntoView({behavior:'smooth'});return;}const k=SCN.findIndex(x=>x.c===i);const n=SCN[k];scrollTo({top:SEC[n.s].el.offsetTop+n.o*innerHeight/100,behavior:'smooth'});};
 addEventListener('click',e=>{if(!e.target.closest('#menu'))$('menu').classList.remove('on')});
-/* ---------- tap-through mode (phones and tablets): one tap plays one scene, then holds on its last frame ---------- */
-/* tap mode is the default only on phones and tablets: Windows/ChromeOS/Linux desktops (even touch-screen laptops, which report a coarse pointer) start in scroll mode; the Tap mode button and ?tap=1 still switch it on */
-const TAPQ=new URLSearchParams(location.search).get('tap'),COARSE=matchMedia('(pointer:coarse)').matches&&!/Windows NT|CrOS|X11/.test(navigator.userAgent),RMOT=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let TAP=TAPQ==='1'||(COARSE&&TAPQ!=='0');try{const v=sessionStorage.getItem('dure-tap');if(v!=null&&TAPQ==null)TAP=v==='1'}catch(e){}
+/* ---------- Auto: the story plays itself, scene by scene, with a reading pause after each ----------
+   The steps below are where a scene's text has fully appeared; each step's animation runs at one steady speed (planOf),
+   then the page holds for as long as its text and figures take to read. (Phones and tablets get m.html.) */
+const RMOT=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const TAP=false;
 /* one tap = one piece of text. Scenes whose text stays the same (Noor walking in the monsoon) run on by themselves;
    scenes whose text only builds on the last (the How-it-works chats) run on too, with a reading pause in between. */
 const TAPS=new Set([1,2,5,6,13,14,15,16,17,19,20,21,22,23,24,28,30,31,33,36,37,38,39,40,41,42]);
@@ -3079,47 +3086,39 @@ function tapNext(){if(anim){const to=anim.to;cancelAnimationFrame(anim.raf);anim
 function tapBack(){if(anim){cancelAnimationFrame(anim.raf);anim=null}clearTimeout(autoT);
   const y=scrollY-4;let j=-1;for(let i=0;i<STEPS.length;i++){if(stopY(i)<y)j=i;else break}run(j<0?0:stopY(j),0)}
 function goStep(j){clearTimeout(autoT);if(anim){cancelAnimationFrame(anim.raf);anim=null}scrollTo(0,j>0?stopY(j-1):0);req();if(STEPS[j].ks)runSegs(j);else run(stopY(j),durOf(j))}
-/* bottom strip: one segment per chapter, auto-play, and a way back to plain scrolling */
-const tapui=document.createElement('div');tapui.id='tapui';
-tapui.innerHTML=`<div class="tseg">${CH.map((c,i)=>`<button data-c="${i}" aria-label="Chapter ${c[0]}: ${c[1]}"><u></u></button>`).join('')}</div>
-  <div class="tctl"><span id="tapCount"></span><button id="tapAuto" type="button">▶ Auto</button><button id="tapMode" type="button">Scroll instead</button></div>`;
-document.body.appendChild(tapui);
-const hint=document.createElement('div');hint.id='tapHint';hint.textContent='Tap to continue →';document.body.appendChild(hint);
-const edge=document.createElement('div');edge.id='tapEdge';edge.innerHTML='<i></i><b>›</b>';document.body.appendChild(edge);
-const scue=document.createElement('div');scue.id='scrollCue';scue.innerHTML='<i></i><b>⌄</b>';document.body.appendChild(scue);
-const cues=(tap,scr)=>{edge.classList.toggle('on',!!tap);scue.classList.toggle('on',!!scr)};
-function paintTap(){const j=Math.max(0,stepNow);
-  tapui.querySelectorAll('.tseg button').forEach((b,i)=>{const mine=STEPS.map((s,k)=>[s,k]).filter(([s])=>s.c===i),done=mine.filter(([,k])=>k<=stepNow).length;
-    b.querySelector('u').style.width=(mine.length?done/mine.length*100:0)+'%';b.classList.toggle('cur',STEPS[j]&&STEPS[j].c===i)});
-  const ys=[...new Set(STEPS.map((_,k)=>stopY(k)))],y=scrollY+4;$('tapCount').textContent=`${Math.max(1,ys.filter(v=>v<=y).length)} / ${ys.length}`}
-tapui.querySelector('.tseg').onclick=e=>{const b=e.target.closest('button');if(!b)return;const j=STEPS.findIndex(s=>s.c===+b.dataset.c);if(j>=0)goStep(j)};
-$('tapAuto').onclick=()=>{autoOn=!autoOn;if(autoOn)edge.classList.remove('on');$('tapAuto').classList.toggle('on',autoOn);$('tapAuto').textContent=autoOn?'❚❚ Pause':'▶ Auto';if(autoOn&&!anim)tapNext();else clearTimeout(autoT)};
-function setTap(on){TAP=on;document.documentElement.classList.toggle('tapm',on);setTimeout(()=>{try{centreGroups()}catch(e){}},50);{const m=$('rbMon'),u=$('rbUnf'),q=on?'.886':'.8';if(m&&u){m.dataset.to=q;u.dataset.from=q}}try{sessionStorage.setItem('dure-tap',on?'1':'0')}catch(e){}
-  $('tapMode').textContent=on?'Scroll instead':'Tap mode';if(!on){autoOn=false;clearTimeout(autoT);$('tapAuto').classList.remove('on');$('tapAuto').textContent='▶ Auto';hint.classList.remove('on')}
-  if(on&&window.__lenis){try{window.__lenis.destroy()}catch(e){}window.__lenis=null}
-  if(!on)cues(0,0);if(on){const j=curStep();if(j>=0)scrollTo(0,stopY(j));onHold()}}
-$('tapMode').onclick=()=>setTap(!TAP);
-/* input: tap right two-thirds = next, left third = back; swipes and the wheel step too; links and controls keep working */
-const EXC='a,button,input,select,textarea,iframe,video,.vids,#menu,#chap,.bar,#tapui,.yt';
-const isExc=t=>{if(t.closest(EXC))return true;const f=t.closest('.lg-fig');return !!(f&&f.scrollWidth>f.clientWidth+2)};   /* the Registry figure only keeps the finger when it really scrolls sideways */
-let tpX=null,tpY=null,lastTouch=0,wheelT=0;
-addEventListener('touchstart',e=>{if(!TAP)return;const t=e.touches[0];tpX=t.clientX;tpY=t.clientY},{passive:true});
-addEventListener('touchmove',e=>{if(!TAP)return;if(inFree()){if(scrollY<=flowTop()+2&&tpY!=null&&e.touches[0].clientY-tpY>0)e.preventDefault();return}if(e.target.closest('.lg-fig,#menu'))return;e.preventDefault()},{passive:false});
-addEventListener('touchend',e=>{if(!TAP||tpX==null)return;lastTouch=performance.now();const t=e.changedTouches[0],dx=t.clientX-tpX,dy=t.clientY-tpY;tpX=null;
-  if(inFree()){if(scrollY<=flowTop()+2&&dy>60&&Math.abs(dy)>Math.abs(dx)){e.preventDefault();tapBack()}return}   /* free scrolling at the end; pulling down at its top steps back into the story */
-  if(e.target.closest(EXC)&&!(Math.abs(dy)>40&&!e.target.closest('#menu,#tapui')))return;   /* a plain tap on the Registry figure still turns the page; only a sideways drag scrolls it */
-  if(Math.max(Math.abs(dx),Math.abs(dy))>40){if(e.target.closest('.lg-fig')&&Math.abs(dx)>Math.abs(dy))return;e.preventDefault();
-    (Math.abs(dy)>Math.abs(dx)?(dy<0?tapNext:tapBack):(dx<0?tapNext:tapBack))();return}
-  e.preventDefault();(t.clientX<innerWidth/3?tapBack:tapNext)()},{passive:false});
-addEventListener('click',e=>{if(!TAP||inFree()||performance.now()-lastTouch<700||isExc(e.target))return;(e.clientX<innerWidth/3?tapBack:tapNext)()});
-addEventListener('wheel',e=>{if(!TAP)return;if(inFree()&&!(e.deltaY<0&&scrollY<=flowTop()+2))return;e.preventDefault();const now=performance.now();if(now-wheelT<650||Math.abs(e.deltaY)<8)return;wheelT=now;(e.deltaY>0?tapNext:tapBack)()},{passive:false});
-addEventListener('keydown',e=>{if(!TAP)return;if(e.target.closest&&e.target.closest('input,textarea'))return;if(inFree()&&!(['ArrowUp','PageUp'].includes(e.key)&&scrollY<=flowTop()+2))return;
-  if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();tapNext()}else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();tapBack()}});
-/* chapter menu and rotation follow the steps */
-{const old=$('menu').onclick;$('menu').onclick=e=>{if(!TAP)return old(e);const b=e.target.closest('button');if(!b)return;$('menu').classList.remove('on');const j=STEPS.findIndex(s=>s.c===+b.dataset.i);if(j>=0)goStep(j)}}
-{let lw=innerWidth,keep=-1;addEventListener('resize',()=>{if(!TAP||innerWidth===lw)return;lw=innerWidth;keep=stepNow;setTimeout(()=>{if(keep>=0){scrollTo(0,stopY(keep));req();onHold()}},350)})}
-addEventListener('scroll',()=>{if(!TAP||anim)return;const h=$('tapHint');if(h&&scrollY>flowTop()+40)h.classList.remove('on');if(scrollY>flowTop()+60)scue.classList.remove('on');if(scrollY<flowTop()-4){const y=stepNow>=STEPS.length-1?stopY(STEPS.length-2):stepNow>=0?stopY(stepNow):0;if(y!=null&&Math.abs(scrollY-y)>4){scrollTo(0,y);req();onHold()}}},{passive:true});   /* the story part never drifts: it sits on the frame of the current step */
-if(TAP)requestAnimationFrame(()=>setTap(true));else{document.documentElement.classList.remove('tapm');$('tapMode').textContent='Tap mode';onHold()}
+/* the Auto button sits under the chapter label */
+const cues=()=>{},paintTap=()=>{};
+const autoB=document.createElement('button');autoB.id='autoBtn';autoB.type='button';autoB.textContent='▶ Auto';autoB.setAttribute('aria-pressed','false');
+autoB.title='Play the story on its own, at reading pace';document.querySelector('.barr').appendChild(autoB);
+/* how long to hold a frame: the text on screen at reading pace, plus the figures' labels and numbers */
+function readMs(){const sec=secAt(scrollY),el=sec?SEC[sec].el:document.body,vis=e=>{const b=e.getBoundingClientRect();if(b.bottom<0||b.top>innerHeight||b.width<1)return false;return e.checkVisibility?e.checkVisibility({opacityProperty:true,visibilityProperty:true}):true};
+  const words=[...el.querySelectorAll('.beat.on,.b.on,.ec-head.on,.how-cap,.cu-title,.ledger,.drape .q,.msgs,.list')].filter(vis).map(x=>x.textContent).join(' ').trim().split(/\s+/).filter(Boolean).length;
+  const labels=[...el.querySelectorAll('svg text')].filter(t=>t.textContent.trim()&&vis(t)).length;
+  return Math.max(1800,Math.min(12000,900+words*240+Math.min(labels,40)*110))}   // ~250 words a minute, and a moment for each label on a figure
+function onHold(){stepNow=curStep();clearTimeout(autoT);if(!autoOn)return;
+  if(stepNow<STEPS.length-1)autoT=setTimeout(tapNext,readMs());else autoT=setTimeout(autoFlow,readMs())}
+/* after the scenes, the text chapters scroll by at reading pace, one section at a time */
+function autoFlow(){if(!autoOn)return;const vh=innerHeight,secs=['ledger10','hybrid','risks','close'].map(id=>$(id)).filter(Boolean),items=[];let y=scrollY;
+  secs.forEach(el=>{const end=Math.min(maxY(),el.offsetTop+el.offsetHeight-vh*.35);if(end<=y+2)return;
+    const words=el.textContent.trim().split(/\s+/).length,labels=el.querySelectorAll('svg text').length,ms=Math.max(3500,words*240+Math.min(labels,60)*80);
+    items.push({y0:y,y1:end,ms,ein:!items.length,eout:false});y=end});
+  if(!items.length)return stopAuto();items[items.length-1].eout=true;play(items,()=>stopAuto())}
+function play(items,done){if(anim)cancelAnimationFrame(anim.raf);const A=600;let tot=0;items.forEach(x=>{x.t0=tot;tot+=x.ms});anim={to:items[items.length-1].y1};
+  const prof=(t,T,ein,eout)=>{if(T<=0)return 1;const a=Math.min(A,T*.4),ai=ein?a:0,ao=eout?a:0,v=1/(T-ai/2-ao/2);if(t<ai)return v*t*t/(2*ai);if(t>T-ao){const r=T-t;return 1-v*r*r/(2*ao)}return v*(t-ai/2)};
+  const t0=performance.now();window.__tapPlaying=true;
+  const f=now=>{if(!anim){window.__tapPlaying=false;return}const e=now-t0;if(e>=tot){anim=null;window.__tapPlaying=false;scrollTo(0,items[items.length-1].y1);req();done&&done();return}
+    let x=items[0];for(const it of items){if(it.t0<=e)x=it;else break}scrollTo(0,x.y0+(x.y1-x.y0)*Math.min(1,prof(e-x.t0,x.ms,x.ein,x.eout)));req();anim.raf=requestAnimationFrame(f)};
+  anim.raf=requestAnimationFrame(f)}
+function startAuto(){autoOn=true;autoB.classList.add('on');autoB.textContent='❚❚ Pause';autoB.setAttribute('aria-pressed','true');
+  if(window.__lenis){try{window.__lenis.stop()}catch(e){}}   // smooth-scroll would fight the player
+  if(scrollY>=flowTop()-4)autoFlow();else tapNext()}
+function stopAuto(){autoOn=false;clearTimeout(autoT);if(anim){cancelAnimationFrame(anim.raf);anim=null}window.__tapPlaying=false;
+  autoB.classList.remove('on');autoB.textContent='▶ Auto';autoB.setAttribute('aria-pressed','false');
+  if(window.__lenis){try{window.__lenis.start();window.__lenis.scrollTo(scrollY,{immediate:true,force:true})}catch(e){}}}
+autoB.onclick=e=>{e.stopPropagation();autoOn?stopAuto():startAuto()};
+/* any hand on the page takes over from Auto */
+['wheel','touchstart','mousedown'].forEach(t=>addEventListener(t,e=>{if(autoOn&&!e.target.closest('#autoBtn'))stopAuto()},{passive:true}));
+addEventListener('keydown',e=>{if(autoOn&&!['Shift','Control','Alt','Meta'].includes(e.key))stopAuto()});
 /* phones and portrait tablets: keep each heading with its block, and centre the pair between the top bar and the bottom strip */
 function centreGroups(){const P=innerWidth<=760;const bar=60,foot=document.documentElement.classList.contains('tapm')?44:0;
   const place=(head,body,gap,tail)=>{if(!head||!body)return;if(!P){head.style.top=body.style.top='';body.style.transform='';if(tail){tail.style.top='';tail.style.bottom='';tail.style.transform=''}return}

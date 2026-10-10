@@ -176,12 +176,13 @@ def thread():
             cols[side].append(f'<div class="{cls}" style="--i:{n}"><span class="sd">{html.escape(re.sub("<[^>]+>", "", sender)) if not mine else ("Noor" if side == "F" else "Buyer")}</span>{bubble_text(text)}</div>')
             n += 1
         # Noor's phone: Dure on the left, Noor on the right. The buyers show up in what Dure tells her and in the dashboards
-        body = [f'<div class="chat">{"".join(cols["F"])}</div>']
+        phone = (f'<div class="abar"><span class="av">D</span><div><b>Dure AI</b><small>SMS · +670 7700 3873</small></div><i class="dots" aria-hidden="true"></i></div>'
+                 f'<div class="chat">{"".join(cols["F"])}</div><div class="ain" aria-hidden="true"><span>Text message</span><i></i></div>')
+        body = [phone]
         f = figf()
-        if f:
-            body.append(f'<figure class="dash">{f}</figure>')
+        dash = f'<figure class="dash">{f}</figure>' if f else ''   # what Dure did behind those messages, below the phone
         t, p = HOW[s]
-        out.append(f'<article class="hstep rv"><header><span class="no">{s+1}<i>/8</i></span><h3>{t}</h3><p>{p}</p></header><div class="conv">{"".join(body)}</div></article>')
+        out.append(f'<article class="hstep rv"><header><span class="no">{s+1}<i>/8</i></span><h3>{t}</h3><p>{p}</p></header><div class="conv">{"".join(body)}</div>{dash}</article>')
     return ''.join(out)
 
 
