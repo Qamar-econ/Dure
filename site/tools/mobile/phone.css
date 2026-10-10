@@ -151,3 +151,7 @@ details.wk .dash .mxs{padding:6px 9px}details.wk .dash .mxs b{font-size:16px}
 main > section:not(.hero),.night > section{content-visibility:auto;contain-intrinsic-size:auto 900px}
 /* the price row on narrow phones: the scale's labels get their own room */
 @media (max-width:389px){.at .pr .sc{margin-bottom:24px}}
+
+/* founder photo, small and round */
+.fhd{display:flex;align-items:center;gap:14px;margin:0 0 14px}.fhd .fwho{margin:0}
+.fph{width:72px;height:72px;border-radius:50%;object-fit:cover;flex:none;box-shadow:0 0 0 2px rgba(244,235,218,.25)}
