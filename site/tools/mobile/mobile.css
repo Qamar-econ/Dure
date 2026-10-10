@@ -641,7 +641,7 @@ details.dsh .mb{padding:0 12px 4px}
 .conv details.cont .mb{padding:0}
 .parser details.more{background:rgba(255,255,255,.05);margin:0 0 10px}
 .parser details.more > summary{color:#EDE3CF}
-@media (max-width:699px){.txt,.how{padding-top:44px;padding-bottom:40px}.dark .in{padding:40px var(--g) 44px}.hstep{margin-top:34px}}
+@media (max-width:699px){.txt,.how{padding-top:96px;padding-bottom:88px}.dark .in{padding:84px var(--g) 92px}.hstep{margin-top:44px}}   /* chapters breathe: twice the room between them */
 
 details.more.src{background:none;margin:6px 0 0}
 details.more.src > summary{padding:4px 0;font:500 12.5px var(--sans);color:var(--soft);justify-content:flex-start}
@@ -830,8 +830,8 @@ details.dsh > summary .dl{margin-left:10px}
 
 /* the first tais band rises out of the page: ivory fades to night, then the band */
 /* the tais fades in out of the ivory page; the night begins right under it */
-.dark.first{background:linear-gradient(#F2EADA 0,#F2EADA 172px,#231C17 172px)}
-.dark.first::before{content:"";display:block;height:20px}
+.dark.first{background:linear-gradient(#F2EADA 0,#F2EADA 212px,#231C17 212px)}
+.dark.first::before{content:"";display:block;height:60px}
 .dark.first > .tais{height:152px;-webkit-mask-image:linear-gradient(rgba(0,0,0,0),#000 82%);mask-image:linear-gradient(rgba(0,0,0,0),#000 82%)}
 .three li b{color:var(--rust)}
 /* Noor's phone: one conversation */
@@ -842,3 +842,21 @@ details.dsh > summary .dl{margin-left:10px}
 .night .conv::before{display:none}
 .conv{padding:12px 10px 10px}
 .more-info{border-top:1px solid rgba(244,235,218,.1)}
+
+/* ---------- How it works: Noor's phone, an ordinary Android messages screen ---------- */
+.night .conv{background:#FFFFFF!important;border-radius:26px;padding:0 0 10px;overflow:hidden;box-shadow:0 0 0 7px #1B1B1F,0 22px 40px -18px rgba(0,0,0,.7)!important;margin:6px 4px 0;max-width:420px}
+@media (min-width:700px){.night .conv{margin-left:auto;margin-right:auto}}
+.abar{display:flex;align-items:center;gap:10px;padding:12px 14px 10px;background:#F3F6FC;border-bottom:1px solid #E1E5EC;font-family:var(--device)}
+.abar .av{width:32px;height:32px;border-radius:50%;background:#4E8B5C;color:#fff;display:grid;place-items:center;font:600 15px var(--device)}
+.abar b{display:block;font:600 15px var(--device);color:#1B1B1F}.abar small{font:12px var(--device);color:#5F6368}
+.abar .dots{margin-left:auto;width:4px;height:4px;border-radius:50%;background:#5F6368;box-shadow:0 -7px 0 #5F6368,0 7px 0 #5F6368}
+.chat{padding:12px 10px 6px}
+.conv .msg{font-family:var(--device)!important;border-radius:20px 20px 20px 6px;box-shadow:none!important}
+.conv .msg.F:not(.me){background:#4E8B5C!important;color:#fff!important}
+.conv .msg.me.me{background:#D3E3FD!important;color:#1B1B1F!important;border-radius:20px 20px 6px 20px}
+.conv .msg.me.me .sd{color:#44617E!important}
+.ain{display:flex;align-items:center;gap:8px;margin:6px 10px 0;padding:9px 14px;border-radius:24px;background:#F1F3F4;font:14px var(--device);color:#80868B}
+.ain i{margin-left:auto;width:26px;height:26px;border-radius:50%;background:#C4C7C5}
+.hstep > .dash{margin:14px 4px 0;max-width:420px}
+@media (min-width:700px){.hstep > .dash{margin-left:auto;margin-right:auto}}
+@media (min-width:1000px) and (orientation:landscape){.hsteps .hstep > .dash{grid-column:2}}
