@@ -58,6 +58,11 @@ table.sh td input{font:inherit;width:70px;border:1px solid var(--rust);padding:1
 .tabs button{font:inherit;font-size:14px;padding:9px 16px;border:0;background:transparent;color:var(--ink-2);cursor:pointer;border-radius:0 0 8px 8px;white-space:nowrap}
 .tabs button.on{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 2px 0 var(--rust) inset}
 .tabs .cnt{font-size:11.5px;color:#8A8070;margin-left:4px}
+/* the raw records sit apart from what Dure makes of them: their own colour, a small RAW tag, a gap before them */
+.tabs button.raw{background:#DCE3E2;color:#2C4F57}
+.tabs button.raw:not(.raw + .raw){margin-left:14px}
+.tabs button.raw.on{background:#F3F7F6;box-shadow:0 2px 0 #2C4F57 inset}
+.tabs .rw{font:700 9.5px/1 "Atkinson Hyperlegible Mono",monospace;letter-spacing:.06em;font-style:normal;color:#F3F7F6;background:#2C4F57;border-radius:3px;padding:2px 4px;margin-right:6px;vertical-align:1px}
 @media (max-width:760px){.tabs{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);padding-right:40px;scroll-padding-inline:12px}.tabs.end{-webkit-mask-image:none;mask-image:none}}   /* the strip scrolls sideways on phones: fade the edge so the cut-off tab reads as more */
 /* brief */
 .brief{flex:1;min-height:0;overflow:auto;background:var(--ivory)}
@@ -828,7 +833,8 @@ const SPEC={
   ['sat_out','Not sold %','pct'],['ai_disagree','Photo ≠ hand check %','pct']]},
  brief:{label:'Daily brief'}
 };
-const ORDER=RUN?['brief','week','register','trades','market','signals']:['brief','register','trades','market','signals'];
+const ORDER=RUN?['brief','week','market','signals','register','trades']:['brief','market','signals','register','trades'];   // what Dure makes of the data first, then the raw records it is built from
+const RAW={register:1,trades:1};
 function weekRows(){return R.trades.filter(t=>t.run).map(t=>({...t,rep:t.x.rep,rep1:t.x.rep1,sex:t.x.woman==null?'':t.x.woman?'F':'M',dec:t.x.dec||'',mm:t.ai_grade==null?'held':t.x.mismatch?'yes':'no',bf:t.x.backfill?'yes':'',lang:t.lang==='TET'?'Tetum':'English'}))
   .sort((a,b)=>(b.me-a.me)||a.village.localeCompare(b.village)||a.name.localeCompare(b.name))}
 const buyerName=id=>{const b=D.buyers.find(x=>x.id===id);return b?b.name:id||''};
@@ -1083,7 +1089,7 @@ function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clear
 let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if(tab==='brief')renderBrief();else renderChart()},200)});
 
 /* ---------- tabs, filters ---------- */
-$('tabs').innerHTML=ORDER.map(k=>`<button data-t="${k}">${SPEC[k].label}${SPEC[k].rows?`<span class="cnt">${SPEC[k].rows().length}</span>`:''}</button>`).join('');
+$('tabs').innerHTML=ORDER.map(k=>`<button data-t="${k}"${RAW[k]?' class="raw"':''}>${RAW[k]?'<i class="rw">RAW</i>':''}${SPEC[k].label}${SPEC[k].rows?`<span class="cnt">${SPEC[k].rows().length}</span>`:''}</button>`).join('');
 $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{hlRows=null;setTab(b.dataset.t)});
 R.villages.forEach(v=>$('fv').insertAdjacentHTML('beforeend',`<option>${v}</option>`));
 [...new Set(R.market.map(m=>m.week))].forEach(w=>$('fw').insertAdjacentHTML('beforeend',`<option value="${w}">${w}${R.market.some(m=>m.run&&m.week===w)?' (demo)':''}</option>`));
