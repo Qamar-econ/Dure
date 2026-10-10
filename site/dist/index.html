@@ -2418,6 +2418,7 @@ function payFlow(u){
   $('pfClock').textContent=u<.65?'mobile money':u<.9?`mobile money · ${paid} of 21 paid`:'mobile money · settled';
   $('pfDone').setAttribute('opacity',seg(u,.9,.95));
 }
+let askT0=0;
 function clearing(i,u){
   const lotIn=i===1?0:(i===2?ease(seg(u,0,.07)):1);
   $('silo').setAttribute('opacity',1-lotIn);$('tranche').setAttribute('opacity',i===1?seg(poolT,4.4,4.8):0);
@@ -2446,14 +2447,20 @@ function clearing(i,u){
   // step 4: the server asks every farm; slices confirm or step out
   $('cGl').setAttribute('opacity',1-seg(vu,0,.08));$('tally').setAttribute('opacity',seg(vu,.06,.12));$('cSub').setAttribute('opacity',1-seg(vu,0,.06));
   let yes=0,no=0;
-  FARMS.forEach(f=>{const t0=.1+f.ord*.022, fl=seg(vu,t0,t0+.08), ans=vu>=t0+.08;
+  /* once the server starts asking (vu>=.1) the texts go out on their own clock and every one lands, wherever the scroll stops;
+     scrolling back above the start resets them */
+  const now=performance.now();if(vu<.1)askT0=0;else if(!askT0)askT0=now;
+  const still=!!window.__dureStill, el=askT0?now-askT0:-1;
+  let flying=false;
+  FARMS.forEach(f=>{const s0=f.ord*110, fl=still?(vu>=.1?1:0):el<0?0:clamp((el-s0)/520,0,1), ans=fl>=1;if(fl>0&&fl<1)flying=true;
     const a=document.querySelector(`#cAsk .ask[data-k="${f.k}"]`);a.setAttribute('opacity',fl>0&&fl<1?1:0);
     if(fl>0&&fl<1){const [x,y]=bz([SV.x,SV.y+SV.h/2],[LX+LW+8,f.y+f.h/2],ease(fl));a.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})`)}
     const sl=document.querySelector(`#cLot .fsl[data-k="${f.k}"]`);
     if(ans){f.no?no++:yes++}
     sl.style.filter=ans&&f.no?'grayscale(1)':'';sl.setAttribute('opacity',ans&&f.no?.35:1);sl.querySelector('.ok').setAttribute('opacity',ans&&!f.no?1:0);
-    sl.setAttribute('transform',ans&&f.no?`translate(${-10*seg(vu,t0+.08,t0+.14)} 0)`:'');});
+    sl.setAttribute('transform',ans&&f.no?`translate(-10 0)`:'');});
   $('tYes').textContent=`${yes} YES`;$('tNo').textContent=`${no} NO`;
+  if(flying)requestAnimationFrame(()=>req());
   $('cPay').setAttribute('opacity',seg(vu,.72,.8));
   QA(document,'#cPay .pp').forEach(p=>{const m=document.querySelector(`#cRib .rb[data-g="${p.dataset.g}"]`)._m;const k=p.dataset.g;const [x,y]=bz([LX+LW,(LSEG[k][0]+LSEG[k][1])/2],[SV.x,(m[2]+m[3])/2],.3);p.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})`)});
   // the rule in force
@@ -2985,7 +2992,7 @@ function centreGroups(){const P=innerWidth<=760;const bar=60,foot=0;
 addEventListener('resize',()=>requestAnimationFrame(centreGroups));document.fonts&&document.fonts.ready.then(centreGroups);setTimeout(centreGroups,600);
 /* the Registry figure only takes the finger on phones, where it scrolls sideways; elsewhere the page scroll passes straight through it */
 if(innerWidth<=760)$('lgFig').setAttribute('data-lenis-prevent','');
-window.__dure={at(sec,p){const S=SEC[sec];const n=S.slots.find(n=>p>=n.a&&p<=n.b)||S.slots[S.slots.length-1];scrollTo(0,S.el.offsetTop+(n.o+clamp((p-n.a)/(n.b-n.a),0,1)*n.l*PLn(n))*innerHeight/100);req();},go:goScene,step:j=>goStep(j),stepY:j=>stopY(j),steps:()=>STEPS.length,get cur(){return cur},get n(){return SCN.length},get busy(){return Object.keys(PS).some(id=>Math.abs(PS[id]-TG_[id])>.0004)},SEC,SCN};
+window.__dure={at(sec,p){window.__dureStill=true;const S=SEC[sec];const n=S.slots.find(n=>p>=n.a&&p<=n.b)||S.slots[S.slots.length-1];scrollTo(0,S.el.offsetTop+(n.o+clamp((p-n.a)/(n.b-n.a),0,1)*n.l*PLn(n))*innerHeight/100);req();},go:goScene,get cur(){return cur},get n(){return SCN.length},get busy(){return Object.keys(PS).some(id=>Math.abs(PS[id]-TG_[id])>.0004)},SEC,SCN};
 function show(){}
 if('scrollRestoration' in history)history.scrollRestoration='manual';
 sizeSecs();sizeRoad();req();
