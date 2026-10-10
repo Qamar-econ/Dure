@@ -597,23 +597,6 @@ p,li,small,blockquote,cite,.k,.principle p{text-wrap:pretty}
 .recap b{display:block;font-weight:500;font-size:16.5px;line-height:1.45;text-wrap:pretty}
 @media (max-width:720px){.recap{grid-template-columns:1fr}}
 
-/* ===== night: from the tais curtain to the end the page stays dark (the phone edition's colours) ===== */
-#how,#wai,#econ,#ledger10,#hybrid,#risks,#close{--ink:#F4EBDA;--ink-2:#D9CDB6;--rust:#E58F6E;--line:rgba(244,235,218,.14);background:#231C17;color:var(--ink)}
-#how>.stage,#wai>.stage,#econ>.stage{background:#231C17}
-#wai .grain,#econ .grain{opacity:.04}
-.how-cap .n,.ec-head .n,.fl-k{color:#E4B64C}
-.ec-idx{color:rgba(244,235,218,.38)}
-/* figures sit on paper: documents laid on the dark table, in their own light colours */
-.stagebox>svg,.ec-fig,.lg-fig{--ink:#1F3A40;--ink-2:#4F4A40;--rust:#A8452A;--line:rgba(31,58,64,.16);color:#1F3A40}
-.stagebox>svg{background:#F2EADA}
-.ec-fig{background:#F2EADA;border-radius:18px;padding:22px 24px;box-shadow:0 18px 40px -24px rgba(0,0,0,.6)}
-.lg-fig{background:#F2EADA;border-radius:18px;padding:18px 20px}
-.risk{border-top-color:rgba(244,235,218,.5)}.risk>div{border-bottom-color:rgba(244,235,218,.14)}
-.tbi-b{background:rgba(244,235,218,.08)}.tbi-r.dim .tbi-b i{background:#6E6A62}
-.closing .btn,.flow .btn{box-shadow:none;background:#C9603F;color:#FBF3E2;border-color:#C9603F}
-/* the bar turns dark with the page */
-.bar.pcnight{background:rgba(35,28,23,.94)!important;box-shadow:0 1px 0 rgba(244,235,218,.08)!important}
-.bar.pcnight svg text{fill:#F4EBDA}.bar.pcnight .chap{color:#D9CDB6}.bar.pcnight .chap b{color:#E4B64C}
 </style>
 <script>/*LENIS*/</script>
 </head>
@@ -2050,7 +2033,6 @@ function frame(){
   BAR.classList.toggle('show',th>1.1||pm>0||pr>0);
   BAR.classList.toggle('solid',th>1.1||pm>0||pr>0);
   BAR.classList.toggle('ontais',VIS('curtain')&&_onTais);   // logo and chapter turn white over the tais
-  {const how=document.getElementById('how');BAR.classList.toggle('pcnight',!!how&&how.getBoundingClientRect().top<=60&&!(VIS('curtain')&&_onTais))}   // past the curtain the bar goes dark with the page
   {const E=SEC.econ;BAR.classList.toggle('flowbg',!!E&&E.top!=null&&_SY>E.top+E.h-80)}   // text sections scroll under the logo; give the bar a backing there
   if(VIS('hero')){const r1=ease(seg(th,.3,1.6)),r2=ease(seg(th,.5,1.9)),r3=ease(seg(th,.8,2.5));
   $('heroScene').style.opacity=seg(th,.2,.9);
