@@ -195,8 +195,10 @@ a{color:inherit}
 .nokia #composer.skip .inp{display:none}
 #composer.skip .skipbar{display:block}
 #composer:not(.skip) .skipbar{display:none!important}
-.a-in button#att.blink{animation:blinkA 1.1s infinite}
-@keyframes blinkA{0%,100%{background:#EFECE6;box-shadow:0 0 0 0 rgba(168,69,42,.0)}50%{background:#F6D9C9;box-shadow:0 0 0 5px rgba(168,69,42,.35)}}
+.a-in button#att.blink{position:relative;background:#F6D9C9}
+/* the photo button's call to action: only the ring's opacity animates, so it runs on the compositor instead of repainting the phone every frame */
+.a-in button#att.blink::after{content:"";position:absolute;inset:-5px;border-radius:inherit;box-shadow:0 0 0 5px rgba(168,69,42,.35);pointer-events:none;will-change:opacity;animation:blinkA 1.1s ease-in-out infinite}
+@keyframes blinkA{0%,100%{opacity:0}50%{opacity:1}}
 .nokia #att.blink{animation:blinkN 1s steps(1) infinite}
 @keyframes blinkN{0%{background:#1E2B20;color:var(--lcd)}50%{background:none;color:#1E2B20}}
 @keyframes pulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.18)}}
@@ -319,7 +321,7 @@ body.simon .mkbar{display:flex}
 .lg2{font-style:normal;font-size:11px;display:flex;align-items:center;gap:4px}.lg2 i{display:inline-block;width:12px;height:8px;border-radius:50%}.lg2 i.ln{width:14px;height:0;border-top:1.5px dashed var(--rust);border-radius:0;margin-left:6px}
 .mapcard{flex:1 1 0;min-height:0;display:flex;flex-direction:column}
 #mapwrap{position:relative;flex:1 1 0;min-height:0;border-radius:9px;overflow:hidden}#map{display:block;width:100%;height:100%}
-.plot{cursor:pointer}.plot polygon{transition:fill .5s}.plot.pulse polygon{animation:plotp 1s infinite}
+.plot{cursor:pointer}.plot polygon{transition:fill .5s}.plot.pulse polygon{animation:plotp 1s steps(2,jump-none) infinite}
 @keyframes plotp{50%{fill:#F7C79B}}
 .maptip{display:none;position:absolute;z-index:3;width:200px;background:var(--ink);color:#F6EFE0;border-radius:10px;padding:8px 10px;font-size:12px;line-height:1.45;pointer-events:none}
 .fl{position:absolute;transform:translate(-50%,-100%);font-family:var(--f-display);font-weight:700;font-size:12px;white-space:nowrap;pointer-events:none;text-shadow:0 0 3px #F2EADA,0 0 6px #F2EADA;animation:flup 2.6s ease-out forwards}
@@ -476,6 +478,12 @@ body.mob .colD,body.mob .colM{display:none}
 body.mob .colP{display:flex;justify-content:center;align-items:flex-start;height:100%}
 body.mob .android{width:100vw;height:calc(100dvh - var(--topH,56px) - var(--dockH,110px));border-radius:0;padding:0;box-shadow:none;margin:0}
 body.mob .android .scr{border-radius:0}
+/* phones paint less: no full-screen paper grain blended over everything, no live blur behind the bars (their backgrounds are nearly opaque anyway) */
+body.mob.paper::before,body.mob .paper::before,body.mob .cam .grain{display:none}
+body.mob .top,body.mob .shade{-webkit-backdrop-filter:none;backdrop-filter:none}
+body.mob .top{background:#F2EADA}body.mob .shade{background:#F5F3EF}
+/* the phone appears only once it has its final size, so it never flashes small or cut off first */
+body.mob #phoneWrap{transition:opacity .25s}body.mob.fitting #phoneWrap{visibility:hidden;opacity:0;transition:none}
 body.mob .nokia{width:340px;padding:30px 22px 0}
 body.mob .colP .phoneWrap{width:100%;display:flex;justify-content:center}
 #mDock,#mSheet,#mDim{display:none}
@@ -599,7 +607,7 @@ body.mob #mSheet.open{transform:none}
 body.mob .mp[data-p="dash"] #dashCard{height:calc(90dvh - 74px);flex:none}
 body.mob .mp[data-p="map"] .mapcard{height:54dvh;flex:none;margin-bottom:8px}
 body.mob .mp[data-p="map"] #liveCard{flex:none;height:auto;min-height:280px}
-body.mob .mp[data-p="map"] .mk-cond{display:flex;margin:0 0 8px}
+body.mob .mp[data-p="map"] .mk-cond{display:flex;margin:0 0 8px}body.mob .mkbar .mk-cond{display:none}   /* on phones the conditions live in the map sheet; never let them stretch the top bar */
 
 /* phone dashboard cards */
 .mx{display:flex;flex-direction:column;gap:10px;padding:4px 2px 10px;color:#F6EFE0;font-family:var(--f-body)}
@@ -1069,6 +1077,10 @@ function fitPhone(){const tp=document.querySelector('.top');if(tp)document.docum
   p.style.transform='';const h=p.offsetHeight,avail=innerWidth>1100?innerHeight-(tp?tp.offsetHeight:56)-22:document.body.classList.contains('mob')?innerHeight-(tp?tp.offsetHeight:56)-(($('mDock')||{}).offsetHeight||0)-10:innerHeight-80;
   const sc=Math.max(.55,Math.min(1,avail/h));p.style.transform=sc<1?`scale(${sc.toFixed(3)})`:'';p.style.transformOrigin='top center';$('phoneWrap').style.height=sc<1?(h*sc)+'px':'';$('phoneWrap').style.width=sc<1?(p.offsetWidth*sc)+'px':''}
 addEventListener('resize',fitPhone);
+{let fq=0;const refit=()=>{if(fq)return;fq=requestAnimationFrame(()=>{fq=0;fitPhone()})};
+ const ro=('ResizeObserver' in self)?new ResizeObserver(refit):null;
+ window.__watchFit=()=>{if(!ro)return;ro.disconnect();['phone','mDock'].forEach(id=>{const e=$(id);if(e)ro.observe(e)});const tp=document.querySelector('.top');if(tp)ro.observe(tp);const sc=document.querySelector('#phone .scr');if(sc)ro.observe(sc)};
+ if(document.fonts){document.fonts.ready.then(refit);document.fonts.addEventListener&&document.fonts.addEventListener('loadingdone',refit)}}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
 const LNAME={en:'English',tet:'Tetum'};
 function biHtml(m,nk){const e=esc,a=m.text.split('\n'),b=m.tr.split('\n');
@@ -2316,13 +2328,15 @@ function drawAll(now){
   if(dirty.bar){renderBarStrip();dirty.bar=false}
   flushFloats();
   const moving=priceHold>now||pulses.length||(anim.ask&&now-anim.ask<3200)||(anim.pay&&now-anim.pay<6500);
-  if(now-lastHeavy>90||moving){lastHeavy=now;renderMap();renderStatus();renderFeed();renderLive();
+  /* phones: the map and dashboard live in a sheet; while it is closed they are not redrawn (the next frame after it opens catches up) */
+  const MB=document.body.classList.contains('mob')&&!document.body.classList.contains('land'),SH=MB&&$('mSheet'),seen=!MB||!!(SH&&SH.classList.contains('open'));
+  if(now-lastHeavy>(MB?140:90)||(moving&&seen)){lastHeavy=now;renderStatus();if(seen){renderMap();renderFeed();renderLive()}
     {const sig=mk.feed.length+'|'+mk.photoLog.length+'|'+mk.log.length;if(sig!==aiSig){aiSig=sig;aiUntil=now+900}const ai=$('aiInd');if(ai)ai.classList.toggle('on',aiUntil>now||(priceHold>now&&mk.phase==='auction'))}
     const auto=autoView(now);if(auto&&auto!==lastAuto){dashManual=null;dashSticky=auto}lastAuto=auto;if(mk.phase!==lastPhaseV){if(mk.phase==='auction'){dashManual=null;dashSticky='price'}if(['decide','paid'].includes(mk.phase)&&!auto){dashManual=null;dashSticky='book'}lastPhaseV=mk.phase}const v=dashManual||dashSticky||'read';
     if(v!==dashShown){dashShown=v;photoShown=-1;document.querySelectorAll('#dashCard .pane').forEach(p=>p.classList.toggle('on',p.dataset.v===v));if(v==='read')requestAnimationFrame(fitDash)}
     $('dtabs').querySelectorAll('button[data-v]').forEach(b=>{b.classList.toggle('on',b.dataset.v===v);b.classList.toggle('live',b.dataset.v===auto)});
 
-    renderPhotoCard();if(v==='rep'&&!repLive&&repDirty){repDirty=false;renderRepBase()}if(v==='price')$('priceFig').innerHTML=priceSvg(now);if(v==='book')$('bookFig').innerHTML=mk.phase==='paid'?paySvg(now):bookSvg(now);renderBarStrip()}
+    if(seen){renderPhotoCard();if(v==='rep'&&!repLive&&repDirty){repDirty=false;renderRepBase()}if(v==='price')$('priceFig').innerHTML=priceSvg(now);if(v==='book')$('bookFig').innerHTML=mk.phase==='paid'?paySvg(now):bookSvg(now)}renderBarStrip()}
 }
 
 addEventListener('resize',()=>{photoShown=-1});
@@ -2469,15 +2483,23 @@ function finish(sold){
 const STEP_SHORT=['Morning price','Your offer','Send photo','Pool','Auction','Pickup','Paid'];
 async function start(s){
   /* Small AI: the story page pre-downloads it in the background. Load it automatically on computers, and on phones once it is already in the cache (nothing to download). */
-  let have=false;try{if('caches' in self){const c=await caches.open('dure-models');const base='https://huggingface.co/'+LLM.model+'/resolve/main/onnx/';have=!!(await c.match(base+'model_q4f16.onnx')||await c.match(base+'model_quantized.onnx'))}}catch(e){}
-  LLM.cached=have;llmSync();
-  if(QS.get('llm')==='1'||(QS.get('llm')!=='0'&&(have||!PHONEISH)&&!(navigator.connection&&navigator.connection.saveData&&!have)))llmLoad();
+  /* the cache check runs beside the story, never in front of it; phones never start the 500 MB model by themselves (the pill loads it on tap) */
+  (async()=>{let have=false;try{if('caches' in self){const c=await caches.open('dure-models');const base='https://huggingface.co/'+LLM.model+'/resolve/main/onnx/';have=!!(await c.match(base+'model_q4f16.onnx')||await c.match(base+'model_quantized.onnx'))}}catch(e){}
+    LLM.cached=have;llmSync();
+    if(QS.get('llm')==='1'||(QS.get('llm')!=='0'&&!PHONEISH&&!(navigator.connection&&navigator.connection.saveData&&!have)))llmLoad()})();
   if(DURE_API)fetch(DURE_API+'/health').catch(()=>{});
   const q=new URLSearchParams(location.search);const seed=+(q.get('seed')||0)||Math.floor(Math.random()*9e4)+1e4;
   newMarket(seed);rep0=repNow=me().rep;
-  skin=s;epoch++;hist=[];$('ctl').style.display='';$('pick').style.display='none';$('stage').classList.add('on');buildPhone();buildMarketViews();setupShade();step(0);chips(null);fitPhone();
+  skin=s;epoch++;hist=[];$('ctl').style.display='';$('pick').style.display='none';$('stage').classList.add('on');if(document.body.classList.contains('mob'))document.body.classList.add('fitting');
+  buildPhone();buildMarketViews();setupShade();step(0);chips(null);fitPhone();window.__watchFit&&window.__watchFit();
+  /* phones: the phone stays hidden until its size has settled (the feature phone's VT323 font in, the top bar done wrapping),
+     so it never shows small and then jumps to full size */
+  {const t0=performance.now();let last='';const fontOk=document.fonts?Promise.race([Promise.all([document.fonts.load('20px VT323'),document.fonts.ready]).catch(()=>{}),sleep(2500)]):Promise.resolve();
+   const chk=()=>{fitPhone();const tp=document.querySelector('.top'),sig=($('phone')||{style:{}}).style.transform+'|'+(tp?tp.offsetHeight:0)+'|'+(($('mDock')||{}).offsetHeight||0);
+     if(sig===last||performance.now()-t0>3500){document.body.classList.remove('fitting');return}last=sig;setTimeout(()=>requestAnimationFrame(chk),80)};
+   fontOk.then(()=>requestAnimationFrame(chk))}
   requestAnimationFrame(loop);
-  busy=true;await sleep(900);push({who:'sys',text:'Monday 06:30'});
+  busy=true;await sleep(document.body.classList.contains('mob')?350:900);push({who:'sys',text:'Monday 06:30'});
   const b=mk.bands,ln=g=>`${g}  $${b[g][0].toFixed(2)}–${b[g][1].toFixed(2)}`;
   {const B=morningStrategyBuyer(mk,mk.buyers[0]);lg(T0,`Price text to every farmer. Buyer brief to ${mk.buyers.length} buyers: suggested bid $${B.range[0].toFixed(2)}–${B.range[1].toFixed(2)}`,'','k-big')}
   await aiSay(t=>t===T.tet?`Bondia! Folin kafé semana ne'e, kilu ida\n${LINE}\n${ln('A')}\n${ln('B')}\n${ln('C')}\n${LINE}\nFan? Hatan ho ita-nia liafuan.`
@@ -2511,13 +2533,14 @@ function setupShade(){
     $('infoK').onclick=()=>shade(!sh.classList.contains('open'));
   }
   // show the situation first, then tuck it away
-  shade(true);setTimeout(()=>shade(false),6400);
+  if(!document.body.classList.contains('mob')){shade(true);setTimeout(()=>shade(false),6400)}   // phones go straight to the chat: the status bar already shows the step
 }
 function shade(open){const sh=$('shade');if(sh)sh.classList.toggle('open',open);const k=$('infoK');if(k)k.textContent=open?'Back':'Info'}
 
 
 /* side panel toggle, badges, auto-start with ?skin= */
 addEventListener('DOMContentLoaded',()=>{
+  if(document.fonts&&document.fonts.load)document.fonts.load('20px VT323').catch(()=>{});   // fetch the feature phone's font while the visitor is still choosing
   const TIP={rephone:('Choose phone'),undo:('Back a step'),mkNew:('New random week')};Object.entries(TIP).forEach(([k,v])=>{const e=$(k);if(e){e.dataset.tip=v;e.setAttribute('aria-label',v)}});
   fitPhone();
   document.querySelectorAll('.badge.rule').forEach(b=>b.textContent=('rules'));

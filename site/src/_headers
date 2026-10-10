@@ -3,3 +3,6 @@
 
 /demo*
   Cross-Origin-Embedder-Policy: credentialless
+
+/assets/*
+  Cache-Control: public, max-age=604800
