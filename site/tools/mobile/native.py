@@ -70,7 +70,7 @@ def pool():
 
 
 def book():
-    bids = [('2.81', 'Exporter', 'Dili · this phone'), ('2.79', 'Roaster', 'Dili'), ('2.76', 'Exporter', 'Dili'), ('2.74', 'Café chain', 'Dili')]
+    bids = [('2.81', 'Exporter', 'Dili'), ('2.79', 'Roaster', 'Dili'), ('2.76', 'Exporter', 'Dili'), ('2.74', 'Café chain', 'Dili')]
     rows = ''.join(f'<li{" class=win" if i == 0 else ""}><b>${p}</b><span>{n}<small>{s}</small></span>{"<i>won</i>" if i == 0 else ""}</li>'
                    for i, (p, n, s) in enumerate(bids))
     return ('<div class="nf nf-book" role="img" aria-label="Order book closed at 17:00; best bid $2.81 per kg from an exporter in Dili">'
@@ -320,7 +320,7 @@ def mx_pool():
 
 
 def mx_book():
-    rows = [('Exporter', 'this phone', '$2.81', 'lead'), ('Roaster', '', '$2.79', 'dim'), ('Exporter', '', '$2.76', 'dim'), ('Café chain', '', '$2.74', 'dim')]
+    rows = [('Exporter', '', '$2.81', 'lead'), ('Roaster', '', '$2.79', 'dim'), ('Exporter', '', '$2.76', 'dim'), ('Café chain', '', '$2.74', 'dim')]
     return ('<div class="mx"><div class="mxbox"><div class="mxh">Order book · cleared at 17:00 <i>all in Dili</i></div>' + ''.join(_li(n, p, c, s) for n, s, p, c in rows) + '</div></div>')
 
 
