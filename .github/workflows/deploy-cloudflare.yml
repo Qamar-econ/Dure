@@ -30,7 +30,6 @@ jobs:
         run: cd site && python3 build.py
       - name: Prepare upload (same file set as the live site)
         run: |
-          rm -f site/dist/demo_classic.html site/dist/grader.onnx
           if grep -rIlE 'cfat_[A-Za-z0-9]{20,}|sk-ant-[A-Za-z0-9_-]{20,}' site/dist; then
             echo "Secret-looking string found in dist; refusing to deploy"; exit 1
           fi

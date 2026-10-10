@@ -8,5 +8,3 @@ ai/brief/gguf/
 ai/photo/img/
 ai/coffee/*.gguf
 .env
-site/dist/demo_classic.html
-site/dist/grader.onnx

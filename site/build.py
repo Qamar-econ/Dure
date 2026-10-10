@@ -1,4 +1,4 @@
-"""Build the site and the demo from src/ into dist/."""
+"""Build the site, the demo and the sheet from src/ into dist/."""
 import json, os, shutil, urllib.parse
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -20,23 +20,18 @@ site = (site.replace('{{TL}}', geo['tl']).replace('{{ID}}', geo['id'])
             .replace('/*LENIS*/', '/*! lenis 1.1.13 | MIT | darkroom.engineering */' + rd('lenis.min.js'))
             .replace('/*SHARED*/', shared).replace('/*FAVICON*/', fav))
 
-demo = (rd('demo.html').replace('/*CROP*/', rd('crop.js')).replace('/*GRADER*/', rd('grader.js')).replace('/*PHOTOS*/', rd('demo_photos.json'))
-        .replace('/*SHARED*/', shared).replace('/*FAVICON*/', fav))
 
 os.makedirs(D, exist_ok=True)
 open(os.path.join(D, 'index.html'), 'w', encoding='utf-8').write(site)
-open(os.path.join(D, 'demo_classic.html'), 'w', encoding='utf-8').write(demo)
 open(os.path.join(D, 'demo.html'), 'w', encoding='utf-8').write(rd('demo_map.html'))
 shutil.copytree(os.path.join(S, 'assets'), os.path.join(D, 'assets'), dirs_exist_ok=True)
 if os.path.exists(os.path.join(S, 'sheet.html')):
     open(os.path.join(D, 'sheet.html'), 'w', encoding='utf-8').write(
         rd('sheet.html').replace('/*SHARED*/', shared).replace('/*FAVICON*/', fav)
         .replace('/*CORE*/', rd('sheet_core.js')).replace('/*BRIEFGEN*/', rd('brief_gen.js') if os.path.exists(os.path.join(S,'brief_gen.js')) else '').replace('/*DATA*/', rd('sheet_data.json')).replace('/*AIBRIEF*/', (rd('brief_ai.json') if os.path.exists(os.path.join(S,'brief_ai.json')) else 'null')))
-shutil.copy(os.path.join(S, 'grader.onnx'), os.path.join(D, 'grader.onnx'))
 if os.path.exists(os.path.join(ROOT, 'og.png')):
     shutil.copy(os.path.join(ROOT, 'og.png'), os.path.join(D, 'og.png'))
 shutil.copy(os.path.join(S, '_headers'), os.path.join(D, '_headers'))
 if os.path.exists(os.path.join(S, 'm_proto.html')):   # phone and tablet edition
-    shutil.copy(os.path.join(S, 'm_proto.html'), os.path.join(D, 'm-proto.html'))
     shutil.copy(os.path.join(S, 'm_proto.html'), os.path.join(D, 'm.html'))   # the phone and tablet edition; index.html sends touch devices here
-print('built', len(site) // 1024, 'KB site,', len(demo) // 1024, 'KB demo')
+print('built', len(site) // 1024, 'KB site')
