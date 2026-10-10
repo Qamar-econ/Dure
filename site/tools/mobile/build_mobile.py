@@ -415,5 +415,6 @@ PAGE = f'''<!doctype html>
 </html>
 '''
 
-open(os.path.join(SRC, 'm_proto.html'), 'w', encoding='utf-8').write(PAGE)
-print('m_proto.html', len(PAGE) // 1024, 'KB')
+if __name__ == '__main__':
+    open(os.path.join(SRC, 'm_proto.html'), 'w', encoding='utf-8').write(PAGE)
+    print('m_proto.html', len(PAGE) // 1024, 'KB')
