@@ -71,6 +71,8 @@ const hero=$('.hero'),layers=hero?[['_pCloud',.32],['_pMount',.16]].flatMap(([id
 if(layers.length&&!RM){let hr=0;const par=()=>{hr=0;const y=scrollY;if(y>innerHeight*1.2)return;layers.forEach(([el,f])=>el.setAttribute('transform',`translate(0 ${(y*f).toFixed(1)})`))};
   addEventListener('scroll',()=>{if(!hr)hr=requestAnimationFrame(par)},{passive:true})}
 
+/* switches announce themselves once when they come into view */
+{const o=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('seen');o.unobserve(e.target)}}),{threshold:.6});$$('.tabs,.at').forEach(t=>o.observe(t))}
 /* tabs: one view shows, the others are a tap (or an arrow key) away */
 $$('.tabs').forEach(tb=>{const bs=[...tb.querySelectorAll('[role=tab]')],ps=[...tb.querySelectorAll('[role=tabpanel]')];
   const sel=i=>{bs.forEach((b,k)=>{b.setAttribute('aria-selected',k===i);b.tabIndex=k===i?0:-1});ps.forEach((p,k)=>{p.hidden=k!==i;if(k===i)p.querySelectorAll('.nf').forEach(n=>n.classList.add('on'))})};
