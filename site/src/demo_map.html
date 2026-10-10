@@ -1145,7 +1145,7 @@ function showParse(p){consoleHold=performance.now()+9000;
     <table>${row('Read by',engName())}${row('Language',p.unknown?'not recognised':p.lang?T[p.lang].name:'(kept) '+T[lang].name)}${p.q?row('Question',p.q.map(x=>QNAME[x]).join(' + ')):''}${yn?row('Answer',yn):''}${row('Crop',offer.crop,1)}${row('Quantity',offer.kg!=null?offer.kg+' kg':null,1)}${row('Grade said',offer.grade?offer.grade+' · photo + hand check decide':null)}${row('Your ask',offer.any?'any price':offer.ask!=null?'$'+offer.ask.toFixed(2)+' / kg':null,1)}</table>
     ${p.fixes&&p.fixes.length?`<div class="note">Spelling read as: ${p.fixes.map(esc).join(', ')}</div>`:''}${expect?`<div class="note">Expecting: ${expect==='kg'?'a quantity':'a price'}, so a bare number goes there.</div>`:''}`;
 }
-function showPhoto(r,src){mk.photoLog.push({fid:0,g:r.grade,aiG:r.grade,conf:Math.round((r.conf||0)*100),held:false,t:mk.t,img:src.url,probs:r.probs,live:!!r.live,kind:r.kind,reason:r.reason,ms:r.ms||null,src:src.kind});photoShown=-1;photoHold=0;dirty.all=true}
+function showPhoto(r,src){mk.photoLog.push({fid:0,g:r.grade,aiG:r.grade,conf:Math.round((r.conf||0)*100),held:false,t:mk.t,img:src.url,probs:r.probs,live:!!r.live,kind:r.kind,reason:r.reason,ms:r.ms||null,src:src.kind});photoShown=-1;photoHold=performance.now()+9000;dirty.all=true}   // her own photo takes the dashboard now (on phones this also opens the sheet, even while it is closed and not being drawn)
 
 
 /* ---------- rewind ---------- */
