@@ -93,11 +93,11 @@ body.in .bigmark .dot{transition-delay:.62s,.62s}
 .tagline{margin-top:34px;font-family:Newsreader,serif;font-size:clamp(22px,2.1vw,32px);line-height:1.3;color:var(--ink-2);opacity:0;transform:translateY(12px);transition:opacity 1s 1s,transform 1.2s 1s cubic-bezier(.2,.7,.2,1)}
 .tagline em{color:var(--rust)}
 /* the hackathon award, under the tagline (logo used with the World Bank's permission) */
-.opening .award{display:inline-flex;align-items:center;gap:16px;margin-top:30px;padding:0;background:none;opacity:0;transform:translateY(12px);transition:opacity 1s 1.5s,transform 1.2s 1.5s cubic-bezier(.2,.7,.2,1)}
-body.in .opening .award{opacity:1;transform:none}
-.opening .award img{height:30px;width:auto}
-.opening .award span{display:flex;flex-direction:column;border-left:1px solid rgba(31,58,64,.18);padding-left:16px;font:500 13.5px/1.35 "Atkinson Hyperlegible Next",system-ui,sans-serif;color:var(--ink-2);text-align:left}
-.opening .award b{font-weight:700;color:var(--ink);font-size:14.5px}
+#hero .award{position:absolute;z-index:12;top:88px;right:36px;display:inline-flex;align-items:center;gap:16px;padding:0;background:none;opacity:0;transform:translateY(12px);transition:opacity 1s 1.5s,transform 1.2s 1.5s cubic-bezier(.2,.7,.2,1)}
+body.in #hero .award{opacity:1;transform:none}
+#hero .award img{height:30px;width:auto}
+#hero .award span{display:flex;flex-direction:column;border-left:1px solid rgba(31,58,64,.18);padding-left:16px;font:500 13.5px/1.35 "Atkinson Hyperlegible Next",system-ui,sans-serif;color:var(--ink-2);text-align:left}
+#hero .award b{font-weight:700;color:var(--ink);font-size:14.5px}
 .tagline .tg1{display:block;font-size:1.32em;line-height:1.15}
 .tagline .tg2{display:block;margin-top:14px;font-size:.78em;color:var(--ink-2)}
 .tagline .tg2 b{font-weight:600;color:var(--ink)}
@@ -591,11 +591,11 @@ p,li,small,blockquote,cite,.k,.principle p{text-wrap:pretty}
    </g>
   </svg>
   <div class="grain"></div>
+  <div class="award" id="award"><img src="assets/worldbank.png" alt="The World Bank" width="720" height="146"><span><b>Winner · Agriculture track</b>Small AI for Development Hackathon 2026</span></div>
   <div class="credit" id="credit">Tae Yoon Moon · <a href="mailto:taeyoonmoon@uos.ac.kr">taeyoonmoon@uos.ac.kr</a><br>© 2026 Tae Yoon Moon. All rights reserved. Illustrations and text may not be reused without permission.</div>
   <div class="opening"><div class="wrap" id="openWrap">
     <div class="bigmark" aria-label="Dure."><span class="l">D</span><span class="l">u</span><span class="l">r</span><span class="l">e</span><span class="dot"><svg viewBox="-16 -22 36 38"><g transform="rotate(-28)"><ellipse rx="11.5" ry="15" fill="#6B4226"/><ellipse cx="-3.6" cy="-4.5" rx="4" ry="6.4" fill="#8F5E38" opacity=".55"/><path d="M0.6 -13.6 C -5.2 -7.4 5.2 -1.6 0 4 C -4.2 8.4 1.2 11.2 0.2 13.8" stroke="#2B180C" stroke-width="2.3" fill="none" stroke-linecap="round"/></g></svg></span></div>
     <div class="tagline"><em class="tg1">Cooperate through messaging.</em><span class="tg2"><b>Dure</b>: the Korean tradition of mutual aid between farmers.</span></div>
-    <div class="award"><img src="assets/worldbank.png" alt="The World Bank" width="720" height="146"><span><b>Winner · Agriculture track</b>Small AI for Development Hackathon 2026</span></div>
   </div></div>
   <div class="scrollcue" id="cue" style="display:none"></div>
   <div class="beat b1" data-from=".5" data-to=".76">
@@ -2005,7 +2005,7 @@ function frame(){
   secs.forEach((s,i)=>{if(!VIS(s.id))return;const p=[ph,pm,pr,pt,psp,pcu,phw,pwa,pec][i];QA(s,'.beat').forEach(b=>b.classList.toggle('on',p>=+b.dataset.from&&p<+b.dataset.to))});
   // opening: logo lifts away, scene rises in layers, Aurelia last
   const th=seg(ph,0,.48)*6.6;const o=ease(seg(th,0,1.1));
-  $('openWrap').style.transform=`translateY(${-o*28}vh) scale(${1-o*.35})`;$('openWrap').style.opacity=1-seg(th,.3,1.0);$('credit').style.opacity=(1-seg(th,.05,.5)).toFixed(2);
+  $('openWrap').style.transform=`translateY(${-o*28}vh) scale(${1-o*.35})`;$('openWrap').style.opacity=1-seg(th,.3,1.0);$('credit').style.opacity=(1-seg(th,.05,.5)).toFixed(2);{const aw=$('award');if(aw)aw.style.opacity=th>0?(1-seg(th,.05,.5)).toFixed(2):''}
   $('cue').classList.toggle('gone',ph>.02);
   BAR.classList.toggle('show',th>1.1||pm>0||pr>0);
   BAR.classList.toggle('solid',th>1.1||pm>0||pr>0);
