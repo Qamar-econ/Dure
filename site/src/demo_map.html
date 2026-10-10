@@ -2247,8 +2247,10 @@ function priceSvg(now){const R=priceT0&&mk.phase!=='morning'?Math.min(1,((now||p
 /* ---------- order book / lot card (the story's auction figure, driven by the simulation) ---------- */
 const KG_BEAN=50;   // one bean token = 50 kg in the lot bin (same token as the story site's pool bin)
 const lotTok=(g,k,sc)=>BEAN.art(g,1.02*sc,-26,k,true);
+let bookVH=0,bookVW='';
 function bookSvg(now){
-  const VH=paneVH('bookFig',460,780),Y0=62,H=VH-138,SV={x:276,y:Math.round(VH/2-120),w:178,h:196},BNX=480,nB_=mk.buyers.length,cyB=k=>nB_===1?VH/2-10:78+k*((VH-176)/(nB_-1));
+  if(!bookVH||bookVW!==innerWidth+'x'+innerHeight){bookVW=innerWidth+'x'+innerHeight;bookVH=paneVH('bookFig',460,780)}   // one size for the whole week: the drawing never rescales between stages
+  const VH=bookVH,Y0=62,H=VH-138,SV={x:276,y:Math.round(VH/2-120),w:178,h:196},BNX=480,nB_=mk.buyers.length,cyB=k=>nB_===1?VH/2-10:78+k*((VH-176)/(nB_-1));
   const ph=mk.phase;
   const shown=(ph==='morning'?inLot():mk.farmers.filter(f=>f.st==='in'||(f.st==='out'&&f.joinT!=null))).slice().sort((a,b)=>'CBA'.indexOf(gOf(a))-'CBA'.indexOf(gOf(b))||a.joinT-b.joinT);
   // the lot: one plain block per farmer's sack, coloured by grade, stacked bottom-up (C at the bottom, then B, then A)
@@ -2304,7 +2306,7 @@ function bookSvg(now){
   else if(mk.open!=null)s+=`<text x="${SV.x+SV.w/2}" y="84" text-anchor="middle" ${FT} font-size="14.5" fill="${INK2}">${('floor')} $${mk.floor.toFixed(2)} · ${('opens')} $${mk.open.toFixed(2)}</text>`;
   const rule={morning:'Offers from around Letefoho add up. Each grade stays labelled.',auction:("Bids below the farmers' floor don't count. At 17:00 the best bid takes it."),decide:("Price at or above your minimum: you're in. Below: you choose YES or NO."),locked:mk.res&&mk.res.none?('Nothing sold. Nobody is penalised.'):('Places freed by a NO go to the waitlist, first come first served.'),pickup:('A person checks every sack against its photo.'),paid:(`One payment in ($${(mk.paid||0).toFixed(2)}), ${nIn} payments out, by grade and kg.`)}[ph]||'';
   s+=`<path d="M40 ${VH-38} H600" stroke="rgba(31,58,64,.12)"/><text x="320" y="${VH-14}" text-anchor="middle" ${FT} font-size="15" fill="${INK2}">${rule}</text>`;
-  const ox=mk.res&&mk.res.gp&&ph!=='auction'?20:0;return `<svg viewBox="${ox} 0 640 ${VH}">${s}</svg>`;   // with the grade prices shown the drawing spans 44–636: shift it to sit centred
+  return `<svg viewBox="20 0 640 ${VH}">${s}</svg>`;   // one frame for every stage, centred for the widest one (grade prices on the left)   // with the grade prices shown the drawing spans 44–636: shift it to sit centred
 }
 let logN=0,buyerView=false,buyerIdx=0;
 function renderLive(){
@@ -2366,7 +2368,7 @@ function renderRepBase(){
 
 /* ---------- settlement: one payment in, split by grade and kg, many wallets out (as on the story site) ---------- */
 function paySvg(now){
-  const VH=paneVH('bookFig',440,780),L=inLot().slice().sort((a,b)=>(b.me?1:0)-(a.me?1:0)||'ABC'.indexOf(a.handG)-'ABC'.indexOf(b.handG)||a.joinT-b.joinT)   /* Noor first */,N=L.length;
+  const VH=bookVH||paneVH('bookFig',460,780),L=inLot().slice().sort((a,b)=>(b.me?1:0)-(a.me?1:0)||'ABC'.indexOf(a.handG)-'ABC'.indexOf(b.handG)||a.joinT-b.joinT)   /* Noor first */,N=L.length;
   const u=anim.pay?(now-anim.pay)/1000:99,W=mk.buyers[mk.res.winner],gp=mk.res.gp,tot=mk.paid;
   const top=70,step=Math.min(22,(VH-140)/Math.max(1,N)),wy=k=>top+k*step,PH={x:250,y:VH/2-78,w:150,h:150},PB={x:470,y:VH/2-54,w:150,h:104};
   const seg_=(a,b)=>Math.max(0,Math.min(1,(u-a)/(b-a)));
