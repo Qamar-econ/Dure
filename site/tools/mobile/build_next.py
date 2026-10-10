@@ -83,6 +83,8 @@ AWARD = '<div class="award"><img src="assets/worldbank.png" alt="The World Bank"
 STAYS = '<ul class="swl"><li>Pooling the harvest</li><li>Buyers bidding for the whole lot</li><li>One shared truck and pickup point</li><li>A record that earns trust</li></ul>'
 GOES = '<ul class="swl go"><li>A legal entity</li><li>$1,000 in share capital</li><li>A board to run, a leader to fight over</li><li>Unequal voice: a few decide for everyone</li></ul>'
 
+ZOOM = "<script>/* big tablets read like an iPad mini: the whole page is scaled up from the mini's width (768 tall, 1024 wide) */\n(function(){var d=document.documentElement;function f(){var w=innerWidth,h=innerHeight,base=h>=w?768:1024,z=(Math.min(w,h)>=700&&w>base+30)?Math.min(w/base,1.45):1;d.style.zoom=z===1?'':z.toFixed(3);d.style.setProperty('--z',z.toFixed(3))}f();addEventListener('resize',f)})();</script>"
+
 PAGE = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -94,6 +96,7 @@ PAGE = f'''<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=Libre+Franklin:wght@400;500;600;700&family=VT323&family=Gochi+Hand&display=swap" rel="stylesheet">
 <style>{CSS}</style>
+{ZOOM}
 </head>
 <body class="nx">
 {N.SYMBOLS}
