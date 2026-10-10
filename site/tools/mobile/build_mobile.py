@@ -330,10 +330,10 @@ PAGE = f'''<!doctype html>
     <div class="pt"><p class="kick">Introducing</p><div class="dmark">{LOGO.replace('fill="#1F3A40"', 'fill="#F4EBDA"')}</div><h3>Cooperating through <em>messages.</em></h3></div>
   </div>
   <div class="in">
-    <div class="swtabs rv">{N.tabs([('What stays', '<ul class="swl"><li>Pooling the harvest</li><li>Buyers bidding for the whole lot</li><li>One shared truck and pickup point</li><li>A record that earns trust</li></ul>'), ('What goes', '<ul class="swl go"><li>A legal entity</li><li>$1,000 in share capital</li><li>Fifteen founders who must agree</li><li>A board to run, a leader to fight over</li></ul>')], 'What changes')}</div>
+    <div class="swtabs rv">{N.tabs([('What stays', '<ul class="swl"><li>Pooling the harvest</li><li>Buyers bidding for the whole lot</li><li>One shared truck and pickup point</li><li>A record that earns trust</li></ul>'), ('What goes', '<ul class="swl go"><li>A legal entity</li><li>$1,000 in share capital</li><li>A board to run, a leader to fight over</li><li>Unequal voice: a few decide for everyone</li></ul>')], 'What changes')}</div>
     <div class="sw rv">
       <div><h4>What stays</h4><ul><li>Pooling the harvest</li><li>Buyers bidding for the whole lot</li><li>One shared truck and pickup point</li><li>A record that earns trust</li></ul></div>
-      <div class="go"><h4>What goes</h4><ul><li>A legal entity</li><li>$1,000 in share capital</li><li>Fifteen founders who must agree</li><li>A board to run, a leader to fight over</li></ul></div>
+      <div class="go"><h4>What goes</h4><ul><li>A legal entity</li><li>$1,000 in share capital</li><li>A board to run, a leader to fight over</li><li>Unequal voice: a few decide for everyone</li></ul></div>
     </div>
     <p class="nokia rv"><b>Any phone. No internet. No app.</b> Dure works even on an old Nokia.</p>
   </div>
