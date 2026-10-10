@@ -315,7 +315,7 @@ PAGE = f'''<!doctype html>
   </dl>
   <p class="src rv">KOICA value-chain cooperative, Timor-Leste; Decree-Law No. 16/2004; The Irish Times, 2013.</p>
   <figure class="scene spl rv">{PART['split']}<figcaption>Joining stops being a choice. Whoever is left out <b>undercuts prices to sink it.</b></figcaption></figure>
-  <p class="lead rv">So Noor still sells alone, <em>at the trader's price.</em></p>
+  <h2 class="rv endline">So Noor still sells alone, <em>at the trader's price.</em></h2>
 </section>
 
 <!-- 7 · Dure -->
