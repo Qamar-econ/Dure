@@ -104,3 +104,9 @@ details.wk .wkb{margin:0 0 22px;padding:0}
 }
 @media (max-width:699px){.nx .hero::after{height:120px;background:linear-gradient(rgba(242,234,218,0),rgba(242,234,218,.85) 70%,var(--ivory))}}
 .sms2{color:#F4EBDA;margin:26px 0 0}.sms2 b{color:var(--gold)}
+/* a closing note that changes the subject starts its own line */
+.lead2 .soft,.at .foot span{display:block;margin-top:4px}
+/* opening picture: the buttons stand on the picture; the fade only starts beneath them */
+@media (max-width:699px){.hero .nxintro{bottom:58px}.nx .hero::after{height:58px;background:linear-gradient(rgba(242,234,218,0),var(--ivory))}}
+@media (min-width:700px){.hero .nxintro{bottom:calc(8vh + 40px)}.nx .hero::after{height:calc(8vh + 40px);background:linear-gradient(rgba(242,234,218,0),var(--ivory))}}
+.nl{display:block;margin-top:6px}
