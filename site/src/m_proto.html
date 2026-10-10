@@ -994,6 +994,11 @@ h2.endline{margin:34px 0 0}
 /* the bands fade out on their outer edge only: crisp next to the words, melting into the dark above and below (the lower one longer, closing the story) */
 .dark.close > .tais:first-child{height:40px;-webkit-mask-image:linear-gradient(rgba(0,0,0,0),#000 72%);mask-image:linear-gradient(rgba(0,0,0,0),#000 72%)}
 .dark.close > .tais:last-child{height:58px;background-position:left top;-webkit-mask-image:linear-gradient(#000 18%,rgba(0,0,0,0));mask-image:linear-gradient(#000 18%,rgba(0,0,0,0))}
+/* closing card: no hairlines above or below (sub-pixel seams and the next section's rule), and two bands of one height, mirrored */
+.dark.close{margin:-1px 0;position:relative;z-index:1}
+.dark.close + .more-info{border-top:0}
+.dark.close > .tais:first-child{height:48px;background-position:left bottom;-webkit-mask-image:linear-gradient(rgba(0,0,0,0),#000 70%);mask-image:linear-gradient(rgba(0,0,0,0),#000 70%)}
+.dark.close > .tais:last-child{height:48px;background-position:left top;-webkit-mask-image:linear-gradient(#000 30%,rgba(0,0,0,0));mask-image:linear-gradient(#000 30%,rgba(0,0,0,0))}
 </style>
 </head>
 <body>
