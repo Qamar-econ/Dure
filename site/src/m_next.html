@@ -1112,6 +1112,23 @@ details.wk .wkb{margin:0 0 22px;padding:0}
 @media (min-width:700px){.hero .nxintro{bottom:calc(8vh + 40px)}.nx .hero::after{height:calc(8vh + 40px);background:linear-gradient(rgba(242,234,218,0),var(--ivory))}}
 .nl{display:block;margin-top:6px}
 @media (min-width:700px){.nx .hero{height:calc(100svh / var(--z,1));min-height:calc(560px / var(--z,1))}}
+
+/* robust on small or font-enlarged phones: nothing may push the page sideways */
+html,body{overflow-x:clip;max-width:100%}
+main,section,.txt,.how{min-width:0}
+.at,.at .row,.at .v{min-width:0}
+.at .by li{min-width:0;gap:6px}
+.at .by li span{flex:1 1 auto;min-width:0}
+.at .by li b{flex:none;white-space:nowrap}
+@media (max-width:389px){
+  .at .by{grid-template-columns:1fr!important}
+  .at .row{grid-template-columns:auto 1fr}
+  .at .pr .v{grid-template-columns:1fr}
+  .at .pr .big{justify-content:flex-start}
+}
+@media (max-width:339px){.at .row{display:block}.at .lb{display:block;margin:0 0 4px}}
+.nxnav a{white-space:nowrap}
+@media (max-width:374px){.nxbar .logo svg{height:20px}.nxnav a{padding:9px 5px;font-size:12.5px}}
 </style>
 <script>/* big tablets read like an iPad mini: the whole page is scaled up from the mini's width (768 tall, 1024 wide) */
 (function(){var d=document.documentElement;function f(){var w=innerWidth,h=innerHeight,base=h>=w?768:1024,z=(Math.min(w,h)>=700&&w>base+30)?Math.min(w/base,1.45):1;d.style.zoom=z===1?'':z.toFixed(3);d.style.setProperty('--z',z.toFixed(3))}f();addEventListener('resize',f)})();</script>
