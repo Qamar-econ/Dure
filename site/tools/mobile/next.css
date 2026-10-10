@@ -1,0 +1,112 @@
+
+/* ===================== summit edition (build_next.py) ===================== */
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.nx section[id]{scroll-margin-top:64px}
+/* header: logo plus four jumps, always in reach */
+.nxbar{gap:10px}
+.nxnav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;margin-right:-8px}
+.nxnav::-webkit-scrollbar{display:none}
+.nxnav a{flex:none;text-decoration:none;font:600 13.5px var(--sans);color:var(--ink2);padding:9px 8px;border-radius:8px;min-height:40px;display:flex;align-items:center}
+.nxnav a.on{color:var(--rust)}
+.nxnav a:focus-visible{outline:2px solid var(--rust)}
+@media (max-width:359px){.nxnav a{padding:9px 5px;font-size:12.5px}}
+
+/* opt-in depth: big, obvious disclosure rows */
+details.dd{border-top:1px solid var(--line);margin:0}
+details.dd:last-of-type{border-bottom:1px solid var(--line)}
+details.dd > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:16px 2px;min-height:56px}
+details.dd > summary::-webkit-details-marker{display:none}
+details.dd > summary span{flex:1;display:flex;flex-direction:column;gap:2px}
+details.dd > summary b{font:600 18px/1.25 var(--serif);color:var(--ink)}
+details.dd > summary small{font:13.5px/1.35 var(--sans);color:var(--soft)}
+details.dd > summary i{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);position:relative}
+details.dd > summary i::before,details.dd > summary i::after{content:"";position:absolute;left:50%;top:50%;width:11px;height:1.8px;margin:-.9px 0 0 -5.5px;background:var(--ink);transition:transform .2s}
+details.dd > summary i::after{transform:rotate(90deg)}
+details.dd[open] > summary i::after{transform:rotate(0)}
+details.dd > summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.ddb{padding:4px 0 28px}
+.ddb > p{font-size:17px}
+details.wk{margin-top:18px}
+.nx3{padding-top:60px}
+.nx3 .twsec{padding:0}
+.nx3 .tw:first-child{margin-top:8px}
+.nx3 .risks > div{margin:0 0 14px}
+.nx3 .risks h4{font-size:18px;margin:0 0 4px}
+.nx3 .risks p{font-size:16px;color:var(--ink2);margin:0}
+.nx3 .src a{color:var(--gold)}
+
+
+.fwho{font:16.5px/1.5 var(--serif);letter-spacing:0}
+.nightbar .nxnav a{color:#D9CDB6}.nightbar .nxnav a.on{color:var(--gold)}
+.award{background:none;padding:0;border-radius:0}
+
+/* under the opening picture: the one-line promise, the two ways in, the award */
+.nxintro{max-width:calc(var(--col) + 2*var(--g));margin:0 auto;padding:4px var(--g) 8px;text-align:center}
+.nxintro .sms{font:italic 21px/1.3 var(--serif);color:var(--ink2);margin:0 0 14px}
+.nxintro .sms b{font-style:normal;color:var(--ink)}
+.nxintro .cta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 22px}
+.nxintro .cta .btn{margin:0;padding:14px 16px;min-height:50px;font-size:15.5px;white-space:nowrap;gap:8px}
+@media (max-width:374px){.nxintro .cta .btn{padding:13px 12px;font-size:14.5px}}
+.award{display:flex;align-items:center;justify-content:center;gap:12px;margin:0 auto;width:fit-content;max-width:100%;text-align:left}
+.award img{height:22px;width:auto;flex:none}
+.award span{display:flex;flex-direction:column;border-left:1px solid var(--line);padding-left:12px;font:500 11.5px/1.3 var(--sans);color:var(--ink2)}
+.award b{font-weight:700;color:var(--ink);font-size:12.5px}
+@media (min-width:700px){.nxintro{padding-top:20px}.nxintro .cta{max-width:520px;margin:0 auto 26px}.award img{height:28px}.award span{font-size:13px}.award b{font-size:14px}}
+
+/* How it works: the week as eight short steps; each opens onto its messages */
+.wks{margin:22px 0 10px;border-top:1px solid var(--line)}
+details.wk{border-bottom:1px solid var(--line)}
+details.wk > summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:30px 1fr 30px;gap:12px;align-items:start;padding:16px 0}
+details.wk > summary::-webkit-details-marker{display:none}
+details.wk .no{width:28px;height:28px;border-radius:50%;background:var(--gold);color:#231C17;display:grid;place-items:center;font:700 13.5px var(--sans);margin-top:2px}
+details.wk .tx{display:flex;flex-direction:column;gap:3px}
+details.wk .tx b{font:600 19px/1.25 var(--serif);color:var(--ink)}
+details.wk .tx small{font:16px/1.45 var(--serif);color:var(--ink2)}
+details.wk > summary i{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line);position:relative;margin-top:2px}
+details.wk > summary i::before,details.wk > summary i::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:1.8px;margin:-.9px 0 0 -5px;background:var(--ink);transition:transform .2s}
+details.wk > summary i::after{transform:rotate(90deg)}
+details.wk[open] > summary i::after{transform:rotate(0)}
+details.wk > summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+details.wk .wkb{margin:0 0 22px;padding:0}
+@media (min-width:1000px) and (orientation:landscape){details.wk .wkb{display:grid;grid-template-columns:minmax(330px,380px) minmax(0,1fr);column-gap:36px;align-items:start}details.wk .wkb > .conv{margin:0}details.wk .wkb > .dash{margin:0;max-width:none}}
+
+/* founder, inside the closing card */
+.fdr{margin:30px 0 8px;padding-top:22px;border-top:1px solid rgba(244,235,218,.14)}
+.fdr .kick{color:var(--gold);margin:0 0 4px}
+.fname{font:600 26px/1.15 var(--serif);color:#F4EBDA;margin:0 0 4px}
+.fwho{font:16px/1.5 var(--serif);color:#D9CDB6;margin:0 0 14px}
+.ct{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+.ct a{font:600 14px var(--sans);color:#F4EBDA;text-decoration:none;border:1.5px solid rgba(244,235,218,.35);border-radius:999px;padding:9px 14px;min-height:42px;display:inline-flex;align-items:center}
+.nx3 details.dd > summary b em{color:var(--rust);font-weight:500}
+
+/* opening picture: award above the mark, Noor a little to the left, the SMS line and the two buttons on the picture itself */
+.hero{overflow:hidden}
+.htxt .award{margin:0 0 6px auto}
+.htxt .award img{height:18px}.htxt .award span{font-size:10.5px}.htxt .award b{font-size:11.5px}
+.hero .nxintro{position:absolute;left:0;right:0;bottom:18px;z-index:5;margin:0;padding:0 var(--g);background:none}
+.hero .nxintro .sms{color:var(--ink2);margin:0 0 12px}
+.hero .nxintro .cta{margin:0}
+.hero .nxintro .btn.ghost{background:rgba(247,241,228,.94);border-color:rgba(31,58,64,.35)}
+@media (max-width:699px){.nx .hero::after{height:210px;background:linear-gradient(rgba(242,234,218,0),rgba(242,234,218,.9) 55%,var(--ivory))}}
+@media (min-width:700px){.htxt .award{margin:0 0 14px auto}.htxt .award img{height:24px}.htxt .award span{font-size:12px}.htxt .award b{font-size:13px}
+  .hero .nxintro{left:46%;right:5vw;bottom:8vh;padding:0;text-align:left}.hero .nxintro .cta{max-width:460px}}
+@media (min-width:700px){.nx .hero::after{height:240px;background:linear-gradient(rgba(242,234,218,0),rgba(242,234,218,.88) 60%,var(--ivory))}}
+/* phones: the opening picture fills exactly the first screen, so the two buttons are there on arrival;
+   the award sits small at the top left */
+.htxt .award{margin:0 0 4px auto}
+.htxt .award img{height:14px}.htxt .award span{font-size:8.5px;padding-left:9px}.htxt .award b{font-size:9.5px}.htxt .award{gap:9px}
+@media (max-width:699px){
+  .nx .hero{height:calc(100svh - 52px);min-height:520px}
+  .nx .hero .portrait{position:absolute;inset:0}
+  .nx .hero .portrait svg{width:100%;height:100%}
+  .nx .htxt{padding-top:calc(3svh + 4px)}
+}
+@media (max-width:699px){.nx .hero::after{height:120px;background:linear-gradient(rgba(242,234,218,0),rgba(242,234,218,.85) 70%,var(--ivory))}}
+.sms2{color:#F4EBDA;margin:26px 0 0}.sms2 b{color:var(--gold)}
+/* a closing note that changes the subject starts its own line */
+.lead2 .soft,.at .foot span{display:block;margin-top:4px}
+/* opening picture: the buttons stand on the picture; the fade only starts beneath them */
+@media (max-width:699px){.hero .nxintro{bottom:58px}.nx .hero::after{height:58px;background:linear-gradient(rgba(242,234,218,0),var(--ivory))}}
+@media (min-width:700px){.hero .nxintro{bottom:calc(8vh + 40px)}.nx .hero::after{height:calc(8vh + 40px);background:linear-gradient(rgba(242,234,218,0),var(--ivory))}}
+.nl{display:block;margin-top:6px}
