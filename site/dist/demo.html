@@ -349,6 +349,7 @@ body.simon .mkbar{display:flex}
 .pane.lt{background:var(--ivory);border-radius:10px;padding:6px}
 .figw{flex:1;min-height:0;display:flex;justify-content:center}
 .figw>svg{display:block;width:100%;height:100%}
+body:not(.mob) .figw{align-items:center}body:not(.mob) .figw>svg{max-width:720px;max-height:600px}   /* on big screens the dashboards stop growing at a readable size */
 #photoFig .wait{font-family:var(--f-display);font-style:italic;color:#BFD0CC;padding:40px 10px;text-align:center}
 .cmeta{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:12px;color:#BFD0CC;margin:2px 0 6px;flex:none}.cmeta b{color:#F6EFE0}.cmeta small{flex-basis:100%;font-style:italic;font-family:var(--f-display);font-size:11.5px;opacity:.8}
 .readg{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:12px}
@@ -2307,7 +2308,7 @@ const PRICE_MS=8000;let aiSig='',aiUntil=0;let priceT0=0,priceHold=0,lastHeavy=0
 /* the AI panel only switches when a model or rule has just done something (Noor's text read, her photo graded, opening price set, record updated,
    auction cleared); otherwise it stays on whatever was shown last, or on the tab the user picked */
 let dashSticky=null,lastPhaseV=null;
-function autoView(now){if(repLive)return 'rep';if(mk.phase==='auction')return 'book';   // the auction always opens on Bids
+function autoView(now){if(repLive)return 'rep';if(mk.phase==='auction')return ffGoal==='clear'?'book':'price';   // the pool has closed: the price stays up until 'Watch the auction', then Bids
   if(mk.phase==='morning'&&ffGoal==='close')return 'price';   // skipping to the pool close: watch the price form
   if(priceHold>now)return 'price';if(photoHold>now)return 'photo';if(consoleHold>now&&consoleHold!==Infinity)return 'read';return null}
 function drawAll(now){
@@ -2316,7 +2317,7 @@ function drawAll(now){
   const moving=priceHold>now||pulses.length||(anim.ask&&now-anim.ask<3200)||(anim.pay&&now-anim.pay<6500);
   if(now-lastHeavy>90||moving){lastHeavy=now;renderMap();renderStatus();renderFeed();renderLive();
     {const sig=mk.feed.length+'|'+mk.photoLog.length+'|'+mk.log.length;if(sig!==aiSig){aiSig=sig;aiUntil=now+900}const ai=$('aiInd');if(ai)ai.classList.toggle('on',aiUntil>now||(priceHold>now&&mk.phase==='auction'))}
-    const auto=autoView(now);if(auto&&auto!==lastAuto){dashManual=null;dashSticky=auto}lastAuto=auto;if(mk.phase!==lastPhaseV){if(mk.phase==='auction'){dashManual=null;dashSticky='book'}if(['decide','paid'].includes(mk.phase)&&!auto){dashManual=null;dashSticky='book'}lastPhaseV=mk.phase}const v=dashManual||dashSticky||'read';
+    const auto=autoView(now);if(auto&&auto!==lastAuto){dashManual=null;dashSticky=auto}lastAuto=auto;if(mk.phase!==lastPhaseV){if(mk.phase==='auction'){dashManual=null;dashSticky='price'}if(['decide','paid'].includes(mk.phase)&&!auto){dashManual=null;dashSticky='book'}lastPhaseV=mk.phase}const v=dashManual||dashSticky||'read';
     if(v!==dashShown){dashShown=v;photoShown=-1;document.querySelectorAll('#dashCard .pane').forEach(p=>p.classList.toggle('on',p.dataset.v===v));if(v==='read')requestAnimationFrame(fitDash)}
     $('dtabs').querySelectorAll('button[data-v]').forEach(b=>{b.classList.toggle('on',b.dataset.v===v);b.classList.toggle('live',b.dataset.v===auto)});
 
