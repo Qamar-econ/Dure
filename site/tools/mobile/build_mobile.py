@@ -378,6 +378,7 @@ PAGE = f'''<!doctype html>
     <div class="vids">{vids}</div>
     <p class="thanks">Thanks for paying attention, and enjoy the demo!</p>
   </div>
+  <div class="tais" aria-hidden="true"></div>
 </section>
 <div class="night more-info">   <!-- for readers who want the numbers behind it -->
 <!-- 11 · benchmark -->

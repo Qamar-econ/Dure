@@ -976,3 +976,6 @@ details.dsh > summary .dl{margin-left:10px}
 
 /* ch. 6 ends on its point, as strong as its opening line */
 h2.endline{margin:34px 0 0}
+
+/* the closing card is framed by a thin tais band above and below */
+.dark.close > .tais{height:32px;background-position:left center}
