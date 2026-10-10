@@ -426,7 +426,7 @@ def story_beats():
     rows = [('basket', 'Harvest season.', 'Noor has <b>40 kg</b> of fine coffee, and needs cash within <b>three days</b> for her daughter\'s school fees.', ''),
             ('rain', 'Flood.', 'Rains wash out roads and bridges <span class="src">(Asian Development Bank)</span>.', 'hit'),
             ('slide', 'Landslide.', 'No truck from Dili will risk the road.', 'hit'),
-            ('truck', 'One trader comes.', 'He names his price, <b>and she has to accept it.</b>', 'end')]
+            ('truck', 'One trader comes.', 'He names his price. <b>She has no choice but to accept it.</b>', 'end')]
     return '<ol class="sb">' + ''.join(f'<li class="rv {c}"><span class="ic">{ICON[i]}</span><div><b class="w">{w}</b><p>{t}</p></div></li>' for i, w, t, c in rows) + '</ol>'
 
 

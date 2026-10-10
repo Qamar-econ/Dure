@@ -827,3 +827,18 @@ details.dsh > summary .dl{margin-left:10px}
 .night .conv::before{border-left:1.5px dashed rgba(244,235,218,.28)}
 .night .sides span:first-child{color:#E2B98A}.night .sides span:last-child{color:#9CC3CF}
 .night .cols.one.F{background:none}
+
+/* the first tais band rises out of the page: ivory fades to night, then the band */
+/* the tais fades in out of the ivory page; the night begins right under it */
+.dark.first{background:linear-gradient(#F2EADA 0,#F2EADA 172px,#231C17 172px)}
+.dark.first::before{content:"";display:block;height:20px}
+.dark.first > .tais{height:152px;-webkit-mask-image:linear-gradient(rgba(0,0,0,0),#000 82%);mask-image:linear-gradient(rgba(0,0,0,0),#000 82%)}
+.three li b{color:var(--rust)}
+/* Noor's phone: one conversation */
+.chat{display:flex;flex-direction:column;gap:5px}
+.chat .msg{max-width:82%!important;align-self:flex-start;margin:0}
+.chat .msg.me{align-self:flex-end}
+.night .conv{background:#2B241F!important;box-shadow:inset 0 0 0 1px rgba(244,235,218,.06)}
+.night .conv::before{display:none}
+.conv{padding:12px 10px 10px}
+.more-info{border-top:1px solid rgba(244,235,218,.1)}
