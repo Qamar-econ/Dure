@@ -233,7 +233,7 @@ def blend():
     return ('<div class="nf nf-pool" role="img" aria-label="Blended pool: every farmer sells here, every week, to Dili traders">'
             '<h4>Blended pool</h4><p class="sub">every farmer sells here, every week</p>'
             f'<div class="box"><p class="ph"><span>harvest</span><span>reputation</span></p>{rr}</div>'
-            f'<div class="sink"><i class="fun" aria-hidden="true"><i class="d gA"></i><i class="d gC"></i><i class="d gB"></i><i class="d gA"></i><i class="d gC"></i><i class="d gB"></i></i>{zoom("econ1.blend", "118 322 102 84", "tr")}<b>Dili traders</b><small>bulk buyers · price moves weekly</small></div></div>')
+            f'<div class="sink"><i class="fun" aria-hidden="true"><i class="d gA"></i><i class="d gC"></i><i class="d gB"></i></i>{zoom("econ1.blend", "118 322 102 84", "tr")}<b>Dili traders</b><small>bulk buyers · price moves weekly</small></div></div>')
 
 
 def fixed():
