@@ -850,7 +850,7 @@ details.dsh > summary .dl{margin-left:10px}
 .abar .av{width:32px;height:32px;border-radius:50%;background:#4E8B5C;color:#fff;display:grid;place-items:center;font:600 15px var(--device)}
 .abar b{display:block;font:600 15px var(--device);color:#1B1B1F}.abar small{font:12px var(--device);color:#5F6368}
 .abar .dots{margin-left:auto;width:4px;height:4px;border-radius:50%;background:#5F6368;box-shadow:0 -7px 0 #5F6368,0 7px 0 #5F6368}
-.chat{padding:12px 10px 6px}
+.chat{padding:12px 10px 8px}
 .conv .msg{font-family:var(--device)!important;border-radius:20px 20px 20px 6px;box-shadow:none!important}
 .conv .msg.F:not(.me){background:#4E8B5C!important;color:#fff!important}
 .conv .msg.me.me{background:#D3E3FD!important;color:#1B1B1F!important;border-radius:20px 20px 6px 20px}
