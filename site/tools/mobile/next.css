@@ -128,3 +128,8 @@ main,section,.txt,.how{min-width:0}
 @media (max-width:339px){.at .row{display:block}.at .lb{display:block;margin:0 0 4px}}
 .nxnav a{white-space:nowrap}
 @media (max-width:374px){.nxbar .logo svg{height:20px}.nxnav a{padding:9px 5px;font-size:12.5px}}
+/* each step: a small drawing in the gold disc, its number at the start of the title */
+details.wk .no{width:34px;height:34px;margin-top:0}
+details.wk .no svg{width:20px;height:20px;color:#231C17}
+details.wk > summary{grid-template-columns:34px minmax(0,1fr) 30px;padding-right:2px}
+details.wk .tx b .n{font-style:normal;color:var(--gold);margin-right:2px}

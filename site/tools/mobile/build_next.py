@@ -31,6 +31,18 @@ def more(title, sub, body, open_=False, cls=''):
             f'<div class="ddb">{body}</div></details>')
 
 
+ICONS = [   # one small line drawing per step (24 x 24, drawn in currentColor)
+    '<path d="M3 17h18"/><path d="M7 17a5 5 0 0 1 10 0"/><path d="M12 6v3M5.6 9.6l1.8 1.8M18.4 9.6l-1.8 1.8M2.5 13.5h2M19.5 13.5h2"/>',   # sunrise: the morning price
+    '<path d="M4 5h11a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><rect x="14" y="12" width="8" height="7" rx="1.5"/><circle cx="18" cy="15.5" r="1.6"/>',   # text and photo
+    '<path d="M3 10h18l-2 9H5z"/><path d="M8 10l2-5M16 10l-2-5"/><circle cx="9.5" cy="14.5" r="1"/><circle cx="14.5" cy="14.5" r="1"/>',   # one basket
+    '<path d="M14 4l6 6M11 7l6 6M12.5 5.5l-6 6 3 3 6-6"/><path d="M8 13l-5 5 2 2 5-5"/><path d="M13 21h8"/>',   # gavel: the auction
+    '<path d="M4 12.5l4.5 4.5L20 6"/>',   # yes: each farmer decides
+    '<path d="M2 7h11v9H2zM13 10h4l3 3v3h-7"/><circle cx="6" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/>',   # truck
+    '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M16 14.5h2"/>',   # wallet: payment
+    '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',   # star: trust
+]
+
+
 def week():
     """How it works: the eight steps of Noor's week, each a short line that opens onto its messages"""
     out = []
@@ -40,7 +52,8 @@ def week():
         t = re.search(r'<h3>(.*?)</h3>', hd).group(1)
         p = re.search(r'<p>(.*?)</p>', hd).group(1)
         rest = a[a.index('</header>') + 9:]
-        out.append(f'<details class="wk rv"><summary><span class="no">{no}</span><span class="tx"><b>{t}</b><small>{p}</small></span><i aria-hidden="true"></i></summary>'
+        ic = ICONS[int(no) - 1]
+        out.append(f'<details class="wk rv"><summary><span class="no" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">{ic}</svg></span><span class="tx"><b><em class="n">{no}.</em> {t}</b><small>{p}</small></span><i aria-hidden="true"></i></summary>'
                    f'<div class="hstep rv wkb">{rest}</div></details>')
     return '<div class="wks">' + ''.join(out) + '</div>'
 
