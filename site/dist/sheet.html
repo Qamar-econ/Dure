@@ -1469,8 +1469,11 @@ const SPEC={
   ['sat_out','Not sold %','pct'],['ai_disagree','Photo ≠ hand check %','pct']]},
  brief:{label:'Daily brief'}
 };
-const ORDER=RUN?['brief','week','market','signals','register','trades']:['brief','market','signals','register','trades'];   // what Dure makes of the data first, then the raw records it is built from
-const RAW={register:1,trades:1};
+const ORDER=RUN?['brief','market','signals','register','trades','week']:['brief','market','signals','register','trades'];   // what Dure makes of the data first, then the raw records it is built from
+const RAW={register:1,trades:1,week:1};
+/* the demo's week is named by its dates (Monday to Sunday), not "This week" */
+if(RUN&&SPEC.week){const d=new Date((RUN.date||'2026-10-05')+'T06:00:00'),e=new Date(d.getTime()+6*864e5),M=x=>x.toLocaleString('en-GB',{month:'short'});
+  SPEC.week.label=d.getMonth()===e.getMonth()?`${d.getDate()}–${e.getDate()} ${M(e)}`:`${d.getDate()} ${M(d)} – ${e.getDate()} ${M(e)}`}
 function weekRows(){return R.trades.filter(t=>t.run).map(t=>({...t,rep:t.x.rep,rep1:t.x.rep1,sex:t.x.woman==null?'':t.x.woman?'F':'M',dec:t.x.dec||'',mm:t.ai_grade==null?'held':t.x.mismatch?'yes':'no',bf:t.x.backfill?'yes':'',lang:t.lang==='TET'?'Tetum':'English'}))
   .sort((a,b)=>(b.me-a.me)||a.village.localeCompare(b.village)||a.name.localeCompare(b.name))}
 const buyerName=id=>{const b=D.buyers.find(x=>x.id===id);return b?b.name:id||''};
