@@ -45,6 +45,10 @@ def week():
     return '<div class="wks">' + ''.join(out) + '</div>'
 
 
+# the phone edition's notes, shorter
+_tw = list(B.TW[0]); _tw[3] = 'Open-source Qwen, trained on 3,125 texts incl. 250 real Tetum (Labadain-30k+, CC BY 4.0).'; B.TW[0] = tuple(_tw)
+_tw = list(B.TW[1]); _tw[2] = 'A small vision model trained on 1,200 bean photos grades coffee A, B or C, right 79% of the time. A hand check sets the final grade.'; B.TW[1] = tuple(_tw)
+
 TECH = (
     B.tw_block(0, B.PARSER)
     + B.tw_block(1, N.grade_compact() + '<div class="train">' + ''.join(f'<img src="{a}" alt="" title="{t}" loading="lazy" width="60" height="60">' for a, t in B.TRAIN) + '</div><p class="tcap">Some of our training photos · Wikimedia Commons: H. Ulver, M. C. Wright, F. Quijano (CC BY-SA 4.0); Forest &amp; Kim Starr (CC BY 3.0)</p>')
@@ -118,7 +122,7 @@ PAGE = f'''<!doctype html>
 
 <section class="txt" data-c="1" data-t="The field">
   <h2 class="rv">A good harvest is <em>not a good price.</em></h2>
-  <p class="lead rv">Noor grows coffee on the slopes of Letefoho, Timor-Leste. <em>Is the market treating her well?</em></p>
+  <p class="lead rv">Noor grows coffee on the slopes of Letefoho, Timor-Leste. <em class="nl">Is the market treating her well?</em></p>
 </section>
 <section class="txt split" data-c="2" data-t="The buyers">
   <h2 class="rv">The buyers are mostly in the capital, <em>Dili.</em></h2>
