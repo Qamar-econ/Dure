@@ -127,17 +127,17 @@ table.sh td input{font:inherit;width:70px;border:1px solid var(--rust);padding:1
 .doc.wide{max-width:1060px}
 .sigs{display:grid;grid-template-columns:1fr 1fr;gap:18px}.sigs .full{grid-column:1/-1}.hmh{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:4px}.hmh h4{margin:0!important}.seg{display:flex;gap:4px;flex-wrap:wrap}.seg button{font:inherit;font-size:12.5px;padding:4px 10px;border-radius:14px;border:1px solid var(--line-2);background:#fff;color:var(--ink-2);cursor:pointer}.seg button.on{background:var(--ink);color:#F6EFE0;border-color:var(--ink)}.chart .sigs{max-width:1200px;padding-bottom:6px}.chart .cbox{margin:4px 0 0}.chart .cbox h4{font-size:13px}.cpad{max-width:1100px}
 @media (max-width:760px){.sigs{grid-template-columns:1fr;gap:4px}}
-/* phones: the Field signals charts sit side by side and swipe sideways, so the rows below stay in view */
+/* phones: the Field signals charts sit side by side, full width and unframed like the Market chart, and swipe sideways so the rows below stay in view */
 @media (max-width:760px){
-  .chart:has(.sigs){max-height:none;overflow:visible}
-  .chart .sigs{display:flex;align-items:flex-start;gap:12px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;margin:0 -16px;padding:0 16px 10px;scrollbar-width:none}
+  .chart:has(.sigs){max-height:none;overflow:visible;position:relative}
+  .chart .sigs{display:flex;align-items:flex-start;gap:24px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;margin:0 -16px;padding:0 16px 6px;scrollbar-width:none}
   .chart .sigs::-webkit-scrollbar{display:none}
-  .chart .sigs>.cbox{flex:0 0 84%;min-width:0;scroll-snap-align:start;margin:6px 0 0;max-height:34vh;overflow-y:auto;background:rgba(255,255,255,.35);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
-  .chart .sigs>.cbox:last-child{margin-right:16px}
-  .chart .sigs>.cbox svg{max-height:24vh;width:100%}
-  .chart .sigs>*{max-height:34vh!important;overflow-y:auto!important}
-  .chart .sigs .cbox h4::after{content:"  swipe →";font-weight:400;font-size:11.5px;color:var(--ink-2)}
-  .chart .sigs .cbox:last-child h4::after{content:""}
+  .chart .sigs>*{flex:0 0 100%;min-width:0;scroll-snap-align:center;margin:4px 0 0;background:none;border:0;padding:0}
+  .chart .sigs>.cbox svg{height:32vh;width:100%}
+  .chart .swh{position:absolute;right:16px;top:10px;z-index:2;font:500 12px var(--sans,system-ui);color:var(--ink-2);background:var(--ivory);padding:2px 0 2px 8px;pointer-events:none;transition:opacity .25s}
+  .chart .swh.off{opacity:0}
+}
+@media (min-width:761px){.chart .swh{display:none}}
 }
 @media (min-width:1200px){.chart .sigs{grid-template-columns:1fr 1fr 1.15fr;max-width:none}.chart .sigs .full{grid-column:auto}}
 .runbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#E6F2E2;border:1px solid #BFD9B8;color:#2F5B38;border-radius:10px;padding:10px 14px;font-size:14px;margin:10px 0 0}
@@ -1662,7 +1662,9 @@ function drawSignals(){for(const P of ['','t']){if($(P+'s1'))chartSigLine($(P+'s
 function renderChart(){
   const el=$('chart');
   if(tab==='market'){el.hidden=false;el.innerHTML='<div class="cpad" id="cm"></div>';chartPrices($('cm'));return}
-  if(tab==='signals'){el.hidden=false;el.innerHTML=signalsBlock('t');drawSignals();return}
+  if(tab==='signals'){el.hidden=false;el.innerHTML=signalsBlock('t')+'<span class="swh" aria-hidden="true">swipe →</span>';drawSignals();
+    {const sg=el.querySelector('.sigs'),h=el.querySelector('.swh'),upd=()=>h.classList.toggle('off',sg.scrollLeft+sg.clientWidth>=sg.scrollWidth-8);sg.addEventListener('scroll',upd,{passive:true});requestAnimationFrame(upd)}   // shown until the last chart is reached
+    return}
   el.innerHTML='';el.hidden=true;
 }
 
