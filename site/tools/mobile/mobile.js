@@ -88,7 +88,10 @@ $$('details.dsh').forEach(d=>d.addEventListener('toggle',()=>{if(d.open)requestA
 $$('.at').forEach(at=>{const bs=[...at.querySelectorAll('.at-t button')];let touched=false;
   const set=m=>{at.dataset.m=m;bs.forEach(b=>b.setAttribute('aria-selected',b.dataset.m===m))};
   bs.forEach(b=>b.addEventListener('click',()=>{touched=true;set(b.dataset.m)}));
-  if(!RM){const o=new IntersectionObserver(es=>{if(es[0].isIntersecting){o.disconnect();setTimeout(()=>{if(!touched)set('t')},1800)}},{threshold:.6});o.observe(at)}});
+  if(!RM){const o=new IntersectionObserver(es=>{if(es[0].isIntersecting){o.disconnect();setTimeout(()=>{if(!touched)set('t')},1800)}},{threshold:.6});o.observe(at)}
+  /* Alone and Together take the same height, so the page never jumps when they switch */
+  const even=()=>{const m=at.dataset.m;at.style.minHeight='';const h={};['a','t'].forEach(k=>{at.dataset.m=k;h[k]=at.offsetHeight});at.dataset.m=m;at.style.minHeight=Math.max(h.a,h.t)+'px'};
+  even();addEventListener('resize',even);document.fonts&&document.fonts.ready.then(even)});
 
 /* videos load only when tapped */
 $$('.vid').forEach(b=>b.addEventListener('click',()=>{if(b.classList.contains('on'))return;b.classList.add('on');

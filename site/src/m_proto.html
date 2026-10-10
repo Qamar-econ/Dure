@@ -942,6 +942,20 @@ details.dsh > summary .dl{margin-left:10px}
 .conv .msg.msg::after{left:-26px;width:26px;background:#fff;border-bottom-right-radius:10px}
 .conv .msg.me.me.me::before{left:auto;right:-7px;border-bottom-right-radius:0;border-bottom-left-radius:16px 14px}
 .conv .msg.me.me.me::after{left:auto;right:-26px;border-bottom-right-radius:0;border-bottom-left-radius:10px}
+
+/* Alone / Together: room around the baskets, and the card's rows spread to the even height */
+.at{display:flex;flex-direction:column}
+.at .foot{margin-top:auto;padding-top:6px}
+.at .farms{gap:5px 4px;margin:2px 0 6px}
+.at .farms i{width:15px;height:14px}
+.at .row{padding:9px 0}
+.at .by li span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.at[data-m="a"] .by li.only{grid-column:1/-1}
+.at .pr .v{grid-template-columns:46% 1fr}
+.at .pr .big{border:0;margin:0;padding:0;justify-content:flex-end}
+.at .pr .v{grid-template-columns:40% 1fr}
+.at .pr .big{flex-wrap:wrap;row-gap:2px}
+.at .big small{white-space:nowrap}
 </style>
 </head>
 <body>
@@ -1576,7 +1590,10 @@ $$('details.dsh').forEach(d=>d.addEventListener('toggle',()=>{if(d.open)requestA
 $$('.at').forEach(at=>{const bs=[...at.querySelectorAll('.at-t button')];let touched=false;
   const set=m=>{at.dataset.m=m;bs.forEach(b=>b.setAttribute('aria-selected',b.dataset.m===m))};
   bs.forEach(b=>b.addEventListener('click',()=>{touched=true;set(b.dataset.m)}));
-  if(!RM){const o=new IntersectionObserver(es=>{if(es[0].isIntersecting){o.disconnect();setTimeout(()=>{if(!touched)set('t')},1800)}},{threshold:.6});o.observe(at)}});
+  if(!RM){const o=new IntersectionObserver(es=>{if(es[0].isIntersecting){o.disconnect();setTimeout(()=>{if(!touched)set('t')},1800)}},{threshold:.6});o.observe(at)}
+  /* Alone and Together take the same height, so the page never jumps when they switch */
+  const even=()=>{const m=at.dataset.m;at.style.minHeight='';const h={};['a','t'].forEach(k=>{at.dataset.m=k;h[k]=at.offsetHeight});at.dataset.m=m;at.style.minHeight=Math.max(h.a,h.t)+'px'};
+  even();addEventListener('resize',even);document.fonts&&document.fonts.ready.then(even)});
 
 /* videos load only when tapped */
 $$('.vid').forEach(b=>b.addEventListener('click',()=>{if(b.classList.contains('on'))return;b.classList.add('on');
