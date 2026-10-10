@@ -311,16 +311,10 @@ PAGE = f'''<!doctype html>
   <dl class="costs">
     <div class="rv"><dt>3–4<small>years</small></dt><dd><b>Time.</b> Recruiting, then paperwork.</dd></div>
     <div class="rv"><dt>$1,000</dt><dd><b>Capital.</b> A coffee household earns about $250 a year.</dd></div>
-    <div class="rv"><dt>15<small>founders</small></dt><dd><b>Structure.</b> An assembly, elections, an audit body.</dd></div>
+    <div class="rv pwr"><dt><em>power.</em><small>and then</small></dt><dd><b>Power.</b> The village pecking order takes over. Women like Noor are left out.</dd></div>
   </dl>
-  <p class="src rv">A cooperative formed under a KOICA agricultural value-chain project, Timor-Leste; Decree-Law No. 16/2004 on cooperatives. Coffee income: The Irish Times, 2013.</p>
-  <h3 class="power rv">And when one finally forms, <em>power moves in.</em></h3>
-  <p class="rv">The village's pecking order becomes the cooperative's. Women farmers like Noor are easily left out.</p>
-  <figure class="scene pw rv">{PART['power']}</figure>
-  <ol class="three">
-    <li class="rv"><b>Then</b> joining stops being a choice,</li>
-    <li class="rv"><b>and</b> whoever is left out undercuts prices to sink it.</li>
-  </ol>
+  <p class="src rv">KOICA value-chain cooperative, Timor-Leste; Decree-Law No. 16/2004; The Irish Times, 2013.</p>
+  <figure class="scene spl rv">{PART['split']}<figcaption>Joining stops being a choice. Whoever is left out <b>undercuts prices to sink it.</b></figcaption></figure>
   <p class="lead rv">So Noor still sells alone, <em>at the trader's price.</em></p>
 </section>
 
