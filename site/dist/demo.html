@@ -640,6 +640,10 @@ body.mob .mp[data-p="dash"] .pane .figw{display:block;flex:none!important;height
 .mstk>svg{width:100%!important;height:auto!important;max-height:none!important;display:block;margin:0 auto}
 .mstk>svg.half{width:62%!important}
 @media (pointer:coarse){#pick .fine a, .brand{position:relative}#pick .fine a::after, .brand::after{content:'';position:absolute;inset:-12px -10px}}   /* touch: a bigger invisible hit area, same look */
+/* the small-AI pill blinks while it is off, so visitors notice they can turn it on */
+#llmBtn.idle{will-change:opacity;animation:llmBlink 1.3s ease-in-out infinite}
+@keyframes llmBlink{0%,100%{opacity:1}50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){#llmBtn.idle{animation:none}}
 </style>
 </head>
 <body class="paper">
@@ -1201,7 +1205,7 @@ const engName=()=>engine.name==='chat'?`small AI (on this device) · ${(engine.m
 const PHONEISH=matchMedia('(max-width:760px)').matches||matchMedia('(pointer:coarse)').matches;
 const LLM={cached:false,st:'off',p:0,err:null,gen:null,dtype:null,device:null,model:'onnx-community/Qwen2.5-0.5B-Instruct',lib:'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.5'};
 function llmLabel(){return LLM.st==='ready'?'Small AI chat: on ✓':LLM.st==='loading'?`Small AI: loading ${Math.round(LLM.p)}%`:LLM.st==='failed'?'Small AI: failed':PHONEISH&&!LLM.cached?'Small AI: tap to load (500 MB)':'Small AI chat: off'}
-function llmSync(){const b=$('llmBtn');if(!b)return;b.textContent=llmLabel();b.classList.toggle('on',LLM.st==='ready');b.classList.toggle('busy',LLM.st==='loading');b.classList.toggle('bad',LLM.st==='failed');
+function llmSync(){const b=$('llmBtn');if(!b)return;b.textContent=llmLabel();b.classList.toggle('on',LLM.st==='ready');b.classList.toggle('busy',LLM.st==='loading');b.classList.toggle('bad',LLM.st==='failed');b.classList.toggle('idle',LLM.st!=='ready'&&LLM.st!=='loading');
   b.dataset.tip=LLM.st==='ready'?`Qwen2.5-0.5B-Instruct · ${LLM.dtype} · ${LLM.device} · on this device. Click to turn off.`:LLM.st==='failed'?`Could not load: ${LLM.err}. Click to retry.`:'Small AI chat · on this device (≈500 MB, once). Answers questions the rules engine can\'t place.'}
 async function llmLoad(){
   if(LLM.st==='loading'||LLM.st==='ready')return;
