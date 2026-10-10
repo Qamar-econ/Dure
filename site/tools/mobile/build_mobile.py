@@ -311,7 +311,7 @@ PAGE = f'''<!doctype html>
   <dl class="costs">
     <div class="rv"><dt>3–4<small>years</small></dt><dd><b>Time.</b> Recruiting, then paperwork.</dd></div>
     <div class="rv"><dt>$1,000</dt><dd><b>Capital.</b> A coffee household earns about $250 a year.</dd></div>
-    <div class="rv pwr"><dt><em>power.</em><small>and then</small></dt><dd><b>Power.</b> The village pecking order takes over. Women like Noor are left out.</dd></div>
+    <div class="rv pwr"><dt><em>power.</em><small>and then</small></dt><dd><b>Power.</b> Women like Noor are easily left out.</dd></div>
   </dl>
   <p class="src rv">KOICA value-chain cooperative, Timor-Leste; Decree-Law No. 16/2004; The Irish Times, 2013.</p>
   <figure class="scene spl rv">{PART['split']}<figcaption>Joining stops being a choice. Whoever is left out <b>undercuts prices to sink it.</b></figcaption></figure>
