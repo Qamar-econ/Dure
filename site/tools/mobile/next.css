@@ -110,3 +110,4 @@ details.wk .wkb{margin:0 0 22px;padding:0}
 @media (max-width:699px){.hero .nxintro{bottom:58px}.nx .hero::after{height:58px;background:linear-gradient(rgba(242,234,218,0),var(--ivory))}}
 @media (min-width:700px){.hero .nxintro{bottom:calc(8vh + 40px)}.nx .hero::after{height:calc(8vh + 40px);background:linear-gradient(rgba(242,234,218,0),var(--ivory))}}
 .nl{display:block;margin-top:6px}
+@media (min-width:700px){.nx .hero{height:calc(100svh / var(--z,1));min-height:calc(560px / var(--z,1))}}
