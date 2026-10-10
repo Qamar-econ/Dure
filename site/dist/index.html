@@ -1953,13 +1953,13 @@ function harvest(t){
   const mid=[(S[0]+H[0])/2+8*Math.cos(r), (S[1]+H[1])/2-4];
   $('hArm').setAttribute('d',`M${S[0].toFixed(1)} ${S[1].toFixed(1)} Q ${mid[0].toFixed(1)} ${mid[1].toFixed(1)} ${H[0].toFixed(1)} ${H[1].toFixed(1)}`);
   $('hHand').setAttribute('cx',H[0].toFixed(1));$('hHand').setAttribute('cy',H[1].toFixed(1));
-  document.querySelectorAll('#hCar .pc').forEach(c=>{const k=+c.dataset.k;let x=HV.row[k],y=-16,body=0,op=1;
+  QA(document,'#hCar .pc').forEach(c=>{const k=+c.dataset.k;let x=HV.row[k],y=-16,body=0,op=1;
     const done=t>=.23+k*.19;
     if(carry===k){x=H[0];y=H[1]-4;body=H[1]<-14?1:0}
     else if(fall&&fall[0]===k){x=HV.drop[0];y=lerp(HV.drop[1]-4,-150+116,ease(fall[1]));body=1;op=1-seg(fall[1],.7,1)}
     else if(done)op=0;
     c.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})`);c.setAttribute('opacity',op);c.querySelector('.pcb').setAttribute('opacity',body)});
-  document.querySelectorAll('#gPole .bt').forEach(e=>{const k=+e.dataset.k;e.setAttribute('opacity',t>=.23+k*.19?1:0)});
+  QA(document,'#gPole .bt').forEach(e=>{const k=+e.dataset.k;e.setAttribute('opacity',t>=.23+k*.19?1:0)});
 }
 function road(p){
   const x=ax(p), x2=ax(Math.min(1,p+.002)), moving=Math.abs(x2-x)>.5;
@@ -2044,11 +2044,11 @@ function together(p){
   const vw=_IW,vh=_IH,mob=vw<=760,pt=!mob&&vh>vw*1.05,H=mob?1350:pt?1150*vh/vw:Math.max(900,1660*vh/vw),W=H*vw/vh;   /* pt: portrait tablet, a closer crop so the walkers fill the screen */
   const cx=mob?720:810;
   togSvg.setAttribute('viewBox',`${cx-W/2} ${900-H+(mob?60:110)} ${W} ${H}`);
-  document.querySelectorAll('#Tfarmers .tf').forEach(g=>{const f=TF[+g.dataset.i];const t=ease(seg(p,f[2],f[3]||.001));const x=f[2]===0&&f[3]===0?f[1]:lerp(f[0],f[1],t);
+  QA(document,'#Tfarmers .tf').forEach(g=>{const f=TF[+g.dataset.i];const t=ease(seg(p,f[2],f[3]||.001));const x=f[2]===0&&f[3]===0?f[1]:lerp(f[0],f[1],t);
     const moving=t>0&&t<1;const ph=x/48,sw=moving?Math.sin(ph)*16:0;
     g.setAttribute('transform',`translate(${x} ${TG+(moving?Math.abs(Math.cos(ph))*-2.5:0)}) scale(1.05)`);
     g.querySelector('.lf').setAttribute('transform',`rotate(${sw} 4 -44)`);g.querySelector('.lb').setAttribute('transform',`rotate(${-sw} -6 -44)`);});
-  const n=Math.round(seg(p,.18,.34)*18);document.querySelectorAll('.crate').forEach(c=>c.setAttribute('opacity',+c.dataset.i<n?1:0));
+  const n=Math.round(seg(p,.18,.34)*18);QA(document,'.crate').forEach(c=>c.setAttribute('opacity',+c.dataset.i<n?1:0));
   $('Tsign').setAttribute('opacity',seg(p,.3,.34));
   $('tk2').setAttribute('transform',`translate(${lerp(2300,1330,ease(seg(p,.28,.4)))} ${TG-34}) scale(.66)`);
   $('tk3').setAttribute('transform',`translate(${lerp(2600,1500,ease(seg(p,.32,.44)))} ${TG-52}) scale(.52)`);
@@ -2115,7 +2115,7 @@ function split(p){
   // part 1: barriers over veil
   $('spVeil').classList.toggle('on',p<.44);
   $('barsH').classList.toggle('on',p>.02&&p<.44);
-  document.querySelectorAll('#bars > div').forEach((d,i)=>d.classList.toggle('on',p>.05+i*.08&&p<.44));
+  QA(document,'#bars > div').forEach((d,i)=>d.classList.toggle('on',p>.05+i*.08&&p<.44));
   $('barsSrc').classList.toggle('on',p>.36&&p<.44);
   // part 2: one village, mingling → a crack → they walk to two camps → the ground separates
   const c=seg(p,.5,.56);crack.style.strokeDashoffset=CL*(1-c);
@@ -2123,18 +2123,18 @@ function split(p){
   crack.setAttribute('opacity',c>0&&sp<.05?1:0);
   $('SL').setAttribute('transform',`translate(${-sp*110} 0)`);$('SR').setAttribute('transform',`translate(${sp*110} 0)`);
   const t=performance.now()/1000;
-  document.querySelectorAll('#SP .vp').forEach(g=>{const q=_people[+g.dataset.i];
+  QA(document,'#SP .vp').forEach(g=>{const q=_people[+g.dataset.i];
     const x=lerp(q.x0,q.x1,walk)+(q.side==='L'?-sp*110:sp*110);
     const moving=walk>0&&walk<1;const y=(q.y1||0)*act+(moving?Math.abs(Math.sin(x/40))*3:0);
     const face=.88;
     g.setAttribute('transform',`translate(${x} ${SG-y})`);
     g.querySelector('.flip').setAttribute('transform',`scale(${face} ${face})`);
     g.querySelector('.calm').setAttribute('opacity',1-act);g.querySelector('.act').setAttribute('opacity',act);});
-  document.querySelectorAll('#spSvg .prop').forEach(e=>e.setAttribute('opacity',act));
+  QA(document,'#spSvg .prop').forEach(e=>e.setAttribute('opacity',act));
   $('spRust').setAttribute('opacity',(seg(p,.64,.74)*.55).toFixed(3));
   $('spCl').setAttribute('opacity',(1-seg(p,.64,.7)).toFixed(3));
   $('lblMem').classList.toggle('on',p>.7&&p<.91);$('lblNon').classList.toggle('on',p>.7&&p<.91);
-  document.querySelectorAll('#cons div').forEach((d,i)=>d.classList.toggle('on',p>.74+i*.04&&p<.91));
+  QA(document,'#cons div').forEach((d,i)=>d.classList.toggle('on',p>.74+i*.04&&p<.91));
   $('oneVillage').classList.toggle('on',p>.46&&p<.56);
   $('oppo').classList.toggle('on',p>.7&&p<.91);
   $('verdict').classList.toggle('on',p>.92);
@@ -2160,7 +2160,7 @@ function curtain(p){
   {const top=ty/100*1.08*_IH;_onTais=top<4&&top+1.08*_IH>90}   // the cloth covers the header strip
   $('cuFig').style.opacity=up>.2?1:0;
   $('cuTitle').classList.toggle('on',up>.9&&p<.46);
-  const lis=[...document.querySelectorAll('#ledger li')];
+  const lis=QA(document,'#ledger li');
   lis.forEach((li,i)=>{const k=i%4, col=i<4?0:1;li.classList.toggle('on',p>.48+(col*4+k)*.028)});
   $('ledger').classList.toggle('on',p>.46);
   $('promise').classList.toggle('on',p>.72);
@@ -2852,7 +2852,7 @@ function frame(){
   const ph=PS.hero,pm=PS.map,pr=PS.road,pt=PS.together,psp=PS.split,pcu=PS.curtain,phw=PS.how,pwa=PS.wai,pec=PS.econ;
   /* only the scenes on or next to the screen are redrawn (phones could not keep up redrawing all of them every frame) */
   const VIS=id=>{const S=SEC[id];if(!S||S.top==null)return true;const t=S.top-_SY;return t<_IH*1.15&&t+S.h>-_IH*.15};
-  secs.forEach((s,i)=>{if(!VIS(s.id))return;const p=[ph,pm,pr,pt,psp,pcu,phw,pwa,pec][i];s.querySelectorAll('.beat').forEach(b=>b.classList.toggle('on',p>=+b.dataset.from&&p<+b.dataset.to))});
+  secs.forEach((s,i)=>{if(!VIS(s.id))return;const p=[ph,pm,pr,pt,psp,pcu,phw,pwa,pec][i];QA(s,'.beat').forEach(b=>b.classList.toggle('on',p>=+b.dataset.from&&p<+b.dataset.to))});
   // opening: logo lifts away, scene rises in layers, Aurelia last
   const th=seg(ph,0,.48)*6.6;const o=ease(seg(th,0,1.1));
   $('openWrap').style.transform=`translateY(${-o*28}vh) scale(${1-o*.35})`;$('openWrap').style.opacity=1-seg(th,.3,1.0);$('credit').style.opacity=(1-seg(th,.05,.5)).toFixed(2);
@@ -2887,7 +2887,9 @@ function frame(){
   if(chap.dataset.c!==c[1]){chap.dataset.c=c[1];chap.innerHTML=`<b>${c[0]}</b>${c[1]}`}
 
 }
-let raf=0;const req=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;tickCtl();frame()})};
+/* with smooth scrolling on, the scene draws in the same frame as Lenis moves the page, right after it: no one-frame lag,
+   and the page is laid out once per frame instead of being forced to re-layout inside Lenis's scrollTo */
+let raf=0,want=false,lenisLoop=false;const req=()=>{if(lenisLoop){want=true;return}if(!raf)raf=requestAnimationFrame(()=>{raf=0;tickCtl();frame()})};
 let _rw=innerWidth,_rh=innerHeight;addEventListener('resize',()=>{/* phones fire resize whenever the address bar slides: ignore height-only changes */if(innerWidth===_rw&&Math.abs(innerHeight-_rh)<160)return;_rw=innerWidth;_rh=innerHeight;sizeRoad();measure();req()});
 /* ---------- scroll controller: each scene = one slot of scroll; it plays fast, then holds ---------- */
 const CH=[['1','The field'],['2','The buyers'],['3','The road'],['4','The buyer'],['5','Together'],['6','The catch'],['7','Dure'],['8','How it works'],['9','Technical walkthrough'],['10','The Registry','ledger10'],['11','Tetum Benchmark Index','hybrid'],['12','Field problems','risks']];
@@ -2963,7 +2965,7 @@ addEventListener('scroll',()=>req(),{passive:true});
   const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const lenis=new Lenis({duration:RM?.5:1.2,easing:t=>Math.min(1,1.001-Math.pow(2,-10*t)),smoothWheel:true,wheelMultiplier:RM?1:.7,syncTouch:false,touchMultiplier:1});
   window.__lenis=lenis;lenis.on('scroll',()=>req());
-  (function raf(t){lenis.raf(t);requestAnimationFrame(raf)})(performance.now());
+  lenisLoop=true;(function loopL(t){lenis.raf(t);if(want){want=false;tickCtl();frame()}requestAnimationFrame(loopL)})(performance.now());
 })();
 // chapter menu: jump to the end of that chapter's first scene
 function jumpTo(y){if(window.__lenis)window.__lenis.scrollTo(y,{immediate:true,force:true});else scrollTo({top:y,behavior:'instant'})}

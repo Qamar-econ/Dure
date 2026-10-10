@@ -3,7 +3,7 @@
 Challenge 04, Agriculture (Annex B, Noor). World Bank Small AI for Development Hackathon, 3–4 October 2026.
 Builder: Tae Yoon Moon (solo), University of Seoul. Licence: code MIT; synthetic data CC BY 4.0; illustrations and site text all rights reserved.
 
-**Live:** https://dure-ai.pages.dev · demo: https://dure-ai.pages.dev/demo.html · photo grader: https://dure-ai.pages.dev/demo.html?photo=1 · Registry: https://dure-ai.pages.dev/sheet.html
+**Live:** https://dure-ai.pages.dev (phones and tablets get the mobile edition, https://dure-ai.pages.dev/m.html) · demo: https://dure-ai.pages.dev/demo.html · photo grader: https://dure-ai.pages.dev/demo.html?photo=1 · Registry: https://dure-ai.pages.dev/sheet.html
 
 Status (4 Oct 2026): story site, map demo with a live simulated market, on-device photo grader, on-device small-AI chat, and the Registry with an AI brief are built and deployed. All farmers, buyers, volumes and prices in the demo are synthetic; there has been no field test.
 
@@ -93,18 +93,22 @@ More: [RESPONSIBLE_AI.md](RESPONSIBLE_AI.md) · data sources: [DATA_CARD.md](DAT
 ```bash
 cd site
 python build.py                 # builds src/ into dist/
+python tools/mobile/build_mobile.py   # regenerates the mobile edition (run before build.py after story changes)
 cd dist && python -m http.server 8000
 ```
 
-Open `index.html` (story), `demo.html` (demo; `?photo=1` opens the photo step, `?llm=0` turns the small-AI chat off, `?seed=N` replays a week), `sheet.html` (Registry). Serve over http, not file://. For multithreaded WebAssembly, serve with the headers in `site/src/_headers`.
+Open `index.html` (story; phones and tablets are sent to `m.html`, add `?full=1` to stay), `m.html` (mobile edition), `demo.html` (demo; `?photo=1` opens the photo step, `?llm=0` turns the small-AI chat off, `?seed=N` replays a week), `sheet.html` (Registry). Serve over http, not file://. For multithreaded WebAssembly, serve with the headers in `site/src/_headers`.
 
 ## Repository layout
 
 ```
 site/build.py           builds src/ into dist/
-site/src/               site.html (story), demo_map.html (demo), sheet.html (Registry + brief), assets/ (grader_v2.js, sample photos,
-                        Letefoho satellite base map, training-photo thumbnails), _headers, shared.css, figs.js, geo.json
-site/dist/              built static site
+site/src/               site.html (story, PC), m_proto.html (mobile edition, generated), demo_map.html (demo),
+                        sheet.html (Registry + brief), assets/ (grader_v2.js, sample photos, Letefoho satellite base map,
+                        training-photo thumbnails), _headers, shared.css, figs.js, geo.json, m_*.json (mobile figures)
+site/tools/mobile/      generator for the mobile edition (build_mobile.py and its figure/scene extractors)
+site/dist/              built static site (deployed to Cloudflare Pages by .github/workflows/deploy-cloudflare.yml)
+docs/                   redirects from the old GitHub Pages address to dure-ai.pages.dev
 ai/coffee/              SMS reader: synthetic data generator, LoRA training, test sets 1–3, rules.js (v2.1), evaluation, GGUF inference
 ai/photo/               photo grader v1 (MobileNetV3) scripts and results
 ai/brief/               brief findings + model writer + checker experiments
