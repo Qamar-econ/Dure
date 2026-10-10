@@ -46,15 +46,18 @@ ICONS = [   # one small line drawing per step (24 x 24, drawn in currentColor)
 def week():
     """How it works: the eight steps of Noor's week, each a short line that opens onto its messages"""
     out = []
+    k = 0
     for a in re.findall(r'<article class="hstep rv">(.*?)</article>', B.thread(), re.S):
+        if re.search(r'<span class="no">5<', a):   # the phone edition leaves out step 5 (each farmer decides)
+            continue
         hd = re.search(r'<header>(.*?)</header>', a, re.S).group(1)
-        no = re.search(r'<span class="no">(\d+)', hd).group(1)
+        orig = int(re.search(r'<span class="no">(\d+)', hd).group(1)); k += 1; no = str(k)
         t = re.search(r'<h3>(.*?)</h3>', hd).group(1)
         p = re.search(r'<p>(.*?)</p>', hd).group(1)
         rest = a[a.index('</header>') + 9:]
-        ic = ICONS[int(no) - 1]
+        ic = ICONS[orig - 1]
         out.append(f'<details class="wk rv"><summary><span class="no" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">{ic}</svg></span><span class="tx"><b><em class="n">{no}.</em> {t}</b><small>{p}</small></span><i aria-hidden="true"></i></summary>'
-                   f'<div class="hstep rv wkb">{rest}</div></details>')
+                   f'<template class="lz"><div class="hstep rv wkb">{rest}</div></template></details>')   # built only when opened: a lighter first load
     return '<div class="wks">' + ''.join(out) + '</div>'
 
 
