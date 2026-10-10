@@ -967,3 +967,9 @@ details.dsh > summary .dl{margin-left:10px}
 .at[data-m="t"] .by li.only{display:flex;grid-column:1/-1;opacity:.28;text-decoration:line-through;text-decoration-color:rgba(31,58,64,.5);background:none}
 .at[data-m="t"] .by li.only b{color:inherit}
 .at[data-m="a"] .big em.st{display:inline-block;visibility:hidden}
+
+/* the stream lines up with the line stub drawn into the traders' picture (3 px right of centre), and three dots enter at an even interval */
+.nf-pool .fun{transform:translateX(2.6px);height:34px}
+.nf-pool .fun .d{animation-duration:2.1s}
+.nf-pool .fun .d:nth-child(2){animation-delay:.7s}.nf-pool .fun .d:nth-child(3){animation-delay:1.4s}
+@keyframes pfall{0%{transform:translateY(-4px);opacity:0}12%{opacity:1}88%{opacity:1}100%{transform:translateY(40px);opacity:0}}
