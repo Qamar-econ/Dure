@@ -1115,7 +1115,8 @@ function ffShow(label,fn){const b=$('skipbar');b.textContent=skin==='nokia'?labe
 let ffLabel='';function ffHide(){$('composer').classList.remove('skip');ffNext=null;ffLabel=''}
 function chips(kind){const box=$('tries');chipKind=kind;const list=chipList(kind);setTimeout(fitPhone,0);
   const a=$('att');if(a)a.classList.toggle('blink',kind==='photo');
-  if(!list){box.style.display='none';box.innerHTML='';return}box.style.display='';
+  // desktop: with nothing to suggest, the slot stays (empty), so the dashboard keeps the map's height instead of stretching down
+  if(!list){box.innerHTML='';if(!document.body.classList.contains('mob')&&innerWidth>1100){box.style.display='';box.style.visibility='hidden'}else box.style.display='none';return}box.style.display='';box.style.visibility='';
   box.innerHTML=`<b>Stuck? Tap one to try it</b>`+list.map(([tx,lg,en])=>`<button data-c="${esc(tx)}"><span class="tx">${esc(tx)}${en?`<small>(${esc(en)})</small>`:''}</span><span class="lg">${lg}</span></button>`).join('');
   box.querySelectorAll('button').forEach(b=>b.onclick=()=>{$('inp').value=b.dataset.c;if(skin==='android')$('inp').dispatchEvent(new Event('input'));
     if(SHEET){sheet(false);setTimeout(()=>$('inp').focus({preventScroll:true}),380)}else if(innerWidth<=900){$('phone').scrollIntoView({behavior:'smooth',block:'end'});setTimeout(()=>$('inp').focus({preventScroll:true}),450)}else $('inp').focus()});}
