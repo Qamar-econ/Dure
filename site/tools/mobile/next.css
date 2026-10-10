@@ -103,3 +103,4 @@ details.wk .wkb{margin:0 0 22px;padding:0}
   .nx .htxt{padding-top:calc(3svh + 4px)}
 }
 @media (max-width:699px){.nx .hero::after{height:120px;background:linear-gradient(rgba(242,234,218,0),rgba(242,234,218,.85) 70%,var(--ivory))}}
+.sms2{color:#F4EBDA;margin:26px 0 0}.sms2 b{color:var(--gold)}

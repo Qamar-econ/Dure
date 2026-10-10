@@ -129,7 +129,7 @@ PAGE = f'''<!doctype html>
   <h2 class="rv">What if her neighbours <em>sold with her?</em></h2>
   <div class="rv">{N.alone_together()}</div>
   <p class="lead rv">This is cooperation. <b>This is Dure.</b></p>
-  <div class="big rv"><span class="n"><span class="cnt" data-to="58">58</span>%</span><p>of 239 studies found that farmer organisations raised their members' incomes.</p><cite>Bizikova et al., “A scoping review of the contributions of farmers' organizations to smallholder agriculture”, Nature Food, 2020</cite></div>
+  <div class="big rv"><span class="n"><span class="cnt" data-to="58">58</span>%</span><p>of 239 studies found that farmer organisations raised their members' incomes.</p><cite>Bizikova et al., Nature Food, 2020</cite></div>
   <p class="q rv">So why isn't she benefiting from the Letefoho coffee cooperative?</p>
 </section>
 <section class="txt" data-c="6" data-t="The catch">
@@ -158,7 +158,7 @@ PAGE = f'''<!doctype html>
   <div class="in">
     <div class="swtabs rv">{N.tabs([('What stays', STAYS), ('What goes', GOES)], 'What changes')}</div>
     <div class="sw rv"><div><h4>What stays</h4>{STAYS}</div><div class="go"><h4>What goes</h4>{GOES}</div></div>
-    <p class="nokia rv"><b>Any phone. No internet. No app.</b> Dure works even on an old Nokia.</p>
+    <p class="q rv sms2">No internet. No app. <b>Just SMS.</b></p>
   </div>
 </section>
 
