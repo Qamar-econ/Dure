@@ -4,5 +4,3 @@
  m.forEach((a,id)=>{const s=document.getElementById(id);if(s)io.observe(s)});
  /* a link to a closed detail opens it */
  document.querySelectorAll('details.dd').forEach(d=>d.addEventListener('toggle',()=>{if(d.open)d.querySelectorAll('.rv').forEach(x=>x.classList.add('in'))}));})();
-/* the header turns dark with the page */
-(()=>{const n=[...document.querySelectorAll('.night,.dark.close')];if(!n.length)return;const f=()=>{const y=58;document.body.classList.toggle('nightbar',n.some(e=>{const r=e.getBoundingClientRect();return r.top<y&&r.bottom>y}))};addEventListener('scroll',f,{passive:true});f()})();
