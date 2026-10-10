@@ -103,10 +103,6 @@ body.in .scrollcue{opacity:1}
 .bar{transition:background .3s,box-shadow .3s}
 .barr{display:flex;align-items:center;gap:14px}
 .barr{flex-direction:column;align-items:flex-end;gap:8px}
-#autoBtn{all:unset;pointer-events:auto;cursor:pointer;font:600 12.5px "Atkinson Hyperlegible Next",system-ui,sans-serif;color:var(--ink);border:1px solid rgba(31,58,64,.25);border-radius:999px;padding:4px 12px;background:rgba(242,234,218,.85);transition:background .2s,color .2s}
-#autoBtn:hover{background:#fff}#autoBtn.on{background:var(--ink);color:#F2EADA;border-color:var(--ink)}
-#autoBtn:focus-visible{outline:2px solid var(--rust);outline-offset:2px}
-.bar.ontais #autoBtn{color:#FBF7EE;border-color:rgba(251,247,238,.6);background:rgba(0,0,0,.18)}.bar.ontais #autoBtn.on{background:#FBF7EE;color:#1F3A40}
 .bar.flowbg{background:rgba(242,234,218,.95);box-shadow:0 1px 0 rgba(31,58,64,.1);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 @media (max-width:760px){.bar.solid{background:rgba(242,234,218,.97);box-shadow:0 1px 0 rgba(31,58,64,.1)}}
 .bar.show svg{opacity:1}
@@ -414,48 +410,8 @@ body.in .scrollcue{opacity:1}
   .fp .m{font-size:15px}.fp .m.lg{font-size:13.5px}.fp .sb{font-size:13px}.fp .keys span{height:18px;font-size:10px}
   .ad .b{font-size:13px}.ad .st{font-size:11px}.how-note{display:none}
 }
-/* tap-through mode */
-html.tapm{overscroll-behavior:none}   /* scrolling is blocked by the touch/wheel handlers: any overflow change here would break the pinned scenes */
-html.tapm body{touch-action:none}html.tapm .lg-fig{touch-action:pan-x}
-#tapui{display:none}
-html.tapm #tapui{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;align-items:center;gap:10px;padding:6px 12px calc(6px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,rgba(242,234,218,.96),rgba(242,234,218,.82));-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-top:1px solid rgba(31,58,64,.1)}
-#tapui .tseg{flex:1;display:flex;gap:3px;min-width:0}
-#tapui .tseg button{all:unset;cursor:pointer;flex:1;height:18px;display:flex;align-items:center}
-#tapui .tseg button::before{content:"";display:block;width:100%;height:4px;border-radius:2px;background:rgba(31,58,64,.16)}
-#tapui .tseg button{position:relative}#tapui .tseg button u{position:absolute;left:0;top:7px;height:4px;border-radius:2px;background:var(--ink);width:0;transition:width .35s}
-#tapui .tseg button.cur u{background:var(--rust)}
-#tapui .tctl{display:flex;align-items:center;gap:6px;flex:none}
-#tapui .tctl span{font:12px "IBM Plex Mono",monospace;color:var(--ink-2);font-variant-numeric:tabular-nums;min-width:52px;text-align:right}
-#tapui .tctl button{all:unset;cursor:pointer;font:600 12.5px "Atkinson Hyperlegible Next",system-ui,sans-serif;color:var(--ink);border:1px solid rgba(31,58,64,.25);border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.55)}
-#tapui .tctl button.on{background:var(--ink);color:#F2EADA}
-#tapui .tctl button:focus-visible,#tapui .tseg button:focus-visible{outline:2px solid var(--rust);outline-offset:2px}
-#tapHint{position:fixed;right:16px;top:calc(64px + env(safe-area-inset-top,0px));z-index:61;font:italic 15px Newsreader,serif;color:var(--ink);background:rgba(251,247,238,.92);border:1px solid rgba(31,58,64,.15);border-radius:999px;padding:5px 12px;opacity:0;transform:translateY(6px);transition:opacity .35s,transform .35s;pointer-events:none}
-#tapHint.on{opacity:1;transform:none;animation:tapnudge 1.6s ease-in-out .6s 2}
-@keyframes tapnudge{50%{transform:translateX(4px)}}
-html.tapm #nav,html.tapm #hint{display:none!important}html.tapm .credit{bottom:calc(52px + env(safe-area-inset-bottom,0px))}@media (max-width:760px){.bars-src{font-size:12.5px;line-height:1.35}}
-/* tap cue: a soft glow breathing at the right edge while a scene waits; a scroll cue once the page reads on by scrolling */
-#tapEdge,#scrollCue{display:none}
-html.tapm #tapEdge{display:block;position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:55;width:46px;height:180px;pointer-events:none;opacity:0;transition:opacity .5s}
-html.tapm #tapEdge.on{opacity:1}
-#tapEdge i{position:absolute;inset:0;border-radius:90px 0 0 90px;background:radial-gradient(ellipse at 100% 50%,rgba(168,69,42,.42),rgba(168,69,42,0) 70%);animation:edgeBreath 2.4s ease-in-out infinite}
-#tapEdge b{position:absolute;right:10px;top:50%;transform:translateY(-55%);font:300 40px/1 Newsreader,serif;color:var(--rust);animation:edgeNudge 2.4s ease-in-out infinite}
-@keyframes edgeBreath{0%,100%{opacity:.25}50%{opacity:1}}
-@keyframes edgeNudge{0%,100%{transform:translate(0,-55%);opacity:.45}50%{transform:translate(-5px,-55%);opacity:1}}
-html.tapm #scrollCue{display:flex;position:fixed;left:50%;bottom:calc(46px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:55;flex-direction:column;align-items:center;gap:0;pointer-events:none;opacity:0;transition:opacity .5s;color:var(--rust)}
-html.tapm #scrollCue.on{opacity:1}
-#scrollCue span{font:italic 14px Newsreader,serif}#scrollCue b{font:400 30px/0.8 Newsreader,serif;animation:cueBob 1.6s ease-in-out infinite}
-@keyframes cueBob{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(6px);opacity:1}}
-@media (prefers-reduced-motion:reduce){#tapEdge i,#tapEdge b,#scrollCue b{animation:none}}
-/* same breathing glow for the scroll cue, along the bottom edge */
-html.tapm #scrollCue{bottom:calc(30px + env(safe-area-inset-bottom,0px));width:200px;height:56px;justify-content:flex-end}
-#scrollCue i{position:absolute;inset:0;border-radius:100px 100px 0 0;background:radial-gradient(ellipse at 50% 100%,rgba(168,69,42,.42),rgba(168,69,42,0) 70%);animation:edgeBreath 2.4s ease-in-out infinite}
-#scrollCue b{position:relative;font:300 40px/1 Newsreader,serif;margin-bottom:6px;animation:cueNudge 2.4s ease-in-out infinite}
-@keyframes cueNudge{0%,100%{transform:translateY(0);opacity:.45}50%{transform:translateY(5px);opacity:1}}
-@media (min-width:761px){html.tapm #tapEdge{width:69px;height:270px}#tapEdge b{font-size:60px;right:14px}html.tapm #scrollCue{width:300px;height:84px}#scrollCue b{font-size:60px}}
-@media (prefers-reduced-motion:reduce){#scrollCue i,#scrollCue b{animation:none}}
+@media (max-width:760px){.bars-src{font-size:12.5px;line-height:1.35}}
 
-
-@media (max-width:760px){html.tapm #tapui .tctl span{display:none}}
 @media (prefers-reduced-motion:reduce){.beat,.bang,.bigmark .l,.bigmark .dot,.tagline,h1.hero .ln>span{transition:none}}
 
 .wt tr.zero td{color:var(--rust);font-weight:700;border-bottom:none}
@@ -1839,7 +1795,7 @@ function how(p){_lastP=p;
 function fitFig(R,i,raw){
   if(R.classList.contains('flow'))return;
   const f=R.querySelector(`.ec-fig[data-i="${i}"]`), h=R.querySelector(`.ec-head[data-i="${i}"]`);
-  const key=_IW+'x'+_IH+(document.documentElement.classList.contains('tapm')?'t':'')+'|'+(document.fonts?document.fonts.status:'');
+  const key=_IW+'x'+_IH+'|'+(document.fonts?document.fonts.status:'');
   if(f._fit===key)return;f._fit=key;   /* the fit only changes with the screen: measuring every frame forced a layout per frame */
   const PT=_IW>760&&_IW<=1100&&_IH>_IW*1.05;   /* portrait tablet: stack the text over the picture too, like phones */
   if(_IW>760&&!PT){if(f.style.top){f.style.top='';f.style.bottom='';f.style.transform='';f.style.transition='';h.style.transform='';h.style.clipPath='';}return;}
@@ -1847,7 +1803,7 @@ function fitFig(R,i,raw){
   // text on top, the picture scaled to fit underneath; scrolling plays the picture, then the next panel replaces it
   f.style.transition='opacity .4s';f.style.transformOrigin='top center';f.style.bottom='auto';
   h.style.transform='';h.style.clipPath='';
-  const st=R.querySelector('.stage'),VH=(st&&st.clientHeight)||_IH,foot=document.documentElement.classList.contains('tapm')?44:0;   /* the visible stage, minus the tap strip */
+  const st=R.querySelector('.stage'),VH=(st&&st.clientHeight)||_IH,foot=0;   /* the visible stage, minus the tap strip */
   const bar=62, hh=h.offsetHeight, avail=VH-bar-foot-hh-14-20;
   const fh=f.scrollHeight, sc=Math.min(1,avail/fh), total=hh+14+fh*sc;
   const top=bar+Math.max(8,(VH-bar-foot-total)/2);   // centre the text + picture block on the screen
@@ -2127,7 +2083,7 @@ let lastT=0;const TOUCHY=matchMedia('(pointer:coarse)').matches||innerWidth<=760
 function tickCtl(){
   target();
   const now=performance.now(),dt=Math.min(64,now-(lastT||now));lastT=now;
-  const k=window.__tapPlaying?1:1-Math.pow(1-(window.__lenis?.45:TOUCHY?.38:.16),dt/16.7);   // Lenis already eases the page, so scenes follow it closely   // smooth follow: fast but never jumpy
+  const k=1-Math.pow(1-(window.__lenis?.45:TOUCHY?.38:.16),dt/16.7);   // Lenis already eases the page, so scenes follow it closely   // smooth follow: fast but never jumpy
   let moving=false;
   for(const id in PS){const d=TG_[id]-PS[id];
     // big jumps (chapter menu, reload mid-page) snap; small ones glide
@@ -2151,144 +2107,8 @@ $('menu').innerHTML=CH.map((c,i)=>`<button data-i="${i}"><b>${c[0]}</b>${c[1]}</
 $('chap').onclick=e=>{e.stopPropagation();$('menu').classList.toggle('on');[...$('menu').children].forEach((b,i)=>b.classList.toggle('cur',i===SCN[cur].c));};
 $('menu').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=+b.dataset.i;$('menu').classList.remove('on');if(CH[i][2]){$(CH[i][2]).scrollIntoView({behavior:'smooth'});return;}const k=SCN.findIndex(x=>x.c===i);const n=SCN[k];scrollTo({top:SEC[n.s].el.offsetTop+n.o*innerHeight/100,behavior:'smooth'});};
 addEventListener('click',e=>{if(!e.target.closest('#menu'))$('menu').classList.remove('on')});
-/* ---------- Auto: the story plays itself, scene by scene, with a reading pause after each ----------
-   The steps below are where a scene's text has fully appeared; each step's animation runs at one steady speed (planOf),
-   then the page holds for as long as its text and figures take to read. (Phones and tablets get m.html.) */
-const RMOT=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const TAP=false;
-/* one tap = one piece of text. Scenes whose text stays the same (Noor walking in the monsoon) run on by themselves;
-   scenes whose text only builds on the last (the How-it-works chats) run on too, with a reading pause in between. */
-const TAPS=new Set([1,2,5,6,13,14,15,16,17,19,20,21,22,23,24,28,30,31,33,36,37,38,39,40,41,42]);
-const SPLIT={11:[.88,.94]};   // scene 11: the walk up to the trader joins the monsoon walk (Noor stops at .88); the next tap changes the text and he lifts his price sign (done by .94); the still tail runs on into the next chapter
-const PAUSE={3:1300,4:1400,18:900,25:1300,26:600,29:1100,32:1000,34:1100,35:1000,'11a':0};   // short breaths inside a chain: the text is readable while things move   // ms to read what just appeared, before the chain moves on
-const STEPS=[];{let g=[];SCN.forEach((n,k)=>{const cs=SPLIT[k];if(cs){const b=[n.a,...cs,n.b];for(let i=0;i<b.length-1;i++){g.push({k,p0:b[i],p1:b[i+1]});if(i<b.length-2){STEPS.push({ks:g,c:n.c});g=[]}}}else g.push({k,p0:n.a,p1:n.b});if(TAPS.has(k)&&!cs){STEPS.push({ks:g,c:n.c});g=[]}});
-  STEPS.push({fl:'ledger10',pg:0,c:9});}   /* the text chapters at the end read better as an ordinary scroll: one tap brings you there */
-const flowTop=()=>$('ledger10').offsetTop,inFree=()=>TAP&&scrollY>=flowTop()-4;
-const maxY=()=>document.documentElement.scrollHeight-innerHeight;
-const yAtP=(k,q)=>{const n=SCN[k],t=SEC[n.s].el.offsetTop,pe=n.b-.003;return t+(n.o+n.l*PLn(n)*clamp((q-n.a)/(pe-n.a),0,1))*innerHeight/100};
-function stopY(j){const st=STEPS[j];if(!st)return 0;let y;
-  if(st.ks){const pt=st.ks[st.ks.length-1],n=SCN[pt.k],S=SEC[n.s];y=pt.p1<n.b?yAtP(pt.k,pt.p1):S.el.offsetTop+(n.o+n.l*PLn(n)+1)*innerHeight/100}
-  else{const el=$(st.fl);y=el.offsetTop;if(st.pg)y+=Math.max(0,Math.min(el.offsetHeight-innerHeight,st.pg*innerHeight*.82))}
-  return Math.round(Math.min(maxY(),Math.max(0,y)))}
-const VHMS=24,TRMS=8.5;   // TRMS: ms per vh when the page scrolls from one chapter to the next   // ms per vh of animated scroll: one constant playback speed, so Noor never speeds up or slows down between taps
-const SLOWF={curtain:1.1};   // one pace everywhere: Together (ch. 5) set the standard, ~24 ms per vh
-const SCF={6:1.15,25:.8,27:1.1,28:1.1};
-const LEADIN=new Set(['hero','map','road','together','split']);   // per scene: the harvest plays slower, in Step 2 the walk to the photo is quicker and the grading slower
-const secAt=y=>{for(const id in SEC){const S=SEC[id];const t=S.el.offsetTop;if(y>=t-2&&y<t+S.el.offsetHeight-2)return id}return null};
-/* a step's timeline: chapter-to-chapter scrolls, the animated part of each scene at one steady speed, reading pauses */
-/* playback runs at one steady scroll speed; on the road, time stretches where Noor would otherwise sprint, so her walk keeps one speed */
-const WALKVH=44;   // px of road per vh of scroll that reads as a steady walk
-const paceCuts=(k,p0,p1)=>{const n=SCN[k],cuts=[p0];if(n.s==='road')AK.forEach(([q])=>{if(q>p0&&q<p1)cuts.push(q)});cuts.push(p1);
-  const dpv=(n.b-.003-n.a)/(n.l*PLn(n));return cuts.slice(1).map((q,i)=>{const a=cuts[i];let w=1;if(n.s==='road'){const dx=Math.abs(ax(q)-ax(a)),dvh=(q-a)/dpv;w=Math.max(1,dx/Math.max(1e-6,dvh)/WALKVH)}return [a,q,w]})};
-function planOf(j){const st=STEPS[j],vh=innerHeight/100,items=[];let cur=scrollY;
-  st.ks.forEach((pt,i)=>{const k=pt.k,n=SCN[k],t=SEC[n.s].el.offsetTop,pe=n.b-.003;
-    const a=yAtP(k,pt.p0),b=pt.p1<n.b?yAtP(k,pt.p1):Math.min(maxY(),t+(n.o+n.l*PLn(n)+1)*vh);
-    if(a>cur+2){if(secAt(cur)===n.s)items.push({y0:a,y1:a,ms:0});else items.push({y0:cur,y1:a,ms:RMOT?0:(a-cur)/vh*TRMS})}
-    const pOf=y=>n.a+(pe-n.a)*clamp(((y-t)/vh-n.o)/(n.l*PLn(n)),0,1),q0=pOf(Math.max(a,Math.min(cur,b))),q1=Math.min(pe,pt.p1);
-    const lead=LEADIN.has(n.s)&&!TAPS.has(k)?.5:1;   // in the first chapters, the stretch before a scene's text appears plays at double speed
-    paceCuts(k,q0,q1).forEach(([x0,x1,w])=>{const y0=yAtP(k,x0),y1=yAtP(k,x1);if(y1-y0>.5)items.push({y0,y1,ms:RMOT?0:(y1-y0)/vh*VHMS*(SLOWF[n.s]||1)*(SCF[k]||1)*w*lead})});
-    if(b>yAtP(k,q1)+.5)items.push({y0:yAtP(k,q1),y1:b,ms:0});
-    const last=i===st.ks.length-1;if(!last&&PAUSE[k]&&pt.p1>=n.b)items.push({wait:RMOT?0:PAUSE[k]});cur=b});
-  return items}
-const durOf=j=>{const st=STEPS[j];if(RMOT)return 0;if(!st.ks)return 650;return planOf(j).reduce((a,x)=>a+(x.wait!=null?x.wait:x.ms),0)};
-let anim=null,stepNow=-1,autoOn=false,autoT=0,holds=0;
-function curStep(){const y=scrollY+4;let j=-1;for(let i=0;i<STEPS.length;i++){if(stopY(i)<=y)j=i;else break}return j}
-function onHold(){stepNow=curStep();paintTap();clearTimeout(autoT);
-  if(autoOn&&stepNow<STEPS.length-1){const sec=secAt(scrollY),el=sec&&SEC[sec].el,txt=el?[...el.querySelectorAll('.beat.on,.b.on,.ec-head.on,.how-cap')].map(x=>x.textContent).join(' ').length:120;autoT=setTimeout(tapNext,Math.max(1600,Math.min(5200,900+txt*22)))}
-  {const end=stepNow>=STEPS.length-1;cues(TAP&&!end&&!autoOn,TAP&&end&&scrollY<flowTop()+60)}   /* no tap cue while auto-play runs */
-  holds++;const h=$('tapHint');if(h){const end=stepNow>=STEPS.length-1;h.textContent=end?'Scroll to read on ↓':'Tap to continue →';h.classList.toggle('on',TAP&&(holds<=3&&!end||end))}}
-function runSegs(j){cues(0,0);if(anim)cancelAnimationFrame(anim.raf);const to=stopY(j),items=planOf(j),A=480;anim={to};
-  $('tapHint')&&$('tapHint').classList.remove('on');
-  /* each move eases in only after a standstill and eases out only before one, so back-to-back moves keep one speed */
-  items.forEach((x,i)=>{if(x.wait!=null)return;const pv=items[i-1],nx=items[i+1];x.ein=!pv||pv.wait!=null;x.eout=!nx||nx.wait!=null});
-  {const mv=items.reduce((q,x)=>q+(x.wait==null?x.ms:0),0);if(mv>0&&mv<1100&&!RMOT)items.forEach(x=>{if(x.wait==null)x.ms*=1100/mv})}   /* very short scenes still get a visible move */
-  let tot=0;items.forEach(x=>{x.t0=tot;tot+=x.wait!=null?x.wait:x.ms});
-  const prof=(t,T,ein,eout)=>{if(T<=0)return 1;const a=Math.min(A,T*.4),ai=ein?a:0,ao=eout?a:0,v=1/(T-ai/2-ao/2);
-    if(t<ai)return v*t*t/(2*ai);if(t>T-ao){const r=T-t;return 1-v*r*r/(2*ao)}return v*(t-ai/2)};
-  const t0=performance.now();window.__tapPlaying=true;
-  const f=now=>{if(!anim){window.__tapPlaying=false;return}const e=now-t0;
-    if(e>=tot){anim=null;window.__tapPlaying=false;scrollTo(0,to);req();onHold();return}
-    let x=items[0];for(const it of items){if(it.t0<=e)x=it;else break}
-    if(x.wait==null){const u=prof(e-x.t0,x.ms,x.ein,x.eout);scrollTo(0,x.y0+(x.y1-x.y0)*Math.min(1,u));req()}
-    anim.raf=requestAnimationFrame(f)};
-  anim.raf=requestAnimationFrame(f)}
-function run(to,ms){cues(0,0);if(anim)cancelAnimationFrame(anim.raf);const y0=scrollY,t0=performance.now();anim={to};
-  $('tapHint')&&$('tapHint').classList.remove('on');
-  if(!ms||Math.abs(to-y0)<2){scrollTo(0,to);anim=null;req();onHold();return}
-  const f=t=>{if(!anim)return;const p=Math.min(1,(t-t0)/ms),e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;scrollTo(0,y0+(to-y0)*e);req();
-    if(p<1)anim.raf=requestAnimationFrame(f);else{anim=null;onHold()}};
-  anim.raf=requestAnimationFrame(f)}
-function tapNext(){if(anim){const to=anim.to;cancelAnimationFrame(anim.raf);anim=null;window.__tapPlaying=false;scrollTo(0,to);req();onHold();return}
-  const y=scrollY+4;let j=STEPS.findIndex((_,i)=>stopY(i)>y);if(j<0)return;if(STEPS[j].ks)runSegs(j);else run(stopY(j),durOf(j))}
-function tapBack(){if(anim){cancelAnimationFrame(anim.raf);anim=null}clearTimeout(autoT);
-  const y=scrollY-4;let j=-1;for(let i=0;i<STEPS.length;i++){if(stopY(i)<y)j=i;else break}run(j<0?0:stopY(j),0)}
-function goStep(j){clearTimeout(autoT);if(anim){cancelAnimationFrame(anim.raf);anim=null}scrollTo(0,j>0?stopY(j-1):0);req();if(STEPS[j].ks)runSegs(j);else run(stopY(j),durOf(j))}
-/* the Auto button sits under the chapter label */
-const cues=()=>{},paintTap=()=>{};
-const autoB=document.createElement('button');autoB.id='autoBtn';autoB.type='button';autoB.textContent='▶ Auto';autoB.setAttribute('aria-pressed','false');
-autoB.title='Play the story on its own, at reading pace';document.querySelector('.barr').appendChild(autoB);
-/* how long to hold a frame: the text on screen at reading pace, plus the figures' labels and numbers */
-function readMs(){const sec=secAt(scrollY),el=sec?SEC[sec].el:document.body,vis=e=>{const b=e.getBoundingClientRect();if(b.bottom<0||b.top>innerHeight||b.width<1)return false;return e.checkVisibility?e.checkVisibility({opacityProperty:true,visibilityProperty:true}):true};
-  /* only what the scene has just said: its caption or beat (not the whole chat history, not every map label) */
-  const words=[...el.querySelectorAll('.beat.on,.b.on,.ec-head.on,.how-cap,.cu-title,.ledger,.drape .q')].filter(vis).map(x=>x.textContent).join(' ').trim().split(/\s+/).filter(Boolean).length;
-  const labels=[...el.querySelectorAll('svg text')].filter(t=>t.textContent.trim()&&vis(t)).length;
-  return Math.max(1400,Math.min(6500,900+words*190+Math.min(labels,10)*70))}   // ~300 words a minute, a glance at the figure
-function onHold(){stepNow=curStep();clearTimeout(autoT);if(!autoOn)return;
-  if(stepNow<STEPS.length-1)autoT=setTimeout(tapNext,readMs());else autoT=setTimeout(autoFlow,readMs())}
-/* after the scenes, the text chapters scroll by at reading pace, one section at a time */
-function autoFlow(){if(!autoOn)return;const vh=innerHeight,secs=['ledger10','hybrid','risks','close'].map(id=>$(id)).filter(Boolean),items=[];let y=scrollY;
-  secs.forEach(el=>{const end=Math.min(maxY(),el.offsetTop+el.offsetHeight-vh*.35);if(end<=y+2)return;
-    const words=el.textContent.trim().split(/\s+/).length,labels=el.querySelectorAll('svg text').length,ms=Math.max(3500,words*240+Math.min(labels,60)*80);
-    items.push({y0:y,y1:end,ms,ein:!items.length,eout:false});y=end});
-  if(!items.length)return stopAuto();items[items.length-1].eout=true;play(items,()=>stopAuto())}
-function play(items,done){if(anim)cancelAnimationFrame(anim.raf);const A=600;let tot=0;items.forEach(x=>{x.t0=tot;tot+=x.ms});anim={to:items[items.length-1].y1};
-  const prof=(t,T,ein,eout)=>{if(T<=0)return 1;const a=Math.min(A,T*.4),ai=ein?a:0,ao=eout?a:0,v=1/(T-ai/2-ao/2);if(t<ai)return v*t*t/(2*ai);if(t>T-ao){const r=T-t;return 1-v*r*r/(2*ao)}return v*(t-ai/2)};
-  const t0=performance.now();window.__tapPlaying=true;
-  const f=now=>{if(!anim){window.__tapPlaying=false;return}const e=now-t0;if(e>=tot){anim=null;window.__tapPlaying=false;scrollTo(0,items[items.length-1].y1);req();done&&done();return}
-    let x=items[0];for(const it of items){if(it.t0<=e)x=it;else break}scrollTo(0,x.y0+(x.y1-x.y0)*Math.min(1,prof(e-x.t0,x.ms,x.ein,x.eout)));req();anim.raf=requestAnimationFrame(f)};
-  anim.raf=requestAnimationFrame(f)}
-/* Auto as a film: the page never stops. Each scene's animation runs at the pace of ch. 5 (24 ms per vh, the road walk
-   stretched so Noor keeps one walking speed); the pushes from one scene to the next run twice as fast. When new text
-   appears, playback eases down to a slow drift for as long as the text takes to read, then eases back up. */
-const FILM={scene:24,trans:6,flow:24,lead:.7,slow:.16,tau:420,open:2600};
-const FILMTXT='.beat,.b,.ec-head,.how-cap,.cu-title,.drape .q,#split .bars-h,#split .bars>div,#split .cons>div,#split .splitlbl';
-function filmSegs(){const vh=innerHeight/100,S=[];
-  SCN.forEach((n,k)=>{const lead=LEADIN.has(n.s)&&!TAPS.has(k)?FILM.lead:1,base=FILM.scene*(SLOWF[n.s]||1)*(SCF[k]||1)*lead;
-    paceCuts(k,n.a,n.b-.003).forEach(([a,b,w])=>{const y0=yAtP(k,a),y1=yAtP(k,b);if(y1-y0>.5)S.push([y0,y1,base*w])})});
-  S.forEach((s,i)=>{const nx=S[i+1];s[3]=!nx||nx[0]>s[1]+2});   // the last stretch before a push to the next scene
-  return S}
-function segAt(S,y){for(const s of S)if(y>=s[0]-.5&&y<s[1])return s;return null}
-function rateAt(S,y){for(const s of S)if(y>=s[0]-.5&&y<s[1])return s[2];
-  const fl=$('ledger10');return fl&&y>=fl.offsetTop-innerHeight*.6?FILM.flow:-FILM.trans}   // negative: a push between scenes
-/* reading time for text that has just come on screen (seen once per run) */
-function newText(seen){const H=innerHeight;let ms=0;
-  document.querySelectorAll(FILMTXT).forEach(e=>{if(seen.has(e))return;const r=e.getBoundingClientRect();if(r.width<1||r.bottom<H*.08||r.top>H*.9)return;
-    let o=1;for(let x=e;x&&x!==document.body;x=x.parentElement){const cs=getComputedStyle(x);if(cs.display==='none'||cs.visibility==='hidden'){o=0;break}o*=+cs.opacity;if(o<.6)break}
-    if(o<.6)return;seen.add(e);const w=e.textContent.trim().split(/\s+/).filter(Boolean).length;if(w)ms+=Math.min(5200,450+w*165)});
-  return ms}
-function startAuto(){autoOn=true;autoB.classList.add('on');autoB.textContent='❚❚ Pause';autoB.setAttribute('aria-pressed','true');
-  if(window.__lenis){try{window.__lenis.stop()}catch(e){}}   // smooth-scroll would fight the player
-  const S=filmSegs(),seen=new WeakSet(),vh=()=>innerHeight/100;let y=scrollY,f=0,debt=scrollY<innerHeight*.5?FILM.open:0,last=performance.now(),chk=0;
-  window.__tapPlaying=true;anim={};newText(seen);   // what is already on screen when Auto starts counts as read
-  const f1=now=>{if(!autoOn||!anim)return;const dt=Math.min(50,now-last);last=now;
-    if((chk+=dt)>120){chk=0;debt+=newText(seen)}
-    let r=rateAt(S,y);const push=r<0;if(push){r=-r;debt=0}   // a push to the next scene never drags: the text it leaves has been read
-    debt=Math.max(0,debt-dt);const sg=!push&&segAt(S,y),tail=sg&&sg[3]&&sg[1]-y<innerHeight*.2;
-    const target=debt>0?(tail?.03:FILM.slow):1;   // whatever is left to read is read before the push, not during itf+=(target-f)*(1-Math.exp(-dt/(push?150:FILM.tau)));
-    y+=dt/r*vh()*f;const end=maxY();
-    if(y>=end){scrollTo(0,end);req();stopAuto();return}
-    scrollTo(0,y);req();anim.raf=requestAnimationFrame(f1)};
-  anim.raf=requestAnimationFrame(f1)}
-function stopAuto(){autoOn=false;clearTimeout(autoT);if(anim&&anim.raf)cancelAnimationFrame(anim.raf);anim=null;window.__tapPlaying=false;
-  autoB.classList.remove('on');autoB.textContent='▶ Auto';autoB.setAttribute('aria-pressed','false');
-  if(window.__lenis){try{window.__lenis.start();window.__lenis.scrollTo(scrollY,{immediate:true,force:true})}catch(e){}}}
-autoB.onclick=e=>{e.stopPropagation();autoOn?stopAuto():startAuto()};
-/* any hand on the page takes over from Auto */
-['wheel','touchstart','mousedown'].forEach(t=>addEventListener(t,e=>{if(autoOn&&!e.target.closest('#autoBtn'))stopAuto()},{passive:true}));
-addEventListener('keydown',e=>{if(autoOn&&!['Shift','Control','Alt','Meta'].includes(e.key))stopAuto()});
-window.__auto={filmSegs,SCN};   // for checking the pacing
 /* phones and portrait tablets: keep each heading with its block, and centre the pair between the top bar and the bottom strip */
-function centreGroups(){const P=innerWidth<=760;const bar=60,foot=document.documentElement.classList.contains('tapm')?44:0;
+function centreGroups(){const P=innerWidth<=760;const bar=60,foot=0;
   const place=(head,body,gap,tail)=>{if(!head||!body)return;if(!P){head.style.top=body.style.top='';body.style.transform='';if(tail){tail.style.top='';tail.style.bottom='';tail.style.transform=''}return}
     body.style.transform='translateX(-50%)';const hh=head.offsetHeight,bh=body.offsetHeight,th=tail?tail.offsetHeight+14:0,VH=head.closest('.stage')?head.closest('.stage').clientHeight:innerHeight;
     const top=bar+Math.max(10,(VH-bar-foot-hh-gap-bh-th)/2);head.style.top=top+'px';body.style.top=(top+hh+gap)+'px';
