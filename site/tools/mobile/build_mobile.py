@@ -1,4 +1,4 @@
-"""Builds site/src/m_proto.html: the phone and tablet edition of the Dure story.
+"""Builds site/src/m_classic.html: the earlier phone and tablet edition (published as m-classic.html); build_phone.py builds the current one on top of its parts of the Dure story.
 
 A plain vertical read. Illustrations are vector: the aerial road is drawn in aerial.py, and the dashboards and
 walkthrough figures are rebuilt at phone size from the PC story's own numbers and drawings (native.py).
@@ -416,5 +416,5 @@ PAGE = f'''<!doctype html>
 '''
 
 if __name__ == '__main__':
-    open(os.path.join(SRC, 'm_proto.html'), 'w', encoding='utf-8').write(PAGE)
-    print('m_proto.html', len(PAGE) // 1024, 'KB')
+    open(os.path.join(SRC, 'm_classic.html'), 'w', encoding='utf-8').write(PAGE)
+    print('m_classic.html', len(PAGE) // 1024, 'KB')

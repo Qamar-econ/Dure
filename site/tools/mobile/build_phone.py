@@ -7,7 +7,7 @@ re-ordered for a visitor who scans a QR code at a booth.
   Level 3 (opt-in)  Noor's week message by message, technical walkthrough, benchmark, Registry, field risks,
                     founder and links
 
-Writes site/src/m_next.html (not part of build.py, so nothing here reaches the live site).
+Writes site/src/m_phone.html; build.py publishes it as m.html.
 """
 import os, sys
 sys.argv = sys.argv[:1]
@@ -15,8 +15,8 @@ import build_mobile as B
 N = B.N
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-CSS = B.CSS + open(os.path.join(HERE, 'next.css'), encoding='utf-8').read()
-JS = B.JS + open(os.path.join(HERE, 'next.js'), encoding='utf-8').read()
+CSS = B.CSS + open(os.path.join(HERE, 'phone.css'), encoding='utf-8').read()
+JS = B.JS + open(os.path.join(HERE, 'phone.js'), encoding='utf-8').read()
 
 REPO = 'https://github.com/Qamar-econ/Dure'
 LOGO = B.LOGO
@@ -220,5 +220,5 @@ PAGE = f'''<!doctype html>
 </html>
 '''
 
-open(os.path.join(B.SRC, 'm_next.html'), 'w', encoding='utf-8').write(PAGE)
-print('m_next.html', len(PAGE) // 1024, 'KB')
+open(os.path.join(B.SRC, 'm_phone.html'), 'w', encoding='utf-8').write(PAGE)
+print('m_phone.html', len(PAGE) // 1024, 'KB')
