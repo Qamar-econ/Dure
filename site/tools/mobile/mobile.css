@@ -879,3 +879,11 @@ details.dsh > summary .dl{margin-left:10px}
   .rv.in .tl button[aria-selected="false"],.on .tl button[aria-selected="false"],.tabs.seen .tl button[aria-selected="false"]{animation:tapme 1.4s ease-in-out .5s 2}
   @keyframes tapme{50%{box-shadow:0 0 0 5px rgba(168,69,42,.22)}}
 }
+
+/* ch. 6: power as the table's last row, and the PC split scene re-framed for phones and tablets */
+.costs .pwr dt em{color:var(--rust);font-style:italic;font-weight:600}
+.scene.spl{margin:22px calc(-1*var(--g)) 18px}
+.scene.spl svg{display:block;width:100%;height:auto}
+.scene.spl figcaption{padding:12px var(--g) 0;font-size:17px;line-height:1.5;color:var(--ink)}
+.scene.spl figcaption b{color:var(--rust)}
+@media (min-width:700px){.scene.spl{max-width:720px;margin:26px auto 20px}.scene.spl svg{border-radius:10px}.scene.spl figcaption{padding:12px 0 0}}
