@@ -1016,7 +1016,11 @@ html{scroll-behavior:smooth}
 
 /* level 1: the first screen says what, who, the problem and how */
 .nxhero{padding:22px var(--g) 0;max-width:calc(var(--col) + 2*var(--g));margin:0 auto}
-.award{display:inline-block;font:600 11.5px/1.35 var(--sans);letter-spacing:.02em;color:var(--leaf);background:rgba(78,139,92,.12);border-radius:6px;padding:5px 9px;margin:0 0 14px}
+.award{display:flex;align-items:center;gap:12px;margin:0 0 16px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.7);width:fit-content;max-width:100%}
+.award img{height:22px;width:auto;flex:none}
+.award span{display:flex;flex-direction:column;border-left:1px solid var(--line);padding-left:12px;font:500 11.5px/1.3 var(--sans);color:var(--ink2)}
+.award b{font-weight:700;color:var(--ink);font-size:12.5px}
+@media (max-width:374px){.award img{height:18px}.award span{font-size:10.5px}.award b{font-size:11.5px}}
 .nxhero h1{font:650 38px/1.04 var(--serif);letter-spacing:-.02em;margin:0 0 14px}
 .nxhero h1 em{color:var(--rust);font-weight:500}
 .lede{font-size:18.5px;line-height:1.5;margin:0 0 6px}
@@ -1120,7 +1124,7 @@ details.wk{margin-top:18px}
 <main id="top">
 <!-- LEVEL 1 · ten seconds -->
 <section class="nxhero">
-  <p class="award">Winner · Agriculture · World Bank Small AI for Development Hackathon 2026</p>
+  <div class="award"><img src="assets/worldbank.png" alt="The World Bank" width="720" height="146"><span><b>Winner · Agriculture track</b>Small AI for Development<br>Hackathon 2026</span></div>
   <h1>Small farmers, <em>one stronger market.</em></h1>
   <p class="lede">Dure lets smallholder coffee farmers in Timor-Leste <b>pool their harvest</b>, have <b>buyers compete</b> for it and build a <b>trusted trading record</b>, by plain text message on any phone. AI works behind the scenes; people check what matters.</p>
   <div class="cta"><a class="btn" href="demo.html">Try the demo<span>→</span></a><a class="btn ghost" href="#how">How it works<span>↓</span></a></div>

@@ -131,7 +131,7 @@ PAGE = f'''<!doctype html>
 <main id="top">
 <!-- LEVEL 1 · ten seconds -->
 <section class="nxhero">
-  <p class="award">Winner · Agriculture · World Bank Small AI for Development Hackathon 2026</p>
+  <div class="award"><img src="assets/worldbank.png" alt="The World Bank" width="720" height="146"><span><b>Winner · Agriculture track</b>Small AI for Development<br>Hackathon 2026</span></div>
   <h1>Small farmers, <em>one stronger market.</em></h1>
   <p class="lede">Dure lets smallholder coffee farmers in Timor-Leste <b>pool their harvest</b>, have <b>buyers compete</b> for it and build a <b>trusted trading record</b>, by plain text message on any phone. AI works behind the scenes; people check what matters.</p>
   <div class="cta"><a class="btn" href="demo.html">Try the demo<span>→</span></a><a class="btn ghost" href="#how">How it works<span>↓</span></a></div>
