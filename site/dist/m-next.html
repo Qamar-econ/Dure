@@ -1093,6 +1093,17 @@ details.wk .wkb{margin:0 0 22px;padding:0}
 @media (min-width:700px){.htxt .award{margin:0 0 14px}.htxt .award img{height:24px}.htxt .award span{font-size:12px}.htxt .award b{font-size:13px}
   .hero .nxintro{left:46%;right:5vw;bottom:8vh;padding:0;text-align:left}.hero .nxintro .cta{max-width:460px}}
 @media (min-width:700px){.nx .hero::after{height:240px;background:linear-gradient(rgba(242,234,218,0),rgba(242,234,218,.88) 60%,var(--ivory))}}
+/* phones: the opening picture fills exactly the first screen, so the two buttons are there on arrival;
+   the award sits small at the top left */
+.htxt .award{margin:0 auto 4px 0}
+.htxt .award img{height:14px}.htxt .award span{font-size:8.5px;padding-left:9px}.htxt .award b{font-size:9.5px}.htxt .award{gap:9px}
+@media (max-width:699px){
+  .nx .hero{height:calc(100svh - 52px);min-height:520px}
+  .nx .hero .portrait{position:absolute;inset:0}
+  .nx .hero .portrait svg{width:100%;height:100%}
+  .nx .htxt{padding-top:calc(3svh + 4px)}
+}
+@media (max-width:699px){.nx .hero::after{height:120px;background:linear-gradient(rgba(242,234,218,0),rgba(242,234,218,.85) 70%,var(--ivory))}}
 </style>
 </head>
 <body class="nx">
@@ -1106,7 +1117,7 @@ details.wk .wkb{margin:0 0 22px;padding:0}
 
 <main id="top">
 <section class="hero" data-c="1" data-t="The field">
-  <div class="portrait"><svg xmlns="http://www.w3.org/2000/svg" viewBox="258 0 460 900" class="fig" aria-label="Noor, a coffee farmer in Letefoho, holding a basket of ripe cherries" role="img">
+  <div class="portrait"><svg xmlns="http://www.w3.org/2000/svg" viewBox="258 0 460 900" preserveAspectRatio="xMidYMin slice" class="fig" aria-label="Noor, a coffee farmer in Letefoho, holding a basket of ripe cherries" role="img">
    <rect width="1440" height="900" fill="#F2EADA"></rect>
    <g id="mheronoor_heroScene" style="opacity: 1;">
      <rect width="1440" height="900" fill="#BCD5E8"></rect>
@@ -1147,7 +1158,6 @@ details.wk .wkb{margin:0 0 22px;padding:0}
     <p class="def"><b>Dure</b>: the Korean tradition of mutual aid between farmers.</p>
   </div>
   <div class="nxintro">
-    <p class="sms">No internet. No app. <b>Just SMS.</b></p>
     <div class="cta"><a class="btn" href="demo.html">Try the demo<span>→</span></a><a class="btn ghost" href="#how">How it works<span>↓</span></a></div>
   </div>
 </section>
