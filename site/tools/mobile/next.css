@@ -146,3 +146,8 @@ details.wk .conv .msg svg.ph,details.wk .msg img{width:140px;max-width:70%}
 details.wk .dash{margin-top:8px}
 details.wk .dash svg.chart,details.wk .dash .chart{max-height:150px;width:100%}
 details.wk .dash .mxs{padding:6px 9px}details.wk .dash .mxs b{font-size:16px}
+
+/* performance: sections off screen are not laid out or painted until they come near */
+main > section:not(.hero),.night > section{content-visibility:auto;contain-intrinsic-size:auto 900px}
+/* the price row on narrow phones: the scale's labels get their own room */
+@media (max-width:389px){.at .pr .sc{margin-bottom:24px}}
