@@ -207,7 +207,7 @@ PAGE = f'''<!doctype html>
     <h2>Cooperate through <em>messaging.</em></h2>
     <a class="btn" href="demo.html">Try the demo<span>→</span></a>
     <div class="vids">{B.vids}</div>
-    <div class="fdr"><p class="kick">Founder</p><p class="fname">Tae Yoon Moon</p><p class="fwho">University of Seoul · International Relations &amp; Economics</p>
+    <div class="fdr"><div class="fhd"><img class="fph" src="assets/founder.jpg" alt="Tae Yoon Moon in Timor-Leste" width="300" height="300" loading="lazy"><div><p class="kick">Founder</p><p class="fname">Tae Yoon Moon</p><p class="fwho">University of Seoul · International Relations &amp; Economics</p></div></div>
       <p class="ct"><a href="mailto:taeyoonmoon@uos.ac.kr">taeyoonmoon@uos.ac.kr</a><a href="https://www.linkedin.com/in/tae-yoon-moon-398b11313" target="_blank" rel="noopener">LinkedIn</a><a href="https://docs.google.com/document/d/1BhcbQTZ8WVTYN4VDnK4LSs0JsRNSKh60xIMSUa_87dM/view" target="_blank" rel="noopener">CV</a><a href="{REPO}" target="_blank" rel="noopener">GitHub</a><a href="sheet.html">Sample Registry</a></p></div>
     <p class="thanks">Thanks for paying attention, and enjoy the demo!</p>
   </div>

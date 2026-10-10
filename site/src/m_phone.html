@@ -1152,6 +1152,10 @@ details.wk .dash .mxs{padding:6px 9px}details.wk .dash .mxs b{font-size:16px}
 main > section:not(.hero),.night > section{content-visibility:auto;contain-intrinsic-size:auto 900px}
 /* the price row on narrow phones: the scale's labels get their own room */
 @media (max-width:389px){.at .pr .sc{margin-bottom:24px}}
+
+/* founder photo, small and round */
+.fhd{display:flex;align-items:center;gap:14px;margin:0 0 14px}.fhd .fwho{margin:0}
+.fph{width:72px;height:72px;border-radius:50%;object-fit:cover;flex:none;box-shadow:0 0 0 2px rgba(244,235,218,.25)}
 </style>
 <script>/* big tablets read like an iPad mini: the whole page is scaled up from the mini's width (768 tall, 1024 wide) */
 (function(){var d=document.documentElement;function f(){var w=innerWidth,h=innerHeight,base=h>=w?768:1024,z=(Math.min(w,h)>=700&&w>base+30)?Math.min(w/base,1.45):1;d.style.zoom=z===1?'':z.toFixed(3);d.style.setProperty('--z',z.toFixed(3))}f();addEventListener('resize',f)})();</script>
@@ -1648,7 +1652,7 @@ main > section:not(.hero),.night > section{content-visibility:auto;contain-intri
     <h2>Cooperate through <em>messaging.</em></h2>
     <a class="btn" href="demo.html">Try the demo<span>→</span></a>
     <div class="vids"><button class="vid" data-id="981bf_9D56U" type="button"><img src="https://i.ytimg.com/vi/981bf_9D56U/hqdefault.jpg" alt="" loading="lazy" width="480" height="360"><span>Meet the founder</span></button><button class="vid" data-id="7GsosgZ9X-s" type="button"><img src="https://i.ytimg.com/vi/7GsosgZ9X-s/hqdefault.jpg" alt="" loading="lazy" width="480" height="360"><span>Product demo</span></button><button class="vid" data-id="WSlZaQtR0n0" type="button"><img src="https://i.ytimg.com/vi/WSlZaQtR0n0/hqdefault.jpg" alt="" loading="lazy" width="480" height="360"><span>Technical walkthrough</span></button></div>
-    <div class="fdr"><p class="kick">Founder</p><p class="fname">Tae Yoon Moon</p><p class="fwho">University of Seoul · International Relations &amp; Economics</p>
+    <div class="fdr"><div class="fhd"><img class="fph" src="assets/founder.jpg" alt="Tae Yoon Moon in Timor-Leste" width="300" height="300" loading="lazy"><div><p class="kick">Founder</p><p class="fname">Tae Yoon Moon</p><p class="fwho">University of Seoul · International Relations &amp; Economics</p></div></div>
       <p class="ct"><a href="mailto:taeyoonmoon@uos.ac.kr">taeyoonmoon@uos.ac.kr</a><a href="https://www.linkedin.com/in/tae-yoon-moon-398b11313" target="_blank" rel="noopener">LinkedIn</a><a href="https://docs.google.com/document/d/1BhcbQTZ8WVTYN4VDnK4LSs0JsRNSKh60xIMSUa_87dM/view" target="_blank" rel="noopener">CV</a><a href="https://github.com/Qamar-econ/Dure" target="_blank" rel="noopener">GitHub</a><a href="sheet.html">Sample Registry</a></p></div>
     <p class="thanks">Thanks for paying attention, and enjoy the demo!</p>
   </div>
