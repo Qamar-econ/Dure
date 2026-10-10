@@ -2170,13 +2170,14 @@ function stopY(j){const st=STEPS[j];if(!st)return 0;let y;
   if(st.ks){const pt=st.ks[st.ks.length-1],n=SCN[pt.k],S=SEC[n.s];y=pt.p1<n.b?yAtP(pt.k,pt.p1):S.el.offsetTop+(n.o+n.l*PLn(n)+1)*innerHeight/100}
   else{const el=$(st.fl);y=el.offsetTop;if(st.pg)y+=Math.max(0,Math.min(el.offsetHeight-innerHeight,st.pg*innerHeight*.82))}
   return Math.round(Math.min(maxY(),Math.max(0,y)))}
-const VHMS=34,TRMS=8.5;   // TRMS: ms per vh when the page scrolls from one chapter to the next   // ms per vh of animated scroll: one constant playback speed, so Noor never speeds up or slows down between taps
-const SLOWF={how:1.25,wai:1.2,econ:1.2,curtain:1.2};
-const SCF={6:1.6,25:.75,27:1.4,28:1.4};   // per scene: the harvest plays slower, in Step 2 the walk to the photo is quicker and the grading slower
+const VHMS=24,TRMS=8.5;   // TRMS: ms per vh when the page scrolls from one chapter to the next   // ms per vh of animated scroll: one constant playback speed, so Noor never speeds up or slows down between taps
+const SLOWF={curtain:1.1};   // one pace everywhere: Together (ch. 5) set the standard, ~24 ms per vh
+const SCF={6:1.15,25:.8,27:1.1,28:1.1};
+const LEADIN=new Set(['hero','map','road','together','split']);   // per scene: the harvest plays slower, in Step 2 the walk to the photo is quicker and the grading slower
 const secAt=y=>{for(const id in SEC){const S=SEC[id];const t=S.el.offsetTop;if(y>=t-2&&y<t+S.el.offsetHeight-2)return id}return null};
 /* a step's timeline: chapter-to-chapter scrolls, the animated part of each scene at one steady speed, reading pauses */
 /* playback runs at one steady scroll speed; on the road, time stretches where Noor would otherwise sprint, so her walk keeps one speed */
-const WALKVH=28;   // px of road per vh of scroll that reads as a steady walk
+const WALKVH=44;   // px of road per vh of scroll that reads as a steady walk
 const paceCuts=(k,p0,p1)=>{const n=SCN[k],cuts=[p0];if(n.s==='road')AK.forEach(([q])=>{if(q>p0&&q<p1)cuts.push(q)});cuts.push(p1);
   const dpv=(n.b-.003-n.a)/(n.l*PLn(n));return cuts.slice(1).map((q,i)=>{const a=cuts[i];let w=1;if(n.s==='road'){const dx=Math.abs(ax(q)-ax(a)),dvh=(q-a)/dpv;w=Math.max(1,dx/Math.max(1e-6,dvh)/WALKVH)}return [a,q,w]})};
 function planOf(j){const st=STEPS[j],vh=innerHeight/100,items=[];let cur=scrollY;
@@ -2184,7 +2185,8 @@ function planOf(j){const st=STEPS[j],vh=innerHeight/100,items=[];let cur=scrollY
     const a=yAtP(k,pt.p0),b=pt.p1<n.b?yAtP(k,pt.p1):Math.min(maxY(),t+(n.o+n.l*PLn(n)+1)*vh);
     if(a>cur+2){if(secAt(cur)===n.s)items.push({y0:a,y1:a,ms:0});else items.push({y0:cur,y1:a,ms:RMOT?0:(a-cur)/vh*TRMS})}
     const pOf=y=>n.a+(pe-n.a)*clamp(((y-t)/vh-n.o)/(n.l*PLn(n)),0,1),q0=pOf(Math.max(a,Math.min(cur,b))),q1=Math.min(pe,pt.p1);
-    paceCuts(k,q0,q1).forEach(([x0,x1,w])=>{const y0=yAtP(k,x0),y1=yAtP(k,x1);if(y1-y0>.5)items.push({y0,y1,ms:RMOT?0:(y1-y0)/vh*VHMS*(SLOWF[n.s]||1)*(SCF[k]||1)*w})});
+    const lead=LEADIN.has(n.s)&&!TAPS.has(k)?.5:1;   // in the first chapters, the stretch before a scene's text appears plays at double speed
+    paceCuts(k,q0,q1).forEach(([x0,x1,w])=>{const y0=yAtP(k,x0),y1=yAtP(k,x1);if(y1-y0>.5)items.push({y0,y1,ms:RMOT?0:(y1-y0)/vh*VHMS*(SLOWF[n.s]||1)*(SCF[k]||1)*w*lead})});
     if(b>yAtP(k,q1)+.5)items.push({y0:yAtP(k,q1),y1:b,ms:0});
     const last=i===st.ks.length-1;if(!last&&PAUSE[k]&&pt.p1>=n.b)items.push({wait:RMOT?0:PAUSE[k]});cur=b});
   return items}
@@ -2227,9 +2229,10 @@ const autoB=document.createElement('button');autoB.id='autoBtn';autoB.type='butt
 autoB.title='Play the story on its own, at reading pace';document.querySelector('.barr').appendChild(autoB);
 /* how long to hold a frame: the text on screen at reading pace, plus the figures' labels and numbers */
 function readMs(){const sec=secAt(scrollY),el=sec?SEC[sec].el:document.body,vis=e=>{const b=e.getBoundingClientRect();if(b.bottom<0||b.top>innerHeight||b.width<1)return false;return e.checkVisibility?e.checkVisibility({opacityProperty:true,visibilityProperty:true}):true};
-  const words=[...el.querySelectorAll('.beat.on,.b.on,.ec-head.on,.how-cap,.cu-title,.ledger,.drape .q,.msgs,.list')].filter(vis).map(x=>x.textContent).join(' ').trim().split(/\s+/).filter(Boolean).length;
+  /* only what the scene has just said: its caption or beat (not the whole chat history, not every map label) */
+  const words=[...el.querySelectorAll('.beat.on,.b.on,.ec-head.on,.how-cap,.cu-title,.ledger,.drape .q')].filter(vis).map(x=>x.textContent).join(' ').trim().split(/\s+/).filter(Boolean).length;
   const labels=[...el.querySelectorAll('svg text')].filter(t=>t.textContent.trim()&&vis(t)).length;
-  return Math.max(1800,Math.min(12000,900+words*240+Math.min(labels,40)*110))}   // ~250 words a minute, and a moment for each label on a figure
+  return Math.max(1400,Math.min(6500,900+words*190+Math.min(labels,10)*70))}   // ~300 words a minute, a glance at the figure
 function onHold(){stepNow=curStep();clearTimeout(autoT);if(!autoOn)return;
   if(stepNow<STEPS.length-1)autoT=setTimeout(tapNext,readMs());else autoT=setTimeout(autoFlow,readMs())}
 /* after the scenes, the text chapters scroll by at reading pace, one section at a time */
@@ -2254,6 +2257,7 @@ autoB.onclick=e=>{e.stopPropagation();autoOn?stopAuto():startAuto()};
 /* any hand on the page takes over from Auto */
 ['wheel','touchstart','mousedown'].forEach(t=>addEventListener(t,e=>{if(autoOn&&!e.target.closest('#autoBtn'))stopAuto()},{passive:true}));
 addEventListener('keydown',e=>{if(autoOn&&!['Shift','Control','Alt','Meta'].includes(e.key))stopAuto()});
+window.__auto={STEPS,stopY,planOf,readMs,secAt,SCN};   // for checking the pacing
 /* phones and portrait tablets: keep each heading with its block, and centre the pair between the top bar and the bottom strip */
 function centreGroups(){const P=innerWidth<=760;const bar=60,foot=document.documentElement.classList.contains('tapm')?44:0;
   const place=(head,body,gap,tail)=>{if(!head||!body)return;if(!P){head.style.top=body.style.top='';body.style.transform='';if(tail){tail.style.top='';tail.style.bottom='';tail.style.transform=''}return}

@@ -358,7 +358,7 @@ def tabs(items, label):
     _TAB[0] += 1; t = f't{_TAB[0]}'
     bar = ''.join(f'<button type="button" role="tab" id="{t}b{i}" aria-controls="{t}p{i}" aria-selected="{"true" if i == 0 else "false"}">{n}</button>' for i, (n, _) in enumerate(items))
     panes = ''.join(f'<div class="tp" role="tabpanel" id="{t}p{i}" aria-labelledby="{t}b{i}"{"" if i == 0 else " hidden"}>{c}</div>' for i, (_, c) in enumerate(items))
-    return f'<div class="tabs"><div class="tl" role="tablist" aria-label="{label}">{bar}</div>{panes}</div>'
+    return f'<div class="tabs"><p class="tlh" aria-hidden="true">Tap to compare</p><div class="tl" role="tablist" aria-label="{label}">{bar}</div>{panes}</div>'
 
 
 def more(summary, body, cls=''):
@@ -436,6 +436,7 @@ def alone_together():
     buyers = [('Trader', 'on the road', '$2.25', 'only'), ('Exporter', 'Dili', '$2.81', 'win'), ('Roaster', 'Dili', '$2.79', ''), ('Exporter', 'Dili', '$2.76', ''), ('Café chain', 'Dili', '$2.74', '')]
     bl = ''.join(f'<li class="{c}"><span>{n}<small>{w}</small></span><b>{p}</b></li>' for n, w, p, c in buyers)
     return f'''<div class="at" data-m="a" role="group" aria-label="Alone versus together">
+  <p class="tlh" aria-hidden="true">Tap to compare</p>
   <div class="tl at-t" role="tablist" aria-label="Selling alone or together"><button type="button" role="tab" aria-selected="true" data-m="a">Alone</button><button type="button" role="tab" aria-selected="false" data-m="t">Together</button></div>
   <div class="row"><span class="lb">Coffee</span><div class="v"><div class="farms">{farms}</div><p><b class="sa">40 kg · Noor</b><b class="st">1,890 kg · 22 farms</b></p></div></div>
   <div class="row"><span class="lb">Road</span><div class="v"><p class="sa">Flooded. Only one trader's truck makes it.</p><p class="st">One truck, booked for the whole lot.</p></div></div>
