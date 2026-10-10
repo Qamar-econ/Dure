@@ -35,8 +35,8 @@ ICONS = [   # one small line drawing per step (24 x 24, drawn in currentColor)
     '<path d="M3 17h18"/><path d="M7 17a5 5 0 0 1 10 0"/><path d="M12 6v3M5.6 9.6l1.8 1.8M18.4 9.6l-1.8 1.8M2.5 13.5h2M19.5 13.5h2"/>',   # sunrise: the morning price
     '<path d="M4 5h11a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><rect x="14" y="12" width="8" height="7" rx="1.5"/><circle cx="18" cy="15.5" r="1.6"/>',   # text and photo
     '<path d="M3 10h18l-2 9H5z"/><path d="M8 10l2-5M16 10l-2-5"/><circle cx="9.5" cy="14.5" r="1"/><circle cx="14.5" cy="14.5" r="1"/>',   # one basket
-    '<path d="M14 4l6 6M11 7l6 6M12.5 5.5l-6 6 3 3 6-6"/><path d="M8 13l-5 5 2 2 5-5"/><path d="M13 21h8"/>',   # gavel: the auction
-    '<path d="M4 12.5l4.5 4.5L20 6"/>',   # yes: each farmer decides
+    '<path d="M3 20h18"/><path d="M6 20v-5M10 20V11M14 20V8M18 20V4"/><path d="M16.5 5.5L18 4l1.5 1.5"/>',   # rising bids: the auction
+    '<path d="M3 13h18v8H3z"/><path d="M7.5 13V3.5h9V13"/><path d="M9.8 8.2l1.6 1.6 3-3.2"/>',   # ballot box: each farmer casts her own vote
     '<path d="M2 7h11v9H2zM13 10h4l3 3v3h-7"/><circle cx="6" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/>',   # truck
     '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M16 14.5h2"/>',   # wallet: payment
     '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',   # star: trust
