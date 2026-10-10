@@ -2247,31 +2247,34 @@ function play(items,done){if(anim)cancelAnimationFrame(anim.raf);const A=600;let
   const f=now=>{if(!anim){window.__tapPlaying=false;return}const e=now-t0;if(e>=tot){anim=null;window.__tapPlaying=false;scrollTo(0,items[items.length-1].y1);req();done&&done();return}
     let x=items[0];for(const it of items){if(it.t0<=e)x=it;else break}scrollTo(0,x.y0+(x.y1-x.y0)*Math.min(1,prof(e-x.t0,x.ms,x.ein,x.eout)));req();anim.raf=requestAnimationFrame(f)};
   anim.raf=requestAnimationFrame(f)}
-/* Auto as a film: the whole page moves at one steady speed, the pace of the farmers splitting apart in ch. 6
-   (24 ms per vh of scroll), with no stops at text. A chapter only leans a little faster where it reads at a glance
-   or a little slower where there is more to read. ~95 s to the end. */
-const FILMMS=24;
-const FILMF=[1,.9,.9,1,1,1,1,1,1.1,.85,.85,.85];   // per chapter, in the order of CH
-const FILMMIN=[4.5,0,0,3,0,0,0,0,0,0,0,0];          // seconds: the title and the one-line beat of ch. 4 still get a moment
-const CLOSE_S=2;
-function timeline(){const vh=innerHeight/100,K=[];const end=maxY();
-  const range=c=>{if(CH[c][2]){const el=$(CH[c][2]);return [el.offsetTop,el.offsetTop+el.offsetHeight]}
-    let a=Infinity,b=-Infinity;SCN.forEach(n=>{if(n.c!==c)return;const t=SEC[n.s].el.offsetTop;a=Math.min(a,t+n.o*vh);b=Math.max(b,t+(n.o+n.l*PLn(n)+1)*vh)});return [a,b]};
-  let t=0,y=0;K.push([0,0]);
-  CH.forEach((_,c)=>{const [,b]=range(c);const y1=Math.min(end,Math.max(y,b));t+=Math.max(FILMMIN[c]*1000,(y1-y)/vh*FILMMS*FILMF[c]);K.push([y1,t]);y=y1});
-  if(end>y+2){t+=CLOSE_S*1000;K.push([end,t])}
-  return K}
-/* position at time t: piecewise linear, with the corners rounded so the pace eases from one chapter into the next */
-function yAt(K,t){const R=700;const lin=x=>{if(x<=0)return K[0][0];for(let i=1;i<K.length;i++)if(x<=K[i][1]){const [y0,t0]=K[i-1],[y1,t1]=K[i];return y0+(y1-y0)*(x-t0)/Math.max(1,t1-t0)}return K[K.length-1][0]};
-  let s=0,w=0;for(let d=-R;d<=R;d+=R/4){const k=1-Math.abs(d)/(R*1.25);s+=lin(t+d)*k;w+=k}return s/w}
-function tAt(K,y){for(let i=1;i<K.length;i++)if(y<=K[i][0]){const [y0,t0]=K[i-1],[y1,t1]=K[i];return t0+(t1-t0)*(y-y0)/Math.max(1,y1-y0)}return K[K.length-1][1]}
+/* Auto as a film: the page never stops. Each scene's animation runs at the pace of ch. 5 (24 ms per vh, the road walk
+   stretched so Noor keeps one walking speed); the pushes from one scene to the next run twice as fast. When new text
+   appears, playback eases down to a slow drift for as long as the text takes to read, then eases back up. */
+const FILM={scene:24,trans:12,flow:24,lead:.7,slow:.16,tau:420,open:2600};
+const FILMTXT='.beat,.b,.ec-head,.how-cap,.cu-title,.drape .q,#split .bars-h,#split .bars>div,#split .cons>div,#split .splitlbl';
+function filmSegs(){const vh=innerHeight/100,S=[];
+  SCN.forEach((n,k)=>{const lead=LEADIN.has(n.s)&&!TAPS.has(k)?FILM.lead:1,base=FILM.scene*(SLOWF[n.s]||1)*(SCF[k]||1)*lead;
+    paceCuts(k,n.a,n.b-.003).forEach(([a,b,w])=>{const y0=yAtP(k,a),y1=yAtP(k,b);if(y1-y0>.5)S.push([y0,y1,base*w])})});
+  return S}
+function rateAt(S,y){for(const s of S)if(y>=s[0]-.5&&y<s[1])return s[2];
+  const fl=$('ledger10');return fl&&y>=fl.offsetTop-innerHeight*.6?FILM.flow:FILM.trans}
+/* reading time for text that has just come on screen (seen once per run) */
+function newText(seen){const H=innerHeight;let ms=0;
+  document.querySelectorAll(FILMTXT).forEach(e=>{if(seen.has(e))return;const r=e.getBoundingClientRect();if(r.width<1||r.bottom<H*.08||r.top>H*.9)return;
+    let o=1;for(let x=e;x&&x!==document.body;x=x.parentElement){const cs=getComputedStyle(x);if(cs.display==='none'||cs.visibility==='hidden'){o=0;break}o*=+cs.opacity;if(o<.6)break}
+    if(o<.6)return;seen.add(e);const w=e.textContent.trim().split(/\s+/).filter(Boolean).length;if(w)ms+=Math.min(5200,450+w*165)});
+  return ms}
 function startAuto(){autoOn=true;autoB.classList.add('on');autoB.textContent='❚❚ Pause';autoB.setAttribute('aria-pressed','true');
   if(window.__lenis){try{window.__lenis.stop()}catch(e){}}   // smooth-scroll would fight the player
-  const K=timeline(),T=K[K.length-1][1],tStart=tAt(K,scrollY),t0=performance.now();window.__tapPlaying=true;anim={};
-  const ease=x=>x<1?x*x*(3-2*x):1,warm=600;   // a soft start from a standstill
-  const f=now=>{if(!autoOn||!anim)return;const e=now-t0,el=e<warm?warm*ease(e/warm)*.5+0:e-warm*.5,t=tStart+el;
-    if(t>=T){scrollTo(0,K[K.length-1][0]);req();stopAuto();return}scrollTo(0,yAt(K,t));req();anim.raf=requestAnimationFrame(f)};
-  anim.raf=requestAnimationFrame(f)}
+  const S=filmSegs(),seen=new WeakSet(),vh=()=>innerHeight/100;let y=scrollY,f=0,debt=scrollY<innerHeight*.5?FILM.open:0,last=performance.now(),chk=0;
+  window.__tapPlaying=true;anim={};newText(seen);   // what is already on screen when Auto starts counts as read
+  const f1=now=>{if(!autoOn||!anim)return;const dt=Math.min(50,now-last);last=now;
+    if((chk+=dt)>120){chk=0;debt+=newText(seen)}
+    debt=Math.max(0,debt-dt);const target=debt>0?FILM.slow:1;f+=(target-f)*(1-Math.exp(-dt/FILM.tau));
+    y+=dt/rateAt(S,y)*vh()*f;const end=maxY();
+    if(y>=end){scrollTo(0,end);req();stopAuto();return}
+    scrollTo(0,y);req();anim.raf=requestAnimationFrame(f1)};
+  anim.raf=requestAnimationFrame(f1)}
 function stopAuto(){autoOn=false;clearTimeout(autoT);if(anim&&anim.raf)cancelAnimationFrame(anim.raf);anim=null;window.__tapPlaying=false;
   autoB.classList.remove('on');autoB.textContent='▶ Auto';autoB.setAttribute('aria-pressed','false');
   if(window.__lenis){try{window.__lenis.start();window.__lenis.scrollTo(scrollY,{immediate:true,force:true})}catch(e){}}}
@@ -2279,7 +2282,7 @@ autoB.onclick=e=>{e.stopPropagation();autoOn?stopAuto():startAuto()};
 /* any hand on the page takes over from Auto */
 ['wheel','touchstart','mousedown'].forEach(t=>addEventListener(t,e=>{if(autoOn&&!e.target.closest('#autoBtn'))stopAuto()},{passive:true}));
 addEventListener('keydown',e=>{if(autoOn&&!['Shift','Control','Alt','Meta'].includes(e.key))stopAuto()});
-window.__auto={timeline,yAt,tAt,SCN};   // for checking the pacing
+window.__auto={filmSegs,SCN};   // for checking the pacing
 /* phones and portrait tablets: keep each heading with its block, and centre the pair between the top bar and the bottom strip */
 function centreGroups(){const P=innerWidth<=760;const bar=60,foot=document.documentElement.classList.contains('tapm')?44:0;
   const place=(head,body,gap,tail)=>{if(!head||!body)return;if(!P){head.style.top=body.style.top='';body.style.transform='';if(tail){tail.style.top='';tail.style.bottom='';tail.style.transform=''}return}
