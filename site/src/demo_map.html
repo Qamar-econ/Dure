@@ -1216,7 +1216,8 @@ function llmLabel(){return LLM.st==='ready'?'Small AI chat: on ✓':LLM.st==='lo
 function llmSync(){const b=$('llmBtn');if(!b)return;b.textContent=llmLabel();b.classList.toggle('on',LLM.st==='ready');b.classList.toggle('busy',LLM.st==='loading');b.classList.toggle('bad',LLM.st==='failed');b.classList.toggle('idle',LLM.st!=='ready'&&LLM.st!=='loading');
   if(LLM.st==='ready'||LLM.st==='failed')b.dataset.tip=LLM.st==='ready'?`Qwen2.5-0.5B-Instruct · ${LLM.dtype} · ${LLM.device} · on this device. Click to turn off.`:`Could not load: ${LLM.err}. Click to retry.`;else delete b.dataset.tip;   /* while off, the hint bubble says it all */
   if(LLM.st!=='idle'&&LLM.st!==undefined&&LLM.st!=='off'&&window.llmHintClose)window.llmHintClose()}
-function llmHintShow(){const b=$('llmBtn');if(!b||LLM.st==='ready'||LLM.st==='loading'||$('llmHint'))return;try{if(sessionStorage.getItem('dure-llm-hint'))return}catch(e){}
+function llmHintShow(){const b=$('llmBtn');if(!b||LLM.st==='ready'||LLM.st==='loading'||$('llmHint'))return;{const sh=$('shade');if(sh&&sh.classList.contains('open')){setTimeout(llmHintShow,700);return}}   // wait until the status panel has folded away
+  try{if(sessionStorage.getItem('dure-llm-hint'))return}catch(e){}
   const h=document.createElement('div');h.id='llmHint';h.setAttribute('role','note');
   h.innerHTML='<b>Want to ask the Small AI?</b> Tap this button to turn on the chat.<small>A one-time download of about 500 MB; it then runs on your device.</small><button type="button" aria-label="Close">✕</button>';
   document.body.appendChild(h);
