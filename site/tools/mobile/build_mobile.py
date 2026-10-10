@@ -177,7 +177,7 @@ def thread():
             n += 1
         # Noor's phone: Dure on the left, Noor on the right. The buyers show up in what Dure tells her and in the dashboards
         phone = (f'<div class="abar"><span class="av">D</span><div><b>Dure AI</b><small>SMS · +670 7700 3873</small></div><i class="dots" aria-hidden="true"></i></div>'
-                 f'<div class="chat">{"".join(cols["F"])}</div><div class="ain" aria-hidden="true"><span>Text message</span><i></i></div>')
+                 f'<div class="chat">{"".join(cols["F"])}</div>')
         body = [phone]
         f = figf()
         dash = f'<figure class="dash">{f}</figure>' if f else ''   # what Dure did behind those messages, below the phone
