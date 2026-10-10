@@ -93,7 +93,7 @@ More: [RESPONSIBLE_AI.md](RESPONSIBLE_AI.md) · data sources: [DATA_CARD.md](DAT
 ```bash
 cd site
 python build.py                 # builds src/ into dist/
-python tools/mobile/build_mobile.py   # regenerates the mobile edition (run before build.py after story changes)
+python tools/mobile/build_phone.py    # regenerates the phone edition (run before build.py after story changes)
 cd dist && python -m http.server 8000
 ```
 
@@ -102,12 +102,14 @@ Open `index.html` (story; phones and tablets are sent to `m.html`, add `?full=1`
 ## Repository layout
 
 ```
-site/build.py           builds src/ into dist/
-site/src/               site.html (story, PC), m_proto.html (mobile edition, generated), demo_map.html (demo),
+site/build.py           builds src/ into dist/ (dist/ is not committed; the deploy workflow builds it)
+site/src/               site.html (story, PC), m_phone.html (phone and tablet edition, generated), demo_map.html (demo),
                         sheet.html (Registry + brief), assets/ (grader_v2.js, sample photos, Letefoho satellite base map,
-                        training-photo thumbnails), _headers, shared.css, figs.js, geo.json, m_*.json (mobile figures)
-site/tools/mobile/      generator for the mobile edition (build_mobile.py and its figure/scene extractors)
-site/dist/              built static site (deployed to Cloudflare Pages by .github/workflows/deploy-cloudflare.yml)
+                        training-photo thumbnails, World Bank logo used with permission), _headers, shared.css, figs.js,
+                        geo.json, m_*.json (phone figures), m_classic.html (earlier phone edition)
+site/tools/mobile/      phone edition generator: build_phone.py (+ phone.css, phone.js) on top of build_mobile.py and its
+                        figure/scene extractors
+site/tools/             gen_sheet_data.py, check_sheet.js (synthetic Registry data)
 docs/                   redirects from the old GitHub Pages address to dure-ai.pages.dev
 ai/coffee/              SMS reader: synthetic data generator, LoRA training, test sets 1–3, rules.js (v2.1), evaluation, GGUF inference
 ai/photo/               photo grader v1 (MobileNetV3) scripts and results

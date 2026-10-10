@@ -32,8 +32,6 @@ if os.path.exists(os.path.join(S, 'sheet.html')):
 if os.path.exists(os.path.join(ROOT, 'og.png')):
     shutil.copy(os.path.join(ROOT, 'og.png'), os.path.join(D, 'og.png'))
 shutil.copy(os.path.join(S, '_headers'), os.path.join(D, '_headers'))
-if os.path.exists(os.path.join(S, 'm_proto.html')):   # phone and tablet edition
-    shutil.copy(os.path.join(S, 'm_proto.html'), os.path.join(D, 'm-classic.html'))   # the earlier phone edition, kept for reference
-if os.path.exists(os.path.join(S, 'm_next.html')):   # the phone and tablet edition (summit edition)
-    shutil.copy(os.path.join(S, 'm_next.html'), os.path.join(D, 'm.html'))   # the phone and tablet edition; index.html sends touch devices here
+shutil.copy(os.path.join(S, 'm_phone.html'), os.path.join(D, 'm.html'))           # phones and tablets (index.html sends touch devices here)
+shutil.copy(os.path.join(S, 'm_classic.html'), os.path.join(D, 'm-classic.html'))   # the earlier phone edition, kept for reference
 print('built', len(site) // 1024, 'KB site')
