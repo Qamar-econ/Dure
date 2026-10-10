@@ -946,3 +946,23 @@ details.dsh > summary .dl{margin-left:10px}
 .at .pr .v{grid-template-columns:40% 1fr}
 .at .pr .big{flex-wrap:wrap;row-gap:2px}
 .at .big small{white-space:nowrap}
+
+/* Blended / Fixed pool: coffee keeps funnelling in to the buyers */
+.nf-pool .fun{position:relative;display:block;width:24px;height:40px;margin:0 auto}
+.nf-pool .fun::before{content:"";position:absolute;left:11px;top:0;bottom:0;width:2px;background:var(--ink);opacity:.5}
+.nf-pool .fun svg.bn{position:absolute;left:3px;top:-6px;width:18px;height:14px;opacity:0;will-change:transform,opacity;animation:pfall 2.4s linear infinite}
+.nf-pool .fun svg.bn:nth-child(2){animation-delay:.6s}.nf-pool .fun svg.bn:nth-child(3){animation-delay:1.2s}.nf-pool .fun svg.bn:nth-child(4){animation-delay:1.8s}
+@keyframes pfall{0%{transform:translateY(0) rotate(0);opacity:0}15%{opacity:1}80%{opacity:1}100%{transform:translateY(42px) rotate(40deg);opacity:0}}
+.nf-pool .fr{grid-template-columns:20px 1fr 34px 104px}
+.nf-pool .fr .ln .go{position:absolute;left:-4px;top:-7px;width:16px;height:12px;opacity:0;will-change:transform,opacity;animation:pslide 2s ease-in infinite}
+.nf-pool .fr .ln .go svg.bn{width:16px;height:12px;display:block}
+.nf-pool .fr .ln .go:nth-child(2){animation-delay:1s}
+.nf-pool .fr.gB .ln .go{animation-delay:.35s}.nf-pool .fr.gB .ln .go:nth-child(2){animation-delay:1.35s}
+.nf-pool .fr.gC .ln .go{animation-delay:.7s}.nf-pool .fr.gC .ln .go:nth-child(2){animation-delay:1.7s}
+@keyframes pslide{0%{transform:translateX(-14px);opacity:0}20%{opacity:1}80%{opacity:1}100%{transform:translateX(34px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.nf-pool .fun svg.bn,.nf-pool .fr .ln .go{animation:none;opacity:0}}
+
+/* Alone / Together share one layout: the trader keeps his row (struck out once the farmers sell together), and the +25% has its place in both */
+.at[data-m="t"] .by li.only{display:flex;grid-column:1/-1;opacity:.28;text-decoration:line-through;text-decoration-color:rgba(31,58,64,.5);background:none}
+.at[data-m="t"] .by li.only b{color:inherit}
+.at[data-m="a"] .big em.st{display:inline-block;visibility:hidden}

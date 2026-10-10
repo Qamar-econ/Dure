@@ -233,12 +233,12 @@ def blend():
     return ('<div class="nf nf-pool" role="img" aria-label="Blended pool: every farmer sells here, every week, to Dili traders">'
             '<h4>Blended pool</h4><p class="sub">every farmer sells here, every week</p>'
             f'<div class="box"><p class="ph"><span>harvest</span><span>reputation</span></p>{rr}</div>'
-            f'<div class="sink">{zoom("econ1.blend", "118 322 102 84", "tr")}<b>Dili traders</b><small>bulk buyers · price moves weekly</small></div></div>')
+            f'<div class="sink"><i class="fun" aria-hidden="true">{bean("A",18)}{bean("C",18)}{bean("B",18)}{bean("A",18)}</i>{zoom("econ1.blend", "118 322 102 84", "tr")}<b>Dili traders</b><small>bulk buyers · price moves weekly</small></div></div>')
 
 
 def fixed():
     rows = [('A', 4, 'Specialty roasters', '548 78 86 64'), ('B', 3, 'Export contracts', '538 170 102 76'), ('C', 2, 'Local market', '548 288 86 62')]
-    rr = ''.join(f'<div class="fr g{g}"><b>{g}</b><span class="fb">{"".join(bean(g) for _ in range(n))}</span><i class="ln"></i>'
+    rr = ''.join(f'<div class="fr g{g}"><b>{g}</b><span class="fb">{"".join(bean(g) for _ in range(n))}</span><i class="ln"><i class="go">{bean(g,16)}</i><i class="go">{bean(g,16)}</i></i>'
                  f'<span class="by">{zoom("econ1.fixed", vb, f"f{g}")}<small>{who}</small></span></div>' for g, n, who, vb in rows)
     return ('<div class="nf nf-pool fixed" role="img" aria-label="Fixed pool: one grade, a fixed buyer, every week">'
             f'<h4>Fixed pool</h4><p class="sub">one grade · a fixed buyer · every week</p>{rr}'
