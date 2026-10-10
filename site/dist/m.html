@@ -897,6 +897,17 @@ details.dsh > summary .dl{margin-left:10px}
 .scene.spl figcaption{padding:12px var(--g) 0;font-size:17px;line-height:1.5;color:var(--ink)}
 .scene.spl figcaption b{color:var(--rust)}
 @media (min-width:700px){.scene.spl{max-width:720px;margin:26px auto 20px}.scene.spl svg{border-radius:10px}.scene.spl figcaption{padding:12px 0 0}}
+
+/* How it works: each step's dashboard sits on the page as its own cards, without a framed band around it */
+.hstep > .dash{background:none;border:0;padding:0}
+/* landscape tablets: text, phone and dashboard side by side, so a step fills the width instead of one narrow column */
+@media (min-width:1000px) and (orientation:landscape){
+  .hsteps .hstep{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(330px,380px) minmax(0,1.15fr);column-gap:clamp(24px,3vw,44px);align-items:start}
+  .hsteps .hstep header{grid-column:1;position:sticky;top:90px}
+  .hsteps .hstep > .conv{grid-column:2;margin:0}
+  .hsteps .hstep > .dash{grid-column:3;margin:0;max-width:none;width:100%}
+  section.how{max-width:1300px}.how .hsteps{max-width:none}
+}
 </style>
 </head>
 <body>
