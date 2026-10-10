@@ -127,7 +127,7 @@ blockquote cite{margin-top:8px;font-size:14px}
 
 /* 7: the tais and the dark pages */
 .dark{background:#231C17;color:#EDE3CF}
-.dark .in{padding:56px var(--g) 64px;max-width:calc(var(--col) + 2*var(--g));margin:0 auto}
+.dark > .in{padding:56px var(--g) 64px;max-width:calc(var(--col) + 2*var(--g));margin:0 auto}
 .tais{height:112px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='88' height='28' viewBox='0 0 44 14'><rect width='44' height='14' fill='%239A3326'/><rect x='0' width='4' height='14' fill='%23241A16'/><rect x='6' width='1.6' height='14' fill='%23E4B64C'/><rect x='9' width='1.2' height='14' fill='%23F1E3C6'/><rect x='16' width='12' height='14' fill='%23241A16'/><path d='M22 1 L26 7 L22 13 L18 7Z' fill='%23E4B64C'/><path d='M22 4 L24 7 L22 10 L20 7Z' fill='%23241A16'/><rect x='31' width='1.2' height='14' fill='%23F1E3C6'/><rect x='34' width='1.6' height='14' fill='%23E4B64C'/><rect x='38' width='3' height='14' fill='%23241A16'/></svg>") left top/77px 24.5px repeat}
 .dark .kick{color:var(--gold)}
 .dark h2{color:#F4EBDA}
@@ -139,7 +139,7 @@ blockquote cite{margin-top:8px;font-size:14px}
 .sw li{margin:0 0 10px}
 .sw .go li{color:#A99C84;text-decoration:line-through;text-decoration-color:var(--rust);text-decoration-thickness:2px}
 .nokia{font-size:18px;color:#E3D7C0;margin:0}
-.dark .in + .phoneNoor{margin-top:0}
+.dark > .in + .phoneNoor{margin-top:0}
 .phoneNoor{position:relative;overflow:hidden;max-width:620px;margin:0 auto}
 .phoneNoor .pn{display:block;width:66%;height:auto;margin-left:-4%}
 .phoneNoor::after{content:"";position:absolute;left:0;right:0;bottom:0;height:90px;background:linear-gradient(rgba(35,28,23,0),#231C17)}   /* the skirt fades into the night rather than ending on a line */
@@ -148,7 +148,7 @@ blockquote cite{margin-top:8px;font-size:14px}
 .phoneNoor .dmark svg{width:100%;max-width:200px;height:auto;display:block}
 .phoneNoor .pt h3{font:500 21px/1.15 var(--serif);color:#F4EBDA;margin:8px 0 0}
 .phoneNoor .pt h3 em{color:var(--gold)}
-.dark .in:first-of-type{padding-bottom:40px}
+.dark > .in:first-of-type{padding-bottom:40px}
 .nokia b{color:#F4EBDA}
 
 /* 8: the week as one thread */
@@ -202,7 +202,7 @@ blockquote cite{margin-top:8px;font-size:14px}
 .illus{font:italic 14px var(--serif);color:var(--soft);text-align:center;margin:40px 0 0}
 
 /* 9: walkthrough panels */
-.tw{margin:0 0 64px}
+.tw{margin:0 0 40px}
 .tw .kick{font-size:16px}
 .tw h3{font-size:30px;line-height:1.1;margin:0 0 12px}
 .tw .note{font:italic 14.5px/1.45 var(--serif);color:var(--soft);margin:12px 0 0}
@@ -315,7 +315,7 @@ blockquote cite{margin-top:8px;font-size:14px}
   .dash{margin-left:0;margin-right:0}
   /* walkthrough: text left, its figures right */
   .twsec{max-width:1120px}
-  .tw{display:grid;grid-template-columns:330px minmax(0,1fr);column-gap:56px;align-items:start;margin-bottom:96px}
+  .tw{display:grid;grid-template-columns:330px minmax(0,1fr);column-gap:56px;align-items:start;margin-bottom:64px}
   .tw .twt{position:sticky;top:84px}
   .twf .panelwrap,.twf .cards,.twf .panel{margin:0}
   .twf .cards{flex-direction:row;align-items:flex-start}
@@ -326,7 +326,7 @@ blockquote cite{margin-top:8px;font-size:14px}
   /* registry: the three pieces side by side */
   .regs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:28px calc(-1*(1180px - 860px)/2 + 0px) 0;max-width:none}
   .regs .reg{margin:0}
-  .dark .in{max-width:860px}
+  .dark > .in{max-width:860px}
   .close .vids{grid-template-columns:repeat(3,1fr)}
 }
 
@@ -651,7 +651,7 @@ details.dsh .mb{padding:0 12px 4px}
 .conv details.cont .mb{padding:0}
 .parser details.more{background:rgba(255,255,255,.05);margin:0 0 10px}
 .parser details.more > summary{color:#EDE3CF}
-@media (max-width:699px){.txt,.how{padding-top:56px;padding-bottom:50px}.dark .in{padding:48px var(--g) 54px}.hstep{margin-top:36px}}   /* chapters breathe: twice the room between them */
+@media (max-width:699px){.txt,.how{padding-top:56px;padding-bottom:50px}.dark > .in{padding:48px var(--g) 54px}.hstep{margin-top:36px}}   /* chapters breathe: twice the room between them */
 
 details.more.src{background:none;margin:6px 0 0}
 details.more.src > summary{padding:4px 0;font:500 12.5px var(--sans);color:var(--soft);justify-content:flex-start}
@@ -908,6 +908,33 @@ details.dsh > summary .dl{margin-left:10px}
   .hsteps .hstep > .dash{grid-column:3;margin:0;max-width:none;width:100%}
   section.how{max-width:1300px}.how .hsteps{max-width:none}
 }
+
+/* Alone / Together, compact: about half the height it had */
+.at{padding:10px 12px 10px}
+.at .tlh{margin:0 0 4px}
+.at .at-t{margin:0 0 6px!important}
+.at .at-t button{padding:7px 10px!important;min-height:0!important;font-size:14px!important}
+.at .row{grid-template-columns:52px 1fr;gap:8px;padding:6px 0;align-items:center}
+.at .lb{font-size:10px;padding-top:0}
+.at p{font-size:14px;line-height:1.35}
+.at .farms{gap:1px;margin:0 0 2px}
+.at .farms i{width:14px;height:13px}
+.at .farms + p b{font-size:14px}
+.at .by{grid-template-columns:1fr 1fr;gap:2px 6px}
+.at .by li{padding:2px 6px;font-size:12.5px}
+.at .by li small{font-size:10.5px;margin-left:4px}
+.at .by li b{font-size:13.5px}
+.at .pr .v{display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:12px}
+.at .sc{margin:4px 0 14px}
+.at .big{gap:5px;flex-wrap:nowrap}
+.at .big b{font-size:28px}
+.at .big small{font-size:11px}
+.at .big em{font-size:13px;padding:1px 7px;margin-left:4px}
+.at .foot{margin:4px 0 0;padding:0;font-size:13px;line-height:1.35}.at .foot span{font-size:11.5px}
+
+/* video tiles keep the video's own 16:9 before they play, not the 4:3 of the thumbnail file */
+.vid img{height:auto;display:block}
+.dark .nokia{margin-top:22px}
 </style>
 </head>
 <body>
@@ -1018,7 +1045,7 @@ details.dsh > summary .dl{margin-left:10px}
   <dl class="costs">
     <div class="rv"><dt>3–4<small>years</small></dt><dd><b>Time.</b> Recruiting, then paperwork.</dd></div>
     <div class="rv"><dt>$1,000</dt><dd><b>Capital.</b> A coffee household earns about $250 a year.</dd></div>
-    <div class="rv pwr"><dt><em>power.</em><small>and then</small></dt><dd><b>Power.</b> The village pecking order takes over. Women like Noor are left out.</dd></div>
+    <div class="rv pwr"><dt><em>power.</em><small>and then</small></dt><dd><b>Power.</b> Women like Noor are easily left out.</dd></div>
   </dl>
   <p class="src rv">KOICA value-chain cooperative, Timor-Leste; Decree-Law No. 16/2004; The Irish Times, 2013.</p>
   <figure class="scene spl rv"><svg viewBox="70 200 1420 600" class="spl" role="img" aria-label="The cooperative's members under their banner, the ground cracked open, and the opposition across it with their own price"><defs><linearGradient id="sp_skyR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BFD3DE"></stop><stop offset=".8" stop-color="#EDE6D6"></stop></linearGradient><pattern id="sp_soil" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#B4804F"></rect><rect width="12" height="2" fill="#A8744A"></rect></pattern><pattern id="sp_taisR" width="44" height="14" patternUnits="userSpaceOnUse">
