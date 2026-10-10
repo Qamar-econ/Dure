@@ -85,7 +85,7 @@ HOW = [
     ('From Tetum text to quality grading', 'Noor writes in her own words and sends one photo. Dure reads both.'),
     ('Leverage with a blended basket', 'Every grade goes into one lot. Together, smallholders have bargaining power.'),
     ('Interactive fair auction', 'When the lot is full, buyers bid. Dure sets a reasonable opening price.'),
-    ('Democracy: the essence of a cooperative', 'Each farmer decides whether to sell at the final price. No one is forced.'),
+    ('Autonomy: each farmer decides', 'Each farmer decides whether to sell at the final price. No one is forced.'),
     ('Collective supply chain', 'Dure books one truck. The grade is confirmed by hand at pickup.'),
     ('Simple and credible payment', 'The buyer prepays; after delivery each farmer gets her share.'),
     ('Every deal builds trust', 'Trades, punctuality and accurate quality build a reputation score.'),
