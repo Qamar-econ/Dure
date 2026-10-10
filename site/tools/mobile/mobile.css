@@ -925,6 +925,10 @@ details.dsh > summary .dl{margin-left:10px}
 /* video tiles keep the video's own 16:9 before they play, not the 4:3 of the thumbnail file */
 .vid img{height:auto;display:block}
 .dark .nokia{margin-top:22px}
-/* message bubbles: a gentler corner */
-.conv .msg.msg{border-radius:14px 14px 14px 0}
-.conv .msg.me.me.me{border-radius:14px 14px 0 14px}
+/* message bubbles in the iMessage shape: round all over, with a curled tail at the bottom corner on the sender's side */
+.conv .msg.msg{border-radius:18px;position:relative}
+.conv .msg.msg::before,.conv .msg.msg::after{content:"";position:absolute;bottom:0;height:18px;pointer-events:none;z-index:-1}
+.conv .msg.msg::before{left:-7px;width:20px;background:inherit;border-bottom-right-radius:16px 14px}
+.conv .msg.msg::after{left:-26px;width:26px;background:#fff;border-bottom-right-radius:10px}
+.conv .msg.me.me.me::before{left:auto;right:-7px;border-bottom-right-radius:0;border-bottom-left-radius:16px 14px}
+.conv .msg.me.me.me::after{left:auto;right:-26px;border-bottom-right-radius:0;border-bottom-left-radius:10px}
