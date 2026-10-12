@@ -1168,7 +1168,7 @@ function showPhoto(r,src){mk.photoLog.push({fid:0,g:r.grade,aiG:r.grade,conf:Mat
 /* ---------- rewind ---------- */
 function snap(){
   hist.push({mk:JSON.stringify(mk),msgs:msgs.filter(m=>m.who!=='typing').map(({el,_h,...m})=>({...m})),st,lang,offer:{...offer},photo,photoRes,photoSrc,userQs:userQs.slice(),userMsgs,clock:[...clock],battery,expect,balance,repNow,
-    ff:ffNext,ffLabel,stepIdx,chipKind,console:$('console').innerHTML});
+    ff:ffNext,ffLabel,stepIdx,chipKind,usedChips:[...usedChips],console:$('console').innerHTML});
   syncCtl();
 }
 function undo(){
@@ -1177,7 +1177,7 @@ function undo(){
   $('end').classList.remove('on');$('end').innerHTML='';$('picker').classList.remove('on');
   document.querySelectorAll('.cam,.nvid,.bank').forEach(x=>x.remove());
   if(h.ff)ffShow(h.ffLabel,h.ff);else ffHide();
-  step(h.stepIdx);chips(h.chipKind);$('console').innerHTML=h.console;renderBar();render(true);syncCtl();
+  usedChips=new Set(h.usedChips||[]);step(h.stepIdx);chips(h.chipKind);$('console').innerHTML=h.console;renderBar();render(true);syncCtl();
 }
 function syncCtl(){const u=$('undo');if(u)u.disabled=busy||!hist.length}
 setInterval(syncCtl,400);
@@ -1194,7 +1194,8 @@ async function proceed(changed,warnK=''){
   await joinPool(changed);
 }
 async function send(){
-  const el=$('inp');const text=el.value.trim();if(!text||busy||ffNext)return;snap();el.value='';if(skin==='android')el.style.height='auto';
+  const el=$('inp');const text=el.value.trim();if(!text||busy||ffNext)return;snap();el.value='';
+  if(Object.values(CHIPS).some(l=>l&&l.some(c=>c[0]===text))){usedChips.add(text);document.querySelectorAll('#tries button').forEach(b=>{if(b.dataset.c===text)b.remove()});if(!$('tries').querySelector('button'))chips(null)}if(skin==='android')el.style.height='auto';
   busy=true;const m=push({who:'me',text,status:'sending'});tick(1);
   await sleep(jit(900,signal===1?2300:1500));m.status='sent';render();
   try{await handle(text)}catch(e){console.error(e)}busy=false;
@@ -1938,7 +1939,7 @@ function closePool(t){
   const trueV=mk.fair*mU(.95,1.01),roadCost=ROADCOST[c.road];
   const lk=sumKg(lot)||1,sh=g=>lot.filter(f=>gOf(f)===g).reduce((a,f)=>a+f.kg,0)/lk,prefAdj=b=>b.pref==='A'?.10*(sh('A')-.4):b.pref==='C'?.10*(sh('C')-.2):.04*(sh('B')-.38);
   mk.buyers.forEach(b=>{const fits=lk>=b.minLot&&lk<=b.cap;b.v=Math.max(r2(mk.open+mU(.02,.08)),r2(trueV*mU(.97,1.06)+b.adj+prefAdj(b)-(b.loc==='Dili'?roadCost:roadCost/4)-(fits?0:.05)));b.best=null;b.out=false});   // every buyer who came bids at least the opening price
-  genBids();priceT0=performance.now();priceHold=priceT0+2500;   // short pause while the opening price is set (the full price animation keeps running on the Price tab)
+  genBids();priceT0=performance.now();priceHold=priceT0+1250;   // short pause while the opening price is set (the full price animation keeps running on the Price tab)
   lg(t,`Pool closed: ${kgf(sumKg(lot))} kg from ${lot.length} farms. Floor $${mk.floor.toFixed(2)}, opens $${mk.open.toFixed(2)}`,'','k-big');
   notify(uPoolFull);
 }
@@ -2349,7 +2350,7 @@ function renderLive(){
   if(logN>mk.log.length){box.innerHTML='';logN=0}
   for(;logN<mk.log.length;logN++){const e=mk.log[logN];const d=document.createElement('div');d.className='el '+e.k;d.innerHTML=`<span class="t">${hhmm(e.t)}</span><span>${e.en}</span>`;box.prepend(d)}
 }
-const PRICE_MS=8000;let aiSig='',aiUntil=0;let priceT0=0,priceHold=0,lastHeavy=0,dashManual=null,dashShown=null,lastAuto=null,repLive=false,repDirty=true;
+const PRICE_MS=4000;   /* price card build-up: 2x faster (was 8000) */let aiSig='',aiUntil=0;let priceT0=0,priceHold=0,lastHeavy=0,dashManual=null,dashShown=null,lastAuto=null,repLive=false,repDirty=true;
 /* the AI panel only switches when a model or rule has just done something (Noor's text read, her photo graded, opening price set, record updated,
    auction cleared); otherwise it stays on whatever was shown last, or on the tab the user picked */
 let dashSticky=null,lastPhaseV=null;
@@ -2430,7 +2431,8 @@ function paySvg(now){
 
 /* ---------- the sale, now driven by the simulated market ---------- */
 /* example messages for the current step */
-function chipList(kind){return CHIPS[kind]||null}
+let usedChips=new Set();   /* a suggestion that was sent once is not offered again */
+function chipList(kind){const l=(CHIPS[kind]||[]).filter(c=>!usedChips.has(c[0]));return l.length?l:null}
 
 async function joinPool(){
   await sleep(500);const m=me();
