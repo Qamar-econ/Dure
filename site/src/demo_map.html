@@ -1983,7 +1983,18 @@ function genBids(){
   ev.sort((x,y)=>x.t-y.t);
   const bids=ev.filter(e=>e.k==='bid').map((e,k)=>({...e,o:k})).sort((x,y)=>x.v-y.v||x.o-y.o);
   const t0=Math.max(mk.closeT,CUT)+12,t1=CLEAR-mU(5,9),N=bids.length,gap=N>1?(t1-t0)/(N-1):0;
-  bids.forEach((e,k)=>{const j=k===0||k===N-1?0:mU(-.3,.3)*gap;e.t=+(N>1?t0+k*gap+j:t1).toFixed(1);delete e.o});
+  bids.forEach(e=>delete e.o);
+  /* tidy the climb: sorting by price could put one buyer twice in a row, or two buyers on the same price.
+     Each bid must beat the one before it, from a different buyer. A bid that cannot follow is slipped lower,
+     into the first gap where it fits (a cent under the bid it would have tied); no buyer drops out of the book. */
+  {const out=[],fits=(i,v,b)=>{const P=out[i-1],Q=out[i];return (P?v>P.v+1e-9&&P.b!==b:v>=open-1e-9)&&(!Q||(v<Q.v-1e-9&&Q.b!==b))};
+    for(const e of bids){const L=out[out.length-1];
+      if(!L||(e.v>L.v+1e-9&&L.b!==e.b)){out.push(e);continue}
+      let done=false;for(let i=out.length;i>=0&&!done;i--){const v=i<out.length?Math.min(e.v,r2(out[i].v-.01)):e.v;if(fits(i,v,e.b)){out.splice(i,0,{...e,v});done=true}}
+      if(!done&&!out.some(x=>x.b===e.b)){const L2=out[out.length-1];if(L2.b!==e.b)out.push({...e,v:r2(L2.v+.01)})}}   // last resort: never leave a buyer out
+    for(let k=0;out.length<4&&k<12;k++){const L=out[out.length-1],c=mk.buyers.find((x,q)=>x.i!==L.b&&q%mk.buyers.length===k%mk.buyers.length)||mk.buyers.find(x=>x.i!==L.b);if(c)out.push({k:'bid',b:c.i,v:r2(L.v+.02),t:0})}   // still at least 4 bids
+    bids.length=0;bids.push(...out)}
+  {const N2=bids.length,gap2=N2>1?(t1-t0)/(N2-1):0;bids.forEach((e,k)=>{const j=k===0||k===N2-1?0:mU(-.3,.3)*gap2;e.t=+(N2>1?t0+k*gap2+j:t1).toFixed(1)})}
   const steps=ev.filter(e=>e.k==='step'&&(!N||e.t<bids[0].t));
   mk.bids=steps.concat(bids).sort((x,y)=>x.t-y.t);
 }
