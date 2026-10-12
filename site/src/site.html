@@ -84,6 +84,7 @@ h1.hero .ln.i > span{font-style:italic;font-weight:500;letter-spacing:-.035em;co
 #hero{height:200vh}
 .opening{position:absolute;inset:0;z-index:12;display:grid;place-items:center;padding-top:5vh;box-sizing:border-box;pointer-events:none;text-align:center}
 .opening .wrap{will-change:transform,opacity}
+@media (min-width:761px){.opening{padding-top:12vh}}
 .bigmark{font-family:Newsreader,serif;font-weight:680;font-size:clamp(96px,15.2vw,240px);letter-spacing:-.045em;line-height:.8;color:var(--ink);font-variation-settings:"opsz" 72;display:inline-flex;align-items:baseline;padding-left:.11em}
 .bigmark .l{display:inline-block;opacity:0;transform:translateY(.25em);transition:opacity .9s ease,transform 1.1s cubic-bezier(.2,.75,.15,1)}
 .bigmark .dot{display:inline-block;width:.2em;height:.2em;margin-left:.02em;opacity:0;transform:translateY(-.9em);transition:transform .9s cubic-bezier(.3,1.5,.5,1),opacity .3s}
