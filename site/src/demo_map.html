@@ -2563,7 +2563,7 @@ async function start(s){
     const p=DureAI.parse(tx,null);addMeFeed(tx,p);lang='tet';offer={crop:'coffee',kg:40,grade:null,ask:2.70,any:false};showParse(p);
     await aiSay(t=>summary(t)+'\n'+t.askPhoto,[500,800]);st='photo';step(2);chips('photo');busy=false;
     setTimeout(()=>{if(st==='photo'&&!busy){grStatus();$('picker').classList.add('on')}},400);return}
-  step(1);chips('crop');busy=false;$('inp').focus({preventScroll:true});
+  step(1);chips('crop');busy=false;if(!PHONEISH)$('inp').focus({preventScroll:true});   // touch screens: no automatic keyboard at the start; it opens when the visitor taps the text box
 }
 
 /* the situation panel lives in the phone: Android pulls it down like a notification shade, the feature phone has an Info screen */
