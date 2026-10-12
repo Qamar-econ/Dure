@@ -1228,6 +1228,19 @@ function llmHintShow(){const b=$('llmBtn');if(!b||LLM.st==='ready'||LLM.st==='lo
   place();const iv=setInterval(place,400);addEventListener('resize',place);
   window.llmHintClose=()=>{clearInterval(iv);removeEventListener('resize',place);h.classList.remove('on');setTimeout(()=>h.remove(),300);window.llmHintClose=null;try{sessionStorage.setItem('dure-llm-hint','1')}catch(e){}};
   h.querySelector('button').onclick=e=>{e.stopPropagation();window.llmHintClose()};setTimeout(()=>window.llmHintClose&&window.llmHintClose(),14000);b.addEventListener('click',()=>window.llmHintClose&&window.llmHintClose(),{once:true})}
+const LLM_FILE={q4f16:'model_q4f16.onnx',q8:'model_quantized.onnx',int8:'model_int8.onnx',uint8:'model_uint8.onnx',q4:'model_q4.onnx',bnb4:'model_bnb4.onnx',fp16:'model_fp16.onnx',fp32:'model.onnx'};
+const llmUrls=dt=>{const H='https://huggingface.co/'+LLM.model+'/resolve/main/';return ['config.json','generation_config.json','tokenizer.json','tokenizer_config.json',...(LLM_FILE[dt]?['onnx/'+LLM_FILE[dt]]:[])].map(f=>H+f)};
+/* returns true if anything had to be downloaded; a half-finished download is never stored, so a dropped connection just starts that file again */
+async function llmPrecache(dt,onP){let C;try{C=await caches.open('dure-models')}catch(e){return false}
+  const need=[];for(const u of llmUrls(dt))if(!(await C.match(u)))need.push(u);if(!need.length)return false;
+  const got={},tot={},upd=()=>{const a=Object.values(got).reduce((x,y)=>x+y,0),b=Object.values(tot).reduce((x,y)=>x+y,0);if(b)onP(Math.min(1,a/b))};
+  for(const u of need){const r=await fetch(u);if(!r.ok)throw new Error('download failed ('+r.status+')');
+    tot[u]=+r.headers.get('content-length')||0;got[u]=0;
+    if(r.body&&typeof TransformStream==='function'){try{
+      const body=r.body.pipeThrough(new TransformStream({transform(ch,ctl){got[u]+=ch.byteLength;upd();ctl.enqueue(ch)}}));
+      await C.put(u,new Response(body,{status:200,headers:r.headers}));continue}catch(e){if(e&&e.name==='QuotaExceededError')throw e;console.warn('streamed cache write failed, retrying plainly',e)}}
+    const r2=await fetch(u);if(r2.ok)await C.put(u,r2)}
+  return true}
 async function llmLoad(){
   if(LLM.st==='loading'||LLM.st==='ready')return;
   LLM.st='loading';LLM.p=0;LLM.err=null;llmSync();
@@ -1241,8 +1254,12 @@ async function llmLoad(){
     if(self.crossOriginIsolated&&T.env.backends&&T.env.backends.onnx&&T.env.backends.onnx.wasm)T.env.backends.onnx.wasm.numThreads=PHONEISH?1:Math.min(8,navigator.hardwareConcurrency||4);
     let dev='wasm';try{if(navigator.gpu&&!PHONEISH){const ad=await navigator.gpu.requestAdapter();if(ad&&ad.features&&ad.features.has('shader-f16'))dev='webgpu'}}catch(e){}   // WebGPU only with f16 support, otherwise WebAssembly
     const dt=QS.get('llmdtype')||(dev==='webgpu'?'q4f16':'q8');LLM.device=dev;LLM.dtype=dt;
-    const files={};
-    LLM.gen=await T.pipeline('text-generation',LLM.model,{dtype:dt,device:dev,progress_callback:x=>{if(x.status==='progress'&&x.total){files[x.file]=[x.loaded,x.total];const a=Object.values(files).reduce((s,v)=>[s[0]+v[0],s[1]+v[1]],[0,0]);LLM.p=a[1]?a[0]/a[1]*100:0;llmSync()}}});
+    try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}   // ask the browser to keep the model between visits
+    /* download once into the 'dure-models' cache, streamed straight to storage (no second copy in memory, so phones and iPads can keep it too);
+       every later visit or refresh reads it from the cache and nothing is downloaded again */
+    let dl=false;try{dl=await llmPrecache(dt,v=>{LLM.p=v*85;llmSync()});LLM.cached=true}catch(e){console.warn('small AI: could not keep a copy on this device, loading without it',e);dl=false}   // no storage room: still works, just downloads again next time
+    const files={},base0=dl?85:0,span=100-base0;
+    LLM.gen=await T.pipeline('text-generation',LLM.model,{dtype:dt,device:dev,progress_callback:x=>{if(x.status==='progress'&&x.total){files[x.file]=[x.loaded,x.total];const a=Object.values(files).reduce((s,v)=>[s[0]+v[0],s[1]+v[1]],[0,0]);LLM.p=base0+(a[1]?a[0]/a[1]*span:0);llmSync()}}});
     if(!PHONEISH){try{await llmIntent('is today a good day to sell?')}catch(e){console.warn('warm-up',e)}}   // phones skip the warm-up run: one less memory peak   // warm-up with the real prompt: compile kernels once
     LLM.st='ready';if(mk)lg(mk.t,`Small AI chat ready on this device (Qwen2.5-0.5B, ${dt}, ${dev})`,'','k-me');
   }catch(e){LLM.st='failed';LLM.err=(e&&e.message||String(e)).slice(0,120);console.warn('small AI chat could not load',e)}
@@ -2520,7 +2537,7 @@ async function start(s){
   /* the cache check runs beside the story, never in front of it; phones never start the 500 MB model by themselves (the pill loads it on tap) */
   (async()=>{let have=false;try{if('caches' in self){const c=await caches.open('dure-models');const base='https://huggingface.co/'+LLM.model+'/resolve/main/onnx/';have=!!(await c.match(base+'model_q4f16.onnx')||await c.match(base+'model_quantized.onnx'))}}catch(e){}
     LLM.cached=have;llmSync();
-    if(QS.get('llm')==='1'||(QS.get('llm')!=='0'&&!PHONEISH&&!(navigator.connection&&navigator.connection.saveData&&!have)))llmLoad()})();
+    if(QS.get('llm')==='1'||(QS.get('llm')!=='0'&&have)||(QS.get('llm')!=='0'&&!PHONEISH&&!(navigator.connection&&navigator.connection.saveData&&!have)))llmLoad()})();
   if(DURE_API)fetch(DURE_API+'/health').catch(()=>{});
   setTimeout(llmHintShow,document.body.classList.contains('mob')?2900:1200);
   const q=new URLSearchParams(location.search);const seed=+(q.get('seed')||0)||Math.floor(Math.random()*9e4)+1e4;
