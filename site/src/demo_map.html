@@ -2659,7 +2659,8 @@ const hide=()=>{auto=null;if(land())return;open=null;sh.classList.remove('open')
 window.mOpen=show;window.mClose=hide;
 let dropping=false;{const _pd=window.playDrop;if(typeof _pd==='function')window.playDrop=async(...a)=>{dropping=true;hide();try{return await _pd(...a)}finally{dropping=false}}}
 dock.querySelectorAll('.mbtns button').forEach(b=>b.onclick=()=>show(b.dataset.p));
-sh.querySelectorAll('.mseg button').forEach(b=>b.onclick=()=>show(b.dataset.p));
+sh.querySelectorAll('.mseg button').forEach(b=>b.onclick=()=>{if(open===b.dataset.p&&sh.classList.contains('open')&&!land())userHide();else show(b.dataset.p)});   // tapping the tab that is already open folds the sheet away, like the status bar
+{const g=sh.querySelector('.grab');if(g)g.addEventListener('click',()=>{if(sh.classList.contains('open')&&!land())userHide()})}
 const userHide=()=>{if(typeof mk!=='undefined'&&mk&&mk.phase==='auction')userClosedAuc=true;hide()};$('mBack').onclick=userHide;dim.onclick=userHide;$('mNew').onclick=userHide;
 $('mSkip').onclick=()=>{const b=$('skipbar');if(b)b.click()};
 /* the sheet moves under the finger, like the status-bar shade: drag its header down to put it away,
