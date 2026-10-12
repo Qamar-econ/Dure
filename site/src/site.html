@@ -28,6 +28,7 @@ body{font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif;-webkit-font-
 
 .bar{position:fixed;inset:0 0 auto 0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:24px 36px;pointer-events:none}
 .bar svg{display:block;height:34px;width:auto;overflow:visible}
+.totop{display:block;pointer-events:auto;cursor:pointer;border-radius:6px}.bar:not(.show) .totop{pointer-events:none}   /* the logo takes you back to the top */
 .chap{font-family:Newsreader,serif;font-style:italic;font-size:19px;color:var(--ink-2)}
 .chap b{font-style:normal;font-weight:600;color:var(--ink);margin-right:10px}
 .progress{position:fixed;left:0;right:0;top:0;height:2px;background:rgba(31,58,64,.14);z-index:30}
@@ -595,7 +596,7 @@ p,li,small,blockquote,cite,.k,.principle p{text-wrap:pretty}
 
 <div id="taisDefs"></div><svg id="sharedDefs" width="0" height="0" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><defs></defs></svg>
 <header class="bar">
-  <svg viewBox="-2 0 336 130" aria-label="Dure."><text x="0" y="104" font-family="Newsreader" font-size="130" font-weight="680" letter-spacing="-5.8" fill="#1F3A40" style="font-variation-settings:'opsz' 72">Dure</text><g transform="translate(316 89)"><g transform="rotate(-28)"><ellipse rx="11.5" ry="15" fill="#6B4226"/><ellipse cx="-3.6" cy="-4.5" rx="4" ry="6.4" fill="#8F5E38" opacity=".55"/><path d="M0.6 -13.6 C -5.2 -7.4 5.2 -1.6 0 4 C -4.2 8.4 1.2 11.2 0.2 13.8" stroke="#2B180C" stroke-width="2.3" fill="none" stroke-linecap="round"/></g></g></svg>
+  <a href="#" class="totop" id="totop" aria-label="Dure, back to top"><svg viewBox="-2 0 336 130" aria-label="Dure."><text x="0" y="104" font-family="Newsreader" font-size="130" font-weight="680" letter-spacing="-5.8" fill="#1F3A40" style="font-variation-settings:'opsz' 72">Dure</text><g transform="translate(316 89)"><g transform="rotate(-28)"><ellipse rx="11.5" ry="15" fill="#6B4226"/><ellipse cx="-3.6" cy="-4.5" rx="4" ry="6.4" fill="#8F5E38" opacity=".55"/><path d="M0.6 -13.6 C -5.2 -7.4 5.2 -1.6 0 4 C -4.2 8.4 1.2 11.2 0.2 13.8" stroke="#2B180C" stroke-width="2.3" fill="none" stroke-linecap="round"/></g></g></svg></a>
   <div class="barr"><div class="chap label-i" id="chap"><b>1</b>The field</div><nav class="qlinks" aria-label="Sections"><a href="#how" data-go="7">How it works</a><a href="#wai" data-go="8">Tech</a><a href="#close" data-go="end">Contact</a><a class="qdemo" href="demo.html" target="_blank" rel="noopener">Try the demo <span aria-hidden="true">→</span></a></nav></div>
 </header>
 <div class="progress"><span id="prog"></span></div>
@@ -2151,6 +2152,7 @@ function goScene(k){const n=SCN[k];const S=SEC[n.s];if(S.el.classList.contains('
 $('menu').innerHTML=CH.map((c,i)=>`<button data-i="${i}"><b>${c[0]}</b>${c[1]}</button>`).join('');
 $('chap').onclick=e=>{e.stopPropagation();{const r=$('chap').getBoundingClientRect();$('menu').style.right=Math.max(12,innerWidth-r.right-12)+'px';$('menu').style.top=(r.bottom+10)+'px'}$('menu').classList.toggle('on');[...$('menu').children].forEach((b,i)=>b.classList.toggle('cur',i===SCN[cur].c));};
 function goCh(i){if(i==='end'){$('close').scrollIntoView({behavior:'smooth'});return}if(CH[i][2]){$(CH[i][2]).scrollIntoView({behavior:'smooth'});return;}const k=SCN.findIndex(x=>x.c===i);const n=SCN[k];scrollTo({top:SEC[n.s].el.offsetTop+n.o*innerHeight/100,behavior:'smooth'});}
+$('totop').addEventListener('click',e=>{e.preventDefault();$('menu').classList.remove('on');if(window.__lenis)window.__lenis.scrollTo(0,{duration:1.4});else scrollTo({top:0,behavior:'smooth'})});
 $('menu').onclick=e=>{const b=e.target.closest('button');if(!b)return;$('menu').classList.remove('on');goCh(+b.dataset.i)};
 document.querySelectorAll('[data-go]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const g=a.dataset.go;goCh(g==='end'?'end':+g)}));
 addEventListener('click',e=>{if(!e.target.closest('#menu'))$('menu').classList.remove('on')});
