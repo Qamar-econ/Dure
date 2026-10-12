@@ -51,6 +51,8 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webki
 
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%;background:var(--ivory);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif}
+html,body{overflow-x:clip;max-width:100%}   /* never a sideways scrollbar */
+@media (min-width:1101px){html:has(#stage.on),html:has(#stage.on) body{overflow:hidden;height:100%}}   /* desktop dashboard is one screen: no page scrollbars */
 body{position:relative}
 body>*{position:relative;z-index:1}
 a{color:inherit}
@@ -1090,7 +1092,7 @@ function fitPhone(){const tp=document.querySelector('.top');if(tp)document.docum
     p.style.transform='';const sc_=p.querySelector('.scr'),need=sc_.offsetTop+sc_.offsetHeight+70,av=innerHeight-(tp?tp.offsetHeight:56)-(($('mDock')||{}).offsetHeight||0)-6;
     const LND=document.body.classList.contains('land'),cw=($('phoneWrap').parentElement||{}).clientWidth||innerWidth,k=LND?Math.min(cw*.9/p.offsetWidth,(av-24)/p.offsetHeight):Math.min(Math.min(cw,innerWidth)*(document.body.classList.contains('land')?.9:.96)/p.offsetWidth,av/need,innerWidth>760?1.7:9);p.style.transform=`scale(${k.toFixed(3)})`;p.style.transformOrigin=LND?'center center':'top center';$('phoneWrap').style.height=av+'px';$('phoneWrap').style.width='';$('phoneWrap').style.overflow='hidden';return}
   p.style.transform='';const h=p.offsetHeight,avail=innerWidth>1100?innerHeight-(tp?tp.offsetHeight:56)-22:document.body.classList.contains('mob')?innerHeight-(tp?tp.offsetHeight:56)-(($('mDock')||{}).offsetHeight||0)-10:innerHeight-80;
-  const sc=Math.max(.55,Math.min(1,avail/h));p.style.transform=sc<1?`scale(${sc.toFixed(3)})`:'';p.style.transformOrigin='top center';$('phoneWrap').style.height=sc<1?(h*sc)+'px':'';$('phoneWrap').style.width=sc<1?(p.offsetWidth*sc)+'px':''}
+  const sc=Math.max(.55,Math.min(1,avail/h));p.style.transform=sc<1?`scale(${sc.toFixed(3)})`:'';p.style.transformOrigin=sc<1?'top left':'top center';$('phoneWrap').style.height=sc<1?(h*sc)+'px':'';$('phoneWrap').style.width=sc<1?(p.offsetWidth*sc)+'px':''}
 addEventListener('resize',fitPhone);
 {let fq=0;const refit=()=>{if(fq)return;fq=requestAnimationFrame(()=>{fq=0;fitPhone()})};
  const ro=('ResizeObserver' in self)?new ResizeObserver(refit):null;
