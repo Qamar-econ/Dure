@@ -279,7 +279,7 @@ def qchart():
 
 
 def brief():
-    return ('<div class="nf nf-brief dk"><p class="kk">3 · Monday\'s brief</p><p class="dt">Mon 27 July · 06:00 · Letefoho pool</p>'
+    return ('<div class="nf nf-brief dk"><p class="kk">3 · AI brief</p><p class="dt">Mon 27 July · 06:00 · Letefoho pool</p>'
             '<h4>Lebudu: mould on 60% of photos after the rain</h4><p class="vs">against 3% in the other four villages</p>'
             '<ul><li>kg per offer down 35% since week 1</li><li>grade C share 10% → 70%</li><li>7 of 10 offers sat out last week</li></ul>'
             '<p class="rv2"><em>Not a diagnosis. For expert review:</em><b>an extension visit to Lebudu this week and a check on drying space</b></p>'
