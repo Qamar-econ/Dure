@@ -2250,10 +2250,14 @@ function photoSvgCard(x){
       <rect x="0" y="22" width="256" height="44" rx="8" fill="${verdict[2]}"/><text x="14" y="49" ${FT} font-size="14" font-weight="700" fill="${verdict[2]===GOLD?INK:'#F6EFE0'}">${verdict[0]}</text>${verdict[1]?`<text x="242" y="54" text-anchor="end" ${FT} font-size="27" font-weight="800" fill="${verdict[2]===GOLD?INK:'#F6EFE0'}">${verdict[1]}</text>`:''}
       <text x="0" y="88" ${FT} font-size="12" font-style="italic" fill="#BFD0CC">A person checks every sack at pickup.</text><text x="0" y="104" ${FT} font-size="12" font-style="italic" fill="#BFD0CC">That grade is the one paid.</text>
     </g></svg>`}
-let photoHold=0,photoShown=-1;
-function renderPhotoCard(){
-  const L_=mk.photoLog;const idx=L_.length-1;
-  if(idx>=0&&idx!==photoShown&&(performance.now()>photoHold||L_[idx].fid===0||photoShown===-1)){photoShown=idx;$('photoFig').innerHTML=photoSvgCard(L_[idx]);if(L_[idx].fid===0&&!L_[idx].seen){L_[idx].seen=true;photoHold=performance.now()+9000}}
+let photoHold=0,photoShown=-1,photoTick=0;
+const MY_PHOTO_MS=15000;   /* your own photo stays on the card until it has been on screen this long; neighbours' photos wait behind it */
+function renderPhotoCard(v){
+  const L_=mk.photoLog,now=performance.now();let idx=L_.length-1;
+  let mi=-1;for(let k=L_.length-1;k>=0;k--)if(L_[k].fid===0){mi=k;break}
+  if(mi>=0){const mine=L_[mi];if(v==='photo'&&photoShown===mi&&photoTick&&now-photoTick<1000)mine.viewMs=(mine.viewMs||0)+(now-photoTick);photoTick=v==='photo'?now:0;   // count only time the photo is actually visible
+    if((mine.viewMs||0)<MY_PHOTO_MS)idx=mi}
+  if(idx>=0&&idx!==photoShown&&(now>photoHold||L_[idx].fid===0||photoShown===-1)){photoShown=idx;$('photoFig').innerHTML=photoSvgCard(L_[idx]);if(L_[idx].fid===0&&!L_[idx].seen){L_[idx].seen=true;photoHold=now+9000}}
   if(idx<0&&photoShown!==-2){photoShown=-2;$('photoFig').innerHTML=`<div class="wait">Photos arrive by MMS a few minutes after each offer.</div>`}
   const n=L_.length,held=mk.stat.held,checked=inLot().filter(f=>f.handG&&!f.me),agree=checked.filter(f=>!f.aiWrong).length;
   $('photoMeta').innerHTML=`<span>${('Photos checked')} <b>${n}</b></span><span>${('Held for a person')} <b>${held}</b></span>${checked.length?`<span>${('Matched the hand check')} <b>${agree}/${checked.length}</b></span>`:''}<span data-tip="Neighbours' photos: simulated grader (about 87% right). Your photo: the real browser model.">${grStatusText().split(' · ')[0]} ⓘ</span>`;
@@ -2386,7 +2390,7 @@ function drawAll(now){
     if(v!==dashShown){dashShown=v;photoShown=-1;document.querySelectorAll('#dashCard .pane').forEach(p=>p.classList.toggle('on',p.dataset.v===v));if(v==='read')requestAnimationFrame(fitDash)}
     $('dtabs').querySelectorAll('button[data-v]').forEach(b=>{b.classList.toggle('on',b.dataset.v===v);b.classList.toggle('live',b.dataset.v===auto)});
 
-    if(seen){renderPhotoCard();if(v==='rep'&&!repLive&&repDirty){repDirty=false;renderRepBase()}if(v==='price')$('priceFig').innerHTML=priceSvg(now);if(v==='book')$('bookFig').innerHTML=mk.phase==='paid'?paySvg(now):bookSvg(now)}renderBarStrip()}
+    if(seen){renderPhotoCard(v);if(v==='rep'&&!repLive&&repDirty){repDirty=false;renderRepBase()}if(v==='price')$('priceFig').innerHTML=priceSvg(now);if(v==='book')$('bookFig').innerHTML=mk.phase==='paid'?paySvg(now):bookSvg(now)}renderBarStrip()}
 }
 
 addEventListener('resize',()=>{photoShown=-1});
