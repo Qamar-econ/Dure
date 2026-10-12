@@ -77,7 +77,7 @@ BENCH = (f'<p>Large models overlook Tetum. A small model plus a rules engine get
          '<p class="src"><b>Method.</b> 60 test SMS (44 Tetum, 16 English) written by Claude Sonnet and frozen before scoring. A text counts only if every field is right. Measured 4 Oct 2026.</p>')
 
 REGISTRY = ('<p class="lead">A farmer Registry is costly to keep by hand. Every Dure deal leaves a record, <b>so the Registry builds itself.</b></p>'
-            f'<div class="reg">{N.tabs([("1 · Trades", N.ledger()), ("2 · Analysis", N.qchart()), ("3 · Monday&#39;s brief", N.brief())], "The Registry")}</div>'
+            f'<div class="reg">{N.tabs([("1 · Trades", N.ledger()), ("2 · Data analysis", N.qchart()), ("3 · AI brief", N.brief())], "The Registry")}</div>'
             '<p><b>AI is not a silver bullet.</b> Noor knows farming better than Dure. Dure helps the extension officer make the most of two visits a year.</p>'
             '<a class="btn ghost" href="sheet.html">Open the sample Registry<span>→</span></a>'
             '<p class="src">Synthetic data for eight weeks in Letefoho.</p>')
@@ -106,7 +106,7 @@ PAGE = f'''<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#F2EADA">
-<title>Dure · Cooperate through messaging</title>
+<title>Dure — Cooperate through messaging</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=Libre+Franklin:wght@400;500;600;700&family=VT323&family=Gochi+Hand&display=swap" rel="stylesheet">
 <style>{CSS}</style>
@@ -155,11 +155,11 @@ PAGE = f'''<!doctype html>
 </section>
 <section class="txt" data-c="6" data-t="The catch">
   <p class="kick rv">The catch</p>
-  <h2 class="rv">Starting a cooperative in Timor-Leste is <em>not easy.</em></h2>
+  <h2 class="rv">Running a cooperative in Timor-Leste is <em>not easy.</em></h2>
   <dl class="costs">
     <div class="rv"><dt>3–4<small>years</small></dt><dd><b>Time.</b> Recruiting, then paperwork.</dd></div>
     <div class="rv"><dt>$1,000</dt><dd><b>Capital.</b> A coffee household earns about $250 a year.</dd></div>
-    <div class="rv pwr"><dt><em>power.</em><small>and then</small></dt><dd><b>Power.</b> Women like Noor are easily left out.</dd></div>
+    <div class="rv pwr"><dt><em>power.</em><small>and then</small></dt><dd><b>Power game.</b> Women farmers are easily left out.</dd></div>
   </dl>
   <p class="src rv">KOICA value-chain cooperative, Timor-Leste; Decree-Law No. 16/2004; The Irish Times, 2013.</p>
   <figure class="scene spl rv">{B.PART['split']}<figcaption>Joining stops being a choice. Whoever is left out <b>undercuts prices to sink it.</b></figcaption></figure>
@@ -174,7 +174,7 @@ PAGE = f'''<!doctype html>
   <div class="phoneNoor">
     <svg class="pn" viewBox="-86 -536 256 410" role="img" aria-label="Noor holding up her basic phone"><defs>{B.PART['tais']}</defs>
       {B.PART['fphone']}</svg>
-    <div class="pt"><p class="kick">Introducing</p><div class="dmark">{LOGO.replace('fill="#1F3A40"', 'fill="#F4EBDA"')}</div><h3>Cooperating through <em>messages.</em></h3></div>
+    <div class="pt"><p class="kick">Introducing</p><div class="dmark">{LOGO.replace('fill="#1F3A40"', 'fill="#F4EBDA"')}</div><h3>Cooperate through <em>messaging.</em></h3></div>
   </div>
   <div class="in">
     <div class="swtabs rv">{N.tabs([('What stays', STAYS), ('What goes', GOES)], 'What changes')}</div>

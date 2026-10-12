@@ -842,7 +842,7 @@ const SPEC={
   ['village','Village'],['week','Week','num'],['offers','Offers','num'],['kg_per_offer','kg per offer','num'],
   ['vs_week1','kg vs week 1','pctd',0,r=>`=D${r}/D(week 1)-1`],['insect','Insect damage %','pct'],['gradeC','Low grade (C) share %','pctf'],['mould','Black or mouldy beans %','pctf'],['drying','Uneven drying %','pct'],['debris','Debris %','pct'],
   ['sat_out','Not sold %','pct'],['ai_disagree','Photo ≠ hand check %','pct']]},
- brief:{label:'Daily brief'}
+ brief:{label:'AI brief'}
 };
 const ORDER=RUN?['brief','market','signals','register','trades','week']:['brief','market','signals','register','trades'];   // what Dure makes of the data first, then the raw records it is built from
 const RAW={register:1,trades:1,week:1};
@@ -1065,7 +1065,7 @@ function renderBrief(){
   const d=RUN?new Date((RUN.date||'2026-10-05')+'T06:00:00'):null;
   const date=RUN?`${DAYS[d.getDay()]} ${d.getDate()} ${MON[d.getMonth()]} ${d.getFullYear()} · week ${W}`:T.date;
   // --- Data (code)
-  let h=`<div class="doc wide"><div class="meta">${date} · Letefoho pool · for extension services and the Ministry of Agriculture</div><h2>Daily brief</h2>`;
+  let h=`<div class="doc wide"><div class="meta">${date} · Letefoho pool · for extension services and the Ministry of Agriculture</div><h2>AI brief</h2>`;
   if(RUN)h+=`<div class="runbar"><b>This week · from your demo.</b> Week ${W} (${fd(mL.date)}): ${mL.farms} offers, ${mL.none?'no sale':mL.farms_in+' sold'}, ${mL.bids} buyer${mL.bids===1?'':'s'} bidding.</div>`;
   h+=`<section class="sec data"><div class="sech"><h3>The numbers</h3></div>
    ${kpis()}
@@ -1128,7 +1128,7 @@ $('csv').onclick=()=>{const rows=tab==='brief'?briefLines():aoa(tab);const csv=r
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`dure-letefoho-${tab}.csv`;a.click()};
 $('xlsx').onclick=()=>{
   const run=()=>{const wb=XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(briefLines()),'Daily brief');
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(briefLines()),'AI brief');
     ORDER.filter(k=>k!=='brief').forEach(k=>XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(aoa(k)),SPEC[k].label));
     XLSX.writeFile(wb,'dure-letefoho-registry.xlsx');toast('Workbook downloaded: '+ORDER.length+' sheets')};
   if(window.XLSX)return run();
