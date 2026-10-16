@@ -75,7 +75,6 @@ a{color:inherit}
 .choice b{display:block;font-family:Fraunces,serif;font-size:21px}
 .choice span{font-size:14px;color:var(--ink-2)}
 .fine{margin-top:28px;font-family:Fraunces,serif;font-style:italic;font-size:14px;color:var(--ink-2)}
-#pick .ainote{margin-top:12px;font-size:13px;line-height:1.45;max-width:46ch;opacity:.85}
 /* ---------- stage ---------- */
 #stage{display:none;grid-template-columns:auto minmax(280px,420px);gap:48px;justify-content:center;align-items:start;padding:8px 24px 40px}
 #stage.on{display:grid}
@@ -670,8 +669,7 @@ body.mob .mp[data-p="dash"] .pane .figw{display:block;flex:none!important;height
     <button class="choice" data-skin="android"><svg viewBox="0 0 64 130"><rect x="2" y="2" width="60" height="126" rx="10" fill="#141A1E"/><rect x="6" y="8" width="52" height="114" rx="6" fill="#F5F3EF"/><rect x="10" y="30" width="30" height="10" rx="5" fill="#fff" stroke="#DDD"/><rect x="24" y="46" width="30" height="10" rx="5" fill="#D8ECCB"/><rect x="10" y="62" width="34" height="14" rx="5" fill="#fff" stroke="#DDD"/><circle cx="32" cy="12" r="1.6" fill="#141A1E"/></svg><b>Android phone</b><span>a cheap smartphone, plain SMS</span></button>
   </div>
   <p class="fine"><a href="?photo=1">Try the photo grader on its own →</a></p>
-  <p class="fine">Tetum or English. No app, plain SMS. Synthetic market · prices illustrative.</p>
-  <p class="fine ainote" id="aiNote" hidden>On phones and tablets, the Small AI runs a lightweight model trained by Dure (0.2 MB) instead of Qwen2.5-0.5B, so the browser never runs out of memory. For the full experience, open this demo on a computer.</p>
+  <p class="fine">Tetum or English, plain SMS, no app. A synthetic week: 16–26 neighbours and 4–6 buyers, new every run.<span id="aiNote" hidden> On phones and tablets a light Small AI built by Dure stands in for Qwen; for the full experience, use a computer.</span></p>
 </section>
 
 <section id="stage">
@@ -2790,7 +2788,7 @@ addEventListener('DOMContentLoaded',()=>{
   fitPhone();
   document.querySelectorAll('.badge.rule').forEach(b=>b.textContent=('rules'));
   $('lgTxt').textContent=('in the lot → church');
-  const fp=document.querySelector('#pick .fine');if(fp){const d=document.createElement('p');d.className='fine';d.style.marginTop='8px';d.textContent=('Around you, 16 to 26 neighbours and 4 to 6 buyers are simulated at random within realistic ranges. Every run is a different week.');fp.after(d)}
+  
   const q=new URLSearchParams(location.search).get('skin');if(q==='android'||q==='nokia')start(q);else if(QS.get('photo'))start('android');
 });
 $('undo').onclick=undo;$('rephone').onclick=()=>{location.href=location.pathname};
