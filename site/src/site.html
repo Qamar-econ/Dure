@@ -513,12 +513,13 @@ h1.hero .ln>span{white-space:nowrap}
 @media (max-width:760px){.lg-two{grid-template-columns:1fr}.lg-fig{overflow-x:auto}.lg-fig svg{min-width:780px}}
 .tbi{margin:8px 0 6px;border-top:2px solid var(--ink)}
 .tbi-r{display:grid;grid-template-columns:minmax(200px,250px) 1fr minmax(180px,260px);gap:18px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
-.tbi-l b{display:block;font-family:Newsreader,serif;font-size:20px;font-weight:600;color:var(--ink)}
-.tbi-l span{font-size:13.5px;color:var(--ink-2)}
+.tbi-l{display:flex;flex-direction:column;justify-content:center;padding-top:3px}   /* Newsreader sits high in its line box: nudge the block so the ink centres on the bar */
+.tbi-l b{display:block;font-family:Newsreader,serif;font-size:20px;font-weight:600;line-height:1.15;color:var(--ink)}
+.tbi-l span{display:block;font-size:13.5px;line-height:1.35;margin-top:3px;color:var(--ink-2)}
 .tbi-b{position:relative;height:30px;background:rgba(31,58,64,.07);border-radius:6px}
 .tbi-b i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:6px;background:#8FA3A6;transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
 .tbi.on .tbi-b i{width:var(--w)}
-.tbi-b em{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-style:normal;font-family:Newsreader,serif;font-weight:700;font-size:20px;color:var(--ink);opacity:0;transition:opacity .5s .7s}   /* the score sits inside its bar, on the left */
+.tbi-b em{position:absolute;left:12px;top:0;bottom:0;display:flex;align-items:center;padding-top:3px;line-height:1;font-style:normal;font-family:Newsreader,serif;font-weight:700;font-size:20px;color:var(--ink);opacity:0;transition:opacity .5s .7s}   /* the score sits inside its bar, on the left */
 .tbi.on .tbi-b em{opacity:1}
 .tbi-r.big .tbi-b em{color:#FBF7EE}
 .tbi-r.dim .tbi-b em{left:calc(var(--w) + 10px)}   /* too short a bar to hold it: just after the bar */
@@ -888,7 +889,7 @@ p,li,small,blockquote,cite,.k,.principle p{text-wrap:pretty}
     <div class="tbi-r"><div class="tbi-l"><b>Rules engine alone</b><span>no model, instant</span></div><div class="tbi-b"><i style="--w:70%"></i><em>70%</em></div><div class="tbi-m">works with no server · $0</div></div>
     <div class="tbi-r dim"><div class="tbi-l"><b>Untrained small model</b><span>Qwen2.5-0.5B, examples only</span></div><div class="tbi-b"><i style="--w:7%"></i><em style="--w:7%">7%</em></div><div class="tbi-m">why training matters</div></div>
   </div>
-  <p class="hy-foot rv"><b>Method.</b> 60 test SMS (44 Tetum, 16 English), written by Claude Sonnet, not by us, and frozen before any reader was scored. A text counts only if crop, quantity, grade, price and intent are all right. On 80 texts we wrote ourselves: rules engine 98%, with the small model 99%. Costs are API list prices: reading adds under 1% to the cost of sending the SMS. Measured 4 Oct 2026.</p>
+  <p class="hy-foot rv"><b>Method.</b> 60 test SMS (44 Tetum, 16 English), written by Claude Sonnet, not by us, and frozen before any reader was scored. A text counts only if crop, quantity, grade, price and intent are all right. On 80 texts we wrote ourselves: rules engine 98%, with the small model 99%. On phones and tablets the demo's Small AI is a separate 0.2 MB question-topic model trained by Dure (222 of 227 hand-written questions right); it is not part of this benchmark. Costs are API list prices: reading adds under 1% to the cost of sending the SMS. Measured 4 Oct 2026.</p>
 </div></section>
 
 <section class="flow" id="risks"><div class="fl-wrap">

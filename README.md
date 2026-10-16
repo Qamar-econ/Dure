@@ -39,7 +39,7 @@ Demo prices are synthetic: grade B ≈ $2.45/kg, A ≈ $2.77, C ≈ $1.86 (the r
 | Morning price, suggestion, opening price, reputation, two pools | Algorithms on pre-accumulated synthetic records in the demo | In the browser |
 | Pooling, auction, floor, escrow, payout, Registry | Ordinary software (must be predictable and auditable) | In the browser (simulated) |
 
-On phones and tablets the 500 MB Qwen model does not fit in a browser tab's memory, so there the question topic is picked by a light multilingual sentence model (paraphrase-multilingual-MiniLM-L12-v2, int8, ~120 MB) that compares the question with example questions per topic; the reply is composed from live market data in the same way.
+On phones and tablets the 500 MB Qwen model does not fit in a browser tab's memory, so there the Small AI is Dure's own question-topic model (`ai/intent`): a fastText-style classifier (hashed word and character n-grams, 32-d averaged embedding, 8 topics) trained in numpy on 4,480 synthetic questions in English, Tetum, Indonesian and Portuguese, exported as int8 (`site/src/assets/intent.json`, 0.2 MB gzipped, < 1 ms per question). It gets 222 of 227 hand-written test questions right (`ai/intent/test*.json`). On computers it also cross-checks Qwen's pick. Either way the reply answers the exact question (sell or keep, why the price moved, outlook, buyers, weather and road, quality, pool) from the live simulated market; every number comes from the simulation. Retrain: `cd ai/intent && python3 gen.py && python3 train.py`.
 
 Both on-device models are pre-downloaded in the background while the story page is read (Cache Storage), so the demo starts instantly. The site is served with cross-origin isolation headers so WebAssembly can use several threads.
 
