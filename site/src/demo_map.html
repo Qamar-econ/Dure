@@ -1208,28 +1208,34 @@ const engName=()=>engine.name==='chat'?`small AI (on this device) · ${(engine.m
 /* =====================================================================
    On-device small AI chat (opt-in). Stock Qwen2.5-0.5B-Instruct, ONNX build from
    onnx-community on Hugging Face, run by transformers.js in THIS browser (WebGPU if
-   available, otherwise WebAssembly). Downloaded once (~500 MB), then cached by the browser.
+   available, otherwise WebAssembly). Downloaded once (~500 MB on computers, ~120 MB light model on phones and tablets), then cached by the browser.
    The rules engine still handles every offer, yes/no and the five question topics;
    only messages it can't place come here. Every reply is checked in JS: numbers must
    come from the grounding context, no promises, ≤320 chars; otherwise a checked template.
    ===================================================================== */
 const PHONEISH=matchMedia('(max-width:760px)').matches||matchMedia('(pointer:coarse)').matches;
 const LLM={cached:false,st:'off',p:0,err:null,gen:null,dtype:null,device:null,model:'onnx-community/Qwen2.5-0.5B-Instruct',lib:'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.5'};
-function llmLabel(){return LLM.st==='ready'?'Small AI chat: on ✓':LLM.st==='loading'?`Small AI: loading ${Math.round(LLM.p)}%`:LLM.st==='failed'?'Small AI: failed':PHONEISH&&!LLM.cached?'Small AI: tap to load (500 MB)':'Small AI chat: off'}
+/* Phones and tablets cannot hold the 500 MB Qwen model: reading it into memory and building the WebAssembly session needs
+   well over 1 GB at once, and iOS / Android close the tab. The Small AI's only job here is to pick the topic of an
+   off-script question (one of eight), so phones and tablets use a light multilingual sentence model (~120 MB) that
+   compares the question with example questions for each topic. Computers keep Qwen2.5-0.5B. ?llmmodel=qwen forces Qwen. */
+LLM.light=PHONEISH&&QS.get('llmmodel')!=='qwen';
+if(LLM.light){LLM.model='Xenova/paraphrase-multilingual-MiniLM-L12-v2';LLM.size='120 MB';LLM.name='MiniLM-L12 multilingual'}else{LLM.size='500 MB';LLM.name='Qwen2.5-0.5B'}
+function llmLabel(){return LLM.st==='ready'?'Small AI chat: on ✓':LLM.st==='loading'?`Small AI: loading ${Math.round(LLM.p)}%`:LLM.st==='failed'?'Small AI: failed':PHONEISH&&!LLM.cached?`Small AI: tap to load (${LLM.size})`:'Small AI chat: off'}
 function llmSync(){const b=$('llmBtn');if(!b)return;b.textContent=llmLabel();b.classList.toggle('on',LLM.st==='ready');b.classList.toggle('busy',LLM.st==='loading');b.classList.toggle('bad',LLM.st==='failed');b.classList.toggle('idle',LLM.st!=='ready'&&LLM.st!=='loading');
-  if(LLM.st==='ready'||LLM.st==='failed')b.dataset.tip=LLM.st==='ready'?`Qwen2.5-0.5B-Instruct · ${LLM.dtype} · ${LLM.device} · on this device. Click to turn off.`:`Could not load: ${LLM.err}. Click to retry.`;else delete b.dataset.tip;   /* while off, the hint bubble says it all */
+  if(LLM.st==='ready'||LLM.st==='failed')b.dataset.tip=LLM.st==='ready'?`${LLM.name} · ${LLM.dtype} · ${LLM.device} · on this device. Click to turn off.`:`Could not load: ${LLM.err}. Click to retry.`;else delete b.dataset.tip;   /* while off, the hint bubble says it all */
   if(LLM.st!=='idle'&&LLM.st!==undefined&&LLM.st!=='off'&&window.llmHintClose)window.llmHintClose()}
 function llmHintShow(){const b=$('llmBtn');if(!b||LLM.st==='ready'||LLM.st==='loading'||$('llmHint'))return;{const sh=$('shade');if(sh&&sh.classList.contains('open')){setTimeout(llmHintShow,700);return}}   // wait until the status panel has folded away
   try{if(sessionStorage.getItem('dure-llm-hint'))return}catch(e){}
   const h=document.createElement('div');h.id='llmHint';h.setAttribute('role','note');
-  h.innerHTML='<b>Want to ask the Small AI?</b> Tap this button to turn on the chat.<small>A one-time download of about 500 MB; it then runs on your device.</small><button type="button" aria-label="Close">✕</button>';
+  h.innerHTML='<b>Want to ask the Small AI?</b> Tap this button to turn on the chat.<small>A one-time download of about '+LLM.size+'; it then runs on your device.</small><button type="button" aria-label="Close">✕</button>';
   document.body.appendChild(h);
   const place=()=>{const r=b.getBoundingClientRect();if(!r.width){h.classList.remove('on');return}const w=h.offsetWidth,x=Math.max(12,Math.min(innerWidth-w-12,r.left+r.width/2-w/2));h.style.left=x+'px';h.style.top=(r.bottom+10)+'px';h.style.setProperty('--ax',(r.left+r.width/2-x)+'px');h.classList.add('on')};
   place();const iv=setInterval(place,400);addEventListener('resize',place);
   window.llmHintClose=()=>{clearInterval(iv);removeEventListener('resize',place);h.classList.remove('on');setTimeout(()=>h.remove(),300);window.llmHintClose=null;try{sessionStorage.setItem('dure-llm-hint','1')}catch(e){}};
   h.querySelector('button').onclick=e=>{e.stopPropagation();window.llmHintClose()};setTimeout(()=>window.llmHintClose&&window.llmHintClose(),14000);b.addEventListener('click',()=>window.llmHintClose&&window.llmHintClose(),{once:true})}
 const LLM_FILE={q4f16:'model_q4f16.onnx',q8:'model_quantized.onnx',int8:'model_int8.onnx',uint8:'model_uint8.onnx',q4:'model_q4.onnx',bnb4:'model_bnb4.onnx',fp16:'model_fp16.onnx',fp32:'model.onnx'};
-const llmUrls=dt=>{const H='https://huggingface.co/'+LLM.model+'/resolve/main/';return ['config.json','generation_config.json','tokenizer.json','tokenizer_config.json',...(LLM_FILE[dt]?['onnx/'+LLM_FILE[dt]]:[])].map(f=>H+f)};
+const llmUrls=dt=>{const H='https://huggingface.co/'+LLM.model+'/resolve/main/';return [...(LLM.light?['config.json','tokenizer.json','tokenizer_config.json']:['config.json','generation_config.json','tokenizer.json','tokenizer_config.json']),...(LLM_FILE[dt]?['onnx/'+LLM_FILE[dt]]:[])].map(f=>H+f)};
 /* returns true if anything had to be downloaded; a half-finished download is never stored, so a dropped connection just starts that file again */
 async function llmPrecache(dt,onP){let C;try{C=await caches.open('dure-models')}catch(e){return false}
   const need=[];for(const u of llmUrls(dt))if(!(await C.match(u)))need.push(u);if(!need.length)return false;
@@ -1241,30 +1247,47 @@ async function llmPrecache(dt,onP){let C;try{C=await caches.open('dure-models')}
       await C.put(u,new Response(body,{status:200,headers:r.headers}));continue}catch(e){if(e&&e.name==='QuotaExceededError')throw e;console.warn('streamed cache write failed, retrying plainly',e)}}
     const r2=await fetch(u);if(r2.ok)await C.put(u,r2)}
   return true}
+const LLM_GUARD='dure-llm-loading';   // set while a model is being built; still set on the next visit means the tab died
 async function llmLoad(){
   if(LLM.st==='loading'||LLM.st==='ready')return;
   LLM.st='loading';LLM.p=0;LLM.err=null;llmSync();
+  try{localStorage.setItem(LLM_GUARD,String(Date.now()))}catch(e){}
   try{
+    if(!LLM.light&&PHONEISH&&navigator.deviceMemory&&navigator.deviceMemory<4)throw new Error('this phone has too little memory; try it on a computer');
     const T=await import(LLM.lib);T.env.allowLocalModels=false;
-    /* the story page pre-downloads the model into this cache, so the demo usually starts instantly */
-    /* phones: a 500 MB model held twice (download + cache copy) or run on the phone's GPU can make the browser kill the tab.
-       So on phones: read from the cache but never write a second copy, one WebAssembly thread, no WebGPU, and stop politely on low-memory phones */
-    if(PHONEISH&&navigator.deviceMemory&&navigator.deviceMemory<4)throw new Error('this phone has too little memory; try it on a computer');
-    try{const C=await caches.open('dure-models');T.env.useCustomCache=true;T.env.customCache={match:k=>C.match(typeof k==='string'?k:k.url),put:PHONEISH?(()=>Promise.resolve()):((k,r)=>C.put(typeof k==='string'?k:k.url,r).catch(()=>{}))}}catch(e){}
-    if(self.crossOriginIsolated&&T.env.backends&&T.env.backends.onnx&&T.env.backends.onnx.wasm)T.env.backends.onnx.wasm.numThreads=PHONEISH?1:Math.min(8,navigator.hardwareConcurrency||4);
-    let dev='wasm';try{if(navigator.gpu&&!PHONEISH){const ad=await navigator.gpu.requestAdapter();if(ad&&ad.features&&ad.features.has('shader-f16'))dev='webgpu'}}catch(e){}   // WebGPU only with f16 support, otherwise WebAssembly
+    /* the cache is read by the loader; writing is done once, streamed, by llmPrecache (never a second copy in memory) */
+    try{const C=await caches.open('dure-models');T.env.useCustomCache=true;T.env.customCache={match:k=>C.match(typeof k==='string'?k:k.url),put:()=>Promise.resolve()}}catch(e){}
+    if(T.env.backends&&T.env.backends.onnx&&T.env.backends.onnx.wasm){const w=T.env.backends.onnx.wasm;w.numThreads=self.crossOriginIsolated&&!PHONEISH?Math.min(8,navigator.hardwareConcurrency||4):1}
+    let dev='wasm';try{if(navigator.gpu&&!PHONEISH){const ad=await navigator.gpu.requestAdapter();if(ad&&ad.features&&ad.features.has('shader-f16'))dev='webgpu'}}catch(e){}   // WebGPU only on computers with f16 support
     const dt=QS.get('llmdtype')||(dev==='webgpu'?'q4f16':'q8');LLM.device=dev;LLM.dtype=dt;
     try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}   // ask the browser to keep the model between visits
-    /* download once into the 'dure-models' cache, streamed straight to storage (no second copy in memory, so phones and iPads can keep it too);
-       every later visit or refresh reads it from the cache and nothing is downloaded again */
-    let dl=false;try{dl=await llmPrecache(dt,v=>{LLM.p=v*85;llmSync()});LLM.cached=true}catch(e){console.warn('small AI: could not keep a copy on this device, loading without it',e);dl=false}   // no storage room: still works, just downloads again next time
+    let dl=false;try{dl=await llmPrecache(dt,v=>{LLM.p=v*85;llmSync()});LLM.cached=true}catch(e){console.warn('small AI: could not keep a copy on this device, loading without it',e);dl=false}
     const files={},base0=dl?85:0,span=100-base0;
-    LLM.gen=await T.pipeline('text-generation',LLM.model,{dtype:dt,device:dev,progress_callback:x=>{if(x.status==='progress'&&x.total){files[x.file]=[x.loaded,x.total];const a=Object.values(files).reduce((s,v)=>[s[0]+v[0],s[1]+v[1]],[0,0]);LLM.p=base0+(a[1]?a[0]/a[1]*span:0);llmSync()}}});
-    if(!PHONEISH){try{await llmIntent('is today a good day to sell?')}catch(e){console.warn('warm-up',e)}}   // phones skip the warm-up run: one less memory peak   // warm-up with the real prompt: compile kernels once
-    LLM.st='ready';if(mk)lg(mk.t,`Small AI chat ready on this device (Qwen2.5-0.5B, ${dt}, ${dev})`,'','k-me');
+    const prog=x=>{if(x.status==='progress'&&x.total){files[x.file]=[x.loaded,x.total];const a=Object.values(files).reduce((s,v)=>[s[0]+v[0],s[1]+v[1]],[0,0]);LLM.p=base0+(a[1]?a[0]/a[1]*span:0);llmSync()}};
+    if(LLM.light){
+      const emb=await T.pipeline('feature-extraction',LLM.model,{dtype:dt,device:'wasm',progress_callback:prog});
+      const keys=Object.keys(LIGHT_EX),all=[],tag=[];keys.forEach(k=>LIGHT_EX[k].forEach(t=>{all.push(t);tag.push(k)}));
+      const v=await emb(all,{pooling:'mean',normalize:true});const D=v.dims[1],E=[];for(let r=0;r<all.length;r++)E.push(v.data.subarray(r*D,(r+1)*D));
+      LLM.gen={emb,D,E,tag};
+    }else{
+      LLM.gen=await T.pipeline('text-generation',LLM.model,{dtype:dt,device:dev,progress_callback:prog});
+      if(!PHONEISH){try{await llmIntent('is today a good day to sell?')}catch(e){console.warn('warm-up',e)}}   // compile kernels once
+    }
+    LLM.st='ready';LLM.cached=true;if(mk)lg(mk.t,`Small AI chat ready on this device (${LLM.name}, ${dt}, ${LLM.light?'wasm':dev})`,'','k-me');
   }catch(e){LLM.st='failed';LLM.err=(e&&e.message||String(e)).slice(0,120);console.warn('small AI chat could not load',e)}
+  try{localStorage.removeItem(LLM_GUARD)}catch(e){}
   llmSync();dirty.all=true;
 }
+/* phones and tablets: example questions for each topic, in English, Tetum and a little Indonesian / Portuguese */
+const LIGHT_EX={
+  A:['is today a good day to sell?','should I sell now or wait?','sell today or next week?','is now a good time to sell my coffee','diak atu fa\'an ohin ka lae?','hau tenke fa\'an agora ka hein?','apakah hari ini bagus untuk menjual?'],
+  B:['why is the price so low?','why is the price high today?','what makes the price go down','tansa folin tun?','tansa mak folin a\'at?','kenapa harga murah?'],
+  C:['will the price go up next week?','what will the price be tomorrow?','is the price going to rise later','folin sei sae semana oin?','harga minggu depan naik?'],
+  D:['how many buyers are there?','who is buying this week?','which exporters are in the market','sosa-na\'in hira mak iha?','siapa pembelinya?'],
+  E:['is it going to rain?','is the road open?','is the Gleno road flooded?','udan ka lae ohin?','dalan loke ka?','apakah jalan banjir?'],
+  F:['how can I get a better grade?','why did my coffee get grade C?','how do I avoid mouldy beans','how should I dry my coffee','oinsá atu hetan grau A?','bagaimana kualitas kopi saya?'],
+  G:['how much coffee is in the pool?','when does the auction close?','when is the truck coming','pool iha kg hira ona?','lelaun remata tuku hira?'],
+  H:['hello how are you','what is your name','who are you','thank you','bondia','can you help me with my phone','obrigadu']};
 /* grounding: only facts from the live market and Noor's record */
 function llmContext(){const c=mk.cond,b=mk.bands,m=me(),H=mk.hist.slice(-4),S=morningStrategySeller(mk,m,'en').data,lot=inLot();
   const L=[`Today's price bands per kg: A $${b.A[0].toFixed(2)}-${b.A[1].toFixed(2)}, B $${b.B[0].toFixed(2)}-${b.B[1].toFixed(2)}, C $${b.C[0].toFixed(2)}-${b.C[1].toFixed(2)}.`,
@@ -1312,7 +1335,12 @@ H other`;
 /* one forward pass, no sampling: read the model's next-token scores for the letters A-H and take the best one.
    Always returns a valid letter, and costs a single step (fast even on a phone CPU). */
 const h2f=h=>{const s=h&0x8000?-1:1,e=(h>>10)&31,f=h&1023;return e===0?s*Math.pow(2,-14)*(f/1024):e===31?(f?NaN:s*Infinity):s*Math.pow(2,e-15)*(1+f/1024)};
-async function llmIntent(text){const {model,tokenizer}=LLM.gen;
+async function llmIntent(text){
+  if(LLM.light){const G=LLM.gen,v=(await G.emb(text,{pooling:'mean',normalize:true})).data,best={};
+    for(let r=0;r<G.E.length;r++){const e=G.E[r];let d=0;for(let i=0;i<G.D;i++)d+=v[i]*e[i];const k=G.tag[r];(best[k]=best[k]||[]).push(d)}
+    let top=null,ts=-1;for(const k in best){const a=best[k].sort((x,y)=>y-x),sc=(a[0]+(a[1]??a[0]))/2;if(sc>ts){ts=sc;top=k}}
+    return ts<0.42?'H':top}   // not close to any topic: 'other'
+  const {model,tokenizer}=LLM.gen;
   const prompt=tokenizer.apply_chat_template([{role:'system',content:INTENT_Q},{role:'user',content:text}],{tokenize:false,add_generation_prompt:true});
   if(!LLM.ids)LLM.ids='ABCDEFGH'.split('').map(c=>tokenizer.encode(c,{add_special_tokens:false})[0]);
   const keep=new Set(LLM.ids);
@@ -2550,8 +2578,11 @@ const STEP_SHORT=['Morning price','Your offer','Send photo','Pool','Auction','Pi
 async function start(s){
   /* Small AI: the story page pre-downloads it in the background. Load it automatically on computers, and on phones once it is already in the cache (nothing to download). */
   /* the cache check runs beside the story, never in front of it; phones never start the 500 MB model by themselves (the pill loads it on tap) */
-  (async()=>{let have=false;try{if('caches' in self){const c=await caches.open('dure-models');const base='https://huggingface.co/'+LLM.model+'/resolve/main/onnx/';have=!!(await c.match(base+'model_q4f16.onnx')||await c.match(base+'model_quantized.onnx'))}}catch(e){}
-    LLM.cached=have;llmSync();
+  (async()=>{let have=false;try{if('caches' in self){const c=await caches.open('dure-models');const u=llmUrls(LLM.light?'q8':'q8'),u16=LLM.light?null:llmUrls('q4f16');have=!!(await c.match(u[u.length-1])||(u16&&await c.match(u16[u16.length-1])))}}catch(e){}
+    LLM.cached=have;
+    let crashed=false;try{const g=+localStorage.getItem(LLM_GUARD);crashed=!!g&&Date.now()-g<7*864e5}catch(e){}
+    if(crashed){try{localStorage.removeItem(LLM_GUARD)}catch(e){}LLM.st='failed';LLM.err='the last load closed this tab; tap to try again';llmSync();return}   // never loop into the same crash
+    llmSync();
     if(QS.get('llm')==='1'||(QS.get('llm')!=='0'&&have)||(QS.get('llm')!=='0'&&!PHONEISH&&!(navigator.connection&&navigator.connection.saveData&&!have)))llmLoad()})();
   if(DURE_API)fetch(DURE_API+'/health').catch(()=>{});
   setTimeout(llmHintShow,document.body.classList.contains('mob')?2900:1200);
