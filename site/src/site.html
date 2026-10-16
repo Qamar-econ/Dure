@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light only"><style>:root{color-scheme:light only}</style>   <!-- the pages are designed light: browsers must not auto-darken them (Samsung Internet, Chrome "dark mode for web contents") -->
+<meta name="color-scheme" content="light dark"><style>:root{color-scheme:light dark}html{background:#F2EADA}input,textarea,select,button,iframe{color-scheme:light}</style>   <!-- we say we handle dark mode ourselves, so Samsung Internet and Chrome do not invert the page, its pictures and videos; every colour is set explicitly, so it stays as designed -->
 <script>/* phones and tablets get the phone and tablet edition; every PC keeps this animated version, whatever its window size.
    ?full=1 keeps this version on any device (the edition's footer links back here with it) */
 (function(){try{if(/[?&]full=1/.test(location.search))return;var n=navigator,u=n.userAgent||'';
