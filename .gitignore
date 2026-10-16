@@ -9,3 +9,5 @@ ai/photo/img/
 ai/coffee/*.gguf
 .env
 site/dist/
+ai/intent/__pycache__/
+ai/intent/train.jsonl

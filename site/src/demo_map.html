@@ -75,6 +75,7 @@ a{color:inherit}
 .choice b{display:block;font-family:Fraunces,serif;font-size:21px}
 .choice span{font-size:14px;color:var(--ink-2)}
 .fine{margin-top:28px;font-family:Fraunces,serif;font-style:italic;font-size:14px;color:var(--ink-2)}
+#pick .ainote{margin-top:12px;font-size:13px;line-height:1.45;max-width:46ch;opacity:.85}
 /* ---------- stage ---------- */
 #stage{display:none;grid-template-columns:auto minmax(280px,420px);gap:48px;justify-content:center;align-items:start;padding:8px 24px 40px}
 #stage.on{display:grid}
@@ -670,6 +671,7 @@ body.mob .mp[data-p="dash"] .pane .figw{display:block;flex:none!important;height
   </div>
   <p class="fine"><a href="?photo=1">Try the photo grader on its own →</a></p>
   <p class="fine">Tetum or English. No app, plain SMS. Synthetic market · prices illustrative.</p>
+  <p class="fine ainote" id="aiNote" hidden>On phones and tablets, the Small AI runs a lightweight model trained by Dure (0.2 MB) instead of Qwen2.5-0.5B, so the browser never runs out of memory. For the full experience, open this demo on a computer.</p>
 </section>
 
 <section id="stage">
@@ -988,7 +990,7 @@ const CHIPS={
   kg:[['40 kilu','TET','40 kg'],['40 kg','EN']],
   ask:[['minimu 2.75','TET','minimum $2.75'],['la importa','TET',"I don't mind"],['2.45','EN'],['when is pickup?','EN']],
   photo:[['folin ohin hira?','TET','what is the price today?'],['ohin diak atu fan ka lae?','TET','is today a good day to sell?'],['will it rain?','EN'],['why are there so few buyers this week?','EN']],
-  decide:[['sim, hau konkorda','TET','yes, I agree'],['lae, hein uluk','TET','no, I will wait'],['YES','EN'],['NO','EN']],
+  decide:[['sim, hau konkorda','TET','yes, I agree'],['lae, hein uluk','TET','no, I will wait']],
   wait:[['bainhira mak selu?','TET','when do I get paid?'],['oinsá atu hetan grau diak liu?','TET','how do I get a better grade?'],['where is pickup?','EN'],['how can I get a better grade next time?','EN']],
 };
 /* ===================================================================== */
@@ -1220,11 +1222,12 @@ const LLM={cached:false,st:'off',p:0,err:null,gen:null,dtype:null,device:null,mo
    well over 1 GB at once, and iOS / Android close the tab. The Small AI's only job here is to pick the topic of an
    off-script question (one of eight), so phones and tablets use a light multilingual sentence model (~120 MB) that
    compares the question with example questions for each topic. Computers keep Qwen2.5-0.5B. ?llmmodel=qwen forces Qwen. */
-LLM.light=PHONEISH&&QS.get('llmmodel')!=='qwen';
-if(LLM.light){LLM.model='Xenova/paraphrase-multilingual-MiniLM-L12-v2';LLM.size='120 MB';LLM.name='MiniLM-L12 multilingual'}else{LLM.size='500 MB';LLM.name='Qwen2.5-0.5B'}
+LLM.light=QS.get('llmmodel')==='minilm';LLM.dure=PHONEISH&&!['qwen','minilm'].includes(QS.get('llmmodel'));   // phones and tablets: Dure's own intent model (0.2 MB); computers: Qwen2.5-0.5B, cross-checked by Dure's model
+try{const n=document.getElementById('aiNote');if(n&&LLM.dure)n.hidden=false}catch(e){}
+if(LLM.dure){LLM.model='assets/intent.json';LLM.size='0.2 MB';LLM.name='Dure intent model'}else if(LLM.light){LLM.model='Xenova/paraphrase-multilingual-MiniLM-L12-v2';LLM.size='120 MB';LLM.name='MiniLM-L12 multilingual'}else{LLM.size='500 MB';LLM.name='Qwen2.5-0.5B'}
 function llmLabel(){return LLM.st==='ready'?'Small AI chat: on ✓':LLM.st==='loading'?`Small AI: loading ${Math.round(LLM.p)}%`:LLM.st==='failed'?'Small AI: failed':PHONEISH&&!LLM.cached?`Small AI: tap to load (${LLM.size})`:'Small AI chat: off'}
 function llmSync(){const b=$('llmBtn');if(!b)return;b.textContent=llmLabel();b.classList.toggle('on',LLM.st==='ready');b.classList.toggle('busy',LLM.st==='loading');b.classList.toggle('bad',LLM.st==='failed');b.classList.toggle('idle',LLM.st!=='ready'&&LLM.st!=='loading');
-  if(LLM.st==='ready'||LLM.st==='failed')b.dataset.tip=LLM.st==='ready'?`${LLM.name} · ${LLM.dtype} · ${LLM.device} · on this device. Click to turn off.`:`Could not load: ${LLM.err}. Click to retry.`;else delete b.dataset.tip;   /* while off, the hint bubble says it all */
+  if(LLM.st==='ready'||LLM.st==='failed')b.dataset.tip=LLM.st==='ready'?(LLM.dure?'Dure intent model · trained by Dure on 4,480 synthetic questions (EN, Tetum, ID, PT) · 222 of 227 hand-written test questions right · on this device. Click to turn off.':`${LLM.name} · ${LLM.dtype} · ${LLM.device} · on this device. Click to turn off.`):`Could not load: ${LLM.err}. Click to retry.`;else delete b.dataset.tip;   /* while off, the hint bubble says it all */
   if(LLM.st!=='idle'&&LLM.st!==undefined&&LLM.st!=='off'&&window.llmHintClose)window.llmHintClose()}
 function llmHintShow(){const b=$('llmBtn');if(!b||LLM.st==='ready'||LLM.st==='loading'||$('llmHint'))return;{const sh=$('shade');if(sh&&sh.classList.contains('open')){setTimeout(llmHintShow,700);return}}   // wait until the status panel has folded away
   try{if(sessionStorage.getItem('dure-llm-hint'))return}catch(e){}
@@ -1252,6 +1255,7 @@ const LLM_GUARD='dure-llm-loading';   // set while a model is being built; still
 async function llmLoad(){
   if(LLM.st==='loading'||LLM.st==='ready')return;
   LLM.st='loading';LLM.p=0;LLM.err=null;llmSync();
+  if(LLM.dure){try{await diLoad();LLM.gen={dure:true};LLM.st='ready';LLM.cached=true;LLM.dtype='int8';LLM.device='cpu'}catch(e){LLM.st='failed';LLM.err=(e&&e.message||String(e)).slice(0,120)}llmSync();dirty.all=true;return}
   try{localStorage.setItem(LLM_GUARD,String(Date.now()))}catch(e){}
   try{
     if(!LLM.light&&PHONEISH&&navigator.deviceMemory&&navigator.deviceMemory<4)throw new Error('this phone has too little memory; try it on a computer');
@@ -1379,21 +1383,135 @@ function intentReply(intent,tet){const b=mk.bands,c=mk.cond,m=me(),S=morningStra
     pool:`Pool iha ${kgf(kg)} kg husi ${kgf(mk.target)} kg, to'os ${lot.length}. Lelaun remata 17:00.`,
     other:null};
   return (tet?T:E)[intent]}
-async function chatOrFallback(text,p){
+/* =====================================================================
+   Dure intent model: the Small AI on every device. A fastText-style classifier trained by us
+   (ai/intent/train.py: hashed word + character n-grams -> 32-d averaged embedding -> 8 topics),
+   4,480 synthetic questions in English, Tetum, Indonesian and Portuguese; 222 of 227 hand-written
+   test questions right (ai/intent). int8 weights, 0.2 MB gzipped, loads instantly, runs in < 1 ms.
+   It reads WHAT she asks; smartReply() then answers that exact question from the live market.
+   ===================================================================== */
+const DI={m:null};
+const diMs=t=>{const a=performance.now();diPredict(t);return performance.now()-a};
+async function diLoad(){if(DI.m)return DI.m;const j=await (await fetch('assets/intent.json')).json();
+  const dec=s=>{const b=atob(s),a=new Int8Array(b.length);for(let i=0;i<b.length;i++)a[i]=(b.charCodeAt(i)<<24)>>24;return a};
+  DI.m={...j,E:dec(j.E),W:dec(j.W)};return DI.m}
+const diNorm=t=>t.toLowerCase().replace(/[’´]/g,"'").replace(/[^a-z0-9à-ÿ' ]+/g,' ').replace(/\s+/g,' ').trim();
+function diFnv(s){let h=0x811c9dc5;for(const ch of s){h=(h^ch.codePointAt(0))>>>0;h=Math.imul(h,0x01000193)>>>0}return h}
+function diFeats(t,B){const w=diNorm(t).split(' ').filter(Boolean),f=[];w.forEach(x=>f.push('w:'+x));for(let i=0;i+1<w.length;i++)f.push('b:'+w[i]+'_'+w[i+1]);
+  w.forEach(x=>{x='<'+x+'>';const cs=[...x];for(const n of [3,4,5])for(let i=0;i+n<=cs.length;i++)f.push('c:'+cs.slice(i,i+n).join(''))});
+  return f.length?f.map(s=>diFnv(s)%B):[0]}
+function diPredict(text){const M=DI.m;if(!M)return null;const {B,D,E,W,es,ws,b,labels}=M,L=labels.length,ids=diFeats(text,B),h=new Float32Array(D);
+  for(const r of ids)for(let d=0;d<D;d++)h[d]+=E[r*D+d];for(let d=0;d<D;d++)h[d]*=es/ids.length;
+  const z=b.slice();for(let d=0;d<D;d++)for(let l=0;l<L;l++)z[l]+=h[d]*W[d*L+l]*ws;
+  const mx=Math.max(...z),e=z.map(v=>Math.exp(v-mx)),s=e.reduce((x,y)=>x+y,0),p=e.map(v=>v/s);let k=0;p.forEach((v,i)=>{if(v>p[k])k=i});
+  return {intent:labels[k],conf:p[k],p}}
+if(typeof window!=='undefined')window.diPredict=diPredict;
+/* tomorrow and Thursday (pickup), from the market seed; separate stream, so the rest of the market is unchanged */
+function wxOutlook(c,seed){let h=(Math.imul(seed^0x5bd1e995,2654435761)>>>0)||7;const R=()=>{h^=h<<13;h>>>=0;h^=h>>>17;h^=h<<5;h>>>=0;return h/4294967296};
+  const t=c.rain==='dry'?(R()<.3?'showers':'dry'):c.rain==='showers'?(R()<.55?'dry':'showers'):(R()<.5?'showers':'heavy');
+  const th=t==='dry'?(R()<.2?'showers':'dry'):t==='showers'?(R()<.65?'dry':'showers'):(R()<.5?'showers':'dry');
+  return {tom:t,thu:th,eases:c.rain==='showers'&&t==='dry'?'this evening':c.rain==='heavy'&&t!=='heavy'?'overnight':null}}
+/* answers the question she actually asked, from the live market; every number comes from the simulation */
+function smartReply(intent,text,tet){
+  const q=text.toLowerCase(),b=mk.bands,c=mk.cond,S=morningStrategySeller(mk,me(),'en').data,g=offer.grade||photo||S.grade,tr=Math.round(((b[g][0]+b[g][1])/2/mk.last[g]-1)*100);
+  const f2=x=>'$'+x.toFixed(2),band=`${f2(b[g][0])}–${f2(b[g][1])}`,mid=(b[g][0]+b[g][1])/2,last=mk.last[g],avg=S.avg,nB=c.nB;
+  const prem=Math.round((c.shock-1)*100),base=Math.round((tr+100)/c.shock-100),lot=inLot(),kg=sumKg(lot),done=!!mk.res,wx=c.wx||wxOutlook(c,mk.seed);
+  const upE=x=>x>0?`up ${x}%`:x<0?`down ${-x}%`:'flat',upT=x=>x>0?`sae ${x}%`:x<0?`tun ${-x}%`:'hanesan';
+  const RAIN={dry:['dry','maran'],showers:['showers',"udan ki'ik"],heavy:['heavy rain','udan boot']},ROAD={open:['open','loke'],slow:['slow (mud)','neineik (rai-tahu)'],flooded:['flooded','taka (bee sa\'e)']};
+  const L=tet?1:0,J=a=>a.filter(Boolean).join(' ');
+  const has=re=>re.test(q);
+  if(intent==='sell'){
+    if(done)return tet?`Lelaun ohin remata ona: ${mk.res.none?'la fa\'an':'sai '+f2(mk.res.p)+'/kg'}. Pool tuir mai iha semana oin.`:`Today's auction has closed${mk.res.none?' with no sale':` at ${f2(mk.res.p)}/kg`}. The next pool opens next week.`;
+    const pro=[],con=[];
+    if(tr>0)pro.push(tet?`${g} ${upT(tr)} kompara semana kotuk (${f2(last)})`:`${g} is ${upE(tr)} on last week's ${f2(last)}`);
+    if(tr<0)con.push(tet?`folin ${upT(tr)} semana ne'e; bele sae fali, maibé ema ida la hatene`:`prices are ${upE(tr)} this week; they may recover, but nobody knows`);
+    if(mid>=avg+.02)pro.push(tet?`folin ohin aas liu ita-nia mediu ${f2(avg)}`:`today's band is above your recent average of ${f2(avg)}`);
+    else if(mid<avg-.02)con.push(tet?`folin ohin ki'ik liu ita-nia mediu ${f2(avg)}`:`today's band is below your recent average of ${f2(avg)}`);
+    if(prem>0)pro.push(tet?`kuaze ${prem}% husi folin ohin mai husi dalan ${ROAD[c.road][1]}; bainhira dalan loke, folin baibain tun`:`about ${prem}% of today's price is a bad-road premium that usually fades once the road reopens`);
+    if(c.rain!=='dry'||wx.tom!=='dry')pro.push(tet?`rai kafe iha tempu udan bele halo bolor no grau tun (A→B kuaze −11%)`:`keeping beans in wet weather risks mould and a lower grade (A→B is about −11%)`);
+    if(c.rain==='dry'&&wx.tom==='dry')con.push(tet?`tempu maran, entaun kafe bele rai loron balun la iha risku boot`:`the weather is dry, so beans keep safely for a few days`);
+    if(Math.abs(tr)<2)con.push(tet?`folin ${upT(tr)} kompara semana kotuk (${f2(last)}), la iha presa`:`the price is ${upE(tr)} on last week (${f2(last)}), so there is no rush`);
+    if(offer.ask!=null&&!offer.any&&offer.ask>b[g][1])con.push(tet?`ita-nia minimu ${f2(offer.ask)} aas liu folin ohin, bele la fa'an`:`your minimum ${f2(offer.ask)} is above today's band, so it may not sell anyway`);
+    const sc=pro.length-con.length,hold=has(/keep|hold|wait|store|few more days|next week|later|hein|rai |simpan|guardar|esperar|tunggu/);
+    const lean=tet?(sc>0?`Ho númeru ohin, fa'an semana ne'e di'ak liu duké hein.`:sc<0?`Ho númeru ohin, hein semana ida mós razoavel.`:`Besik hanesan; la iha razaun forte ba rua.`)
+      :(sc>0?`On today's numbers, selling this week looks stronger than ${hold?'keeping them':'waiting'}.`:sc<0?`On today's numbers, waiting a week is reasonable.`:`It's close; neither side is clearly better.`);
+    const cost=tet?`Se hein, ita lakon pool ohin (taka 17:00); pool tuir mai semana oin.`:`${hold?'Keeping them a few more days':'Waiting'} means missing today's pool (closes 17:00); the next one is next week.`;
+    const why=tet?J([pro.length?`Ba fa'an: ${pro.join('; ')}.`:'',con.length?`Ba hein: ${con.join('; ')}.`:''])
+      :J([pro.length?`For selling now: ${pro.join('; ')}.`:'',con.length?`For waiting: ${con.join('; ')}.`:'']);
+    return J([lean,why,cost,tet?'Ita mak deside.':'Your call.'])}
+  if(intent==='why'){
+    const asked=has(/jump|went up|go up|gone up|rise|rose|higher|high|up\b|sae|naik|subiu|alto/)?'up':has(/fell|fall|drop|down|lower|low|cheap|tun\b|turun|caiu|baixo|barato|a'at/)?'down':has(/barely|flat|same|moved|no change|hanesan|la muda|la sae|mesmo/)?'flat':null;
+    const act=tr>=2?'up':tr<=-2?'down':'flat';
+    const market=!asked&&has(/market|merkadu|pasar|mercado|how is|oins[aá]|going on|happening/);
+    const drivers=[];
+    drivers.push(tet?(base>0?`fa'an sira ikus iha distritu sae ${base}%`:base<0?`fa'an sira ikus iha distritu tun ${-base}%`:`merkadu lokál estavel`)
+                    :(base>0?`recent sales across the district are up ${base}%`:base<0?`recent sales across the district are down ${-base}%`:`the local market itself is steady`));
+    if(prem>0)drivers.push(tet?`dalan Gleno ${ROAD[c.road][1]}${c.rain==='heavy'?' no udan boot':''}: kafe menus, sosa-na'in ${nB} ne'ebé to'o selu kuaze ${prem}% liu`
+                              :`the Gleno road is ${ROAD[c.road][0]}${c.rain==='heavy'?' after heavy rain':''}: less coffee gets out, so the ${nB} buyers who made it pay about ${prem}% more`);
+    else drivers.push(tet?`dalan loke, la iha prémiu tempu`:`the road is open, so there is no weather premium this week`);
+    drivers.push(tet?(nB>=6?`sosa-na'in ${nB} kompete`:nB<=4?`sosa-na'in ${nB} de'it, kompetisaun menus`:`sosa-na'in ${nB}, kompetisaun normal`)
+                    :(nB>=6?`${nB} buyers competing`:nB<=4?`only ${nB} buyers, so less competition`:`${nB} buyers, normal competition`));
+    const fix=asked&&asked!==act?(tet?`Loloos, ${g} ${upT(tr)} semana ne'e. `:`Actually, ${g} is ${upE(tr)} this week. `):'';
+    if(market)return tet?`Semana ne'e ${g} ${band}, ${upT(tr)} kompara semana kotuk (${f2(last)}). ${drivers[0][0].toUpperCase()+drivers[0].slice(1)}; ${drivers[1]}; ${drivers[2]}. ${kg?`Pool: ${kgf(kg)} / ${kgf(mk.target)} kg`:'Pool foin loke'}, lelaun taka 17:00.`
+                        :`This week ${g} is ${band}, ${upE(tr)} on last week (${f2(last)}). ${drivers[0][0].toUpperCase()+drivers[0].slice(1)}; ${drivers[1]}; ${drivers[2]}. ${kg?`Pool: ${kgf(kg)} of ${kgf(mk.target)} kg`:'The pool has just opened'}, auction closes 17:00.`;
+    return tet?`${fix}${g} ${band} ohin, semana kotuk ${f2(last)} (${upT(tr)}). Kauza: ${drivers.join('; ')}.`
+              :`${fix}${g} is ${band} today vs ${f2(last)} last week (${upE(tr)}). Behind it: ${drivers.join('; ')}.`}
+  if(intent==='forecast'){
+    const H=mk.hist.map(w=>w.p/MULT[w.g]*MULT[g]),lo=Math.min(...H),hi=Math.max(...H);
+    const m1=prem>0?(tet?`Bainhira dalan Gleno loke fali, prémiu ${prem}% baibain lakon, entaun folin bele tun.`:`When the Gleno road reopens, the ~${prem}% bad-road premium usually fades, so prices tend to ease.`)
+                   :wx.tom==='heavy'?(tet?`Se udan boot kontinua no dalan taka, folin bele sae.`:`If heavy rain closes the road, prices usually firm up.`):'';
+    return J([tet?`Ema ida la hatene folin semana oin.`:`Nobody can know next week's price.`,
+      tet?`Semana ne'e ${g} ${upT(tr)}; semana 6 ikus, ${g} entre ${f2(lo)}–${f2(hi)}.`:`This week ${g} is ${upE(tr)}; over the last 6 weeks ${g} ranged ${f2(lo)}–${f2(hi)}.`,m1,tet?'Ita mak deside.':'Your call.'])}
+  if(intent==='buyers'){
+    const here=mk.buyers,miss=BUYER_CAST.filter(x=>!here.some(y=>y.id===x.id)),names=here.map(x=>`${x.n} (${x.loc})`).join(', ');
+    if(has(/few|so little|only|menus|sedikit|poucos/))return tet?`Sosa-na'in ${nB} semana ne'e. ${c.road!=='open'?`Dalan Gleno ${ROAD[c.road][1]}, entaun kamiaun husi Dili balun la mai`:`Sira balun la mai semana ne'e`}${miss.length?` (${miss.map(x=>x.n).join(', ')})`:''}. Sosa-na'in menus = kompetisaun menus.`
+      :`${nB} buyers this week. ${c.road!=='open'?`The Gleno road is ${ROAD[c.road][0]}, so some Dili trucks stayed away`:`Some regulars skipped this week`}${miss.length?` (${miss.map(x=>x.n).join(', ')})`:''}. Fewer buyers means less competition in the auction.`;
+    if(has(/most|best|highest|more|pays|barak liu|selu|paling|mais/)){const s=here.slice().sort((x,y)=>y.prem-x.prem);
+      return tet?`Baibain ${s[0].n} (${s[0].loc}) selu aas liu, liuliu ba grau ${s[0].pref}; ${s[s.length-1].n} ki'ik liu. Folin final sai husi lelaun 17:00.`
+        :`Usually the ${s[0].n} (${s[0].loc}) pays the most, especially for grade ${s[0].pref}; the ${s[s.length-1].n} the least. The final price comes from the 17:00 auction.`}
+    return tet?`Sosa-na'in ${nB} semana ne'e: ${names}. Oferta loke bainhira pool taka; lelaun remata 17:00.`:`${nB} buyers this week: ${names}. Bids open when the pool closes; the auction ends at 17:00.`}
+  if(intent==='weather'){
+    const road=has(/road|dalan|jalan|estrada|truck|kamiaun/);
+    const t0=tet?`Ohin ${RAIN[c.rain][1]}, dalan Gleno ${ROAD[c.road][1]}.`:`Today: ${RAIN[c.rain][0]}, Gleno road ${ROAD[c.road][0]}.`;
+    const out=tet?`Previzaun: aban ${RAIN[wx.tom][1]}, Kinta (foti kafe) ${RAIN[wx.thu][1]}.`:`Forecast: tomorrow ${RAIN[wx.tom][0]}, Thursday (pickup) ${RAIN[wx.thu][0]}.`;
+    const stop=has(/stop|end|clear|ease|para|hotu|berhenti|parar/)?(c.rain==='dry'?(tet?'Ohin la udan.':'It is not raining today.'):wx.eases?(tet?`Sim, udan sei para ${wx.eases==='this evening'?'kalan ne\'e':'kalan'}.`:`Yes, it should ease ${wx.eases}.`):(tet?`Seidauk; udan kontinua aban.`:`Not yet; rain continues tomorrow.`)):
+      has(/coming|will it rain|rain this week|sei udan|hujan/)?(wx.tom==='dry'&&wx.thu==='dry'?(tet?'Lae, maran to\'o Kinta.':'No, it looks dry through Thursday.'):(tet?'Sim, bele udan.':'Yes, some rain is likely.')):'';
+    const rd=road||c.road!=='open'?(c.road==='open'?(tet?'Kamiaun liu normal.':'Trucks get through normally.'):wx.tom==='dry'?(tet?'Dalan baibain loke fali loron ida depois udan para.':'The road usually reopens a day after the rain stops.'):(tet?`Aban dalan sei ${ROAD[c.road][1]}${wx.thu==='dry'?'; Kinta maran, dalan bele loke fali':''}.`:`Expect the road to stay ${ROAD[c.road][0]} tomorrow${wx.thu==='dry'?'; Thursday looks dry, so it should reopen by pickup':''}.`)):'';
+    const tip=c.rain!=='dry'?(tet?'Habai kafe iha okos telhadu.':'Keep drying beans under cover.'):'';
+    return J([stop,t0,out,rd,tip])}
+  if(intent==='quality'){
+    const pr=photoRes?(tet?`Ita-nia foto: grau ${photo} (${Math.round(photoRes.conf*100)}%).`:`Your photo read grade ${photo} (${Math.round(photoRes.conf*100)}% sure).`):'';
+    const hs=mk.hist.slice(-4).map(w=>w.g).join(', ');
+    return J([pr,tet?`Lote ikus: ${hs}.`:`Your last lots: ${hs}.`,tet?`Grau depende ba fuan metan, bolor, insetu no kotu. Habai iha tarpaulin ka meza, hasai fuan metan; A selu kuaze 13% liu B.`:`Grade depends on black, mouldy, insect-damaged and broken beans. Dry on a raised bed or tarp and pick out dark beans; A pays about 13% more than B.`,tet?`Verifika ho liman iha Kinta.`:`It is confirmed by hand at Thursday pickup.`])}
+  if(intent==='pool'){const full=kg>=mk.target;
+    if(!kg)return tet?`Pool foin loke, seidauk iha kafe. Target ${kgf(mk.target)} kg; lelaun taka 17:00.`:`The pool has just opened, no coffee in it yet. Target ${kgf(mk.target)} kg; the auction closes at 17:00.`;
+    return tet?`Pool iha ${kgf(kg)} kg husi ${kgf(mk.target)} kg, to'os ${lot.length}${full?' (kompletu)':''}. Lelaun taka 17:00; foti kafe Kinta 07:00.`
+      :`The pool has ${kgf(kg)} kg of the ${kgf(mk.target)} kg target from ${lot.length} farms${full?' (full)':''}. The auction closes at 17:00; pickup Thursday 07:00.`}
+  /* other */
+  if(/^\s*(hi|hello|hey|halo|bondia|botarde|bonoite|bom dia|boa tarde|selamat|good (morning|afternoon|evening)|what'?s up|como vai)\b/i.test(q))return tet?`Bondia! Haruka ita-nia oferta kafe, ka husu kona-ba folin, fa'an ka hein, tempu, sosa-na'in ka pool.`:`Hello! Send your coffee offer, or ask about price, selling now or waiting, weather, buyers or the pool.`;
+  if(/thank|obrigad|terima kasih/i.test(q))return tet?`Di'ak, obrigadu!`:`You're welcome!`;
+  if(/\?\s*$/.test(q)||/^\s*(what|who|how|can|is|are|do|tansa|saida|se)\b/i.test(q))return tet?`Deskulpa, hau la bele ajuda ida ne'e. Hau bele hatán kona-ba folin, fa'an ka hein, tempu no dalan, sosa-na'in, kualidade no pool.`:`Sorry, I can't help with that. I can answer about price, selling now or waiting, weather and road, buyers, quality and the pool.`;
+  return null}
+
+async function chatOrFallback(text,p,pre){
   const tet=p.lang?p.lang==='tet':/\b(ohin|fan|folin|hira|diak|tansa|sosa|udan|dalan|kafe|ka lae|bele|hau|ita)\b/i.test(text),t0=performance.now();let intent=null,how='rules';
-  const kw0=intentRules(text);
-  if(LLM.st==='ready'){const typing=push({who:'typing'});
+  const kw0=intentRules(text);let conf=0;
+  const useDI=LLM.dure?LLM.st==='ready':(LLM.st!=='ready'&&LLM.st!=='off'&&!!DI.m);
+  if(useDI){const r=pre||diPredict(text);if(r){intent=r.intent;conf=r.conf;how='small AI'}const typing=push({who:'typing'});render();await sleep(jit(500,900));msgs.splice(msgs.indexOf(typing),1)}
+  else if(LLM.st==='ready'){const typing=push({who:'typing'});
     try{const L=await Promise.race([llmIntent(text),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),4500))]);
       if(L){intent=INTENTS[L];how='small AI'}}
     catch(e){console.info('small AI intent skipped:',e.message)}
     msgs.splice(msgs.indexOf(typing),1)}
   /* the rules engine's keywords win when they are clear; the small AI decides the rest */
-  const kw=kw0;if(kw!=='other'&&intent!==kw){intent=kw;how=how==='small AI'?'small AI + rules':'rules'}else if(!intent)intent=kw;
-  const ms=Math.round(performance.now()-t0);const reply=intentReply(intent,tet);
+  /* Dure's model decides; its keywords step in only when the model is unsure. The older models: keywords win when clear */
+  if(!useDI&&intent&&DI.m){const r=pre||diPredict(text);if(r&&r.conf>=.9&&r.intent!==intent){intent=r.intent;conf=r.conf;how='small AI'}else if(r&&r.intent===intent)conf=r.conf}   // Qwen's pick, cross-checked by Dure's model
+  const kw=kw0;if((useDI||DI.m)&&intent){if(conf<.5&&kw!=='other'){intent=kw;how='small AI + rules'}}else if(kw!=='other'&&intent!==kw){intent=kw;how=how==='small AI'?'small AI + rules':'rules'}else if(!intent)intent=kw;
+  const ms=useDI?Math.max(1,Math.round(diMs(text))):Math.round(performance.now()-t0);const reply=smartReply(intent,text,tet);
   const fe=mk.feed[mk.feed.length-1];
   if(!reply&&LLM.st!=='ready'&&/\?\s*$/.test(text)){push({who:'sys',text:'Tip: turn on the Small AI (button at the top) to ask questions in your own words'})}
   if(!reply){await aiSay(t=>t.fallback);engine={name:'rules',why:'not a question Dure can answer'};return}
-  const enR=tet?intentReply(intent,false):null;push({who:'ai',text:reply.replace(/\s+/g,' ').trim(),tr:enR?enR.replace(/\s+/g,' ').trim():null,trL:tet?'tet':'en',uiL:'en',tag:`${how==='rules'?'rules engine':'small AI · on this device'} · ${(ms/1000).toFixed(1)} s · numbers from live data`});
+  const enR=tet?smartReply(intent,text,false):null;push({who:'ai',text:reply.replace(/\s+/g,' ').trim(),tr:enR?enR.replace(/\s+/g,' ').trim():null,trL:tet?'tet':'en',uiL:'en',tag:how==='rules'?`rules engine · numbers from live data`:useDI?`small AI · on this device · read: ${intent} ${Math.round(conf*100)}% · ${ms} ms · numbers from live data`:`small AI · on this device · ${(ms/1000).toFixed(1)} s · numbers from live data`});
   engine={name:how==='rules'?'rules':'chat',ms};if(fe&&fe.me){fe.eng=how==='rules'?'rules engine':`small AI (on this device) · read: ${intent}`;fe.note=`question: ${intent}`}
   const why=[];
   LLM.lastReply={text,reply,intent,ms};buzz();dirty.all=dirty.feedAll=true;showParse(p);
@@ -1437,7 +1555,14 @@ async function handle(text){
   const p=await readMsg(text);addMeFeed(text,p);
   if(p.lang&&!p.unknown)lang=p.lang;
   /* open questions the rules engine can't really answer ("is today a good day to sell?", "why is the price so low?") go to the on-device small AI when it is on */
-  const chatQ=LLM.st==='ready'&&st!=='decide'&&p.kg==null&&p.ask==null&&!p.any&&!p.letterGrade&&(/\?\s*$/.test(text)||/^\s*(why|should|is|are|can|could|would|will|what|how|do|does|tansa|karik|ohin)\b/i.test(text))&&(!p.q||/^\s*(why|tansa|how come|should)\b/i.test(text));
+  /* Dure's model reads every question-like message first: an open question (sell or keep, why the price moved, weather outlook, buyers...)
+     is answered from the live market, even if it names a price or a number ("which of the 5 buyers..."); bare asks ("price today?", "when is pickup?") stay with the rules */
+  const qLike=/\?\s*$/.test(text)||/^\s*(why|should|is|are|can|could|would|will|what|how|which|who|when|do|does|tansa|karik|ohin|oins[aá]|saida|se|kenapa|apakah|bagaimana|porque|qual|quando)\b/i.test(text);
+  const aiOn=LLM.st==='ready'||(!LLM.dure&&LLM.st!=='off'&&!!DI.m),di=aiOn&&DI.m&&qLike?diPredict(text):null,unitKg=/\d\s*(kg|kilo|quilo)|\b(kg|kilo|quilo)s?\b/i.test(text);
+  const bareAsk=!!(p.q&&p.q.length)&&!/why|behind|how come|reason|should|smarter|keep|wait|hold|will|next week|tomorrow|forecast|market|jump|fell|drop|moved|stop|coming|outlook|road|dalan|jalan|pool|lelaun|auction|grade|grau|truck|tansa|oins[aá]|saida|sei |aban|semana oin|merkadu|kenapa|porque|vai |hotu|para\b/i.test(text);
+  const openQ=!!di&&di.intent!=='other'&&di.conf>=.6&&!bareAsk&&p.ask==null&&!p.any&&(!p.letterGrade||(di.conf>=.9&&/^\s*(how|why|what|oins|tansa|saida|bagaimana|kenapa|como|porque)/i.test(text)))&&(p.kg==null||!unitKg)&&!(st==='decide'&&(p.yes||p.no));
+  if(openQ){showParse(p);await chatOrFallback(text,p,di);if(st==='decide')await aiSay(t=>t.yn,[600,900]);return}
+  const chatQ=!DI.m&&LLM.st==='ready'&&st!=='decide'&&p.kg==null&&p.ask==null&&!p.any&&!p.letterGrade&&(/\?\s*$/.test(text)||/^\s*(why|should|is|are|can|could|would|will|what|how|do|does|tansa|karik|ohin)\b/i.test(text))&&(!p.q||/^\s*(why|tansa|how come|should)\b/i.test(text));
   if(chatQ){showParse(p);await chatOrFallback(text,p);return}
   const hasOffer=!!(p.crop||p.other||p.kg!=null||p.ask!=null||p.any||p.letterGrade);
   const yn=st==='decide'&&(p.yes||p.no);
@@ -1445,6 +1570,7 @@ async function handle(text){
     if(!hasOffer&&!yn){if(st==='decide')await aiSay(t=>t.yn,[600,900]);return}}
   if(p.unknown){showParse(p);await chatOrFallback(text,p);return}
   const nothing=!hasOffer&&!p.grade&&!p.yes&&!p.no;
+  if(nothing&&/^\s*(thanks|thank you|thx|obrigad[ua]|terima kasih)[\s!.a-z]*$/i.test(text)&&text.length<30){showParse(p);await aiSay(t=>t===T.tet?"Di'ak, obrigadu!":"You're welcome!",[500,800]);return}
   if(st==='offer'||st==='photo'){
     if(nothing&&!GREET.test(text)){showParse(p);await chatOrFallback(text,p);return}
     if(p.other&&!p.crop){showParse(p);await aiSay(t=>t.cropOnly);return}
@@ -1757,7 +1883,7 @@ function newMarket(seed){
   c.road=c.rain==='heavy'?(mChance(.5)?'flooded':'slow'):c.rain==='showers'?(mChance(.5)?'slow':'open'):'open';   // road cut 20%, slow 40% (about twice before)
   c.soft=mChance(.5)?2:3;
   c.mid=r2(mU(2.40,2.50));c.lo=r2(c.mid-mU(.05,.10));c.hi=r2(c.mid+mU(.05,.10));
-  c.shock={open:1,slow:1.06,flooded:1.14}[c.road]*(c.rain==='heavy'?1.03:1);c.shock=+c.shock.toFixed(2);
+  c.shock={open:1,slow:1.06,flooded:1.14}[c.road]*(c.rain==='heavy'?1.03:1);c.shock=+c.shock.toFixed(2);c.wx=wxOutlook(c,seed);
   mk.bands={};['A','B','C'].forEach(g=>{const m=c.mid*c.shock*MULT[g];mk.bands[g]=[r2(m-.03),r2(m+.03)]});
   // which of the fixed buyers show up this week: Dili trucks avoid bad roads
   const showP=b=>b.rel*(b.loc==='Dili'?{open:1,slow:.7,flooded:.4}:{open:1,slow:.95,flooded:.8})[c.road];
@@ -2511,7 +2637,7 @@ function liveChips(){if(typeof mk==='undefined'||!mk||!mk.bands)return CHIPS;
           ['is it smarter to keep my beans a few more days?','EN'],
           [tr>0?'prices jumped this week, what is behind that?':tr<0?'prices fell this week, what is behind that?':'prices barely moved this week, what is behind that?','EN']],
     ask:[[`minimu ${f2(ask)}`,'TET',`minimum $${f2(ask)}`],['la importa','TET',"I don't mind"],[f2(r2(b[g][0])),'EN'],['when is pickup?','EN']],
-    photo:[['folin ohin hira?','TET','what is the price today?'],['ohin diak atu fan ka lae?','TET','is today a good day to sell?'],wxQ,buyQ]}}
+    photo:[['folin ohin hira?','TET','what is the price today?'],['ohin diak atu fan ka lae?','TET','is today a good day to sell?'],wxQ]}}
 function chipList(kind){const l=(liveChips()[kind]||[]).filter(c=>!usedChips.has(c[0]));return l.length?l:null}
 
 async function joinPool(){
@@ -2598,7 +2724,8 @@ const STEP_SHORT=['Morning price','Your offer','Send photo','Pool','Auction','Pi
 async function start(s){
   /* Small AI: the story page pre-downloads it in the background. Load it automatically on computers, and on phones once it is already in the cache (nothing to download). */
   /* the cache check runs beside the story, never in front of it; phones never start the 500 MB model by themselves (the pill loads it on tap) */
-  (async()=>{let have=false;try{if('caches' in self){const c=await caches.open('dure-models');const u=llmUrls(LLM.light?'q8':'q8'),u16=LLM.light?null:llmUrls('q4f16');have=!!(await c.match(u[u.length-1])||(u16&&await c.match(u16[u16.length-1])))}}catch(e){}
+  diLoad().then(()=>{dirty.all=true}).catch(e=>console.warn('intent model',e));
+  if(LLM.dure){if(QS.get('llm')!=='0')llmLoad()}else (async()=>{let have=false;try{if('caches' in self){const c=await caches.open('dure-models');const u=llmUrls(LLM.light?'q8':'q8'),u16=LLM.light?null:llmUrls('q4f16');have=!!(await c.match(u[u.length-1])||(u16&&await c.match(u16[u16.length-1])))}}catch(e){}
     LLM.cached=have;
     let crashed=false;try{const g=+localStorage.getItem(LLM_GUARD);crashed=!!g&&Date.now()-g<7*864e5}catch(e){}
     if(crashed){try{localStorage.removeItem(LLM_GUARD)}catch(e){}LLM.st='failed';LLM.err='the last load closed this tab; tap to try again';llmSync();return}   // never loop into the same crash
