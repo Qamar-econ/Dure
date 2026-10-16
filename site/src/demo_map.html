@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light only"><style>:root{color-scheme:light only}</style>   <!-- the pages are designed light: browsers must not auto-darken them (Samsung Internet, Chrome "dark mode for web contents") -->
 <title>Dure — Sell coffee as Noor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <meta name="description" content="Try Dure as Noor, a coffee farmer in Letefoho, Timor-Leste: text Dure AI in Tetum or English, send a photo, and follow your coffee to getting paid.">
@@ -1195,7 +1196,7 @@ async function proceed(changed,warnK=''){
 }
 async function send(){
   const el=$('inp');const text=el.value.trim();if(!text||busy||ffNext)return;snap();el.value='';
-  if(Object.values(CHIPS).some(l=>l&&l.some(c=>c[0]===text))){usedChips.add(text);document.querySelectorAll('#tries button').forEach(b=>{if(b.dataset.c===text)b.remove()});if(!$('tries').querySelector('button'))chips(null)}if(skin==='android')el.style.height='auto';
+  if(Object.values(liveChips()).some(l=>l&&l.some(c=>c[0]===text))){usedChips.add(text);document.querySelectorAll('#tries button').forEach(b=>{if(b.dataset.c===text)b.remove()});if(!$('tries').querySelector('button'))chips(null)}if(skin==='android')el.style.height='auto';
   busy=true;const m=push({who:'me',text,status:'sending'});tick(1);
   await sleep(jit(900,signal===1?2300:1500));m.status='sent';render();
   try{await handle(text)}catch(e){console.error(e)}busy=false;
@@ -2492,7 +2493,24 @@ function paySvg(now){
 /* ---------- the sale, now driven by the simulated market ---------- */
 /* example messages for the current step */
 let usedChips=new Set();   /* a suggestion that was sent once is not offered again */
-function chipList(kind){const l=(CHIPS[kind]||[]).filter(c=>!usedChips.has(c[0]));return l.length?l:null}
+/* the suggested texts follow this week's simulated market: the prices she would write sit inside the band Dure just texted
+   (her own minimum is Dure's suggested one), and the questions match what is actually happening (price up or down, rain, road, buyers) */
+function liveChips(){if(typeof mk==='undefined'||!mk||!mk.bands)return CHIPS;
+  const S=morningStrategySeller(mk,me(),'en').data,b=mk.bands,g=S.grade,tr=S.trendPct,c=mk.cond,f2=x=>x.toFixed(2);
+  const ask=S.ask,inA=r2(b.A[0]+(b.A[1]-b.A[0])*.25),gB=g==='B'?'A':'B',low=r2(b[gB][0]);
+  const vgood=g==='A'?'diak los':g==='B'?'diak':'naton';   // how she describes her own beans
+  const whyT=tr>0?["tansa folin kafe sae semana ne'e?",'why did the coffee price go up this week?']:tr<0?["tansa folin kafe tun semana ne'e?",'why did the coffee price drop this week?']:["tansa folin kafe hanesan semana kotuk?",'why is the price the same as last week?'];
+  const roadQ=c.road!=='open'?['is the Gleno road open?','EN']:c.rain!=='dry'?['is the rain stopping before pickup?','EN']:['should I sell today or wait for next week?','EN'];
+  const buyQ=c.nB<=4?['why are there so few buyers this week?','EN']:[`which of the ${c.nB} buyers pays the most?`,'EN'];
+  const wxQ=c.rain==='dry'?['is rain coming this week?','EN']:['is the rain stopping?','EN'];
+  return {...CHIPS,
+    crop:[[`kafe 40kg ${g}, minimu ${f2(ask)}`,'TET',`coffee 40 kg grade ${g}, minimum $${f2(ask)}`],
+          [`bondia! kafe 40kilu ${vgood}.. fan ${f2(g==='A'?inA:ask)} bele?`,'TET',`Morning! 40 kg of ${g==='A'?'very good':g==='B'?'good':'ordinary'} coffee. Can I sell at $${f2(g==='A'?inA:ask)}?`],
+          [whyT[0],'TET',whyT[1]],
+          [`coffee 60kg grade ${gB}, ${f2(low)}`,'EN'],roadQ],
+    ask:[[`minimu ${f2(ask)}`,'TET',`minimum $${f2(ask)}`],['la importa','TET',"I don't mind"],[f2(r2(b[g][0])),'EN'],['when is pickup?','EN']],
+    photo:[['folin ohin hira?','TET','what is the price today?'],['ohin diak atu fan ka lae?','TET','is today a good day to sell?'],wxQ,buyQ]}}
+function chipList(kind){const l=(liveChips()[kind]||[]).filter(c=>!usedChips.has(c[0]));return l.length?l:null}
 
 async function joinPool(){
   await sleep(500);const m=me();

@@ -104,6 +104,7 @@ PAGE = f'''<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light only"><style>:root{{color-scheme:light only}}</style>   <!-- the pages are designed light: browsers must not auto-darken them (Samsung Internet, Chrome "dark mode for web contents") -->
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#F2EADA">
 <title>Dure — Cooperate through messaging</title>
