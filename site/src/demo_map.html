@@ -1008,20 +1008,30 @@ const GR={st:'idle',p:0,got:0,t0:0,err:null,slow:false,promise:null};
 function graderSetup(){if(!window.DureGraderV2)return false;
   if(QS.get('localmodel')){DureGraderV2.config.modelUrl=QS.get('model')||'../../ai/photo2/xenova/vision_model_quantized.onnx';DureGraderV2.config.ortBase=new URL(QS.get('ort')||'../../ai/photo2/scratch/ortweb/',location.href).href}
   return true}
-function preloadGrader(){
+/* Phones and tablets: the 89 MB grader is never fetched in the background (sample photos use the model's saved
+   results, so they need nothing); it loads only for the farmer's own photo, and not at all on a low-memory device
+   or after a load that closed the tab. Computers preload it as before. */
+const GR_GUARD='dure-grader-loading';
+function graderRisky(){let g=0;try{g=+localStorage.getItem(GR_GUARD)}catch(e){}return (navigator.deviceMemory&&navigator.deviceMemory<3)||(!!g&&Date.now()-g<7*864e5)}
+function preloadGrader(force){
   if(GR.st!=='idle')return;
+  if(PHONEISH&&!force)return;
+  if(PHONEISH&&graderRisky()){GR.st='failed';GR.err='kept off on this device to save memory';try{localStorage.removeItem(GR_GUARD)}catch(e){}grStatus();return}
   if(QS.get('nomodel')||!graderSetup()){GR.st='failed';GR.err='grader not available';grStatus();return}
   GR.st='loading';GR.t0=performance.now();grStatus();
-  GR.promise=DureGraderV2.load((f,got)=>{GR.p=f;GR.got=got;grStatus()}).then(()=>{GR.st='ready';grStatus()}).catch(e=>{GR.st='failed';GR.err=(e&&e.message)||String(e);grStatus()});
+  try{if(PHONEISH)localStorage.setItem(GR_GUARD,String(Date.now()))}catch(e){}
+  const clr=()=>{try{localStorage.removeItem(GR_GUARD)}catch(e){}};
+  GR.promise=DureGraderV2.load((f,got)=>{GR.p=f;GR.got=got;grStatus()}).then(()=>{GR.st='ready';clr();grStatus()}).catch(e=>{GR.st='failed';GR.err=(e&&e.message)||String(e);clr();grStatus()});
   setTimeout(()=>{if(GR.st==='loading'){GR.slow=true;grStatus()}},25000);
 }
-function grStatusText(){return GR.st==='ready'?'Photo grader ready · runs on this phone, photo stays here':GR.st==='loading'?(GR.slow?`Grader still loading (${Math.round(GR.p*100)}%) · samples use saved results`:`Loading photo grader… ${GR.p?Math.round(GR.p*100)+'% of 89 MB':'starting'}`):GR.st==='failed'?'Live grader could not load · samples use saved results':'Photo grader loads in the background'}
+function grStatusText(){if(PHONEISH&&GR.st==='idle')return 'Sample photos are graded at once · your own photo loads the grader (89 MB)';return GR.st==='ready'?'Photo grader ready · runs on this phone, photo stays here':GR.st==='loading'?(GR.slow?`Grader still loading (${Math.round(GR.p*100)}%) · samples use saved results`:`Loading photo grader… ${GR.p?Math.round(GR.p*100)+'% of 89 MB':'starting'}`):GR.st==='failed'?'Live grader could not load · samples use saved results':'Photo grader loads in the background'}
 function grStatus(){const e=$('mst');if(e)e.textContent=grStatusText();dirty.photo=true}
 const loadImg=url=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error('image did not load'));i.src=url});
 /* src = {kind:'sample', g, url} | {kind:'upload', url}. Returns the grader result + {live, ms}, or null (own photo, no model) */
 async function gradePick(src){
   const img=await loadImg(src.url);
-  if(GR.st==='idle')preloadGrader();
+  if(PHONEISH&&src.kind==='sample'&&GR.st!=='ready')return {...PRECOMP[src.g],live:false};   // phones and tablets: saved result at once, no 89 MB download
+  if(GR.st==='idle')preloadGrader(true);
   if(GR.st==='loading'){const left=25000-(performance.now()-GR.t0);if(left>0)await Promise.race([GR.promise,sleep(left)])}
   if(GR.st==='ready'){try{const t0=performance.now(),r=await DureGraderV2.grade(img);return {...r,live:true,ms:Math.round(performance.now()-t0)}}catch(e){GR.err=(e&&e.message)||String(e)}}
   if(src.kind==='sample')return {...PRECOMP[src.g],live:false};
@@ -2203,7 +2213,11 @@ function checkFF(){if(!ffGoal)return;const ph=mk.phase;
 /* ---------- the loop ---------- */
 const dirty={all:true,feed:true,photo:true};let pulses=[],floatQ=[],lastNow=0,lastMin=-1;
 function loop(now){
-  requestAnimationFrame(loop);if(!mk)return;
+  /* phones and tablets: while the market sheet is closed nothing on screen moves with the clock, so the market ticks
+     about 20 times a second instead of asking the phone for 60 frames (saves battery, keeps slow phones cool) */
+  {const sh=PHONEISH&&$('mSheet'),slow=PHONEISH&&!(sh&&sh.classList.contains('open'))&&!document.body.classList.contains('land');
+   if(slow)setTimeout(()=>requestAnimationFrame(loop),40);else requestAnimationFrame(loop)}
+  if(!mk)return;
   const dt=Math.min(.12,(now-(lastNow||now))/1000);lastNow=now;
   if(['morning','auction','decide'].includes(mk.phase)&&!paused){
     let sp=ffGoal?ffSpeed:mk.speed;if(mk.phase==='auction'&&mk.t>CLEAR-30)sp=Math.min(sp,ffGoal?10:Math.max(mk.speed,1));if(mk.phase==='auction'&&priceHold>now&&!ffGoal)sp=0;let t1=mk.t+sp*dt;
@@ -2335,10 +2349,12 @@ function flushFloats(){
     {const sv=$('map'),pt=sv.createSVGPoint();pt.x=f.x;pt.y=f.y;const sp=pt.matrixTransform(sv.getScreenCTM()),wr=wrap.getBoundingClientRect();d.style.left=(sp.x-wr.left)+'px';d.style.top=(sp.y-wr.top)+'px'}wrap.appendChild(d);setTimeout(()=>d.remove(),2600)});
 }
 /* ---------- market strip + status popup ---------- */
+/* write to the page only when the text actually changed: an unchanged rewrite still costs a style pass on slow phones */
+const _T=(el,v)=>{if(el&&el.textContent!==String(v))el.textContent=v},_H=(el,v)=>{if(el&&el._h0!==v){el._h0=v;el.innerHTML=v}};
 function renderBarStrip(){['mkClock','mkDay','spdL','now','poolbar','facts','readMeta','photoMeta','kpis','elN'].forEach(i=>dedupe($(i)));
-  $('mkClock').textContent=hhmm(mk.t);$('mkDay').textContent=`${dayName(mk.t)} · ${('week')} ${mk.week}`;
-  $('mkHold').textContent=paused?('paused'):(mk.phase==='auction'&&priceHold>performance.now())?('setting the opening price'):ffGoal?('fast-forward'):mk.hold?(mk.phase==='morning'?('pool waits for your offer'):('waiting for your YES/NO')):'';
-  {const pp=$('mkSpeed').querySelector('[data-k="pp"]');dedupe(pp);pp.textContent=paused?'▶':'❚❚';pp.classList.toggle('on',paused);$('spdL').textContent=paused?'paused':mk.speed+'×';
+  _T($('mkClock'),hhmm(mk.t));_T($('mkDay'),`${dayName(mk.t)} · ${('week')} ${mk.week}`);
+  _T($('mkHold'),paused?('paused'):(mk.phase==='auction'&&priceHold>performance.now())?('setting the opening price'):ffGoal?('fast-forward'):mk.hold?(mk.phase==='morning'?('pool waits for your offer'):('waiting for your YES/NO')):'');
+  {const pp=$('mkSpeed').querySelector('[data-k="pp"]');dedupe(pp);_T(pp,paused?'▶':'❚❚');pp.classList.toggle('on',paused);_T($('spdL'),paused?'paused':mk.speed+'×');
    $('mkSpeed').querySelector('[data-k="min"]').disabled=$('mkSpeed').querySelector('[data-k="dn"]').disabled=mk.speed===SPEEDS[0];$('mkSpeed').querySelector('[data-k="max"]').disabled=$('mkSpeed').querySelector('[data-k="up"]').disabled=mk.speed===SPEEDS[SPEEDS.length-1]}
   const c=mk.cond;
   const ck=JSON.stringify(c);if($('mkCond')._k!==ck){$('mkCond')._k=ck;
@@ -2354,15 +2370,15 @@ function nowText(){const lot=inLot(),kg=sumKg(lot),m=me();
     case 'paid':return (`${bk(mk.buyers[mk.res.winner].n)} paid $${mk.paid.toFixed(2)} once. Dure AI split it into ${lot.length} wallets by grade and kg.`);
   }return ''}
 function renderStatus(){
-  $('now').textContent=nowText();
+  _T($('now'),nowText());
   const lot=inLot(),kg=sumKg(lot),pct=Math.min(100,kg/mk.target*100),wait=mk.farmers.filter(f=>f.st==='wait');
-  $('poolbar').innerHTML=`<div class="pb"><i style="width:${pct}%"></i></div><div class="pbl"><span>${kgf(kg)} / ${kgf(mk.target)} kg</span><span>${lot.length} ${('farms')}${wait.length?` · +${wait.length} ${('waitlist')}`:''}</span></div>`;
+  _H($('poolbar'),`<div class="pb"><i style="width:${pct}%"></i></div><div class="pbl"><span>${kgf(kg)} / ${kgf(mk.target)} kg</span><span>${lot.length} ${('farms')}${wait.length?` · +${wait.length} ${('waitlist')}`:''}</span></div>`);
   const m=me(),texted=mk.farmers.filter(f=>f.msgs>0&&!f.me).length;
   const rows=[[('Farmers who texted'),`${texted} / ${mk.farmers.length-1}`],[('Your offer'),m.kg?`${m.kg} kg · ${m.g||'?'} · ${m.any?('any price'):'$'+(m.ask??0).toFixed(2)}`:'—'],
     [('Floor · opening'),mk.floor!=null?`$${mk.floor.toFixed(2)} · $${mk.open.toFixed(2)}`:('at pool close')],
     [('Best bid'),mk.best?`$${mk.best.v.toFixed(2)} · ${bk(mk.buyers[mk.best.b].n)}`:'—'],
     [('Grade prices'),mk.res&&mk.res.gp?`A ${d2(mk.res.gp.A)} · B ${d2(mk.res.gp.B)} · C ${d2(mk.res.gp.C)}`:'—']];
-  $('facts').innerHTML=rows.map(([l,v])=>`<div><span>${l}</span><b>${v}</b></div>`).join('');
+  _H($('facts'),rows.map(([l,v])=>`<div><span>${l}</span><b>${v}</b></div>`).join(''));
 }
 /* ---------- message reader card ---------- */
 let feedN=0,consoleHold=0;
@@ -2381,7 +2397,7 @@ function renderFeed(){
   box.querySelectorAll('.fr').forEach(el=>{const it=mk.feed[+el.dataset.i];if(!it)return;const h=feedRowHtml(it);if(el._h!==h){if(el._h){const d=document.createElement('template');d.innerHTML=h.trim();el.innerHTML=d.content.firstChild.innerHTML;el.className=d.content.firstChild.className}el._h=h}});
   if(atBottom)box.scrollTop=0;
   const s=mk.stat,eng=DURE_API?'small AI server, rules engine as fallback':llmReady()?'rules engine + small AI, in your browser':'rules engine, runs in your browser';
-  $('readMeta').innerHTML=`<span data-tip="The real Dure reader. A small AI model helps when the rules are unsure (in-browser module or ?api=<server>, off by default).">Reader: <b>${eng}</b></span><span>${('Messages')} <b>${s.read}</b></span><span>${('Right first time')} <b>${s.read?Math.round(s.right/s.read*100):0}%</b></span><span>${('Asked back')} <b>${s.asked}</b></span>`;
+  _H($('readMeta'),`<span data-tip="The real Dure reader. A small AI model helps when the rules are unsure (in-browser module or ?api=<server>, off by default).">Reader: <b>${eng}</b></span><span>${('Messages')} <b>${s.read}</b></span><span>${('Right first time')} <b>${s.read?Math.round(s.right/s.read*100):0}%</b></span><span>${('Asked back')} <b>${s.asked}</b></span>`);
 }
 function hlRaw(p){let raw=esc(p.raw||'');const marks=[].concat(p.spans.crop||[],p.spans.kg||[],p.spans.grade||[],p.spans.ask||[]).flat();
   [...new Set(marks)].forEach(w=>{if(!w)return;const re=new RegExp('('+String(w).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','i');raw=raw.replace(re,'<mark>$1</mark>')});return raw}
@@ -2833,7 +2849,8 @@ const popOn=()=>{const t=$('tries');if(!t||t.style.display==='none'||!t.querySel
 document.addEventListener('input',e=>{if(e.target.id==='inp')pop.classList.remove('on')},true);
 pop.addEventListener('click',e=>{if(e.target.closest('button')){tapInp=0;setTimeout(()=>{pop.classList.remove('on');const a=document.activeElement;if(a&&a.id==='inp')a.blur()},30)}});
 if(window.visualViewport)visualViewport.addEventListener('resize',()=>{if(pop.classList.contains('on'))placePop()});
-const setH=()=>{document.documentElement.style.setProperty('--dockH',dock.offsetHeight+'px');const t=document.querySelector('.top');if(t)document.documentElement.style.setProperty('--topH',t.offsetHeight+'px')};
+const setV=(k,v)=>{const R=document.documentElement.style;if(R.getPropertyValue(k)!==v)R.setProperty(k,v)};   // only on change: re-setting a page-wide variable restyles the whole page
+const setH=()=>{setV('--dockH',dock.offsetHeight+'px');const t=document.querySelector('.top');if(t)setV('--topH',t.offsetHeight+'px')};
 let open=null;
 const centerFigs=()=>document.querySelectorAll('.mp[data-p="dash"] .figw').forEach(f=>{if(f.scrollWidth>f.clientWidth&&!f.dataset.c){f.scrollLeft=(f.scrollWidth-f.clientWidth)/2;f.dataset.c=1}});
 const show=p=>{open=p;sh.classList.add('open');dim.classList.add('on');sh.querySelectorAll('[data-p]').forEach(e=>e.classList.toggle('on',e.dataset.p===p));dock.querySelector(`.mbtns [data-p="${p}"]`).classList.remove('dot');$('mNew').classList.remove('on');
