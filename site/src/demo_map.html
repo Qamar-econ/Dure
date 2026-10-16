@@ -1281,8 +1281,8 @@ async function llmLoad(){
 }
 /* phones and tablets: example questions for each topic, in English, Tetum and a little Indonesian / Portuguese */
 const LIGHT_EX={
-  A:['is today a good day to sell?','should I sell now or wait?','sell today or next week?','is now a good time to sell my coffee','diak atu fa\'an ohin ka lae?','hau tenke fa\'an agora ka hein?','apakah hari ini bagus untuk menjual?'],
-  B:['why is the price so low?','why is the price high today?','what makes the price go down','tansa folin tun?','tansa mak folin a\'at?','kenapa harga murah?'],
+  A:['is it smarter to keep my beans a few more days?','should I hold my coffee or sell it?','should I sell now or wait?','sell today or next week?','is now a good time to sell my coffee','diak atu fa\'an ohin ka lae?','hau tenke fa\'an agora ka hein?','apakah hari ini bagus untuk menjual?'],
+  B:['what is behind the price change this week?','prices jumped, what is behind that?','prices fell, what is behind that?','how is the coffee market this week?',"merkadu kafe oinsá semana ne'e?",'why is the price high today?','what makes the price go down','tansa folin tun?','tansa mak folin a\'at?','kenapa harga murah?'],
   C:['will the price go up next week?','what will the price be tomorrow?','is the price going to rise later','folin sei sae semana oin?','harga minggu depan naik?'],
   D:['how many buyers are there?','who is buying this week?','which exporters are in the market','sosa-na\'in hira mak iha?','siapa pembelinya?'],
   E:['is it going to rain?','is the road open?','is the Gleno road flooded?','udan ka lae ohin?','dalan loke ka?','apakah jalan banjir?'],
@@ -1391,6 +1391,7 @@ async function chatOrFallback(text,p){
   const kw=kw0;if(kw!=='other'&&intent!==kw){intent=kw;how=how==='small AI'?'small AI + rules':'rules'}else if(!intent)intent=kw;
   const ms=Math.round(performance.now()-t0);const reply=intentReply(intent,tet);
   const fe=mk.feed[mk.feed.length-1];
+  if(!reply&&LLM.st!=='ready'&&/\?\s*$/.test(text)){push({who:'sys',text:'Tip: turn on the Small AI (button at the top) to ask questions in your own words'})}
   if(!reply){await aiSay(t=>t.fallback);engine={name:'rules',why:'not a question Dure can answer'};return}
   const enR=tet?intentReply(intent,false):null;push({who:'ai',text:reply.replace(/\s+/g,' ').trim(),tr:enR?enR.replace(/\s+/g,' ').trim():null,trL:tet?'tet':'en',uiL:'en',tag:`${how==='rules'?'rules engine':'small AI · on this device'} · ${(ms/1000).toFixed(1)} s · numbers from live data`});
   engine={name:how==='rules'?'rules':'chat',ms};if(fe&&fe.me){fe.eng=how==='rules'?'rules engine':`small AI (on this device) · read: ${intent}`;fe.note=`question: ${intent}`}
@@ -2504,10 +2505,11 @@ function liveChips(){if(typeof mk==='undefined'||!mk||!mk.bands)return CHIPS;
   const buyQ=c.nB<=4?['why are there so few buyers this week?','EN']:[`which of the ${c.nB} buyers pays the most?`,'EN'];
   const wxQ=c.rain==='dry'?['is rain coming this week?','EN']:['is the rain stopping?','EN'];
   return {...CHIPS,
+    /* first screen: one offer in Tetum, then three questions the rules engine cannot place, so the Small AI reads them */
     crop:[[`kafe 40kg ${g}, minimu ${f2(ask)}`,'TET',`coffee 40 kg grade ${g}, minimum $${f2(ask)}`],
-          [`bondia! kafe 40kilu ${vgood}.. fan ${f2(g==='A'?inA:ask)} bele?`,'TET',`Morning! 40 kg of ${g==='A'?'very good':g==='B'?'good':'ordinary'} coffee. Can I sell at $${f2(g==='A'?inA:ask)}?`],
-          [whyT[0],'TET',whyT[1]],
-          [`coffee 60kg grade ${gB}, ${f2(low)}`,'EN'],roadQ],
+          ["merkadu kafe oinsá iha semana ne'e?",'TET','how is the coffee market this week?'],
+          ['is it smarter to keep my beans a few more days?','EN'],
+          [tr>0?'prices jumped this week, what is behind that?':tr<0?'prices fell this week, what is behind that?':'prices barely moved this week, what is behind that?','EN']],
     ask:[[`minimu ${f2(ask)}`,'TET',`minimum $${f2(ask)}`],['la importa','TET',"I don't mind"],[f2(r2(b[g][0])),'EN'],['when is pickup?','EN']],
     photo:[['folin ohin hira?','TET','what is the price today?'],['ohin diak atu fan ka lae?','TET','is today a good day to sell?'],wxQ,buyQ]}}
 function chipList(kind){const l=(liveChips()[kind]||[]).filter(c=>!usedChips.has(c[0]));return l.length?l:null}
