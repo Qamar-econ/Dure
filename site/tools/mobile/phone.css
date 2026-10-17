@@ -1,3 +1,4 @@
+html{touch-action:manipulation}   /* iOS: no double-tap zoom when buttons are tapped quickly */
 
 /* ===================== summit edition (build_next.py) ===================== */
 html{scroll-behavior:smooth}

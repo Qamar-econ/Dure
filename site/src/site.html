@@ -2240,5 +2240,6 @@ Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1200))]).then(()=
 }catch(e){console.info('model pre-download skipped',e)}};
 addEventListener('load',()=>setTimeout(()=>('requestIdleCallback' in self?requestIdleCallback(go,{timeout:3000}):go()),1200))})();
 </script>
+<script>/* offline: keep the site and demo working when the Wi-Fi drops (assets/sw.js) */if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")&&!/[?&]nosw=1/.test(location.search))addEventListener("load",()=>navigator.serviceWorker.register("assets/sw.js",{scope:"./"}).catch(()=>{}));</script>
 </body>
 </html>

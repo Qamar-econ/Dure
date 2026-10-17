@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="color-scheme" content="light dark"><style>:root{color-scheme:light dark}html{background:#F2EADA}input,textarea,select,button,iframe{color-scheme:light}</style>   <!-- we say we handle dark mode ourselves, so Samsung Internet and Chrome do not invert the page, its pictures and videos; every colour is set explicitly, so it stays as designed -->
+<meta name="color-scheme" content="light dark"><style>
+html{touch-action:manipulation}   /* iOS: no double-tap zoom when buttons are tapped quickly */
+:root{color-scheme:light dark}html{background:#F2EADA}input,textarea,select,button,iframe{color-scheme:light}</style>   <!-- we say we handle dark mode ourselves, so Samsung Internet and Chrome do not invert the page, its pictures and videos; every colour is set explicitly, so it stays as designed -->
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#F2EADA">
 <title>Dure — Cooperate through messaging</title>
@@ -1769,5 +1771,6 @@ $$('.vid').forEach(b=>b.addEventListener('click',()=>{if(b.classList.contains('o
    const t=d.querySelector(':scope > template.lz');if(t){d.appendChild(t.content.cloneNode(true));t.remove()}   // steps are built on first open
    d.querySelectorAll('.rv').forEach(x=>x.classList.add('in'));requestAnimationFrame(()=>d.querySelectorAll('.dash,.nf').forEach(x=>x.classList.add('on')))}));})();
 </script>
+<script>/* offline: keep the site and demo working when the Wi-Fi drops (assets/sw.js) */if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")&&!/[?&]nosw=1/.test(location.search))addEventListener("load",()=>navigator.serviceWorker.register("assets/sw.js",{scope:"./"}).catch(()=>{}));</script>
 </body>
 </html>

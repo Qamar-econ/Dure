@@ -217,6 +217,7 @@ PAGE = f'''<!doctype html>
 </main>
 <footer class="foot"><p>© 2026 Tae Yoon Moon. All rights reserved. Illustrations and text may not be reused without permission.</p><p><a href="index.html?full=1">View the animated version</a></p></footer>
 <script>{JS}</script>
+<script>/* offline: keep the site and demo working when the Wi-Fi drops (assets/sw.js) */if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")&&!/[?&]nosw=1/.test(location.search))addEventListener("load",()=>navigator.serviceWorker.register("assets/sw.js",{{scope:"./"}}).catch(()=>{{}}));</script>
 </body>
 </html>
 '''
