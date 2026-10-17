@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="light dark"><style>:root{color-scheme:light dark}html{background:#F2EADA}input,textarea,select,button,iframe{color-scheme:light}</style>   <!-- we say we handle dark mode ourselves, so Samsung Internet and Chrome do not invert the page, its pictures and videos; every colour is set explicitly, so it stays as designed -->
+<meta name="color-scheme" content="light dark"><style>
+html{touch-action:manipulation}   /* iOS: no double-tap zoom when buttons are tapped quickly */
+:root{color-scheme:light dark}html{background:#F2EADA}input,textarea,select,button,iframe{color-scheme:light}</style>   <!-- we say we handle dark mode ourselves, so Samsung Internet and Chrome do not invert the page, its pictures and videos; every colour is set explicitly, so it stays as designed -->
 <title>Dure — Sell coffee as Noor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <meta name="description" content="Try Dure as Noor, a coffee farmer in Letefoho, Timor-Leste: text Dure AI in Tetum or English, send a photo, and follow your coffee to getting paid.">
@@ -130,6 +132,7 @@ a{color:inherit}
 .a-in button{width:40px;height:40px;border-radius:50%;border:none;background:#EFECE6;display:grid;place-items:center;cursor:pointer;flex:none}
 .a-in button.send{background:var(--ink)}
 .a-in textarea{flex:1;resize:none;border:1px solid #DDD7CC;border-radius:20px;padding:10px 14px;font:inherit;font-size:15px;max-height:96px;outline:none;background:#FAF8F4}
+@media (pointer:coarse){.a-in textarea{font-size:16px}}   /* iPhone and iPad Safari zoom the whole page into any text box under 16px */
 @keyframes pop{from{transform:translateY(6px);opacity:0}to{transform:none;opacity:1}}
 @keyframes dot{0%,100%{opacity:.3}50%{opacity:1}}
 /* nokia */
@@ -2326,7 +2329,8 @@ function plotStyle(f){const g=f.handG||(f.held?null:f.aiG);
   return [fill,INK,1.3,'',mark]}
 function renderMap(){
   const s=$('map');if(!s)return;
-  mk.farmers.forEach(f=>{const el=s.querySelector(`.plot[data-id="${f.id}"]`);if(!el)return;const [fill,stroke,w,dash,mark]=plotStyle(f);const sig=[fill,stroke,w,dash,mark].join('|');
+  if(!s._plots||s._plotsFor!==mk){s._plots={};s.querySelectorAll('.plot[data-id]').forEach(e=>s._plots[e.dataset.id]=e);s._plotsFor=mk}   // look each plot up once per market
+  mk.farmers.forEach(f=>{let el=s._plots[f.id];if(el&&!el.isConnected){s._plotsFor=null;el=s.querySelector(`.plot[data-id="${f.id}"]`)}if(!el)return;const [fill,stroke,w,dash,mark]=plotStyle(f);const sig=[fill,stroke,w,dash,mark].join('|');
     if(el.dataset.sig===sig)return;el.dataset.sig=sig;const pg=el.querySelector('.pf');pg.setAttribute('fill',fill);pg.setAttribute('stroke',f.me?INK:stroke);pg.setAttribute('stroke-width',f.me?3:w);pg.setAttribute('stroke-dasharray',dash);
     el.classList.toggle('pulse',f.st==='texting');el.querySelector('.pm').textContent=mark});
   const hub=joined().filter(f=>f.st==='in').map(f=>`<path d="M${f.x} ${f.y} Q${(f.x+TOWN.x)/2} ${(f.y+TOWN.y)/2-18} ${TOWN.x} ${TOWN.y}" stroke="${RUST}" stroke-width="1.1" stroke-dasharray="2 4" fill="none" opacity=".5"/>`).join('');
@@ -2394,7 +2398,10 @@ function renderFeed(){
   for(;feedN<mk.feed.length;feedN++){const it=mk.feed[feedN];const d=document.createElement('template');d.innerHTML=feedRowHtml(it).trim();const el=d.content.firstChild;el.onclick=()=>{showFeedItem(mk.feed[+el.dataset.i]);consoleHold=performance.now()+15000};box.prepend(el);
     if(!it.me&&performance.now()>consoleHold)showFeedItem(it)}
   // refresh rows still waiting on the model, or with a new note
-  box.querySelectorAll('.fr').forEach(el=>{const it=mk.feed[+el.dataset.i];if(!it)return;const h=feedRowHtml(it);if(el._h!==h){if(el._h){const d=document.createElement('template');d.innerHTML=h.trim();el.innerHTML=d.content.firstChild.innerHTML;el.className=d.content.firstChild.className}el._h=h}});
+  /* refresh the newest rows, plus any older row still waiting on the model; settled older rows never change */
+  const rows=box.children,W=box._watch||(box._watch=new Set()),todo=new Set(W);for(let k=0;k<Math.min(rows.length,24);k++)todo.add(rows[k]);
+  todo.forEach(el=>{if(!el.isConnected||!el.classList.contains('fr')){W.delete(el);return}const it=mk.feed[+el.dataset.i];if(!it)return;const h=feedRowHtml(it);if(el._h!==h){if(el._h){const d=document.createElement('template');d.innerHTML=h.trim();el.innerHTML=d.content.firstChild.innerHTML;el.className=d.content.firstChild.className}el._h=h}
+    if(it.pending||h.indexOf('…')>=0)W.add(el);else W.delete(el)});
   if(atBottom)box.scrollTop=0;
   const s=mk.stat,eng=DURE_API?'small AI server, rules engine as fallback':llmReady()?'rules engine + small AI, in your browser':'rules engine, runs in your browser';
   _H($('readMeta'),`<span data-tip="The real Dure reader. A small AI model helps when the rules are unsure (in-browser module or ?api=<server>, off by default).">Reader: <b>${eng}</b></span><span>${('Messages')} <b>${s.read}</b></span><span>${('Right first time')} <b>${s.read?Math.round(s.right/s.read*100):0}%</b></span><span>${('Asked back')} <b>${s.asked}</b></span>`);
@@ -2962,5 +2969,6 @@ addEventListener('scroll',pin,{passive:true});document.addEventListener('focusou
 if(window.visualViewport)visualViewport.addEventListener('resize',()=>setTimeout(pin,120));
 })();
 </script>
+<script>/* offline: keep the site and demo working when the Wi-Fi drops (assets/sw.js) */if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")&&!/[?&]nosw=1/.test(location.search))addEventListener("load",()=>navigator.serviceWorker.register("assets/sw.js",{scope:"./"}).catch(()=>{}));</script>
 </body>
 </html>
