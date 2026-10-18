@@ -33,9 +33,8 @@ if os.path.exists(os.path.join(ROOT, 'og.png')):
     shutil.copy(os.path.join(ROOT, 'og.png'), os.path.join(D, 'og.png'))
 shutil.copy(os.path.join(S, '_headers'), os.path.join(D, '_headers'))
 shutil.copy(os.path.join(S, 'm_phone.html'), os.path.join(D, 'm.html'))           # phones and tablets (index.html sends touch devices here)
-shutil.copy(os.path.join(S, 'm_classic.html'), os.path.join(D, 'm-classic.html'))   # the earlier phone edition, kept for reference
 # Samsung Internet's own dark mode: drawings shown as pictures of themselves there (assets/sbr.js)
-for f in ('demo.html', 'm.html', 'm-classic.html'):   # what phones and tablets are served (index.html sends touch devices to m.html)
+for f in ('demo.html', 'm.html'):   # what phones and tablets are served (index.html sends touch devices to m.html)
     fp = os.path.join(D, f)
     if os.path.exists(fp):
         h = open(fp, encoding='utf-8').read()

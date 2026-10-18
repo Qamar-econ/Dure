@@ -108,7 +108,7 @@ site/build.py           builds src/ into dist/ (dist/ is not committed; the depl
 site/src/               site.html (story, PC), m_phone.html (phone and tablet edition, generated), demo_map.html (demo),
                         sheet.html (Registry + brief), assets/ (grader_v2.js, sample photos, Letefoho satellite base map,
                         training-photo thumbnails, World Bank logo used with permission), _headers, shared.css, figs.js,
-                        geo.json, m_*.json (phone figures), m_classic.html (earlier phone edition)
+                        geo.json, m_*.json (phone figures), m_classic.html (earlier phone edition, source only: not published; build_phone.py builds on its tools)
 site/tools/mobile/      phone edition generator: build_phone.py (+ phone.css, phone.js) on top of build_mobile.py and its
                         figure/scene extractors
 site/tools/             gen_sheet_data.py, check_sheet.js (synthetic Registry data)
