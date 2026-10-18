@@ -1415,7 +1415,10 @@ function diPredict(text){const M=DI.m;if(!M)return null;const {B,D,E,W,es,ws,b,l
   for(const r of ids)for(let d=0;d<D;d++)h[d]+=E[r*D+d];for(let d=0;d<D;d++)h[d]*=es/ids.length;
   const z=b.slice();for(let d=0;d<D;d++)for(let l=0;l<L;l++)z[l]+=h[d]*W[d*L+l]*ws;
   const mx=Math.max(...z),e=z.map(v=>Math.exp(v-mx)),s=e.reduce((x,y)=>x+y,0),p=e.map(v=>v/s);let k=0;p.forEach((v,i)=>{if(v>p[k])k=i});
-  return {intent:labels[k],conf:p[k],p}}
+  let out={intent:labels[k],conf:p[k],p};
+  /* "weather forecast", "previsão do tempo": a weather word and no price word is a weather question, whatever "forecast" suggests */
+  if(out.intent!=='weather'&&/\b(weather|rain\w*|sunny|storm|udan|tempu|maran|cuaca|hujan|cerah|tempo|chuva|chove\w*)\b/i.test(text)&&!/\b(price|prices|folin|harga|pre[cç]o|sell|fa'?an|jual|vender)\b/i.test(text))out={intent:'weather',conf:Math.max(.9,p[labels.indexOf('weather')]),p};
+  return out}
 if(typeof window!=='undefined')window.diPredict=diPredict;
 /* tomorrow and Thursday (pickup), from the market seed; separate stream, so the rest of the market is unchanged */
 function wxOutlook(c,seed){let h=(Math.imul(seed^0x5bd1e995,2654435761)>>>0)||7;const R=()=>{h^=h<<13;h>>>=0;h^=h>>>17;h^=h<<5;h>>>=0;return h/4294967296};
