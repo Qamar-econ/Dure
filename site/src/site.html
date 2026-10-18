@@ -284,7 +284,7 @@ body.in .scrollcue{opacity:1}
 .fp .keys span{height:clamp(14px,1.4vw,22px);border-radius:9px;background:#46555E;color:#D6DEE2;font-size:clamp(9px,.8vw,12px);display:grid;place-items:center}
 @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 /* android */
-.ad{position:relative;width:min(320px,18.5vw,calc((100vh - 300px)*.47));aspect-ratio:250/530;border-radius:36px;background:#202124;padding:9px;box-shadow:0 26px 40px -18px rgba(35,28,20,.55),inset 0 0 0 2px #3C4043}
+.ad{position:relative;width:min(352px,20.35vw,calc((100vh - 300px)*.517));aspect-ratio:275/530;border-radius:36px;background:#202124;padding:9px;box-shadow:0 26px 40px -18px rgba(35,28,20,.55),inset 0 0 0 2px #3C4043}
 .ad::after{content:"";position:absolute;right:-3px;top:22%;width:3px;height:12%;border-radius:2px;background:#3C4043}
 .ad .in{position:relative;height:100%;border-radius:28px;background:#FBFBFD;overflow:hidden;display:flex;flex-direction:column;font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif}
 .ad .hole{position:absolute;left:50%;top:9px;width:11px;height:11px;border-radius:50%;background:#202124;transform:translateX(-50%)}
@@ -1215,7 +1215,7 @@ const togSvg=$('togSvg');
 function together(p){
   const vw=_IW,vh=_IH,mob=vw<=760,pt=!mob&&vh>vw*1.05,H=mob?1350:pt?1150*vh/vw:Math.max(900,1660*vh/vw),W=H*vw/vh;   /* pt: portrait tablet, a closer crop so the walkers fill the screen */
   const cx=mob?720:810;
-  togSvg.setAttribute('viewBox',`${cx-W/2} ${900-H+(mob?60:110)} ${W} ${H}`);
+  togSvg.setAttribute('viewBox',`${cx-W/2} ${900-H+(mob?-20:13)} ${W} ${H}`);   /* ground (from TG=720 to the bottom edge) shown at 2/3 of its old height: 290→193 units on computers, 240→160 on phones */
   QA(document,'#Tfarmers .tf').forEach(g=>{const f=TF[+g.dataset.i];const t=ease(seg(p,f[2],f[3]||.001));const x=f[2]===0&&f[3]===0?f[1]:lerp(f[0],f[1],t);
     const moving=t>0&&t<1;const ph=x/48,sw=moving?Math.sin(ph)*16:0;
     g.setAttribute('transform',`translate(${x} ${TG+(moving?Math.abs(Math.cos(ph))*-2.5:0)}) scale(1.05)`);
@@ -2065,7 +2065,7 @@ function frame(){
   prog.style.transform=`scaleX(${(_SY/Math.max(1,_DH-_IH)).toFixed(4)})`;   /* transform, not width: no layout per frame */
   let ci=SCN[cur].c;CH.forEach((c,k)=>{if(c[2]&&TOPS[c[2]]&&TOPS[c[2]][0]-_SY<_IH*.5)ci=k});if(SWAP&&($('wai').classList.contains('act')||$('econ').classList.contains('act')))ci=8;const c=CH[ci];
   if(chap.dataset.c!==c[1]){chap.dataset.c=c[1];chap.innerHTML=`<b>${c[0]}</b>${c[1]}`}
-  {const sec=_SY+_IH*.5>=($('close').offsetTop||1e9)?'end':ci===7?'7':(ci>=8&&ci<=11)?'8':'';if(qcur!==sec){qcur=sec;document.querySelectorAll('.qlinks a[data-go]').forEach(a=>a.classList.toggle('cur',a.dataset.go===sec))}}   // the quick link of the part you are in
+  {const sec=_SY+_IH*.5>=(TOPS.closeTop||1e9)?'end':ci===7?'7':(ci>=8&&ci<=11)?'8':'';if(qcur!==sec){qcur=sec;document.querySelectorAll('.qlinks a[data-go]').forEach(a=>a.classList.toggle('cur',a.dataset.go===sec))}}   // the quick link of the part you are in
   {const top=_SY<_IH*.35;if(qtop!==top){qtop=top;document.querySelector('.bar').classList.toggle('attop',top)}}   // first screen: its own buttons, so the bar's demo pill waits
 
 }
@@ -2096,7 +2096,7 @@ const SEC={};secs.forEach(el=>SEC[el.id]={el,slots:[],len:0});
 SCN.forEach((n,k)=>{const S=SEC[n.s];n.k=k;n.o=S.len;n.l=Math.round((n.L||slotVH(n.d))*((n.s==='econ'||n.s==='wai')&&innerWidth<=760?.95:innerWidth<=760?.6:1));   /* phones: shorter scenes, fewer swipes */S.slots.push(n);S.len+=n.l;});
 const SWAP=innerWidth<=760;   // phones: the six AI panels share one fixed screen and swap like the How-it-works steps
 function sizeSecs(){Object.values(SEC).forEach(S=>S.el.style.height=S.el.classList.contains('flow')?'':(SWAP&&(S.el.id==='wai'||S.el.id==='econ'))?`${S.len}vh`:`calc(${S.len}vh + 100vh)`);measure()}
-const TOPS={};function measure(){Object.values(SEC).forEach(S=>{S.top=S.el.offsetTop;S.h=S.el.offsetHeight});['risks','wai','econ','hybrid','ledger10'].forEach(id=>{const e=$(id);if(e)TOPS[id]=[e.offsetTop,e.offsetHeight]})}
+const TOPS={};function measure(){Object.values(SEC).forEach(S=>{S.top=S.el.offsetTop;S.h=S.el.offsetHeight});{const c=$('close');TOPS.closeTop=c?c.offsetTop:0}['risks','wai','econ','hybrid','ledger10'].forEach(id=>{const e=$(id);if(e)TOPS[id]=[e.offsetTop,e.offsetHeight]})}
 addEventListener('load',()=>{measure();req()});document.fonts&&document.fonts.ready.then(()=>{measure();req()});
 function swapStages(){if(!SWAP)return;const H=_IH,r=id=>{const[t,h]=TOPS[id];return{top:t-_SY,bottom:t+h-_SY}},a=r('wai'),b=r('econ');
   const onA=a.top<H*.55&&b.top>0, onB=b.top<=0&&b.bottom>H*.25;
