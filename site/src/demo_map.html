@@ -1479,6 +1479,7 @@ function smartReply(intent,text,tet){
       tet?`Semana ne'e ${g} ${upT(tr)}; semana 6 ikus, ${g} entre ${f2(lo)}–${f2(hi)}.`:`This week ${g} is ${upE(tr)}; over the last 6 weeks ${g} ranged ${f2(lo)}–${f2(hi)}.`,m1,tet?'Ita mak deside.':'Your call.'])}
   if(intent==='buyers'){
     const here=mk.buyers,miss=BUYER_CAST.filter(x=>!here.some(y=>y.id===x.id)),names=here.map(x=>`${x.n} (${x.loc})`).join(', ');
+    if(has(/few|so little|only|menus|sedikit|poucos/)&&nB>=5)return tet?`Loloos, sosa-na'in ${nB} semana ne'e, normal ka barak liu (baibain 4–6): ${names}. Kompetisaun di'ak ba lelaun 17:00.`:`Actually, ${nB} buyers came this week, as many as usual or more (4 to 6 is normal): ${names}. That is good competition for the 17:00 auction.`;
     if(has(/few|so little|only|menus|sedikit|poucos/))return tet?`Sosa-na'in ${nB} semana ne'e. ${c.road!=='open'?`Dalan Gleno ${ROAD[c.road][1]}, entaun kamiaun husi Dili balun la mai`:`Sira balun la mai semana ne'e`}${miss.length?` (${miss.map(x=>x.n).join(', ')})`:''}. Sosa-na'in menus = kompetisaun menus.`
       :`${nB} buyers this week. ${c.road!=='open'?`The Gleno road is ${ROAD[c.road][0]}, so some Dili trucks stayed away`:`Some regulars skipped this week`}${miss.length?` (${miss.map(x=>x.n).join(', ')})`:''}. Fewer buyers means less competition in the auction.`;
     if(has(/most|best|highest|more|pays|barak liu|selu|paling|mais/)){const s=here.slice().sort((x,y)=>y.prem-x.prem);
@@ -1509,7 +1510,8 @@ function smartReply(intent,text,tet){
   return null}
 
 async function chatOrFallback(text,p,pre){
-  const tet=p.lang?p.lang==='tet':/\b(ohin|fan|folin|hira|diak|tansa|sosa|udan|dalan|kafe|ka lae|bele|hau|ita)\b/i.test(text),t0=performance.now();let intent=null,how='rules';
+  const idpt=/\b(harga|kenapa|minggu|depan|berapa|apakah|hari ini|pembeli|cuaca|hujan|pre[cç]o|porque|semana que vem|vender|esperar|tempo|chuva|quando|comprador)\b/i.test(text)&&!/\b(ohin|folin|tansa|hau|ita|udan|dalan|fa'?an|hein|sosa)\b/i.test(text);
+  const tet=!idpt&&(p.lang?p.lang==='tet':/\b(ohin|fan|folin|hira|diak|tansa|sosa|udan|dalan|kafe|ka lae|bele|hau|ita)\b/i.test(text)),t0=performance.now();   // Indonesian or Portuguese: answered in Englishlet intent=null,how='rules';
   const kw0=intentRules(text);let conf=0;
   const useDI=LLM.dure?LLM.st==='ready':(LLM.st!=='ready'&&LLM.st!=='off'&&!!DI.m);
   if(useDI){const r=pre||diPredict(text);if(r){intent=r.intent;conf=r.conf;how='small AI'}const typing=push({who:'typing'});render();await sleep(jit(500,900));msgs.splice(msgs.indexOf(typing),1)}
@@ -1575,7 +1577,7 @@ async function handle(text){
   const qLike=/\?\s*$/.test(text)||/^\s*(why|should|is|are|can|could|would|will|what|how|which|who|when|do|does|tansa|karik|ohin|oins[aá]|saida|se|kenapa|apakah|bagaimana|porque|qual|quando)\b/i.test(text);
   const aiOn=LLM.st==='ready'||(!LLM.dure&&LLM.st!=='off'&&!!DI.m);let di=aiOn&&DI.m?diPredict(text):null;
   if(di&&!qLike&&!(di.conf>=.9&&['forecast','why','weather','buyers','pool','quality'].includes(di.intent)&&!p.crop&&!GREET.test(text)))di=null;   // no question mark: only a clear topic counts (an offer never does),unitKg=/\d\s*(kg|kilo|quilo)|\b(kg|kilo|quilo)s?\b/i.test(text);
-  const bareAsk=!!(p.q&&p.q.length)&&!/why|behind|how come|reason|should|smarter|keep|wait|hold|will|next week|tomorrow|forecast|market|jump|fell|drop|moved|stop|coming|outlook|later|soon|month|depan|besok|amanh|que vem|pr[oó]xim|road|dalan|jalan|pool|lelaun|auction|grade|grau|truck|tansa|oins[aá]|saida|sei |aban|semana oin|merkadu|kenapa|porque|vai |hotu|para\b/i.test(text);
+  const bareAsk=!!(p.q&&p.q.length)&&!/why|behind|how come|reason|should|smarter|keep|wait|hold|will|next week|tomorrow|forecast|market|jump|fell|drop|moved|stop|coming|outlook|later|soon|month|depan|besok|amanh|que vem|pr[oó]xim|road|dalan|jalan|pool|lelaun|auction|grade|grau|truck|tansa|oins[aá]|saida|sei |aban|semana oin|merkadu|kenapa|porque|vai |hotu|para\b/i.test(text)&&!(di&&di.conf>=.9&&['buyers','weather','pool','quality'].includes(di.intent));
   const openQ=!!di&&di.intent!=='other'&&di.conf>=.6&&!bareAsk&&p.ask==null&&!p.any&&(!p.letterGrade||(di.conf>=.9&&/^\s*(how|why|what|oins|tansa|saida|bagaimana|kenapa|como|porque)/i.test(text)))&&(p.kg==null||!unitKg)&&!(st==='decide'&&(p.yes||p.no));
   if(openQ){showParse(p);await chatOrFallback(text,p,di);if(st==='decide')await aiSay(t=>t.yn,[600,900]);return}
   const chatQ=!DI.m&&LLM.st==='ready'&&st!=='decide'&&p.kg==null&&p.ask==null&&!p.any&&!p.letterGrade&&(/\?\s*$/.test(text)||/^\s*(why|should|is|are|can|could|would|will|what|how|do|does|tansa|karik|ohin)\b/i.test(text))&&(!p.q||/^\s*(why|tansa|how come|should)\b/i.test(text));
