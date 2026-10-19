@@ -338,7 +338,7 @@ body.simon .mkbar{display:flex}
 .llmb.on{background:#4E8B5C;color:#fff;border-color:#4E8B5C}.llmb.busy{background:rgba(228,182,76,.25)}.llmb.bad{border-color:var(--rust);color:var(--rust)}
 .bub .meta .tagl{font-style:normal;color:#4E8B5C;font-weight:600}
 /* round 3: the AI panel is exactly as tall as the Texts tab needs (parsed card + 6 message rows); freed space goes to the quick replies */
-#readMeta{flex-wrap:nowrap;overflow:hidden;white-space:nowrap}
+#readMeta{flex-wrap:wrap;overflow:hidden;white-space:nowrap;row-gap:1px}   /* each item stays on one line; in a narrow column (iPad landscape) the counts move to a second line instead of being cut */
 .readg{flex:none!important;display:flex!important;flex-direction:column;gap:6px}
 .readg .console{flex:none!important;height:250px;max-height:none!important;overflow-y:auto}
 .readg .console .raw{font-size:17px;padding:5px 9px;margin-bottom:6px;min-height:0}.readg .console table{border-spacing:0 2px}.readg .console td{padding:4px 8px}
@@ -2410,7 +2410,7 @@ function renderFeed(){
   todo.forEach(el=>{if(!el.isConnected||!el.classList.contains('fr')){W.delete(el);return}const it=mk.feed[+el.dataset.i];if(!it)return;const h=feedRowHtml(it);if(el._h!==h){if(el._h){const d=document.createElement('template');d.innerHTML=h.trim();el.innerHTML=d.content.firstChild.innerHTML;el.className=d.content.firstChild.className}el._h=h}
     if(it.pending||h.indexOf('…')>=0)W.add(el);else W.delete(el)});
   if(atBottom)box.scrollTop=0;
-  const s=mk.stat,eng=DURE_API?'small AI server, rules engine as fallback':llmReady()?'rules engine + small AI, in your browser':'rules engine, runs in your browser';
+  const s=mk.stat,eng=DURE_API?'small AI server, rules engine as fallback':(LLM.st==='ready'||llmReady())?'rules + Small AI, on this device':'rules engine, on this device';
   _H($('readMeta'),`<span data-tip="The real Dure reader. A small AI model helps when the rules are unsure (in-browser module or ?api=<server>, off by default).">Reader: <b>${eng}</b></span><span>${('Messages')} <b>${s.read}</b></span><span>${('Right first time')} <b>${s.read?Math.round(s.right/s.read*100):0}%</b></span><span>${('Asked back')} <b>${s.asked}</b></span>`);
 }
 function hlRaw(p){let raw=esc(p.raw||'');const marks=[].concat(p.spans.crop||[],p.spans.kg||[],p.spans.grade||[],p.spans.ask||[]).flat();
