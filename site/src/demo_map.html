@@ -2413,8 +2413,11 @@ function renderFeed(){
   const s=mk.stat,eng=DURE_API?'small AI server, rules engine as fallback':(LLM.st==='ready'||llmReady())?'rules + Small AI, on this device':'rules engine, on this device';
   _H($('readMeta'),`<span data-tip="The real Dure reader. A small AI model helps when the rules are unsure (in-browser module or ?api=<server>, off by default).">Reader: <b>${eng}</b></span><span>${('Messages')} <b>${s.read}</b></span><span>${('Right first time')} <b>${s.read?Math.round(s.right/s.read*100):0}%</b></span><span>${('Asked back')} <b>${s.asked}</b></span>`);
 }
-function hlRaw(p){let raw=esc(p.raw||'');const marks=[].concat(p.spans.crop||[],p.spans.kg||[],p.spans.grade||[],p.spans.ask||[]).flat();
-  [...new Set(marks)].forEach(w=>{if(!w)return;const re=new RegExp('('+String(w).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','i');raw=raw.replace(re,'<mark>$1</mark>')});return raw}
+function hlRaw(p){const raw=esc(p.raw||'');
+  /* one pass over the text: marking word by word put <mark> tags into the text first, and a one-letter grade ("A") then matched the "a" inside "<mark>" */
+  const marks=[...new Set([].concat(p.spans.crop||[],p.spans.kg||[],p.spans.grade||[],p.spans.ask||[]).flat().filter(Boolean).map(String))].sort((a,b)=>b.length-a.length);if(!marks.length)return raw;
+  const E=w=>esc(w).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),re=new RegExp(marks.map(w=>w.length<=2?'(?<![\\w])'+E(w)+'(?![\\w])':E(w)).join('|'),'gi'),used=new Set();
+  return raw.replace(re,m=>{const k=m.toLowerCase();if(used.has(k))return m;used.add(k);return '<mark>'+m+'</mark>'})}
 function showFeedItem(it){if(!it||!it.p)return;if(it.me)return;const f=mk.farmers[it.fid],p=it.p,tr=it.truth||{};
   const row=(l,v,cls='')=>`<tr><td>${l}</td><td class="${cls}">${v}</td></tr>`;const miss=`<span class="miss">—</span>`;
   const meant=[tr.kg!=null?tr.kg+' kg':null,tr.any?('any price'):tr.ask!=null?'$'+tr.ask.toFixed(2):null].filter(Boolean).join(' · ');
