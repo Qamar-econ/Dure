@@ -258,6 +258,7 @@ blockquote cite{margin-top:8px;font-size:14px}
 .vid{all:unset;cursor:pointer;position:relative;display:block;border-radius:10px;overflow:hidden;background:#000}
 .vid img{width:100%;aspect-ratio:16/9;object-fit:cover;opacity:.82}
 .vid span{position:absolute;left:14px;bottom:12px;font:600 15px var(--sans);color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.vid[data-id="ZacBiMIBw34"] span,.vid[data-id="enQjGFoiuKY"] span{color:#000;text-shadow:0 1px 8px rgba(255,255,255,.55)}
 .vid::after{content:"";position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;background:rgba(168,69,42,.92) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M9 6 L19 12 L9 18Z' fill='white'/></svg>") center/26px no-repeat}
 .vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
 .vid.on::after{display:none}
