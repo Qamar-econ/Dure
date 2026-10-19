@@ -244,7 +244,7 @@ def bench_row(a, b, v, m, k):
     return f'<li class="{k}"><div class="bar"><i style="width:{v}%">{inner}</i>{out}</div><div class="meta">{b} · {m}</div></li>'
 bench = ''.join(bench_row(*r) for r in BENCH)
 
-VIDS = [('981bf_9D56U', 'Meet the founder'), ('7GsosgZ9X-s', 'Product demo'), ('WSlZaQtR0n0', 'Technical walkthrough')]
+VIDS = [('fv_WMSEmthA', 'Promotion video'), ('981bf_9D56U', 'Meet the founder'), ('ZacBiMIBw34', 'Product demo'), ('enQjGFoiuKY', 'Technical walkthrough')]
 vids = ''.join(f'<button class="vid" data-id="{i}" type="button"><img src="https://i.ytimg.com/vi/{i}/hqdefault.jpg" alt="" loading="lazy" width="480" height="360"><span>{t}</span></button>' for i, t in VIDS)
 
 walkers = ''.join(sprite(PART['fnb'][i % len(PART['fnb'])], f'nb{i}', .2, 'walker nb front', f'data-p="nb{i}"') for i in range(len(PATHS)))

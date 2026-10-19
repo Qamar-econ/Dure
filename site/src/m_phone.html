@@ -288,7 +288,7 @@ blockquote cite{margin-top:8px;font-size:14px}
   .hero .portrait.wide svg{position:absolute;inset:0;width:100%;height:100%}
   .htxt{z-index:1}
 }
-@media (min-width:700px){.conv{margin:0}.conv .msg{max-width:47%;font-size:14px}.road,.road.zoom{--core:min(76vw,700px)}:root{--g:40px}body{font-size:19.5px}h2{font-size:42px}.hero .mark{width:400px}.big .n{font-size:110px}.portrait,.map{margin-left:0;margin-right:0}.dash,.panelwrap,.cards,.panel,.reg{margin-left:0;margin-right:0}.vids{grid-template-columns:1fr 1fr 1fr}.road .cap{width:min(46%,330px)}}
+@media (min-width:700px){.conv{margin:0}.conv .msg{max-width:47%;font-size:14px}.road,.road.zoom{--core:min(76vw,700px)}:root{--g:40px}body{font-size:19.5px}h2{font-size:42px}.hero .mark{width:400px}.big .n{font-size:110px}.portrait,.map{margin-left:0;margin-right:0}.dash,.panelwrap,.cards,.panel,.reg{margin-left:0;margin-right:0}.vids{grid-template-columns:repeat(4,1fr)}.road .cap{width:min(46%,330px)}}
 
 /* tablets in landscape: use the width. Notes move into the margin beside the maps, step titles stay pinned
    beside the message thread, figures sit next to their text. */
@@ -330,7 +330,7 @@ blockquote cite{margin-top:8px;font-size:14px}
   .regs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:28px calc(-1*(1180px - 860px)/2 + 0px) 0;max-width:none}
   .regs .reg{margin:0}
   .dark > .in{max-width:860px}
-  .close .vids{grid-template-columns:repeat(3,1fr)}
+  .close .vids{grid-template-columns:repeat(4,1fr)}
 }
 
 /* ---------- native figures: the PC dashboards rebuilt at phone size (native.py) ---------- */
@@ -640,7 +640,7 @@ details.dsh .mb{padding:0 12px 4px}
 /* videos: one row you swipe */
 .vids{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:24px calc(-1*var(--g)) 8px;padding:0 var(--g) 6px;scrollbar-width:none}
 .vids .vid{flex:0 0 72%;scroll-snap-align:start}
-@media (min-width:700px){.vids .vid{flex-basis:calc((100% - 24px)/3)}.vids{margin-left:0;margin-right:0;padding:0}}
+@media (min-width:700px){.vids .vid{flex-basis:calc((100% - 36px)/4)}.vids{margin-left:0;margin-right:0;padding:0}}
 
 /* phones: What stays / What goes as tabs; wider screens keep the two lists side by side */
 .swtabs{display:block}.sw{display:none!important}
@@ -1654,7 +1654,7 @@ main > section:not(.hero),.night > section{content-visibility:auto;contain-intri
   <div class="in">
     <h2>Cooperate through <em>messaging.</em></h2>
     <a class="btn" href="demo.html">Try the demo<span>→</span></a>
-    <div class="vids"><button class="vid" data-id="981bf_9D56U" type="button"><img src="https://i.ytimg.com/vi/981bf_9D56U/hqdefault.jpg" alt="" loading="lazy" width="480" height="360"><span>Meet the founder</span></button><button class="vid" data-id="7GsosgZ9X-s" type="button"><img src="https://i.ytimg.com/vi/7GsosgZ9X-s/hqdefault.jpg" alt="" loading="lazy" width="480" height="360"><span>Product demo</span></button><button class="vid" data-id="WSlZaQtR0n0" type="button"><img src="https://i.ytimg.com/vi/WSlZaQtR0n0/hqdefault.jpg" alt="" loading="lazy" width="480" height="360"><span>Technical walkthrough</span></button></div>
+    <div class="vids"><button class="vid" data-id="fv_WMSEmthA" type="button"><img src="https://i.ytimg.com/vi/fv_WMSEmthA/hqdefault.jpg" alt="" loading="lazy" width="480" height="360"><span>Promotion video</span></button><button class="vid" data-id="981bf_9D56U" type="button"><img src="https://i.ytimg.com/vi/981bf_9D56U/hqdefault.jpg" alt="" loading="lazy" width="480" height="360"><span>Meet the founder</span></button><button class="vid" data-id="ZacBiMIBw34" type="button"><img src="https://i.ytimg.com/vi/ZacBiMIBw34/hqdefault.jpg" alt="" loading="lazy" width="480" height="360"><span>Product demo</span></button><button class="vid" data-id="enQjGFoiuKY" type="button"><img src="https://i.ytimg.com/vi/enQjGFoiuKY/hqdefault.jpg" alt="" loading="lazy" width="480" height="360"><span>Technical walkthrough</span></button></div>
     <div class="fdr"><div class="fhd"><img class="fph" src="assets/founder.jpg" alt="Tae Yoon Moon in Timor-Leste" width="300" height="300" loading="lazy"><div><p class="kick">Founder</p><p class="fname">Tae Yoon Moon</p><p class="fwho">University of Seoul · International Relations &amp; Economics</p></div></div>
       <p class="ct"><a href="mailto:taeyoonmoon@uos.ac.kr">taeyoonmoon@uos.ac.kr</a><a href="https://www.linkedin.com/in/tae-yoon-moon-398b11313" target="_blank" rel="noopener">LinkedIn</a><a href="https://docs.google.com/document/d/1BhcbQTZ8WVTYN4VDnK4LSs0JsRNSKh60xIMSUa_87dM/view" target="_blank" rel="noopener">CV</a><a href="https://github.com/Qamar-econ/Dure" target="_blank" rel="noopener">GitHub</a><a href="sheet.html">Sample Registry</a></p></div>
     <p class="thanks">Thanks for paying attention, and enjoy the demo!</p>
