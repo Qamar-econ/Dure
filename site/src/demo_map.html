@@ -526,6 +526,9 @@ body.mob.land .mp[data-p="dash"] #dashCard{flex:1 1 0!important;height:auto!impo
 /* tablets: the smartphone keeps its real proportions (360 × 740); it shrinks to fit, never stretches */
 body.mob.tab .android{aspect-ratio:360/740;width:auto!important;height:min(calc(100dvh - var(--topH,56px) - var(--dockH,110px) - 24px),940px,calc((100vw - 32px) * 740 / 360))!important}
 body.mob.land .android{height:min(calc(100dvh - var(--topH,56px) - 28px),calc((var(--pc) - 28px) * 740 / 360))!important}
+/* tablets sideways: the phone column is only as wide as a real-proportioned phone of full height (width set explicitly, not left to aspect-ratio); the dashboard gets the rest */
+body.mob.land{--phH:calc(100dvh - var(--topH,56px) - 28px);--pc:min(calc(var(--phH) * 360 / 740 + 28px),36vw)}
+body.mob.land .android{aspect-ratio:auto!important;height:min(var(--phH),calc((var(--pc) - 28px) * 740 / 360))!important;width:calc(min(var(--phH),calc((var(--pc) - 28px) * 740 / 360)) * 360 / 740)!important;flex:none!important;max-width:none!important}
 
 /* tablets sideways: three columns — phone · dashboard · map and market, all visible together */
 body.mob .end.on{z-index:80}
