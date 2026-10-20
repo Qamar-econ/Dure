@@ -526,8 +526,6 @@ body.mob.land .mp[data-p="dash"] #dashCard{flex:1 1 0!important;height:auto!impo
 /* tablets: the smartphone keeps its real proportions (360 × 740); it shrinks to fit, never stretches */
 body.mob.tab .android{aspect-ratio:360/740;width:auto!important;height:min(calc(100dvh - var(--topH,56px) - var(--dockH,110px) - 24px),940px,calc((100vw - 32px) * 740 / 360))!important}
 body.mob.land .android{height:min(calc(100dvh - var(--topH,56px) - 28px),calc((var(--pc) - 28px) * 740 / 360))!important}
-/* tablets sideways: the smartphone fills its whole column (top, bottom, left, right) and everything inside it, text included, is scaled by the same factor (--pk, set in fitPhone) */
-body.mob.land .android{aspect-ratio:auto!important;width:var(--pw,min(420px,calc(var(--pc) - 40px)))!important;height:var(--ph,min(calc(100dvh - var(--topH,56px) - 28px),calc((var(--pc) - 28px) * 740 / 360)))!important;zoom:var(--pk,1);margin:0!important}
 
 /* tablets sideways: three columns — phone · dashboard · map and market, all visible together */
 body.mob .end.on{z-index:80}
@@ -1110,11 +1108,7 @@ function buildPhone(){
   render();
 }
 function fitPhone(){const tp=document.querySelector('.top');if(tp)document.documentElement.style.setProperty('--topH',tp.offsetHeight+'px');const p=$('phone');if(!p)return;
-  {const rs=document.documentElement.style;   /* tablet landscape: size the smartphone to its column, scale text with it */
-   if(document.body.classList.contains('mob')&&document.body.classList.contains('land')&&skin==='android'){
-     const col=document.querySelector('.colP'),cw=(col&&col.clientWidth)||0,aw=cw-8,ah=innerHeight-(tp?tp.offsetHeight:56)-8;
-     if(aw>200&&ah>300){const k=Math.max(1,Math.min(2,aw/390));rs.setProperty('--pk',k.toFixed(3));rs.setProperty('--pw',(aw/k).toFixed(1)+'px');rs.setProperty('--ph',(ah/k).toFixed(1)+'px')}
-   }else{rs.removeProperty('--pk');rs.removeProperty('--pw');rs.removeProperty('--ph')}}if((innerWidth<=420||document.body.classList.contains('mob'))&&skin==='android'){p.style.transform='';$('phoneWrap').style.height='';$('phoneWrap').style.width='';return}
+  if((innerWidth<=420||document.body.classList.contains('mob'))&&skin==='android'){p.style.transform='';$('phoneWrap').style.height='';$('phoneWrap').style.width='';return}
   if(document.body.classList.contains('mob')&&skin==='nokia'){   /* phones: zoom the feature phone so its screen fills the view; the keypad runs off the bottom */
     p.style.transform='';const sc_=p.querySelector('.scr'),need=sc_.offsetTop+sc_.offsetHeight+70,av=innerHeight-(tp?tp.offsetHeight:56)-(($('mDock')||{}).offsetHeight||0)-6;
     const LND=document.body.classList.contains('land'),cw=($('phoneWrap').parentElement||{}).clientWidth||innerWidth,k=LND?Math.min(cw*.9/p.offsetWidth,(av-24)/p.offsetHeight):Math.min(Math.min(cw,innerWidth)*(document.body.classList.contains('land')?.9:.96)/p.offsetWidth,av/need,innerWidth>760?1.7:9);p.style.transform=`scale(${k.toFixed(3)})`;p.style.transformOrigin=LND?'center center':'top center';$('phoneWrap').style.height=av+'px';$('phoneWrap').style.width='';$('phoneWrap').style.overflow='hidden';return}
