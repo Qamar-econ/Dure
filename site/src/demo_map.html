@@ -555,6 +555,12 @@ body.mob.land .mp[data-p="tries"] .tries>b{font:600 15px var(--f-display);color:
 body.mob.land .mp[data-p="tries"] .tries button{flex:none;margin:0;font-size:15px;line-height:1.3;padding:8px 11px;align-items:center}
 body.mob.land .mp[data-p="tries"] .tries button small{display:block;font-size:12.5px}
 body.mob.land .mp[data-p="tries"]:not(:has(.tries button))::before{content:"Suggestions appear here when there is something to reply to.";font:italic 14px var(--f-display);color:var(--ink-2);margin:auto;text-align:center;padding:0 16px}
+/* tablets sideways, laid out like the PC: map · dashboard · phone (phone on the right) */
+body.land.simon #stage.on{margin-left:auto}
+body.mob.land #mSheet{left:0!important;right:var(--pc)!important;border-radius:0 18px 0 0!important;box-shadow:10px 0 30px -18px rgba(31,58,64,.45)!important}
+body.mob.land #mSheet .mbody{grid-template-columns:minmax(0,1fr) minmax(360px,1.08fr)!important}
+body.mob.land .mp[data-p="map"]{grid-column:1!important}
+body.mob.land .mp[data-p="dash"],body.mob.land .mp[data-p="tries"]{grid-column:2!important}
 
 
 
@@ -1169,7 +1175,7 @@ function chips(kind){const box=$('tries');chipKind=kind;const list=chipList(kind
   if(!list){box.innerHTML='';if(!document.body.classList.contains('mob')&&innerWidth>1100){box.style.display='';box.style.visibility='hidden'}else box.style.display='none';return}box.style.display='';box.style.visibility='';
   box.innerHTML=`<b>Stuck? Tap one to try it</b>`+list.map(([tx,lg,en])=>`<button data-c="${esc(tx)}"><span class="tx">${esc(tx)}${en?`<small>(${esc(en)})</small>`:''}</span><span class="lg">${lg}</span></button>`).join('');
   box.querySelectorAll('button').forEach(b=>b.onclick=()=>{$('inp').value=b.dataset.c;if(skin==='android')$('inp').dispatchEvent(new Event('input'));
-    // touch screens (phone / tablet): tapping a suggestion only fills the text box; the keyboard opens when the visitor taps the box themselves
+    /* touch screens (phone / tablet): tapping a suggestion only fills the text box; the keyboard opens when the visitor taps the box themselves */
     if(SHEET){sheet(false);if(!PHONEISH)setTimeout(()=>$('inp').focus({preventScroll:true}),380)}else if(innerWidth<=900){$('phone').scrollIntoView({behavior:'smooth',block:'end'});if(!PHONEISH)setTimeout(()=>$('inp').focus({preventScroll:true}),450)}else if(!PHONEISH)$('inp').focus()});}
 
 /* ---------- console ---------- */
@@ -1235,7 +1241,9 @@ const engName=()=>engine.name==='chat'?`small AI (on this device) · ${(engine.m
    only messages it can't place come here. Every reply is checked in JS: numbers must
    come from the grounding context, no promises, ≤320 chars; otherwise a checked template.
    ===================================================================== */
-const PHONEISH=matchMedia('(max-width:760px)').matches||matchMedia('(pointer:coarse)').matches;
+/* touch device (phone / tablet), even when the browser asks for the desktop site: Galaxy Tab, iPad */
+const TOUCHDEV=matchMedia('(pointer:coarse)').matches||(navigator.maxTouchPoints>1&&(matchMedia('(hover:none)').matches||/Android|iPad/i.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&'ontouchend' in document)));
+const PHONEISH=matchMedia('(max-width:760px)').matches||TOUCHDEV;
 const LLM={cached:false,st:'off',p:0,err:null,gen:null,dtype:null,device:null,model:'onnx-community/Qwen2.5-0.5B-Instruct',lib:'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.5'};
 /* Phones and tablets cannot hold the 500 MB Qwen model: reading it into memory and building the WebAssembly session needs
    well over 1 GB at once, and iOS / Android close the tab. The Small AI's only job here is to pick the topic of an
@@ -2844,7 +2852,7 @@ $('langBtn').onclick=()=>{lang=lang==='tet'?'en':'tet';try{sessionStorage.setIte
 
 <script>
 /* phones: the default screen is the phone plus suggested texts; the dashboard and the map open as sheets when needed */
-(()=>{const coarseTab=matchMedia('(pointer:coarse)').matches&&Math.min(innerWidth,innerHeight)>=700&&Math.max(innerWidth,innerHeight)<=1400;if(!matchMedia('(max-width:1100px)').matches&&!coarseTab)return;document.body.classList.add('mob');if(innerWidth>760)document.body.classList.add('tab');
+(()=>{const coarseTab=TOUCHDEV&&Math.min(innerWidth,innerHeight)>=600&&Math.max(innerWidth,innerHeight)<=2200;   /* large Android tablets (Galaxy Tab) report wide viewports, often in "desktop site" mode */if(!matchMedia('(max-width:1100px)').matches&&!coarseTab)return;document.body.classList.add('mob');if(innerWidth>760)document.body.classList.add('tab');
 const $=id=>document.getElementById(id);
 const dock=document.createElement('div');dock.id='mDock';
 dock.innerHTML='<div class="mbtns"><button data-p="dash">📊 Dashboard<i></i></button><button data-p="map">🗺 Map &amp; market<i></i></button></div>';
@@ -2971,7 +2979,7 @@ setInterval(()=>{setH();
   const sk=$('mSkip'),on=(typeof ffNext!=='undefined')&&!!ffNext&&!!ffLabel;sk.classList.toggle('on',!!(on&&open));if(on){const L=ffLabel;sk.textContent=(/pool closes/.test(L)?'Close pool':/auction/.test(L)?'To 17:00':/pickup point/.test(L)?'Drop sack':/truck/.test(L)?'Truck':/payment/.test(L)?'Payment':'Skip')+' ⏩'}
 },250);
 addEventListener('resize',setH);setH();
-/* tablets held sideways: phone on the left, dashboard / map always open on the right */
+/* tablets held sideways: map and dashboard always open on the left, phone on the right (like the PC) */
 const applyLand=()=>{const L=innerWidth>innerHeight&&innerWidth>=900,was=document.body.classList.contains('land');
   {const tr=$('tries');if(tr&&tr.parentNode!==pop)pop.appendChild(tr)}
   document.body.classList.toggle('tab',innerWidth>760);document.body.classList.toggle('land',L);
