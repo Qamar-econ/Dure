@@ -74,7 +74,7 @@ TECH = (
 
 BENCH = (f'<p>Large models overlook Tetum. A small model plus a rules engine gets Dure close to a large model.</p>'
          f'<ul class="bench rv">{B.bench}</ul>'
-         '<p class="src"><b>Method.</b> 60 test SMS (36 Tetum, 16 English, 8 other) written by Claude Sonnet and frozen before scoring. A text counts only if every field is right. On 64 new texts never used to design Dure: 86% (rules engine alone 78%). Measured 23 Oct 2026.</p>')
+         '<p class="src"><b>Method.</b> 60 synthetic SMS written by Claude Sonnet, frozen before scoring; every field must be right. On 64 newer texts never used to build Dure: 86% (rules engine alone 78%). Synthetic benchmark, not field results; the web demo reads offers with the rules engine only. Measured 23 Oct 2026.</p>')
 
 REGISTRY = ('<p class="lead">A farmer Registry is costly to keep by hand. Every Dure deal leaves a record, <b>so the Registry builds itself.</b></p>'
             f'<div class="reg">{N.tabs([("1 · Trades", N.ledger()), ("2 · Data analysis", N.qchart()), ("3 · AI brief", N.brief())], "The Registry")}</div>'

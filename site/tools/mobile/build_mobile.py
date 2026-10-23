@@ -388,7 +388,7 @@ PAGE = f'''<!doctype html>
   <h2 class="rv">How well does AI read <em>Tetum texts?</em></h2>
   <p class="rv">Large models overlook Tetum. A small model plus a rules engine gets Dure close to a large model.</p>
   <ul class="bench rv">{bench}</ul>
-  <p class="src rv"><b>Method.</b> 60 test SMS (36 Tetum, 16 English, 6 in languages Dure should decline, 2 bare numbers), written by Claude Sonnet, not by us, and frozen before any reader was scored. A text counts only if crop, quantity, grade, price and intent are all right. On 64 new texts, frozen before scoring and never used to design Dure: 86%, against 78% for the rules engine alone. On 80 texts we wrote ourselves: rules engine 98%, with the small model 99%. Costs are API list prices. Measured 23 Oct 2026.</p>
+  <p class="src rv"><b>Method.</b> 60 synthetic SMS written by Claude Sonnet, frozen before scoring; every field must be right. On 64 newer texts never used to build Dure: 86% (rules engine alone 78%). Synthetic benchmark, not field results; the web demo reads offers with the rules engine only. Measured 23 Oct 2026.</p>
 </section>
 
 <!-- 12 · field problems -->
