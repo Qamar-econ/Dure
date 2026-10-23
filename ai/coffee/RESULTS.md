@@ -126,4 +126,8 @@ changed since 4 Oct). The routing rule ("sure") is the one built into v2.1; we d
 - Next: route Tetum offers that the rules engine reads in full to the rules engine, and retrain the small model on real Tetum messages.
   Any new routing must be judged on a new frozen test set, not test 3.
 
+Reproducibility check (23 Oct): we merged the LoRA adapter in `lora/` into a fresh download of Qwen2.5-0.5B-Instruct and re-ran
+`infer.py` (full precision, greedy) on all three test sets. Every reading matched the saved `pred_model_test*.json` (51/51, 70/70,
+60/60 identical; 88%, 70%, 72%), about 3–4 s per text on 2 CPU cores. The 8-bit GGUF was not rebuilt this time; its saved readings are used above.
+
 Files: `pred_rules_v21_test*.json`, `pred_hybrid_v21_test*.json` (from `node rules.js OUT TEST` and `hybrid.py`), scored by `score.py`.
