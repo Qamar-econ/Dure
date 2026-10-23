@@ -50,7 +50,22 @@ def route_v2(r, m):
     return out
 
 
-POLICIES = {'v1': route_v1, 'v2': route_v2}
+def route_v3(r, m):
+    """v3 = v2, plus: in a Tetum message the rules engine kept, the model may also fill a grade or an 'any price' that the
+    rules engine left empty. It never overwrites a value the rules engine found."""
+    out = route_v2(r, m)
+    if r.get('_sure') or not m or out.get('lang') == 'unknown':
+        return out
+    found = any(r.get(f) not in (None, False) for f in ('crop', 'kg', 'ask', 'any', 'yn'))
+    if r.get('lang') == 'tet' and found and out.get('yn') is None:
+        if out.get('grade') is None and m.get('grade'):
+            out['grade'] = m['grade']
+        if not out.get('any') and m.get('any') and out.get('ask') is None:
+            out['any'] = True
+    return out
+
+
+POLICIES = {'v1': route_v1, 'v2': route_v2, 'v3': route_v3}
 
 
 def eq(f, a, b):
