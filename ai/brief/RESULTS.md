@@ -27,4 +27,4 @@ of it. The checker is not optional: on the held-out register it caught the model
 The checker cannot catch everything: a number that appears in a cited finding but is attached to the wrong measure would pass.
 Every sentence therefore links to its finding and its rows, and a person decides what to do.
 
-Files: `brief_3b.json` (shown in the sheet), `brief_3b_heldout.json`, `brief_1.5b.json`, `findings.json`, `findings_heldout.json`.
+Files: `brief_3b.json` (a copy is embedded in the Registry page as `brief_ai.json`, but the page shows the phrase-bank brief, not this one), `brief_3b_heldout.json`, `brief_1.5b.json`, `findings.json`, `findings_heldout.json`.

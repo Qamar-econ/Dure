@@ -9,7 +9,7 @@ Dure does a farmers' cooperative's jobs by plain text message. Smallholder coffe
 | **Live site** | https://dure-ai.pages.dev (phones and tablets get the mobile edition, [`m.html`](https://dure-ai.pages.dev/m.html)) |
 | **Interactive demo** | https://dure-ai.pages.dev/demo.html: a full market week in your browser, with nothing to install and no server |
 | **Photo grader** | https://dure-ai.pages.dev/demo.html?photo=1 |
-| **Farmer Registry** | https://dure-ai.pages.dev/sheet.html: eight weeks of synthetic data from Letefoho, plus an AI-written brief |
+| **Farmer Registry** | https://dure-ai.pages.dev/sheet.html: eight weeks of synthetic data from Letefoho, plus a brief for extension officers |
 | **Videos** | [Promotion](https://www.youtube.com/watch?v=fv_WMSEmthA) · [Meet the founder](https://www.youtube.com/watch?v=981bf_9D56U) · [Product demo](https://www.youtube.com/watch?v=ZacBiMIBw34) · [Technical walkthrough](https://www.youtube.com/watch?v=enQjGFoiuKY) |
 | **Builder** | Tae Yoon Moon (solo), University of Seoul · taeyoonmoon@uos.ac.kr |
 
@@ -23,7 +23,7 @@ Dure does a farmers' cooperative's jobs by plain text message. Smallholder coffe
 - **Why cooperatives don't solve it.** Farmer organisations raised members' incomes in 58% of 239 studies (Bizikova et al., *Nature Food* 2020). But starting one in Timor-Leste takes about 3–4 years, $1,000 in share capital and 15 founders, while a typical coffee household earns about $250 a year. The process also tends to end in a fight over power, and women farmers are easily left out.
 - **What Dure keeps.** Pooling the harvest, buyers bidding for the whole lot, one shared truck and pickup point, and a record that earns trust.
 - **What Dure drops.** The legal entity, the $1,000 in share capital, the board to fight over, and the few who decide for everyone. Nobody has to join, and anyone can leave at any time.
-- **Where the AI is.** Small models read Tetum texts and grade coffee from one photo. Simple, auditable algorithms set prices, score reputation and split the two markets. Each morning, code computes a brief for extension officers, and a checker verifies every number in it. A person always makes the final call.
+- **Where the AI is.** Small models read Tetum texts and grade coffee from one photo. Simple, auditable algorithms set prices, score reputation and split the two markets. Each morning, code computes a brief for extension officers, and a checker verifies every sentence in it. A person always makes the final call.
 
 ## How it works (one week)
 
@@ -57,7 +57,7 @@ In the demo, reputation and the fixed pool run on pre-accumulated synthetic reco
 | Reading farmers' SMS (kilos, grade, price, yes/no, questions) in Tetum and English | **AI, hybrid.** A rules engine reads every text. A Qwen2.5-0.5B model fine-tuned with LoRA reads the texts routing sends it: English, other languages, and anything the rules engine could not place. | Rules engine on the phone or hub. The fine-tuned reader runs as an 8-bit GGUF on the hub laptop (llama.cpp). The web demo runs the rules engine only for offers (see below). |
 | Off-script questions ("is today a good day to sell?", "why is the price low?") | **AI.** Stock Qwen2.5-0.5B-Instruct reads the intent. The reply is composed from live market data, so every number is real. | On the visitor's device (transformers.js, WebGPU or WebAssembly), ~3 s per reply on a 2-core CPU |
 | Preliminary grade from one phone photo | **AI (computer vision).** CLIP ViT-B/32 (int8) plus our own 5-class head (A/B/C, roasted, not coffee) | On the visitor's device (onnxruntime-web), ~2 s per photo |
-| Daily brief for extension services | **Code computes the findings, AI writes the sentences, and a checker verifies every sentence** | In the browser |
+| Daily brief for extension services | **On the site: code computes the findings and fills a hand-written phrase bank; a checker verifies every sentence.** A small model (Qwen2.5-3B) writing the sentences instead was tested offline (`ai/brief/`) | Site version in the browser; the model version on a laptop, not on the site |
 | Morning price, suggestion, opening price, reputation, two pools | Algorithms run on pre-accumulated synthetic records in the demo | In the browser |
 | Pooling, auction, floor, escrow, payout, Registry | Ordinary software, which must be predictable and auditable | In the browser (simulated) |
 
@@ -82,7 +82,7 @@ Dure has two small models, and they have different jobs.
    - **Where it runs:** it is built for the **hub laptop at the pickup point**. v1, merged and quantised to an 8-bit GGUF (531 MB), reads a text in 1.8 s on two CPU cores with llama.cpp (`ai/coffee/infer_gguf.py`). v2 was measured at full precision (about 3 s per text); its 8-bit file has not been built yet.
 2. **The on-device question reader** (stock Qwen2.5-0.5B-Instruct, ONNX). It runs in the visitor's browser and only picks the topic of an off-script question (one of eight letters). The reply is written from live market data.
 
-The web demo uses the rules engine for offers and the second model for questions. We kept the fine-tuned reader out of the web demo on purpose:
+**What runs on the live site, and what the benchmark measures.** The web demo reads offers with the rules engine only, and uses the second model for questions. The fine-tuned reader and the routing measured in the Tetum Benchmark Index run on the hub laptop and in `ai/coffee/`, not on the site. (The demo has a developer option, `?api=URL`, that sends offers to a hosted reader; it predates routing v2, and the site does not link to a hosted reader.) We kept the fine-tuned reader out of the web demo on purpose:
 
 - **The demo has to run with no server.** Anyone who opens the link gets the whole week in their own browser, with nothing for us to host or keep alive.
 - **It matches where each model lives in the real service.** Farmers text from basic phones, so offers are read on the hub laptop, not on the farmer's phone. Shipping the reader to every visitor would show a deployment Dure does not use.
@@ -110,6 +110,8 @@ Dure reads every text with a rules engine and, when routing says so, a small fin
 - **History:** 4 Oct, rules engine v1: rules engine 70%, small model 75% (8-bit), hybrid 80% on test 3.
 - **Test 4:** on 80 texts we wrote ourselves, including questions, the rules engine scored 98% alone and 99% with the small model (4 Oct). Test 4 was written by the builder, so it is not independent.
 - **Cost:** reading a text adds under 1% to the cost of sending the SMS (API list prices).
+- **Limits:** every test text is synthetic (written by AI models, not farmers), so these are benchmark scores, not field accuracy, which is likely lower. 64 texts is a small set: one text is 1.6 points, so 86% has an uncertainty of roughly ±8 points. Test 6 and the retraining data were written by the same author (Claude Opus), so the small model's own gain on test 6 (62% → 83%) may be partly flattered; the hybrid's gain over the rules engine came from routing, which was designed without test 6. An independent test set written by Tetum speakers, and later real messages collected with consent, are needed for a field number.
+- **No test text was trained on.** The generator drops any exact test message; only short generic replies such as "60 kilu" or "1.40" share a pattern with training data, and most of those were already in the 4 Oct data.
 - **Details and protocol:** see [`ai/coffee/RESULTS.md`](ai/coffee/RESULTS.md).
 
 ## Photo grader
@@ -131,7 +133,7 @@ Note: the training scripts for photo grader v2 and for a later reader experiment
 
 A farmer Registry is valuable but labour-intensive and expensive to keep up. In Dure, every deal leaves a row, so the Registry builds itself.
 
-Each morning, code computes findings from those rows, a small model writes them up, and a checker drops any sentence whose numbers it cannot trace back to the rows. Extension officers visit about twice a year, and the brief helps them use those visits where they matter. Dure stays out of how farmers farm. Try the [sample Registry](https://dure-ai.pages.dev/sheet.html); the brief experiments are in [`ai/brief/`](ai/brief/).
+Each morning, code computes findings from those rows and writes them up from a hand-written phrase bank, and a checker drops any sentence whose numbers it cannot trace back to the rows. Letting a small model (Qwen2.5-3B, on a laptop) write the sentences was tested offline: with code doing the analysis and the same checker in front, it kept 9 of 10 sentences on the July data and 12 of 17 on a held-out register. That model version is not shown on the site. Extension officers visit about twice a year, and the brief helps them use those visits where they matter. Dure stays out of how farmers farm. Try the [sample Registry](https://dure-ai.pages.dev/sheet.html); the brief experiments are in [`ai/brief/`](ai/brief/).
 
 ## Guardrails
 
