@@ -62,7 +62,7 @@ def week():
 
 
 # the phone edition's notes, shorter
-_tw = list(B.TW[0]); _tw[3] = 'Open-source Qwen, trained on 3,125 texts incl. 250 real Tetum (Labadain-30k+, CC BY 4.0).'; B.TW[0] = tuple(_tw)
+_tw = list(B.TW[0]); _tw[3] = 'Open-source Qwen, trained on about 3,700 texts incl. 250 real Tetum (Labadain-30k+, CC BY 4.0).'; B.TW[0] = tuple(_tw)
 _tw = list(B.TW[1]); _tw[2] = 'A small vision model trained on 1,200 bean photos grades coffee A, B or C, right 79% of the time. A hand check sets the final grade.'; B.TW[1] = tuple(_tw)
 
 TECH = (
@@ -74,7 +74,7 @@ TECH = (
 
 BENCH = (f'<p>Large models overlook Tetum. A small model plus a rules engine gets Dure close to a large model.</p>'
          f'<ul class="bench rv">{B.bench}</ul>'
-         '<p class="src"><b>Method.</b> 60 test SMS (36 Tetum, 16 English, 8 other) written by Claude Sonnet and frozen before scoring. A text counts only if every field is right. Re-scored with rules engine v2.1, 23 Oct 2026.</p>')
+         '<p class="src"><b>Method.</b> 60 test SMS (36 Tetum, 16 English, 8 other) written by Claude Sonnet and frozen before scoring. A text counts only if every field is right. On 64 new texts never used to design Dure: 86% (rules engine alone 78%). Measured 23 Oct 2026.</p>')
 
 REGISTRY = ('<p class="lead">A farmer Registry is costly to keep by hand. Every Dure deal leaves a record, <b>so the Registry builds itself.</b></p>'
             f'<div class="reg">{N.tabs([("1 · Trades", N.ledger()), ("2 · Data analysis", N.qchart()), ("3 · AI brief", N.brief())], "The Registry")}</div>'

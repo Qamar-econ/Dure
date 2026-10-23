@@ -54,7 +54,7 @@ In the demo, reputation and the fixed pool run on pre-accumulated synthetic reco
 
 | Part | AI or software | Where it runs |
 |---|---|---|
-| Reading farmers' SMS (kilos, grade, price, yes/no, questions) in Tetum and English | **AI, hybrid.** A rules engine reads every text. A Qwen2.5-0.5B model fine-tuned with LoRA reads the texts the rules engine is unsure of. | Rules engine on the phone or hub. The fine-tuned reader runs as an 8-bit GGUF on the hub laptop (llama.cpp). The web demo runs the rules engine only for offers (see below). |
+| Reading farmers' SMS (kilos, grade, price, yes/no, questions) in Tetum and English | **AI, hybrid.** A rules engine reads every text. A Qwen2.5-0.5B model fine-tuned with LoRA reads the texts routing sends it: English, other languages, and anything the rules engine could not place. | Rules engine on the phone or hub. The fine-tuned reader runs as an 8-bit GGUF on the hub laptop (llama.cpp). The web demo runs the rules engine only for offers (see below). |
 | Off-script questions ("is today a good day to sell?", "why is the price low?") | **AI.** Stock Qwen2.5-0.5B-Instruct reads the intent. The reply is composed from live market data, so every number is real. | On the visitor's device (transformers.js, WebGPU or WebAssembly), ~3 s per reply on a 2-core CPU |
 | Preliminary grade from one phone photo | **AI (computer vision).** CLIP ViT-B/32 (int8) plus our own 5-class head (A/B/C, roasted, not coffee) | On the visitor's device (onnxruntime-web), ~2 s per photo |
 | Daily brief for extension services | **Code computes the findings, AI writes the sentences, and a checker verifies every sentence** | In the browser |
@@ -76,10 +76,10 @@ Both on-device models download in the background while the visitor reads the sto
 
 Dure has two small models, and they have different jobs.
 
-1. **The fine-tuned reader** (Qwen2.5-0.5B + LoRA, adapter in `ai/coffee/lora/`, 35 MB).
-   - **Training data:** 2,625 synthetic SMS and 250 real Tetum sentences (Labadain-30k+).
-   - **Job:** it turns an unclear offer into fields (kilos, grade, minimum, yes/no). This is the model behind the Tetum Benchmark Index: 75% alone, 78% with the rules engine.
-   - **Where it runs:** it is built for the **hub laptop at the pickup point**. Merged and quantised to an 8-bit GGUF (531 MB), it reads a text in 1.8 s on two CPU cores with llama.cpp (`ai/coffee/infer_gguf.py`).
+1. **The fine-tuned reader** (Qwen2.5-0.5B + LoRA, current adapter in `ai/coffee/lora_v2/`, 35 MB).
+   - **Training data:** 2,625 synthetic SMS and 250 real Tetum sentences (Labadain-30k+) for v1 (`ai/coffee/lora/`), then one short extra pass (39 minutes on 2 CPU cores) on 847 targeted synthetic SMS plus 450 replayed v1 examples for v2 (`gen2.py`, `train2.py`).
+   - **Job:** it turns an unclear offer into fields (kilos, grade, minimum, yes/no). Alone it scores 85% on test 3 and 83% on the held-out test 6; with the rules engine, 90% and 86% (see the Tetum Benchmark Index below).
+   - **Where it runs:** it is built for the **hub laptop at the pickup point**. v1, merged and quantised to an 8-bit GGUF (531 MB), reads a text in 1.8 s on two CPU cores with llama.cpp (`ai/coffee/infer_gguf.py`). v2 was measured at full precision (about 3 s per text); its 8-bit file has not been built yet.
 2. **The on-device question reader** (stock Qwen2.5-0.5B-Instruct, ONNX). It runs in the visitor's browser and only picks the topic of an off-script question (one of eight letters). The reply is written from live market data.
 
 The web demo uses the rules engine for offers and the second model for questions. We kept the fine-tuned reader out of the web demo on purpose:
@@ -94,22 +94,23 @@ To see the fine-tuned reader at work, run `ai/coffee/infer_gguf.py` on the merge
 
 Tetum is one of the languages large language models overlook most. A text counts as correct only if every field is right (crop, quantity, grade, price and intent).
 
-Test 3 has 60 SMS (36 Tetum, 16 English, 6 in languages Dure should decline, 2 bare numbers). Claude Sonnet wrote them, not us, and they were frozen before any reader was scored.
+Dure reads every text with a rules engine and, when routing says so, a small fine-tuned model. Routing sends each text to the reader that handles it best: the rules engine's sure answers and the Tetum messages it understood stay with it; English, messages in other languages, and anything it could not place go to the model (`ai/coffee/hybrid2.py`).
 
-| Reader (current versions) | Test 3 exact match | Tetum (36) | English (16) |
-|---|---|---|---|
-| **Dure: rules engine v2.1 + small model** | **78%** (47/60), with no server or internet | 23 | 16 |
-| Rules engine v2.1 alone | 78% (47/60) | 28 | 13 |
-| Small model alone (Qwen2.5-0.5B + LoRA, 8-bit) | 75% (45/60) | 22 | 15 |
-| Claude Haiku 4.5 (large model over the internet) | 87% (52/60) | 28 | 16 |
-| Qwen2.5-0.5B without fine-tuning (examples only) | 7% (4/60) | 2 | 2 |
+| Reader (current versions) | Test 3 (60) | **Test 6 (64, held out)** |
+|---|---|---|
+| **Dure: rules engine v2.1 + small model v2, routing v2** | **90%** (54/60) | **86%** (55/64) |
+| Claude Haiku 4.5 (large model over the internet) | 87% (52/60) | not run |
+| Small model v2 alone (Qwen2.5-0.5B + LoRA) | 85% (51/60) | 83% (53/64) |
+| Rules engine v2.1 alone | 78% (47/60) | 78% (50/64) |
+| Qwen2.5-0.5B without fine-tuning (examples only) | 7% (4/60) | — |
 
-- **Re-scored on 23 Oct 2026** with the rules engine that runs in the live demo (v2.1). The model readings are from 4 Oct; the model has not changed since. On 4 Oct, with rules engine v1, the scores were 70% for the rules engine alone and 80% for the hybrid.
-- **What the re-score shows:** the small model still adds English (13 → 16) and correctly declines other languages, but on Tetum it now overrules readings the rules engine had right (28 → 23). Overall, the hybrid and the rules engine alone tie at 78%. The next step is to route full Tetum readings to the rules engine and retrain the model on real Tetum messages, then judge that on a new frozen test set.
-- **Caveat:** v2.1 was written after test 3 and its error review existed, so test 3 is no longer strictly unseen for it.
-- **Test 4:** on 80 texts we wrote ourselves, including questions, the rules engine scored 98% alone and 99% with the small model (4 Oct). Yes/no replies are 100% on tests 3 and 4. Test 4 was written by the builder, so it is not independent.
+- **Test 3:** 60 SMS (36 Tetum, 16 English, 6 in languages Dure should decline, 2 bare numbers), written by Claude Sonnet on 4 Oct and frozen before any reader was scored. Its errors were looked at again on 23 Oct before the model was retrained, so read 90% as optimistic.
+- **Test 6:** 64 new SMS written on 23 Oct (by Claude Opus, same conventions) and committed before any reader saw them. Routing and model were chosen on tests 1, 2 and 5 only, and the choice was committed before test 6 was scored once. **This is the clean number.**
+- **What changed on 23 Oct:** with the improved rules engine (v2.1), the old routing ("rules engine if sure, else model") tied the rules engine at 78%, because the model overruled correct Tetum readings. New routing alone lifts the hybrid to 88% on test 3 and 86% on test 6; the retrained model adds 2 more points on test 3. The rules engine itself was not changed.
+- **History:** 4 Oct, rules engine v1: rules engine 70%, small model 75% (8-bit), hybrid 80% on test 3.
+- **Test 4:** on 80 texts we wrote ourselves, including questions, the rules engine scored 98% alone and 99% with the small model (4 Oct). Test 4 was written by the builder, so it is not independent.
 - **Cost:** reading a text adds under 1% to the cost of sending the SMS (API list prices).
-- **Details:** see [`ai/coffee/RESULTS.md`](ai/coffee/RESULTS.md).
+- **Details and protocol:** see [`ai/coffee/RESULTS.md`](ai/coffee/RESULTS.md).
 
 ## Photo grader
 
@@ -179,7 +180,8 @@ site/tools/mobile/      phone edition generator: build_phone.py (+ phone.css, ph
                         figure/scene extractors
 site/tools/             gen_sheet_data.py, check_sheet.js (synthetic Registry data)
 docs/                   redirects from the old GitHub Pages address to dure-ai.pages.dev
-ai/coffee/              SMS reader: synthetic data generator, LoRA training, test sets 1–3, rules.js (v2.1), evaluation, GGUF inference
+ai/coffee/              SMS reader: rules.js (v2.1), synthetic data generators (gen.py, gen2.py), LoRA training (lora/, lora_v2/),
+                        routing (hybrid2.py), test sets 1–6, evaluation, GGUF inference
 ai/intent/              on-device question-topic model for phones and tablets (generator, numpy trainer, test sets)
 ai/photo/               photo grader v1 (MobileNetV3) scripts and results
 ai/brief/               brief findings + model writer + checker experiments
