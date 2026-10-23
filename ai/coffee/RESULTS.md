@@ -131,3 +131,52 @@ Reproducibility check (23 Oct): we merged the LoRA adapter in `lora/` into a fre
 60/60 identical; 88%, 70%, 72%), about 3–4 s per text on 2 CPU cores. The 8-bit GGUF was not rebuilt this time; its saved readings are used above.
 
 Files: `pred_rules_v21_test*.json`, `pred_hybrid_v21_test*.json` (from `node rules.js OUT TEST` and `hybrid.py`), scored by `score.py`.
+
+## Update 23 Oct 2026 (afternoon): a hybrid that beats the rules engine — better routing and a retrained small model
+
+Goal: make the rules engine + small model hybrid better than the rules engine alone, **without changing the rules engine** (v2.1,
+untouched). Two changes, both chosen on development sets only:
+
+1. **Routing v2** (`hybrid2.py`). The old routing used the rules engine when it was sure and the model otherwise. v2 uses each reader
+   where it is strong: the rules engine's sure answers; a decline when the model says "other language" and the rules engine did not
+   read Tetum; the rules engine's reading for Tetum messages it understood (the model may only name a crop it left blank); the
+   model's reading otherwise (English, or messages the rules engine could not place), with kilos and price taken from the rules
+   engine when the two differ by exactly 10× or 100× (the model's typical number slip). No extra cost: it is a few `if`s.
+2. **Small model v2** (`lora_v2/`). The v1 adapter, trained for one more short pass (163 steps, 39 minutes on 2 CPU cores) on
+   1,297 examples: 847 new synthetic ones from `gen2.py` for the gaps the development sets showed (prices in cents, decimal commas
+   and today's $2–3.5 range; Tetum with English or Portuguese words mixed in; more quality phrases and offers with no quality
+   words; more crops; questions that are not offers) plus 450 replayed v1 training examples. Script: `train2.py`.
+
+Protocol. Two new sets were written and committed before any reader was scored on them (commit 431206c): **test 5** (64 texts,
+development) and **test 6** (64 texts, held out). Routing and model choices were made on tests 1, 2 and 5 only; the final choice
+(routing v2 + model v2; a variant v3 that also let the model fill grades was not better on development, 175 vs 176 of 185) was
+committed (13218a9) before tests 3 and 6 were scored once.
+
+| Exact match | Test 3 (60) | **Test 6 (64, held out)** | Test 5 (64, dev) |
+|---|---|---|---|
+| Rules engine v2.1 alone | 78% | 78% | 81% |
+| Small model v1 alone | 75% (8-bit) | 62% | 69% |
+| Small model v2 alone | 85% | 83% | 83% |
+| Old hybrid (routing v1 + model v1) | 78% | 81% | 81% |
+| Routing v2 + model v1 | 88% | 86% | 91% |
+| **Dure now: routing v2 + model v2** | **90%** (54/60) | **86%** (55/64) | 91% |
+| Claude Haiku 4.5 | 87% | not run (no API key in this session) | — |
+
+By language, test 6: Tetum 32/38 (rules alone 31, model v2 alone 29), English 14/16, other languages declined 6/7 (rules alone 2/7).
+Test 3: Tetum 31/36 (rules alone 28, Haiku 28), English 15/16, other 6/6.
+
+How to read this honestly:
+- **Test 6 is the clean number: 86%**, 8 points above the rules engine alone. Most of the gain comes from routing; the retrained model
+  adds 2 points on test 3, none on test 6, but on its own it went from 62–75% to 83–85%, which makes it a far better fallback.
+- Test 3 is no longer blind for this work: its errors were looked at on 23 Oct before gen2.py was written, and some new templates
+  (prices in cents, Portuguese "qualquer", cocoa as a crop) cover error types it contains. Treat 90% as optimistic.
+- Tests 5 and 6 were written by Claude Opus 5.5 with the same conventions as tests 2–3. They are synthetic, not farmer messages.
+- Model v2 numbers are full precision (fp32, about 3 s per text on 2 CPU cores). The 8-bit GGUF was not rebuilt in this session.
+- The rules engine answers on its own for 57–72% of texts, so the model runs on the rest only.
+
+What is still wrong (test 6, 9 errors): 4 texts where the rules engine was sure and wrong, while the model was right ("kualidade ok
+deit" grade, "ohin presu kafe hira?" crop, "Good morning" read as grade A, "presu hotu-hotu diak"); 3 quality words both readers miss
+or the routing keeps out ("basa", "bolor"); 2 language calls ("cassava 70kg", "Sampai jumpa").
+
+Files: `test5.json`, `test6.json`, `make_test56.py`, `rules_detail.js`, `hybrid2.py`, `gen2.py`, `train2.jsonl`, `train2.py`, `lora_v2/`,
+`pred_model_test5/6.json` (model v1), `pred_model2_*.json` (model v2), `pred_hybrid_v2_test3/6.json`.
