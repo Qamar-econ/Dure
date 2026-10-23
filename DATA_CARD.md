@@ -47,4 +47,4 @@ Gaps we could not fill: a recent (post-2015) farm-gate parchment price for Ermer
 - Model-written test sets (2 and 3) are kept apart from training data; the generator drops any training message that matches a test message.
 
 ## Results that depend on this data
-See `ai/coffee/RESULTS.md`. Headline (test 3, unseen): rules engine 70% exact match; Claude Haiku 4.5 87%; small model (8-bit) 75%; hybrid 80%; base model without fine-tuning 7%. Photo grader: 88% on cheap-phone test photos (93% when it answers); refuses 10 of 10 real field photos unlike its training set, and 0.6% of test photos.
+See `ai/coffee/RESULTS.md`. Headline (test 3, re-scored 23 Oct 2026 with rules engine v2.1): rules engine 78% exact match; small model (8-bit) 75%; hybrid 78%; Claude Haiku 4.5 87%; base model without fine-tuning 7%. On 4 Oct, with rules engine v1: rules engine 70%, hybrid 80%. Photo grader: 88% on cheap-phone test photos (93% when it answers); refuses 10 of 10 real field photos unlike its training set, and 0.6% of test photos.

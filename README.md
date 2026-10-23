@@ -78,7 +78,7 @@ Dure has two small models, and they have different jobs.
 
 1. **The fine-tuned reader** (Qwen2.5-0.5B + LoRA, adapter in `ai/coffee/lora/`, 35 MB).
    - **Training data:** 2,625 synthetic SMS and 250 real Tetum sentences (Labadain-30k+).
-   - **Job:** it turns an unclear offer into fields (kilos, grade, minimum, yes/no). This is the model behind the Tetum Benchmark Index: 75% alone, 80% with the rules engine.
+   - **Job:** it turns an unclear offer into fields (kilos, grade, minimum, yes/no). This is the model behind the Tetum Benchmark Index: 75% alone, 78% with the rules engine.
    - **Where it runs:** it is built for the **hub laptop at the pickup point**. Merged and quantised to an 8-bit GGUF (531 MB), it reads a text in 1.8 s on two CPU cores with llama.cpp (`ai/coffee/infer_gguf.py`).
 2. **The on-device question reader** (stock Qwen2.5-0.5B-Instruct, ONNX). It runs in the visitor's browser and only picks the topic of an off-script question (one of eight letters). The reply is written from live market data.
 
@@ -94,17 +94,22 @@ To see the fine-tuned reader at work, run `ai/coffee/infer_gguf.py` on the merge
 
 Tetum is one of the languages large language models overlook most. A text counts as correct only if every field is right (crop, quantity, grade, price and intent).
 
-| Reader | Test 3: 60 SMS (44 Tetum, 16 English), written by Claude Sonnet, not by us, and frozen before any reader was scored |
-|---|---|
-| Rules engine alone (v1) | 70% |
-| Small model alone (Qwen2.5-0.5B + LoRA, 8-bit) | 75% |
-| **Dure: rules engine + small model** | **80%** (English 16/16), with no server or internet |
-| Claude Haiku 4.5 (large model over the internet) | 87% |
-| Qwen2.5-0.5B without fine-tuning (examples only) | 7% |
+Test 3 has 60 SMS (36 Tetum, 16 English, 6 in languages Dure should decline, 2 bare numbers). Claude Sonnet wrote them, not us, and they were frozen before any reader was scored.
 
-- **Later work:** rules engine v2.1 scores 78% on test 3 on its own. On test 4 (80 texts we wrote ourselves, including questions), it scores 98% alone and 99% with the small model. Yes/no replies are 100% on both tests. Test 4 was written by the builder, so it is not independent.
+| Reader (current versions) | Test 3 exact match | Tetum (36) | English (16) |
+|---|---|---|---|
+| **Dure: rules engine v2.1 + small model** | **78%** (47/60), with no server or internet | 23 | 16 |
+| Rules engine v2.1 alone | 78% (47/60) | 28 | 13 |
+| Small model alone (Qwen2.5-0.5B + LoRA, 8-bit) | 75% (45/60) | 22 | 15 |
+| Claude Haiku 4.5 (large model over the internet) | 87% (52/60) | 28 | 16 |
+| Qwen2.5-0.5B without fine-tuning (examples only) | 7% (4/60) | 2 | 2 |
+
+- **Re-scored on 23 Oct 2026** with the rules engine that runs in the live demo (v2.1). The model readings are from 4 Oct; the model has not changed since. On 4 Oct, with rules engine v1, the scores were 70% for the rules engine alone and 80% for the hybrid.
+- **What the re-score shows:** the small model still adds English (13 → 16) and correctly declines other languages, but on Tetum it now overrules readings the rules engine had right (28 → 23). Overall, the hybrid and the rules engine alone tie at 78%. The next step is to route full Tetum readings to the rules engine and retrain the model on real Tetum messages, then judge that on a new frozen test set.
+- **Caveat:** v2.1 was written after test 3 and its error review existed, so test 3 is no longer strictly unseen for it.
+- **Test 4:** on 80 texts we wrote ourselves, including questions, the rules engine scored 98% alone and 99% with the small model (4 Oct). Yes/no replies are 100% on tests 3 and 4. Test 4 was written by the builder, so it is not independent.
 - **Cost:** reading a text adds under 1% to the cost of sending the SMS (API list prices).
-- **Date and details:** measured on 4 Oct 2026. Full results are in [`ai/coffee/RESULTS.md`](ai/coffee/RESULTS.md).
+- **Details:** see [`ai/coffee/RESULTS.md`](ai/coffee/RESULTS.md).
 
 ## Photo grader
 

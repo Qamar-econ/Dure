@@ -232,10 +232,10 @@ PARSER = ('<div class="panel parser"><div class="ph"><span>Dure AI · message pa
 BUYERS = ('<div class="panel buyers"><div><small>Buyers too · likely to pay on time</small><b>Exporter, Dili</b><span>9 purchases · 9 paid on time · 0 disputes</span></div><strong>88%</strong></div>'
           '<p class="est">Dure AI\'s estimate, ± a few points. Land and volume aren\'t counted.</p>')
 
-BENCH = [('Dure', 'rules engine + small model', 80, 'works with no server · $0.01 per 1,000 texts', 'me'),
+BENCH = [('Dure', 'rules engine + small model', 78, 'works with no server · $0.01 per 1,000 texts', 'me'),
          ('Claude Haiku 4.5', 'large model, over the internet', 87, 'needs server and network · $0.53–2.15 per 1,000 texts', ''),
          ('Small model alone', 'Qwen2.5-0.5B, fine-tuned', 75, '~2 s per text · $0.02 per 1,000 texts', ''),
-         ('Rules engine alone', 'no model, instant', 70, 'works with no server · $0', ''),
+         ('Rules engine alone', 'no model, instant', 78, 'works with no server · $0', ''),
          ('Untrained small model', 'Qwen2.5-0.5B, examples only', 7, 'why training matters', 'dim')]
 def bench_row(a, b, v, m, k):
     lab = f'<span class="nm">{a}</span><span class="pc">{v}%</span>'
@@ -388,7 +388,7 @@ PAGE = f'''<!doctype html>
   <h2 class="rv">How well does AI read <em>Tetum texts?</em></h2>
   <p class="rv">Large models overlook Tetum. A small model plus a rules engine gets Dure close to a large model.</p>
   <ul class="bench rv">{bench}</ul>
-  <p class="src rv"><b>Method.</b> 60 test SMS (44 Tetum, 16 English), written by Claude Sonnet, not by us, and frozen before any reader was scored. A text counts only if crop, quantity, grade, price and intent are all right. On 80 texts we wrote ourselves: rules engine 98%, with the small model 99%. Costs are API list prices. Measured 4 Oct 2026.</p>
+  <p class="src rv"><b>Method.</b> 60 test SMS (36 Tetum, 16 English, 6 in languages Dure should decline, 2 bare numbers), written by Claude Sonnet, not by us, and frozen before any reader was scored. A text counts only if crop, quantity, grade, price and intent are all right. On 80 texts we wrote ourselves: rules engine 98%, with the small model 99%. Costs are API list prices. Re-scored with rules engine v2.1, 23 Oct 2026.</p>
 </section>
 
 <!-- 12 · field problems -->

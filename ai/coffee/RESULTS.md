@@ -95,3 +95,35 @@ quality words (5, usually C); disagreeing on "a few black beans" (B by our label
 
 Cost of the small model: one 2-vCPU, 4 GB server at $24/month is $0.033 an hour; 1,000 texts at 1.8 s each is about half an hour of
 compute, so about $0.02 per 1,000 texts, and $0.01 for the hybrid (the model only reads 58% of texts). Sending the texts costs $30–$150 per 1,000.
+
+## Update 23 Oct 2026: re-scored with the current rules engine (v2.1)
+
+The rules engine in the live demo (`site/src/demo_map.html`) is byte-for-byte the same as `rules.js` (v2.1). We re-ran it on all three
+test sets and rebuilt the hybrid from it and the small model's saved 8-bit readings (`pred_gguf_test*.json`; the model itself has not
+changed since 4 Oct). The routing rule ("sure") is the one built into v2.1; we did not tune anything on test 3.
+
+| Test 3 (60, frozen), by language | Rules engine v1 | **Rules engine v2.1** | Small model (8-bit) | **Hybrid v2.1** | Claude Haiku 4.5 | Base model, few-shot |
+|---|---|---|---|---|---|---|
+| Tetum (36) | 26 | **28** | 22 | 23 | 28 | 2 |
+| English (16) | 10 | 13 | 15 | **16** | 16 | 2 |
+| Other language, should be declined (6) | 4 | 4 | 6 | **6** | 6 | 0 |
+| Bare number (2) | 2 | 2 | 2 | 2 | 2 | 0 |
+| **All (60)** | 42 (70%) | **47 (78%)** | 45 (75%) | **47 (78%)** | 52 (87%) | 4 (7%) |
+
+| All test sets, exact match | Test 1 (51) | Test 2 (70) | Test 3 (60, frozen) |
+|---|---|---|---|
+| Rules engine v2.1 | 100% | 97% | 78% |
+| Hybrid v2.1 (rules engine when sure, small model otherwise) | 100% | 89% | 78% |
+
+- v2.1 is sure more often: on test 3 it answers 34 of 60 texts (57%) itself, and is right on 33 of them; 26 go to the small model
+  (with v1: 25 sure, all right, 35 to the model).
+- **The hybrid no longer beats the rules engine on its own.** It gains on English (13 → 16) and on declining other languages (4 → 6),
+  and loses the same amount on Tetum (28 → 23), where the model overrules readings the rules engine had right. This is the pattern
+  noted on 4 Oct, now larger because v2.1 got better at Tetum and the model did not change.
+- Tests 1 and 2 were seen while v2.1 was written, so their scores are not evidence. Test 2 shows the same pattern (rules engine 97%, hybrid 89%).
+- Caveat: v2.1 was written after test 3 and its error review (`test3_review.md`) existed, so test 3 is no longer strictly unseen
+  for v2.1. Read 78% as a re-score, not a fresh blind test.
+- Next: route Tetum offers that the rules engine reads in full to the rules engine, and retrain the small model on real Tetum messages.
+  Any new routing must be judged on a new frozen test set, not test 3.
+
+Files: `pred_rules_v21_test*.json`, `pred_hybrid_v21_test*.json` (from `node rules.js OUT TEST` and `hybrid.py`), scored by `score.py`.
