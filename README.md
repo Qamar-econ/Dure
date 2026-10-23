@@ -1,105 +1,166 @@
 # Dure: Cooperate through messaging
 
-Challenge 04, Agriculture (Annex B, Noor). World Bank Small AI for Development Hackathon, 3–4 October 2026.
-Builder: Tae Yoon Moon (solo), University of Seoul. Licence: code MIT; synthetic data CC BY 4.0; illustrations and site text all rights reserved.
+**Winner, Agriculture track · World Bank Small AI for Development Hackathon 2026** (Challenge 04, Annex B: Noor)
 
-**Live:** https://dure-ai.pages.dev (phones and tablets get the mobile edition, https://dure-ai.pages.dev/m.html) · demo: https://dure-ai.pages.dev/demo.html · photo grader: https://dure-ai.pages.dev/demo.html?photo=1 · Registry: https://dure-ai.pages.dev/sheet.html
+Dure does a farmers' cooperative's jobs by plain text message. Smallholder coffee farmers in Letefoho, Ermera, Timor-Leste, get a fair morning price, sell together, have buyers compete for their coffee, get paid, and build a record that earns trust. It all happens in Tetum or English, on any phone that can send SMS. There is no app and no data plan.
 
-Status (4 Oct 2026): story site, map demo with a live simulated market, on-device photo grader, on-device small-AI chat, and the Registry with an AI brief are built and deployed. All farmers, buyers, volumes and prices in the demo are synthetic; there has been no field test.
+| | |
+|---|---|
+| **Live site** | https://dure-ai.pages.dev (phones and tablets get the mobile edition, [`m.html`](https://dure-ai.pages.dev/m.html)) |
+| **Interactive demo** | https://dure-ai.pages.dev/demo.html: a full market week in your browser, with nothing to install and no server |
+| **Photo grader** | https://dure-ai.pages.dev/demo.html?photo=1 |
+| **Farmer Registry** | https://dure-ai.pages.dev/sheet.html: eight weeks of synthetic data from Letefoho, plus an AI-written brief |
+| **Videos** | [Promotion](https://www.youtube.com/watch?v=fv_WMSEmthA) · [Meet the founder](https://www.youtube.com/watch?v=981bf_9D56U) · [Product demo](https://www.youtube.com/watch?v=ZacBiMIBw34) · [Technical walkthrough](https://www.youtube.com/watch?v=enQjGFoiuKY) |
+| **Builder** | Tae Yoon Moon (solo), University of Seoul · taeyoonmoon@uos.ac.kr |
 
-## What it is
+> **Status.** This is a working prototype. All farmers, buyers, volumes and prices in the demo and the Registry are synthetic, and there has been no field test yet. The SMS gateway and mobile money are simulated. The AI models and the numbers reported below are real.
 
-Dure does a farmers' cooperative's jobs (a shared morning price, selling together, buyers who compete, payment, a record everyone can check) by plain text message, for smallholder coffee farmers in Letefoho, Ermera, Timor-Leste. It works in Tetum and English on any phone that can send SMS: no app, no data plan. Every deal also fills an automated Registry and a weekly brief for extension officers and policymakers.
+---
 
-## Problem statement
+## In one minute
 
-Because of this tool, Noor and the smallholder coffee farmers around her will sell their coffee together, to buyers who bid against each other above a floor the farmers set, and be paid by mobile money after the Thursday pickup, where they would otherwise sell alone to whichever trader's truck reaches the village, at the price he names. Four traders bought 98% of Ermera's coffee (Cristovão 2015, survey of 100 farmers, 2014).
+- **The problem.** Ermera grows close to half of Timor-Leste's coffee, yet four traders in Dili bought 98% of it (Cristovão 2015, survey of 100 farmers, 2014). In the rainy season, one trader's truck makes it up the hill and names its price. Noor can't check that price, and there is no one else to ask.
+- **Why cooperatives don't solve it.** Farmer organisations raised members' incomes in 58% of 239 studies (Bizikova et al., *Nature Food* 2020). But starting one in Timor-Leste takes about 3–4 years, $1,000 in share capital and 15 founders, while a typical coffee household earns about $250 a year. The process also tends to end in a fight over power, and women farmers are easily left out.
+- **What Dure keeps.** Pooling the harvest, buyers bidding for the whole lot, one shared truck and pickup point, and a record that earns trust.
+- **What Dure drops.** The legal entity, the $1,000 in share capital, the board to fight over, and the few who decide for everyone. Nobody has to join, and anyone can leave at any time.
+- **Where the AI is.** Small models read Tetum texts and grade coffee from one photo. Simple, auditable algorithms set prices, score reputation and split the two markets. Each morning, code computes a brief for extension officers, and a checker verifies every number in it. A person always makes the final call.
 
 ## How it works (one week)
 
-1. 06:30: every farmer and buyer gets the same price text, plus **Dure's suggestion**: recent trades, market prices, weather and road, and a suggested minimum. Buyers get a brief with the expected lot and a suggested bid range.
-2. A farmer texts an offer in her own words (kilos, grade, minimum), Tetum or English, any spelling. Dure repeats back what it understood; nothing is recorded before she confirms.
-3. She sends one phone photo and gets a preliminary grade A, B or C (or "send another photo" if no coffee beans can be seen).
-4. Offers of every grade fill one blended basket. At 2,000 kg the auction opens; bids arrive until 17:00. Each farmer's minimum is her floor.
-5. Each farmer decides: nobody is forced to trade.
-6. Dure books the truck; buyers prepay. At Thursday pickup a person checks every sack by hand, and that grade is paid.
-7. Payment goes to mobile wallets (the truck driver settles farmers without one at the next pickup). Reputation (trades, punctuality, matching quality) is updated; force majeure is excluded.
-8. Every step is a row in the Registry, and a brief for extension services is written from those rows.
+Noor's steps follow the live site's *How it works* section. The prices are the site's illustrative week.
 
-Demo prices are synthetic: grade B ≈ $2.45/kg, A ≈ $2.77, C ≈ $1.86 (the roadside trader in the story offers $2.25).
+1. **A price and a plan to start the day.** At 06:30 every farmer and buyer gets the same price text (A $3.17–3.23, B $2.80–2.86, C $2.12–2.18 per kg). It comes with *Dure's suggestion*: recent trades, the market, weather and road, and a suggested minimum. Buyers get a brief with the expected lot and a suggested bid range.
+2. **From Tetum text to quality grading.** Noor texts in her own words, with typos and all: `bondia! kafe 40kilu diak los.. fan 2.84 bele?`. Dure repeats back what it understood (coffee, 40 kg, grade A, ask $2.84/kg), and nothing is recorded until she confirms. She then sends one photo and gets a first-look grade (A, 93%).
+3. **Leverage with a blended basket.** Coffee of every grade goes into one pool. In the example, the pool closes at 1,890 kg from 22 farms.
+4. **Interactive fair auction.** Bidding opens a little under Dure's fair-price estimate ($2.74/kg, grade B basis) and closes at 17:00. The lot clears at $2.81/kg, and each grade is paid by its own weight: A $3.14, B $2.78, C $2.11.
+5. **Autonomy: each farmer decides.** Each farmer's minimum is her floor, and nobody is forced to trade. Noor sells 40 kg × $3.14 = $125.60.
+6. **Collective supply chain.** The buyer prepays ($4,250.85 for 1,530 kg from 18 farms), and Dure books the truck. At the Thursday pickup, a person checks every sack by hand, and that grade is final.
+7. **Simple and credible payment.** The prepayment is released after delivery and split to mobile wallets. Farmers without one are paid by the truck driver at the next pickup.
+8. **Every deal builds trust.** Reputation updates from the number of trades, punctuality and whether the grade matched the photo (Noor's score goes from 79% to 83%). Force majeure is never counted. Every step is also a row in the Registry.
 
-## What is AI, what is ordinary software
+Before Dure, the roadside trader in the story offers Noor $2.25/kg. The interactive demo simulates a fresh market week on every run (`?seed=N` replays a week).
+
+## Two markets, one ladder
+
+Reputation lets Dure run two markets at once. The site's *Technical walkthrough 4–5* covers this.
+
+- **Blended pool:** every farmer can sell here, every week, to bulk buyers in Dili. It builds economies of scale.
+- **Fixed pool:** one grade, a fixed buyer, every week (A → specialty roasters, B → export contracts, C → local market). The higher a farmer's reputation, the larger the share of her harvest that goes to steady orders. Dure AI sets the split every week.
+- **Farm size doesn't count.** In the site's example, Noor (2 ha) scores 92 and a 30-ha grower scores 64. Buyers are scored too, on paying on time (Exporter, Dili: 88%).
+
+In the demo, reputation and the fixed pool run on pre-accumulated synthetic records.
+
+## What is AI, and what is ordinary software
 
 | Part | AI or software | Where it runs |
 |---|---|---|
-| Reading farmers' SMS (kilos, grade, price, yes/no, questions) in Tetum and English | **AI, hybrid**: rules engine on every text + Qwen2.5-0.5B fine-tuned with LoRA for texts the rules engine is unsure of | Rules engine on the phone or hub; fine-tuned reader as an 8-bit GGUF on the hub laptop (llama.cpp). The web demo runs the rules engine only for offers (see below) |
-| Off-script questions ("is today a good day to sell?", "why is the price low?") | **AI**: stock Qwen2.5-0.5B-Instruct reads the intent; the reply is composed from live market data, so every number is real | On the visitor's device (transformers.js, WebGPU or WebAssembly), ~3 s per reply on a 2-core CPU |
-| Preliminary grade from one phone photo | **AI** (computer vision): CLIP ViT-B/32 (int8) + our 5-class head (A/B/C, roasted, not coffee) | On the visitor's device (onnxruntime-web), ~2 s per photo |
-| Weekly brief for extension services | **Code computes findings; AI writes; a checker verifies every sentence** | In the browser |
-| Morning price, suggestion, opening price, reputation, two pools | Algorithms on pre-accumulated synthetic records in the demo | In the browser |
-| Pooling, auction, floor, escrow, payout, Registry | Ordinary software (must be predictable and auditable) | In the browser (simulated) |
+| Reading farmers' SMS (kilos, grade, price, yes/no, questions) in Tetum and English | **AI, hybrid.** A rules engine reads every text. A Qwen2.5-0.5B model fine-tuned with LoRA reads the texts the rules engine is unsure of. | Rules engine on the phone or hub. The fine-tuned reader runs as an 8-bit GGUF on the hub laptop (llama.cpp). The web demo runs the rules engine only for offers (see below). |
+| Off-script questions ("is today a good day to sell?", "why is the price low?") | **AI.** Stock Qwen2.5-0.5B-Instruct reads the intent. The reply is composed from live market data, so every number is real. | On the visitor's device (transformers.js, WebGPU or WebAssembly), ~3 s per reply on a 2-core CPU |
+| Preliminary grade from one phone photo | **AI (computer vision).** CLIP ViT-B/32 (int8) plus our own 5-class head (A/B/C, roasted, not coffee) | On the visitor's device (onnxruntime-web), ~2 s per photo |
+| Daily brief for extension services | **Code computes the findings, AI writes the sentences, and a checker verifies every sentence** | In the browser |
+| Morning price, suggestion, opening price, reputation, two pools | Algorithms run on pre-accumulated synthetic records in the demo | In the browser |
+| Pooling, auction, floor, escrow, payout, Registry | Ordinary software, which must be predictable and auditable | In the browser (simulated) |
 
-On phones and tablets the 500 MB Qwen model does not fit in a browser tab's memory, so there the Small AI is Dure's own question-topic model (`ai/intent`): a fastText-style classifier (hashed word and character n-grams, 32-d averaged embedding, 8 topics) trained in numpy on 4,480 synthetic questions in English, Tetum, Indonesian and Portuguese, exported as int8 (`site/src/assets/intent.json`, 0.2 MB gzipped, < 1 ms per question). It gets 222 of 227 hand-written test questions right (`ai/intent/test*.json`). On computers it also cross-checks Qwen's pick. Either way the reply answers the exact question (sell or keep, why the price moved, outlook, buyers, weather and road, quality, pool) from the live simulated market; every number comes from the simulation. Retrain: `cd ai/intent && python3 gen.py && python3 train.py`.
+On phones and tablets, the 500 MB Qwen model does not fit in a browser tab's memory. There, the Small AI is Dure's own question-topic model (`ai/intent`):
 
-Both on-device models are pre-downloaded in the background while the story page is read (Cache Storage), so the demo starts instantly. The site is served with cross-origin isolation headers so WebAssembly can use several threads.
+- **Design:** a fastText-style classifier (hashed word and character n-grams, 32-d averaged embedding, 8 topics).
+- **Training:** in numpy, on 4,480 synthetic questions in English, Tetum, Indonesian and Portuguese.
+- **Size and speed:** exported as int8 (`site/src/assets/intent.json`), 0.2 MB gzipped, under 1 ms per question.
+- **Accuracy:** 222 of 227 hand-written test questions right (`ai/intent/test*.json`).
+
+On computers, the topic model also cross-checks Qwen's pick. Either way, the reply answers the exact question (sell or keep, why the price moved, outlook, buyers, weather and road, quality, pool) from the live simulated market. To retrain it, run `cd ai/intent && python3 gen.py && python3 train.py`.
+
+Both on-device models download in the background while the visitor reads the story page (Cache Storage), so the demo starts instantly. The site is served with cross-origin isolation headers, which let WebAssembly use several threads.
 
 ## The fine-tuned reader and the web demo
 
 Dure has two small models, and they have different jobs.
 
-1. **The fine-tuned reader** (Qwen2.5-0.5B + LoRA, adapter in `ai/coffee/lora/`, 35 MB). Trained on 2,625 synthetic SMS and 250 real Tetum sentences (Labadain-30k+). It turns an unclear offer into fields (kilos, grade, minimum, yes/no). This is the model behind the Tetum Benchmark Index: 75% alone, 80% with the rules engine. It is built for the **hub laptop at the pickup point**: merged and quantised to an 8-bit GGUF (531 MB), it reads a text in 1.8 s on two CPU cores with llama.cpp (`ai/coffee/infer_gguf.py`).
-2. **The on-device question reader** (stock Qwen2.5-0.5B-Instruct, ONNX). It runs in the visitor's browser and only picks the topic of an off-script question (one of eight letters); the reply is written from live market data.
+1. **The fine-tuned reader** (Qwen2.5-0.5B + LoRA, adapter in `ai/coffee/lora/`, 35 MB).
+   - **Training data:** 2,625 synthetic SMS and 250 real Tetum sentences (Labadain-30k+).
+   - **Job:** it turns an unclear offer into fields (kilos, grade, minimum, yes/no). This is the model behind the Tetum Benchmark Index: 75% alone, 80% with the rules engine.
+   - **Where it runs:** it is built for the **hub laptop at the pickup point**. Merged and quantised to an 8-bit GGUF (531 MB), it reads a text in 1.8 s on two CPU cores with llama.cpp (`ai/coffee/infer_gguf.py`).
+2. **The on-device question reader** (stock Qwen2.5-0.5B-Instruct, ONNX). It runs in the visitor's browser and only picks the topic of an off-script question (one of eight letters). The reply is written from live market data.
 
-The web demo uses the rules engine for offers and the second model for questions. We kept the fine-tuned reader out of the web demo by design:
+The web demo uses the rules engine for offers and the second model for questions. We kept the fine-tuned reader out of the web demo on purpose:
 
-- **The demo has to run with no server.** Anyone opening the link gets the whole week in their own browser, with nothing for us to host or keep alive during judging.
+- **The demo has to run with no server.** Anyone who opens the link gets the whole week in their own browser, with nothing for us to host or keep alive.
 - **It matches where each model lives in the real service.** Farmers text from basic phones, so offers are read on the hub laptop, not on the farmer's phone. Shipping the reader to every visitor would show a deployment Dure does not use.
-- **Speed in a browser.** The reader writes a short structured answer (about 30 tokens); on a typical laptop browser that takes several times longer than the 1.8 s it needs under llama.cpp, while the question reader answers in one step (about 1.5–3 s).
+- **Speed in a browser.** The reader writes a short structured answer (about 30 tokens). In a typical laptop browser that takes several times longer than the 1.8 s it needs under llama.cpp. The question reader answers in one step (about 1.5–3 s).
 
-To see the fine-tuned reader at work, run `ai/coffee/infer_gguf.py` on the merged GGUF; the benchmark predictions it produced are in `ai/coffee/pred_gguf_test3.json` and are scored by `ai/coffee/score.py`.
+To see the fine-tuned reader at work, run `ai/coffee/infer_gguf.py` on the merged GGUF. The benchmark predictions it produced are in `ai/coffee/pred_gguf_test3.json`, and `ai/coffee/score.py` scores them.
 
 ## Tetum Benchmark Index
 
-Exact match on every field (crop, kg, grade, ask, yes/no, intent, language).
+Tetum is one of the languages large language models overlook most. A text counts as correct only if every field is right (crop, quantity, grade, price and intent).
 
-| Reader | Test 3 (60 texts written by Claude Sonnet, frozen before scoring) |
+| Reader | Test 3: 60 SMS (44 Tetum, 16 English), written by Claude Sonnet, not by us, and frozen before any reader was scored |
 |---|---|
-| Rules engine v1 | 70% |
-| Small model (Qwen2.5-0.5B + LoRA, 8-bit) | 75% |
-| **Dure: rules engine + small model** | **80%** (English 16/16) |
-| Claude Haiku 4.5 (large model via API) | 87% |
-| Qwen2.5-0.5B without fine-tuning (few-shot) | 7% |
+| Rules engine alone (v1) | 70% |
+| Small model alone (Qwen2.5-0.5B + LoRA, 8-bit) | 75% |
+| **Dure: rules engine + small model** | **80%** (English 16/16), with no server or internet |
+| Claude Haiku 4.5 (large model over the internet) | 87% |
+| Qwen2.5-0.5B without fine-tuning (examples only) | 7% |
 
-Later work: rules engine v2.1 scores 78% on test 3 on its own, and 98% on test 4 (80 texts we wrote, including questions); yes/no replies 100% on both. Test 4 was written by the builder, so it is not independent.
+- **Later work:** rules engine v2.1 scores 78% on test 3 on its own. On test 4 (80 texts we wrote ourselves, including questions), it scores 98% alone and 99% with the small model. Yes/no replies are 100% on both tests. Test 4 was written by the builder, so it is not independent.
+- **Cost:** reading a text adds under 1% to the cost of sending the SMS (API list prices).
+- **Date and details:** measured on 4 Oct 2026. Full results are in [`ai/coffee/RESULTS.md`](ai/coffee/RESULTS.md).
 
 ## Photo grader
 
-Grading criteria follow the SCA green coffee defect classification; the grader looks only at photo-visible defects (black or mouldy beans, insect holes, broken beans, uneven drying/colour). Training: 900 synthetic piles composed from 1,202 real bean crops (Pre-Roast Coffee Bean Grading Dataset, MIT), labelled Wikimedia Commons photos, and 143 not-coffee photos. Leave-one-photo-out cross-validation: exact grade 46/58 (79%); the kind of answer (graded / roasted / not coffee) right on every bean photo; 34/35 not-coffee photos refused. Labels are ours, the test set is small, and there are no Timor-Leste farmer photos yet. The final grade is always the hand check at pickup.
+- **Criteria:** grading follows the SCA green coffee defect classification. The grader looks only at the defects a photo can show: black or mouldy beans, insect holes, broken beans, and uneven drying or colour.
+- **Training data:**
+  - 900 synthetic piles composed from 1,202 real bean crops (Pre-Roast Coffee Bean Grading Dataset, MIT)
+  - labelled Wikimedia Commons photos
+  - 143 photos with no coffee in them
+- **Results (leave-one-photo-out cross-validation):**
+  - exact grade: 46 of 58 photos (79%)
+  - kind of answer (graded, roasted or not coffee): right on every bean photo
+  - photos with no coffee: 34 of 35 refused
+- **Limits:** the labels are ours, the test set is small, and there are no Timor-Leste farmer photos yet. The final grade always comes from the hand check at pickup.
 
-Note: the training scripts for photo grader v2 and a later reader experiment (v2) were lost when our build environment was reset on 4 Oct; the deployed grader (`site/src/assets/grader_v2.js`, head weights inlined), the benchmarked reader (the LoRA adapter in `ai/coffee/lora/`) and the measured numbers above were preserved.
+Note: the training scripts for photo grader v2 and for a later reader experiment (v2) were lost when our build environment was reset on 4 Oct. What survived is the deployed grader (`site/src/assets/grader_v2.js`, with the head weights inlined), the benchmarked reader (the LoRA adapter in `ai/coffee/lora/`) and the measured numbers above.
+
+## The Registry and the daily brief
+
+A farmer Registry is valuable but labour-intensive and expensive to keep up. In Dure, every deal leaves a row, so the Registry builds itself.
+
+Each morning, code computes findings from those rows, a small model writes them up, and a checker drops any sentence whose numbers it cannot trace back to the rows. Extension officers visit about twice a year, and the brief helps them use those visits where they matter. Dure stays out of how farmers farm. Try the [sample Registry](https://dure-ai.pages.dev/sheet.html); the brief experiments are in [`ai/brief/`](ai/brief/).
 
 ## Guardrails
 
 - The farmer confirms what Dure understood before anything is recorded.
-- Photo grades are preliminary; a person confirms the grade at pickup.
-- AI never sets the price a farmer is paid: farmers set minimums, buyers bid, the auction clears.
-- Chat replies take numbers only from live market data; Dure suggests and gives reasons, the farmer decides.
-- Exclusion is never automatic; a person confirms any sanction.
+- Photo grades are preliminary. A person confirms the grade at pickup.
+- AI never sets the price a farmer is paid. Farmers set minimums, buyers bid, and the auction clears.
+- Chat replies take numbers only from live market data. Dure suggests and gives reasons; the farmer decides.
+- Exclusion is never automatic. A person confirms any sanction.
 - The brief only states numbers computed by code and cites the rows behind them.
-- If the network or a model is unavailable, the rules engine keeps taking offers.
+- If the power, the network or a model fails, the rules engine keeps taking offers. The small model rechecks them later, and any change goes back to the farmer to confirm.
+- Farmers' names and numbers stay with Dure. The ministry's Registry shows pseudonymous IDs and village totals, and only for farmers who said yes.
 
-More: [RESPONSIBLE_AI.md](RESPONSIBLE_AI.md) · data sources: [DATA_CARD.md](DATA_CARD.md).
+More detail: [RESPONSIBLE_AI.md](RESPONSIBLE_AI.md) · data sources: [DATA_CARD.md](DATA_CARD.md).
 
 ## Run locally
 
 ```bash
 cd site
-python build.py                 # builds src/ into dist/
+python build.py                       # builds src/ into dist/
 python tools/mobile/build_phone.py    # regenerates the phone edition (run before build.py after story changes)
 cd dist && python -m http.server 8000
 ```
 
-Open `index.html` (story; phones and tablets are sent to `m.html`, add `?full=1` to stay), `m.html` (mobile edition), `demo.html` (demo; `?photo=1` opens the photo step, `?llm=0` turns the small-AI chat off, `?seed=N` replays a week), `sheet.html` (Registry). Serve over http, not file://. For multithreaded WebAssembly, serve with the headers in `site/src/_headers`.
+Then open these pages, over http rather than file://:
+
+| Page | What it is | Options |
+|---|---|---|
+| `index.html` | The story | Phones and tablets are sent to `m.html`; add `?full=1` to stay. |
+| `m.html` | The mobile edition | |
+| `demo.html` | The demo | `?photo=1` opens the photo step, `?llm=0` turns the small-AI chat off, `?seed=N` replays a week. |
+| `sheet.html` | The Registry | |
+
+For multithreaded WebAssembly, serve with the headers in `site/src/_headers`.
+
+Deployment: every push to `main` that touches `site/**` is built and published to Cloudflare Pages by `.github/workflows/deploy-cloudflare.yml`.
 
 ## Repository layout
 
@@ -114,26 +175,40 @@ site/tools/mobile/      phone edition generator: build_phone.py (+ phone.css, ph
 site/tools/             gen_sheet_data.py, check_sheet.js (synthetic Registry data)
 docs/                   redirects from the old GitHub Pages address to dure-ai.pages.dev
 ai/coffee/              SMS reader: synthetic data generator, LoRA training, test sets 1–3, rules.js (v2.1), evaluation, GGUF inference
+ai/intent/              on-device question-topic model for phones and tablets (generator, numpy trainer, test sets)
 ai/photo/               photo grader v1 (MobileNetV3) scripts and results
 ai/brief/               brief findings + model writer + checker experiments
 ```
 
 ## Limitations
 
-- No field test. Demo market, farmers and buyers are synthetic.
-- SMS gateway, mobile-money escrow and payout are simulated.
-- The on-device chat downloads ~500 MB once; slow devices may take longer than 3 s per reply.
-- Tetum text data is scarce; test sets are synthetic or model-written.
+- There has been no field test. The demo market, farmers and buyers are synthetic.
+- The SMS gateway, mobile-money escrow and payout are simulated.
+- The on-device chat downloads ~500 MB once. Slow devices may take longer than 3 s per reply.
+- Tetum text data is scarce, and the test sets are synthetic or model-written.
 - Price bands are anchored to published averages and need live calibration.
-- Dure needs buyers who will bid and a pickup point with a trusted person.
+- Dure can't fix a washed-out road. It needs buyers who will bid, and a pickup point with a trusted person.
 
 ## Next steps
 
-1. Collect real Tetum messages (with consent) and retrain the reader with replay of earlier data.
+1. Collect real Tetum messages (with consent) and retrain the reader, replaying earlier data.
 2. Pilot one pickup point with a real SMS gateway and a mobile-money partner.
 3. Collect real Ermera coffee photos with inspector grades and re-test the grader.
 4. Let extension staff use the Registry brief and tell us which lines they cannot act on.
 
 ## Licence
 
-Code: MIT. Synthetic data: CC BY 4.0. Illustrations and story text: © 2026 Tae Yoon Moon, all rights reserved. Third-party: Qwen2.5 (Apache-2.0); CLIP ViT-B/32 ONNX via Xenova (MIT); onnxruntime-web (MIT); transformers.js (Apache-2.0); bean photos: Pre-Roast Coffee Bean Grading Dataset (MIT) and Wikimedia Commons (credited per photo); satellite imagery © Esri, Maxar, Earthstar Geographics; roads © OpenStreetMap contributors; Labadain-30k+ (CC BY 4.0); Lenis (MIT); SheetJS CE (Apache-2.0).
+| What | Licence |
+|---|---|
+| Code | MIT ([LICENSE](LICENSE)) |
+| Synthetic data | CC BY 4.0 |
+| Illustrations and story text | © 2026 Tae Yoon Moon, all rights reserved |
+
+Third-party components:
+
+- Models and runtimes: Qwen2.5 (Apache-2.0); CLIP ViT-B/32 ONNX via Xenova (MIT); onnxruntime-web (MIT); transformers.js (Apache-2.0)
+- Photos: Pre-Roast Coffee Bean Grading Dataset (MIT); Wikimedia Commons (credited per photo)
+- Maps: satellite imagery © Esri, Maxar, Earthstar Geographics; roads © OpenStreetMap contributors
+- Text data: Labadain-30k+ (CC BY 4.0)
+- Site libraries: Lenis (MIT); SheetJS CE (Apache-2.0)
+- The World Bank logo is used with permission.
