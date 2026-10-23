@@ -35,6 +35,8 @@ def route_v2(r, m):
     found = any(r.get(f) not in (None, False) for f in ('crop', 'kg', 'ask', 'any', 'yn'))
     if r.get('lang') == 'tet' and found:
         out = strip(r)
+        if out.get('crop') is None and (m or {}).get('crop') and out.get('yn') is None:
+            out['crop'] = m['crop']   # the rules engine read the numbers but not the crop: let the model name it
         return out
     out = dict(m) if m else strip(r)
     for f in ('kg', 'ask'):
