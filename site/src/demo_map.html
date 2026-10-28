@@ -625,7 +625,7 @@ body.mob #mBack{display:none}   /* the sheet is put away by dragging it down, ta
 body.mob .mp[data-p="dash"] #dashCard{height:calc(90dvh - 74px);flex:none}
 body.mob .mp[data-p="map"] .mapcard{height:54dvh;flex:none;margin-bottom:8px}
 body.mob .mp[data-p="map"] #liveCard{flex:none;height:auto;min-height:280px}
-body.mob .mp[data-p="map"] .mk-cond{display:flex;margin:0 0 8px}body.mob .mkbar .mk-cond{display:none}   /* on phones the conditions live in the map sheet; never let them stretch the top bar */
+body.mob .mp[data-p="map"] .mk-cond{display:flex;margin:0 0 8px}body.mob .mkbar .mk-cond{display:none}body.mob.land .mkbar{flex:1 1 0;min-width:0}body.mob.land .mkbar .mk-cond{display:flex;flex:1 1 0;min-width:0;flex-wrap:wrap;gap:4px;margin:0 0 0 6px}   /* sideways: chips live in the top bar next to the speed controls (one row when wide, wrapping only when narrow); on phones the conditions live in the map sheet; never let them stretch the top bar */
 
 /* phone dashboard cards */
 .mx{display:flex;flex-direction:column;gap:10px;padding:4px 2px 10px;color:#F6EFE0;font-family:var(--f-body)}
@@ -2963,7 +2963,8 @@ function mPhoto(x){if(!x)return '';const rows=[['A','Grade A'],['B','Grade B'],[
 setInterval(()=>{setH();
   if(typeof mk==='undefined'||!mk)return;
   {const slot=document.querySelector('#phone .bar-slot'),lb=$('llmBtn'),gb=$('langBtn');if(slot&&lb&&!(lb.parentNode&&lb.parentNode.id==='mPills'&&slot.nextSibling===lb.parentNode)){let pl=$('mPills');if(!pl){pl=document.createElement('div');pl.id='mPills'}slot.after(pl);pl.append(lb,gb)}}
-  const cond=$('mkCond');if(cond&&cond.parentNode!==mapP)mapP.insertBefore(cond,mapP.firstChild);
+  {const cond=$('mkCond'),bar=$('mkbar');   /* sideways tablet / narrow window: the condition chips sit in the top bar, right of the speed controls, so the card under the map gets the height; portrait and phones keep them in the map sheet */
+   if(cond){if(land()&&bar){if(cond.parentNode!==bar)bar.appendChild(cond)}else if(cond.parentNode!==mapP)mapP.insertBefore(cond,mapP.firstChild)}}
   const typing=document.activeElement&&document.activeElement.id==='inp'&&performance.now()-lastKey<4000;
   const s=(typeof dashSticky!=='undefined')?dashSticky:null;
   if(s!==lastS){if(s==='rep'&&auto&&open==='dash'){auto.until=Math.max(auto.until,performance.now()+2500)}else if(['price','book','photo','rep'].includes(s)&&!typing){autoShow('dash',s==='photo'?6500:6000)}else if(s==='read'&&open!=='dash')dock.querySelector('.mbtns [data-p="dash"]').classList.add('dot');lastS=s}
