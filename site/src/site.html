@@ -941,6 +941,13 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
 const lerp=(a,b,t)=>a+(b-a)*t;
 const seg=(p,a,b)=>clamp((p-a)/(b-a),0,1);
+/* smooth curve through [x,y] points that never overshoots (Fritsch–Carlson): speed changes gently instead of jumping at each point,
+   and flat stretches (where Noor stands still) are eased into and out of */
+function monoFn(K){const n=K.length,h=[],d=[],m=new Array(n).fill(0);
+  for(let i=0;i<n-1;i++){h[i]=K[i+1][0]-K[i][0];d[i]=(K[i+1][1]-K[i][1])/h[i]}
+  for(let i=1;i<n-1;i++)if(d[i-1]*d[i]>0){const w1=2*h[i]+h[i-1],w2=h[i]+2*h[i-1];m[i]=(w1+w2)/(w1/d[i-1]+w2/d[i])}
+  return x=>{if(x<=K[0][0])return K[0][1];if(x>=K[n-1][0])return K[n-1][1];let i=0;while(x>K[i+1][0])i++;
+    const t=(x-K[i][0])/h[i],t2=t*t,t3=t2*t;return (2*t3-3*t2+1)*K[i][1]+(t3-2*t2+t)*h[i]*m[i]+(-2*t3+3*t2)*K[i+1][1]+(t3-t2)*h[i]*m[i+1]}}
 const rnd=i=>{const x=Math.sin(i*127.1)*43758.5453;return x-Math.floor(x)};
 const F=FIG;
 document.getElementById('taisDefs').innerHTML=F.taisDefs();
@@ -999,6 +1006,7 @@ document.querySelectorAll('.hz').forEach(g=>{const pt=route.getPointAtLength(RL*
 
 /* ---------- ROAD ---------- */
 const GY=720;
+const HCL=[[-3,0,3.6],[3,-1,3.6],[0,4,3.6],[-5,5,3.3],[5,5,3.3]];   // one cluster, around its centre
 const WX={flood:[2400,3140],gap:[9800,10280],slide:[4165,4725],driver:5545,truck:5645,end:6765};   /* the road between the flood and the landslide was shortened by 835 (half the walk) */
 {
   let c='';for(let i=0;i<14;i++)c+=cloud(i*700+rnd(i)*300,110+rnd(i+9)*150,.6+rnd(i+3)*.7);
@@ -1071,19 +1079,39 @@ function groundPath(){const [f0,f1]=WX.flood;
   $('L4').innerHTML=fg;
   const side=F.aureliaSide();
   const nid=x=>x.replace(/ id="[^"]*"/g,'');
-  const tip=(x,y,k)=>`<g class="bt" data-k="${k}" opacity="0">${[[-4,-3],[0,-6],[4,-3],[-1,-1]].map(([a,b],i)=>`<circle cx="${x+a}" cy="${y+b}" r="3.4" fill="${i%2?'#9E2A24':'#C23A2E'}"/>`).join('')}</g>`;
-  const pc=k=>`<g class="pc" data-k="${k}"><g class="pcb" opacity="0">${[[-3,20],[3,22],[0,26]].map(([a,b],i)=>`<circle cx="${a}" cy="${b}" r="3.2" fill="${i%2?'#9E2A24':'#C23A2E'}"/>`).join('')}</g><path d="M0 16 L0 -8" stroke="#5A4630" stroke-width="1.6"/><path d="M0 2 C -9 -2 -14 -10 -13 -18 C -5 -14 -1 -6 0 2Z" fill="#2F5E3A"/><path d="M0 -2 C 8 -8 14 -10 19 -10 C 15 -2 8 1 0 -2Z" fill="#3F7148"/>${[[-3,10],[3,8],[0,13],[4,14]].map(([a,b],i)=>`<circle cx="${a}" cy="${b}" r="3.3" fill="${i%2?'#9E2A24':'#C23A2E'}"/>`).join('')}</g>`;
+  // the right-hand basket starts empty here and fills one handful at a time (same nine cherries it carries on the walk)
+  const fillable=pole=>{const i=pole.indexOf('translate(102 -150)');let n=0;
+    return pole.slice(0,i)+pole.slice(i).replace(/<circle [^>]*r="4.6"[^>]*\/>/g,c=>{const k=Math.floor(n++/3);return `<g class="bt" data-k="${k}" opacity="0">${c}</g>`})};
+  // a handful of ripe cherries stripped from the branch (no stem or leaves: it must read as coffee, not a root vegetable)
+  const pc=k=>`<g class="pc" data-k="${k}">${HCL.map(([a,b,r],i)=>`<circle cx="${a}" cy="${b}" r="${r}" fill="${i%3?'#C23A2E':'#9E2A24'}"/>`).join('')}<circle cx="-1.6" cy="-1.4" r="1.3" fill="#E06A5E" opacity=".75"/></g>`;
   $('walker').innerHTML=`<g transform="scale(1.2)"><ellipse cx="0" cy="2" rx="40" ry="6" fill="#3E2E1E" opacity=".18"/>
-    <g id="gPole">${nid(side.pole)}<g>${tip(96,-150,0)}${tip(104,-152,1)}${tip(110,-149,2)}</g></g>
+    <g id="gPole">${fillable(nid(side.pole))}</g>
     <g id="wWalk">${side.legBack}${side.body}${side.legFront}${side.pole}${side.head}</g>
     <g id="wHarv">${nid(side.legBack)}<g id="hSkirt">${side.skirt}</g>${nid(side.legFront)}<g id="hUp">${side.farArm}${side.torso}${side.headOnly}</g>
       <g id="hCar">${[0,1,2].map(pc).join('')}</g><path id="hArm" stroke="#3E7552" stroke-width="11" stroke-linecap="round" fill="none"/><circle id="hHand" r="5.5" fill="#B8744C"/></g></g>`;
 }
-const RH=[520,560,600,640,680,720,760,800];
-$('rHarv').innerHTML=`<path d="M440 ${GY+4} C 520 ${GY-10} 820 ${GY-10} 900 ${GY+4} L900 ${GY+16} L440 ${GY+16}Z" fill="#7A5534"/>`+[600,640,680,720,760,800,840,870].map((x,i)=>`<g transform="translate(${x+20} ${GY+2}) scale(1.2)" opacity=".92"><path d="M0 0 V-30" stroke="#5A4630" stroke-width="2.4"/><ellipse cx="0" cy="-34" rx="18" ry="14" fill="#2F5E3A"/><ellipse cx="-8" cy="-26" rx="11" ry="8" fill="#3F7148"/><ellipse cx="9" cy="-40" rx="10" ry="7" fill="#3F7148"/>${[[-6,-22],[5,-28],[10,-22],[-11,-33],[2,-40]].map(([a,b],j)=>`<circle cx="${a}" cy="${b}" r="2.6" fill="${(i+j)%3?'#C23A2E':'#7FA84E'}"/>`).join('')}</g>`).join('')
+/* Noor's coffee garden: shrubs as tall as she is, long drooping branches, cherries in clusters along them.
+   Drawn in Noor's own units (she stands at x 420, scale 1.2), so the branch she picks from lines up with her hand. */
+function coffeeTree(sc,seed,pick){
+  const lf='#2F5E3A',lf2='#3F7148',tr='#6B4A2E';
+  const br=(y,dir,L,omit)=>{const dy=L*.16,p=x=>y+Math.pow(x/L,2)*dy;let g=`<path d="M0 ${y} Q ${dir*L*.55} ${y+dy*.15} ${dir*L} ${y+dy}" stroke="${tr}" stroke-width="3" fill="none"/>`;
+    for(let j=1;j<=Math.floor(L/15);j++){const x=dir*j*15,yy=p(j*15),a=dir>0?22:-22;
+      g+=`<ellipse cx="${x}" cy="${yy-5}" rx="10" ry="3.6" fill="${j%2?lf:lf2}" transform="rotate(${-a} ${x} ${yy-5})"/><ellipse cx="${x+dir*2}" cy="${yy+5}" rx="10" ry="3.6" fill="${j%2?lf2:lf}" transform="rotate(${a} ${x+dir*2} ${yy+5})"/>`;
+      if(j%2===0&&!(omit&&omit(j))&&j*15<L-6){const ripe=rnd(seed*31+j*7+y)>.3;g+=HCL.slice(0,4).map(([a2,b2,r],i)=>`<circle cx="${x+a2}" cy="${yy+7+b2}" r="${r*.92}" fill="${ripe?(i%3?'#C23A2E':'#9E2A24'):(i%2?'#7FA84E':'#C9A64A')}"/>`).join('')}}
+    return g};
+  let g=`<g transform="scale(${sc})"><path d="M-3 0 C -4 -80 -2 -160 1 -232 L 5 -232 C 4 -160 4 -80 5 0Z" fill="${tr}"/>`;
+  [[-70,1,74],[-92,-1,70],[-118,1,80],[-140,-1,76],[-166,1,64],[-200,1,52],[-222,-1,40],[-236,1,26]].forEach(([y,d,L])=>g+=br(y,d,L));
+  // the branch toward Noor: its three nearest clusters are drawn with her, so she can pick them
+  g+=br(-178,-1,92,pick?j=>j>=3&&j<=5:null);
+  g+=`<ellipse cx="2" cy="-240" rx="9" ry="4" fill="${lf}" transform="rotate(-70 2 -240)"/></g>`;
+  return g;}
+const HT=150;   // Noor's tree trunk, in her units
+$('rHarv').innerHTML=`<g transform="translate(420 ${GY+2}) scale(1.2)">`+
+  [[HT+230,.82,3],[HT+400,.9,4],[HT+560,.78,5]].map(([x,sc,sd])=>`<g transform="translate(${x} 0)">${coffeeTree(sc,sd)}</g>`).join('')+
+  `<g transform="translate(${HT} 0)">${coffeeTree(1,2,1)}</g></g>`;
 const roadSvg=$('roadSvg');
 const AK=[[0,420],[.06,420],[.14,1700],[.17,2300],[.30,2300],[.36,3260],[.62,4095],[.73,4095],[.80,4805],[.88,5285],[1,5285]];
-function ax(p){for(let i=1;i<AK.length;i++){if(p<=AK[i][0]){const[a,xa]=AK[i-1],[b,xb]=AK[i];return lerp(xa,xb,(p-a)/(b-a))}}return AK[AK.length-1][1]}
+const ax=monoFn(AK);   // Noor's position along the road
 function pileH(x){const[s0,s1]=WX.slide;if(x<s0||x>s1)return 0;return Math.sin((x-s0)/(s1-s0)*Math.PI)*100}
 let _SY=scrollY,_IW=innerWidth,_IH=innerHeight,_DH=0;   /* viewport + scroll read once per frame: reading them after style writes forced a full layout each time */
 let vbW=1600,vbH=900,mobile=false;
@@ -1099,22 +1127,24 @@ const LAY=[0,1,2,3,4].map(i=>document.getElementById('sv'+i));
 const tx=(el,u)=>{el.style.transform=`translate3d(${(u*RS).toFixed(2)}px,0,0)`};
 const RMAP=[[0,0],[.14,.155],[.32,.36],[.5,.58],[.68,.80],[.78,.88],[1,1]];
 function remapRoad(p){for(let i=1;i<RMAP.length;i++){if(p<=RMAP[i][0]){const[a,oa]=RMAP[i-1],[b,ob]=RMAP[i];return lerp(oa,ob,(p-a)/(b-a))}}return 1}
-// Noor picks three sprigs of ripe cherries, drops them in the basket, then shoulders the pole and sets off
-const HV={row:[46,56,66],drop:[102,-58],grip:[26,-81]};
+// Noor stands at her coffee tree, strips three handfuls of ripe cherries off a branch, drops each into the basket below,
+// then shoulders the pole and sets off. t runs 0..1 over the first scroll of the road.
+const HV=(()=>{const L=92,dy=L*.16,cl=j=>{const x=j*15;return [HT-x,-178+Math.pow(x/L,2)*dy+7]};
+  return {cl:[cl(5),cl(4),cl(3)],lean:[.12,.17,.24],rest:[28,-122],drop:[100,-112],grip:[26,-81]}})();
 function harvest(t){
   const walk=t>=.97;$('wWalk').setAttribute('opacity',walk?1:0);$('wHarv').setAttribute('opacity',walk?0:1);$('gPole').setAttribute('opacity',walk?0:1);
   if(walk)return;
-  let b=.75,H=HV.drop.slice(),carry=-1,fall=null;
+  let b=.04,H=HV.rest.slice(),carry=-1,fall=null;
   const L=(a,c,e)=>[lerp(a[0],c[0],e),lerp(a[1],c[1],e)];
   for(let k=0;k<3;k++){const u=seg(t,.04+k*.19,.23+k*.19);if(u<=0)break;
-    const P=[HV.row[k],-10],U=[HV.row[k],-44];
-    if(u<.3){const e=ease(u/.3);b=lerp(.75,1,e);H=L(HV.drop,P,e)}
-    else if(u<.5){const e=ease((u-.3)/.2);b=lerp(1,.92,e);H=L(P,U,e);carry=k}
-    else if(u<.8){const e=ease((u-.5)/.3);b=lerp(.92,.75,e);H=L(U,HV.drop,e);carry=k}
-    else {b=.75;H=HV.drop.slice();fall=[k,seg(u,.8,.9)]}}
-  // lift: grip the pole, stand, pole rises to the shoulder
+    const from=k?HV.drop:HV.rest, b0=k?.45:.04, P=HV.cl[k], Q=[P[0]-2,P[1]+7], bk=HV.lean[k];
+    if(u<.36){const e=ease(u/.36);b=lerp(b0,bk,e);H=L(from,P,e)}                              // reach into the branch
+    else if(u<.5){const e=ease((u-.36)/.14);b=bk;H=L(P,Q,e);carry=k}                         // strip the cherries
+    else if(u<.8){const e=ease((u-.5)/.3);b=lerp(bk,.45,e);H=L(Q,HV.drop,e);carry=k}         // over the basket
+    else {b=.45;H=HV.drop.slice();fall=[k,seg(u,.8,.92)]}}                                     // let go
+  // lift: bend to the pole, stand, pole rises to the shoulder
   const g1=ease(seg(t,.64,.72)), lift=ease(seg(t,.72,.94));
-  if(t>=.64){b=lerp(.75,.6,g1);H=L(HV.drop,HV.grip,g1)}
+  if(t>=.64){b=lerp(.45,.6,g1);H=L(HV.drop,HV.grip,g1)}
   const pdy=116*(1-lift);
   if(t>=.72){b=lerp(.6,0,lift);H=[26,-197+pdy]}
   $('gPole').setAttribute('transform',`translate(0 ${pdy.toFixed(1)})`);
@@ -1125,12 +1155,12 @@ function harvest(t){
   const mid=[(S[0]+H[0])/2+8*Math.cos(r), (S[1]+H[1])/2-4];
   $('hArm').setAttribute('d',`M${S[0].toFixed(1)} ${S[1].toFixed(1)} Q ${mid[0].toFixed(1)} ${mid[1].toFixed(1)} ${H[0].toFixed(1)} ${H[1].toFixed(1)}`);
   $('hHand').setAttribute('cx',H[0].toFixed(1));$('hHand').setAttribute('cy',H[1].toFixed(1));
-  QA(document,'#hCar .pc').forEach(c=>{const k=+c.dataset.k;let x=HV.row[k],y=-16,body=0,op=1;
+  QA(document,'#hCar .pc').forEach(c=>{const k=+c.dataset.k;let [x,y]=HV.cl[k],op=1;
     const done=t>=.23+k*.19;
-    if(carry===k){x=H[0];y=H[1]-4;body=H[1]<-14?1:0}
-    else if(fall&&fall[0]===k){x=HV.drop[0];y=lerp(HV.drop[1]-4,-150+116,ease(fall[1]));body=1;op=1-seg(fall[1],.7,1)}
+    if(carry===k){x=H[0];y=H[1]+3}
+    else if(fall&&fall[0]===k){x=HV.drop[0];y=lerp(HV.drop[1]+3,-150+116-2,ease(fall[1]));op=1-seg(fall[1],.75,1)}
     else if(done)op=0;
-    c.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})`);c.setAttribute('opacity',op);c.querySelector('.pcb').setAttribute('opacity',body)});
+    c.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})`);c.setAttribute('opacity',op)});
   QA(document,'#gPole .bt').forEach(e=>{const k=+e.dataset.k;e.setAttribute('opacity',t>=.23+k*.19?1:0)});
 }
 function road(p){
@@ -1140,10 +1170,11 @@ function road(p){
   tx(LAY[0],-cam*.06);tx(LAY[1],-cam*.18);tx(LAY[2],-cam*.45);tx(LAY[3],-cam);tx(LAY[4],-cam*1.25);
   let y=GY; if(x>WX.slide[0]&&x<WX.slide[1]) y-=pileH(x)*seg(p,.64,.72);
   const [f0,f1]=WX.flood;
-  const phase=x/48, sw=moving?Math.sin(phase)*16:0, bob=moving?Math.abs(Math.cos(phase))*-2.5:0;
+  const amp=clamp(Math.abs(x2-x)/5,0,1);   // stride shrinks as she slows, so she settles instead of freezing mid-step
+  const phase=x/48, sw=Math.sin(phase)*16*amp, bob=Math.abs(Math.cos(phase))*-2.5*amp;
   $('walker').setAttribute('transform',`translate(${x-cam} ${y+bob})`);
   $('legF').setAttribute('transform',`rotate(${sw} 4 -44)`);$('legB').setAttribute('transform',`rotate(${-sw} -6 -44)`);
-  $('pole').setAttribute('transform',`rotate(${moving?Math.sin(phase*2)*1.1:0} 0 -194)`);
+  $('pole').setAttribute('transform',`rotate(${(Math.sin(phase*2)*1.1*amp).toFixed(2)} 0 -194)`);
   const storm=Math.max(seg(p,.13,.18)*(1-seg(p,.30,.36)), seg(p,.62,.66)*(1-seg(p,.74,.8))*.8);
   $('svS').style.opacity=(storm*.75).toFixed(3);$('svR').style.opacity=storm.toFixed(3);$('svR').style.visibility=storm>0?'visible':'hidden';
   if(storm>0)$('rainG').setAttribute('transform',`translate(0 ${((p*30000)%400)-400})`);   // rain only moves while it is visible (otherwise it repaints a hidden layer every frame)
@@ -2096,7 +2127,8 @@ const H=(i,a,b)=>[(i+a)/8,(i+b)/8-(b>=1?.0001:0)], E=(i)=>[i/4,(i+1)/4-.0001];
 const SCN=[
  {s:'hero',a:0,b:.2,d:1.4,c:0},{s:'hero',a:.48,b:.62,d:.8,c:0},{s:'hero',a:.62,b:.9,d:.8,c:0},
  {s:'map',a:0,b:.27,d:1.6,c:1},{s:'map',a:.27,b:.71,d:2.2,c:1},{s:'map',a:.71,b:.99,d:1,c:1},
- {s:'road',a:0,b:.062,d:1.4,c:2},{s:'road',a:.062,b:.149,d:1.6,c:2},{s:'road',a:.149,b:.35,d:2.4,c:2},{s:'road',a:.35,b:.62,d:1.6,L:35,c:2},{s:'road',a:.62,b:.795,d:1.5,c:2},{s:'road',a:.795,b:.99,d:2,c:3},
+ /* the road plays as one continuous walk (pl:1, no hold between its parts); only the trader's price at the end holds for reading */
+ {s:'road',a:0,b:.062,L:95,pl:1,c:2},{s:'road',a:.062,b:.149,L:55,pl:1,c:2},{s:'road',a:.149,b:.35,L:80,pl:1,c:2},{s:'road',a:.35,b:.62,L:42,pl:1,c:2},{s:'road',a:.62,b:.795,L:60,pl:1,c:2},{s:'road',a:.795,b:.99,d:2,c:3},
  {s:'together',a:0,b:.2,d:2,L:41,pl:1,c:4},{s:'together',a:.2,b:.439,d:2,c:4},{s:'together',a:.439,b:.63,d:1,c:4},{s:'together',a:.63,b:.81,d:1,c:4},{s:'together',a:.81,b:.99,d:1,c:4},
  {s:'split',a:0,b:.43,d:1.8,c:5},{s:'split',a:.43,b:.555,d:1,c:5},{s:'split',a:.555,b:.905,d:2.6,c:5},{s:'split',a:.905,b:.99,d:.8,c:5},
  {s:'curtain',a:0,b:.2,d:1.4,c:6},{s:'curtain',a:.2,b:.455,d:1.4,c:6},{s:'curtain',a:.455,b:.99,d:2.0,c:6},
@@ -2111,6 +2143,8 @@ const PLn=n=>n.pl||PLAY;      // a slot with pl:1 has no hold: its animation run
 const slotVH=d=>Math.round(38+d*14);
 const SEC={};secs.forEach(el=>SEC[el.id]={el,slots:[],len:0});
 SCN.forEach((n,k)=>{const S=SEC[n.s];n.k=k;n.o=S.len;n.l=Math.round((n.L||slotVH(n.d))*((n.s==='econ'||n.s==='wai')&&innerWidth<=760?.95:innerWidth<=760?.6:1));   /* phones: shorter scenes, fewer swipes */S.slots.push(n);S.len+=n.l;});
+/* the road's progress follows a smooth curve through its slot boundaries, so the walk never lurches from one pace to the next */
+const ROADF=(()=>{const S=SEC.road;if(!S)return null;const K=S.slots.map(n=>[n.o,n.a]);const l=S.slots[S.slots.length-1];K.push([l.o+l.l*PLn(l),l.b-.003]);return monoFn(K)})();
 const SWAP=innerWidth<=760;   // phones: the six AI panels share one fixed screen and swap like the How-it-works steps
 function sizeSecs(){Object.values(SEC).forEach(S=>S.el.style.height=S.el.classList.contains('flow')?'':(SWAP&&(S.el.id==='wai'||S.el.id==='econ'))?`${S.len}vh`:`calc(${S.len}vh + 100vh)`);measure()}
 const TOPS={};function measure(){Object.values(SEC).forEach(S=>{S.top=S.el.offsetTop;S.h=S.el.offsetHeight});{const c=$('close');TOPS.closeTop=c?c.offsetTop:0}['risks','wai','econ','hybrid','ledger10'].forEach(id=>{const e=$(id);if(e)TOPS[id]=[e.offsetTop,e.offsetHeight]})}
@@ -2142,7 +2176,7 @@ function target(){
       v=lerp(n.a,n.b-.003,u);
       if(y>=n.o&&y<S.len+100) cur=n.k;
     }
-    TG_[id]=v;
+    TG_[id]=id==='road'&&ROADF?ROADF(Math.max(0,y)):v;
   });
 }
 let lastT=0;const TOUCHY=matchMedia('(pointer:coarse)').matches||innerWidth<=760;
