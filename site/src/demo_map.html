@@ -1226,7 +1226,17 @@ async function send(){
   try{await handle(text)}catch(e){console.error(e)}busy=false;
 }
 /* ---------- rules first; a remote small model only with ?api=<url> (off by default) ---------- */
-const DURE_API=(QS.get('api')||'').replace(/\/$/,'');
+/* The server address comes from the page link, and the demo sends what the visitor types to it, so only a Hugging Face Space,
+   this site, or a server on the visitor's own machine is accepted; anything else is ignored and the rules engine is used. */
+const DURE_API=(()=>{const raw=(QS.get('api')||'').trim();if(!raw)return '';
+  try{const u=new URL(raw),h=u.hostname,local=h==='localhost'||h==='127.0.0.1'||h==='[::1]';
+    const ok=local||(u.protocol==='https:'&&(h.endsWith('.hf.space')||h==='dure-ai.pages.dev'));
+    return ok?(u.origin+u.pathname).replace(/\/$/,''):''}catch(e){return ''}})();
+/* What a remote reader sends back is data, not markup: keep only the fields the demo uses, with the types it expects. */
+const cleanRemote=m=>{m=m&&typeof m==='object'?m:{};const num=x=>x==null||x===''?null:(isFinite(+x)?+x:null);
+  return {lang:['tet','en','unknown'].includes(m.lang)?m.lang:null,crop:['coffee','other'].includes(m.crop)?m.crop:null,kg:num(m.kg),ask:num(m.ask),any:m.any===true,
+    grade:['A','B','C'].includes(m.grade)?m.grade:null,yn:['yes','no'].includes(m.yn)?m.yn:null,
+    q:Array.isArray(m.q)?m.q.filter(x=>typeof x==='string'&&Object.prototype.hasOwnProperty.call(QNAME,x)):null}};
 /* hook for the in-browser small AI reader (assets/reader_llm.js, window.DureLLM): used only when the rules engine is not sure */
 const llmReady=()=>{const L_=window.DureLLM;return !!(L_&&typeof L_.parse==='function'&&(L_.ready===true||L_.loaded===true||(typeof L_.isReady==='function'&&L_.isReady())))};
 const engName=()=>engine.name==='chat'?`small AI (on this device) · ${(engine.ms/1000).toFixed(1)} s`:engine.name==='chatblocked'?`small AI → checked template (blocked)`:engine.name==='llm'?`small AI (in your browser) · ${engine.ms} ms`:engine.name==='model'?`small AI server · ${engine.ms} ms`:'rules engine (in your browser)';
@@ -1562,9 +1572,9 @@ async function readMsg(text){
   try{
     const r=await fetch(DURE_API+'/parse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({msg:text,expect:ex||'none'}),signal:ctl.signal});
     const j=await r.json();if(!j.ok)throw new Error('unreadable output');
-    const m=j.result;readMs=performance.now()-t0;engine={name:'model',ms:j.ms};
+    const m=cleanRemote(j.result);readMs=performance.now()-t0;engine={name:'model',ms:Number(j.ms)||0};
     return {...rules,lang:m.lang==='unknown'?null:m.lang,unknown:m.lang==='unknown',crop:m.crop==='coffee'?'coffee':null,other:m.crop==='other'?'other':null,
-      kg:m.kg,ask:m.ask,any:m.any,grade:m.grade,yes:m.yn==='yes',no:m.yn==='no',q:m.q||rules.q,fixes:[]};
+      kg:m.kg,ask:m.ask,any:m.any,grade:m.grade,yes:m.yn==='yes',no:m.yn==='no',q:m.q&&m.q.length?m.q:rules.q,fixes:[]};
   }catch(e){readMs=performance.now()-t0;engine={name:'rules',why:e.name==='AbortError'?'model took over 8 s':'model unreachable'};return rules}
   finally{clearTimeout(to);msgs.splice(msgs.indexOf(typing),1);render()}
 }
@@ -2071,7 +2081,7 @@ function readFarmerMsg(it){
   it.pending=true;const t0=performance.now(),my=mk;
   const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),8000);
   fetch(DURE_API+'/parse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({msg:it.text,expect:it.expect||'none'}),signal:ctl.signal})
-    .then(r=>r.json()).then(j=>{if(!j.ok)throw 0;const m=j.result;it.p=compactParse({...DureAI.parse(it.text,it.expect),lang:m.lang==='unknown'?null:m.lang,unknown:m.lang==='unknown',crop:m.crop==='coffee'?'coffee':null,kg:m.kg,ask:m.ask,any:m.any,grade:m.grade,fixes:[]});it.eng='model';it.ms=j.ms||Math.round(performance.now()-t0)})
+    .then(r=>r.json()).then(j=>{if(!j.ok)throw 0;const m=cleanRemote(j.result);it.p=compactParse({...DureAI.parse(it.text,it.expect),lang:m.lang==='unknown'?null:m.lang,unknown:m.lang==='unknown',crop:m.crop==='coffee'?'coffee':null,kg:m.kg,ask:m.ask,any:m.any,grade:m.grade,fixes:[]});it.eng='model';it.ms=Number(j.ms)||Math.round(performance.now()-t0)})
     .catch(()=>{it.p=compactParse(DureAI.parse(it.text,it.expect));it.eng='rules (fallback)'})
     .finally(()=>{clearTimeout(to);if(my!==mk||!mk.feed[it.id]||mk.feed[it.id].text!==it.text)return;const cur=mk.feed[it.id];Object.assign(cur,{p:it.p,eng:it.eng,ms:it.ms,pending:false});judge(cur,mk.t);dirty.feed=true});
 }

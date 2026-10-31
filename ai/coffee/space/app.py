@@ -6,9 +6,10 @@ The web demo calls this and falls back to its rule-based reader when the
 endpoint is slow, asleep or returns something it cannot use.
 """
 import json, os, time
+from typing import Literal
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 # MODEL_ID: a .gguf file (8-bit, llama.cpp; what a hub laptop would run) or a Hugging Face model folder (full precision)
 MODEL = os.environ.get('MODEL_ID', './dure-reader-q8_0.gguf')
@@ -34,11 +35,13 @@ else:
         return tok.decode(o[0][ids['input_ids'].shape[1]:], skip_special_tokens=True).strip()
 
 app = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_methods=['*'], allow_headers=['*'])
+# Only the Dure site (and a local copy) may call this from a browser; set DURE_ORIGINS to a comma-separated list to change it.
+ORIGINS = [o.strip() for o in os.environ.get('DURE_ORIGINS', 'https://dure-ai.pages.dev,http://localhost:8000,http://127.0.0.1:8000').split(',') if o.strip()]
+app.add_middleware(CORSMiddleware, allow_origins=ORIGINS, allow_methods=['GET', 'POST'], allow_headers=['Content-Type'])
 
 class Req(BaseModel):
-    msg: str
-    expect: str = 'none'
+    msg: str = Field(max_length=500)                       # a text message is short; refuse anything larger before it reaches the model
+    expect: Literal['none', 'kg', 'ask', 'decide'] = 'none'
 
 def clean(d):
     """Keep only the fields we expect, with the types the demo expects."""

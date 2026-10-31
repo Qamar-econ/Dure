@@ -189,10 +189,15 @@ const DureSheet = (() => {
     if (P.has('drying')) out.push('uneven drying'); if (P.has('broken')) out.push('broken beans'); return out.join(', ');
   }
   function mergeRun(D, run) {
+    /* The run can arrive in the page address (#run=...), so every field is treated as untrusted input:
+       strings are reduced to letters, digits and light punctuation, grades must be A/B/C, numbers must be numbers. */
+    const S = x => String(x == null ? '' : x).replace(/[^\p{L}\p{N} .,\/()-]/gu, '').slice(0, 60);
+    const G3 = x => /^[ABC]$/.test(x) ? x : null;
+    const N = x => x == null || x === '' || !isFinite(+x) ? null : +x;
     const a = D.auctions.length;
-    D.auctions.push(run.date || '2026-10-05');
+    D.auctions.push(/^\d{4}-\d{2}-\d{2}$/.test(String(run.date)) ? run.date : '2026-10-05');
     const none = !run.res || run.res.none;
-    const buyers = (run.buyers || []).map((b, i) => { const id = 'BUY-D' + (i + 1); D.buyers.push({ id, name: b.n + (b.loc ? ', ' + b.loc : ''), demo: true }); return { id, ...b }; });
+    const buyers = (run.buyers || []).map((b, i) => { const id = 'BUY-D' + (i + 1); D.buyers.push({ id, name: S(b.n) + (b.loc ? ', ' + S(b.loc) : ''), demo: true }); return { id, ...b }; });
     const winIdx = none ? -1 : typeof run.res.winner === 'number' ? run.res.winner : buyers.findIndex(b => b.n === run.res.winner);
     const winner = winIdx >= 0 && buyers[winIdx] ? buyers[winIdx] : null;
     buyers.forEach((b, i) => {
@@ -204,21 +209,21 @@ const DureSheet = (() => {
     (run.farmers || []).forEach((f, i) => {
       if (f.st === 'idle' || !(f.kg > 0)) return;
       const id = f.me ? 'LTF-041' : 'LTF-' + String(200 + (f.pid != null ? +f.pid : typeof f.id === 'number' ? f.id : i)).padStart(3, '0');
-      const village = sucoName(f.suco);
+      const village = S(sucoName(f.suco)) || 'Letefoho Vila';
       if (F[id]) F[id].village = village;   // Noor keeps her register ID; the village is where she delivered this week
       else { const nf = { id, village, ha: null, tet: f.lang === 'tet', consent: 'N', demo: true }; D.farmers.push(nf); F[id] = nf; }
-      const grade = f.handG || f.g || f.aiG || 'B', photo = f.held ? null : (f.aiG || null);
+      const grade = G3(f.handG) || G3(f.g) || G3(f.aiG) || 'B', photo = f.held ? null : (G3(f.aiG) || null);
       const sold = !none && f.st === 'in' && f.dec !== 'no' && f.dec !== 'unsold';
       const status = none ? 'no sale' : sold ? 'in' : f.dec === 'no' ? 'declined' : 'sat out';
       const price = none ? null : (run.res.gp && run.res.gp[grade] != null ? r2(run.res.gp[grade]) : null);
-      const kgD = sold ? (f.kgD != null ? f.kgD : f.kg) : 0;
+      const kgD = sold ? +(f.kgD != null ? f.kgD : f.kg) || 0 : 0;
       const pay = sold ? (f.pay != null ? r2(f.pay) : r2(kgD * (price || 0))) : 0;
-      const o = { auction: a, date: D.auctions[a], farmer: id, kg: f.kg, ask: f.any ? 0 : r2(f.ask || 0), any: !!f.any,
+      const o = { auction: a, date: D.auctions[a], farmer: id, kg: +f.kg, ask: f.any ? 0 : r2(f.ask || 0), any: !!f.any,
         ai_grade: photo, conf: f.conf != null ? Math.round(f.conf) : null, flags: normFlags(f.flags), grade,
         read_by: f.lang === 'tet' ? 'model' : 'rules', lang: f.lang === 'tet' ? 'TET' : 'EN', on_time: sold ? f.onTime !== false : null,
-        run: true, me: !!f.me, name: f.name || id,
+        run: true, me: !!f.me, name: S(f.name) || id,
         fixed: { price: sold ? price : (none ? null : price), status, paid: pay, buyer: sold && winner ? winner.id : '', kg_del: kgD },
-        x: { held: !!f.held, mismatch: !!f.mismatch, aiWrong: !!f.aiWrong, backfill: !!f.backfill, rep: f.rep, rep1: f.rep1, dec: f.dec, st: f.st, woman: f.woman != null ? !!f.woman : (f.sex ? f.sex === 'f' : null) } };
+        x: { held: !!f.held, mismatch: !!f.mismatch, aiWrong: !!f.aiWrong, backfill: !!f.backfill, rep: N(f.rep), rep1: N(f.rep1), dec: S(f.dec), st: S(f.st), woman: f.woman != null ? !!f.woman : (f.sex ? f.sex === 'f' : null) } };
       D.offers.push(o); rows.push(o);
     });
     const bidsN = buyers.filter(b => b.best != null).length;
@@ -226,7 +231,7 @@ const DureSheet = (() => {
     D.fixedMarket[a] = { none, best_bid: none ? null : r2(run.res.p), buyer: winner ? winner.id : '', bids: bidsN,
       open: (run.bids || []).length ? r2(Math.min(...run.bids.map(b => b.v))) : null,
       A: none ? null : r2(run.res.gp.A), B: none ? null : r2(run.res.gp.B), C: none ? null : r2(run.res.gp.C),
-      weather: (run.cond && run.cond.rain) || '', road: (run.cond && run.cond.road) || '', invited: (run.cond && run.cond.nB) || buyers.length,
+      weather: S(run.cond && run.cond.rain), road: S(run.cond && run.cond.road), invited: (run.cond && run.cond.nB) || buyers.length,
       buyer_paid: run.paid != null ? r2(run.paid) : null };
     D.run = { auction: a, week: week(a), run, buyers, winner, none };
     return D.run;
@@ -745,8 +750,8 @@ const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','De
 const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const fd=s=>{if(!s)return'';const[y,m,d]=s.split('-');return `${+d} ${MON[+m-1]}`};
 const money=v=>v==null?'':'$'+(+v).toFixed(2);
-const tag=(cls,t)=>`<span class="tag ${cls}">${t}</span>`;
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const tag=(cls,t)=>`<span class="tag ${esc(cls)}">${esc(t)}</span>`;
 
 /* ---------- price level: the July history is restated at the demo's price level (grade B ≈ $2.45) ---------- */
 /* ---------- more synthetic history, generated in advance (seeded): four more sucos and the defects behind each grade ---------- */
@@ -861,14 +866,15 @@ function cell(t,v,r){
   if(t==='grade'&&v==null&&r&&r.run)return tag('t-out','held');
   if(t==='ask'&&r&&r.any)return 'any price';
   if(v==null||v==='')return '';
+  if(['num','pool','pct','pctf','pctd'].includes(t)&&typeof v!=='number')return esc(v);   // a value that should be a number but is not: show it as plain text
   switch(t){
-    case 'num':return typeof v==='number'?v.toLocaleString('en-US'):v;
+    case 'num':return typeof v==='number'?v.toLocaleString('en-US'):esc(v);
     case 'money':case 'ask':return money(v);
     case 'date':return fd(v);
     case 'pool':return '#'+(v+1);
     case 'grade':return tag('t-'+v,v);
     case 'status':return tag(v==='in'?'t-in':'t-out',v);
-    case 'flags':return v?`<span class="fl">${v}</span>`:'';
+    case 'flags':return v?`<span class="fl">${esc(v)}</span>`:'';
     case 'yn':return v==='Y'?'yes':'no';
     case 'yn2':return v?'yes':'<span class="fl">late</span>';
     case 'buyer':return esc(buyerName(v));
@@ -1108,7 +1114,7 @@ let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if(tab
 /* ---------- tabs, filters ---------- */
 $('tabs').innerHTML=ORDER.map(k=>`<button data-t="${k}"${RAW[k]?' class="raw"':''}>${RAW[k]?'<i class="rw">RAW</i>':''}${SPEC[k].label}${SPEC[k].rows?`<span class="cnt">${SPEC[k].rows().length}</span>`:''}</button>`).join('');
 $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{hlRows=null;setTab(b.dataset.t)});
-R.villages.forEach(v=>$('fv').insertAdjacentHTML('beforeend',`<option>${v}</option>`));
+R.villages.forEach(v=>$('fv').insertAdjacentHTML('beforeend',`<option>${esc(v)}</option>`));
 [...new Set(R.market.map(m=>m.week))].forEach(w=>$('fw').insertAdjacentHTML('beforeend',`<option value="${w}">${w}${R.market.some(m=>m.run&&m.week===w)?' (demo)':''}</option>`));
 $('fv').onchange=()=>{filt.village=$('fv').value;renderGrid()};$('fw').onchange=()=>{filt.week=$('fw').value;renderGrid()};
 $('clr').onclick=()=>{Object.assign(filt,{village:'',week:'',status:'',matched:'',sales:null});hlRows=null;$('fv').value='';$('fw').value='';renderGrid()};
@@ -1133,7 +1139,7 @@ $('xlsx').onclick=()=>{
     ORDER.filter(k=>k!=='brief').forEach(k=>XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(aoa(k)),SPEC[k].label));
     XLSX.writeFile(wb,'dure-letefoho-registry.xlsx');toast('Workbook downloaded: '+ORDER.length+' sheets')};
   if(window.XLSX)return run();
-  const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+  const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.integrity='sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==';s.crossOrigin='anonymous';s.referrerPolicy='no-referrer';
   s.onload=run;s.onerror=()=>toast('Could not load the Excel library. Use .csv instead.');document.head.appendChild(s);toast('Preparing the workbook…')};
 
 setTab(q?'trades':'brief');
