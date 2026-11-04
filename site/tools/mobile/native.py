@@ -21,7 +21,7 @@ INK, INK2, RUST, GOLD, LEAF = '#1F3A40', '#4F4A40', '#A8452A', '#E4B64C', '#4E8B
 SYMBOLS = ('<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>' + ''.join(
     f'<symbol id="bn{g}" viewBox="-12 -9 24 18"><g transform="rotate(-24)"><ellipse rx="10.6" ry="7.2" fill="{f}" stroke="{d}" stroke-width="1"/>'
     f'<path d="M-7.5 2.6 C-3 -2.4 3 2.4 7.5 -2.6" stroke="{d}" stroke-width="1.7" fill="none" stroke-linecap="round"/></g>'
-    f'<text y="3.4" text-anchor="middle" font-family="Newsreader,Georgia,serif" font-size="9.5" font-weight="700" fill="#FBF3E2">{g}</text></symbol>'
+    f'<text y="3.4" text-anchor="middle" font-family="Literata,Georgia,serif" font-size="9.5" font-weight="700" fill="#FBF3E2">{g}</text></symbol>'
     for g, (f, d) in G.items()) + '</defs></svg>')
 
 
@@ -129,7 +129,7 @@ def score():
     return ('<div class="nf nf-score" role="img" aria-label="Reputation: 92% of grades confirmed; 14 sales, 13 of 14 on time, 1 dispute">'
             f'<svg viewBox="0 0 300 150" aria-hidden="true"><path d="{arc(1)}" stroke="#E2D7C1" stroke-width="18" fill="none" stroke-linecap="round"/>'
             f'<path d="{arc(.92)}" stroke="{LEAF}" stroke-width="18" fill="none" stroke-linecap="round"/>'
-            f'<text x="150" y="122" text-anchor="middle" font-family="Newsreader,Georgia,serif" font-size="62" font-weight="700" fill="{INK}">92</text>'
+            f'<text x="150" y="122" text-anchor="middle" font-family="Literata,Georgia,serif" font-size="62" font-weight="700" fill="{INK}">92</text>'
             f'<text x="150" y="146" text-anchor="middle" class="t i" fill="{INK2}">grades confirmed, %</text></svg>'
             '<dl><div><dt>14</dt><dd>sales</dd></div><div><dt>13 / 14</dt><dd>on time</dd></div><div><dt>1</dt><dd>dispute</dd></div></dl></div>')
 

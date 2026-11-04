@@ -15,14 +15,14 @@ html{touch-action:manipulation}   /* iOS: no double-tap zoom when buttons are ta
 <meta property="og:url" content="https://dure-ai.pages.dev/demo"><meta property="og:image" content="https://dure-ai.pages.dev/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Cg%20transform%3D%27translate%2832%2032%29%20rotate%28-28%29%27%3E%3Cellipse%20rx%3D%2720%27%20ry%3D%2727%27%20fill%3D%27%236B4226%27/%3E%3Cellipse%20cx%3D%27-6%27%20cy%3D%27-8%27%20rx%3D%277%27%20ry%3D%2711%27%20fill%3D%27%238F5E38%27%20opacity%3D%27.55%27/%3E%3Cpath%20d%3D%27M1%20-24%20C%20-9%20-13%209%20-3%200%207%20C%20-7%2015%202%2020%200%2025%27%20stroke%3D%27%232B180C%27%20stroke-width%3D%274%27%20fill%3D%27none%27%20stroke-linecap%3D%27round%27/%3E%3C/g%3E%3C/svg%3E">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..800&family=IBM+Plex+Sans:wght@400;500;600&family=Gochi+Hand&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&family=IBM+Plex+Sans:wght@400;500;600&family=Gochi+Hand&family=VT323&display=swap" rel="stylesheet">
 <style>
 /* ===== Dure shared design tokens + components (site and demo) ===== */
 :root{
   --ivory:#F2EADA;--paper:#F6EFE0;--ink:#1F3A40;--ink-2:#5B5345;--rust:#A8452A;--rust-2:#8E3A22;
   --gold:#E4B64C;--leaf:#4E8B5C;--teal:#2C4F57;--bean:#6B4226;--lcd:#B7CF9A;
   --line:rgba(31,58,64,.18);--line-2:rgba(31,58,64,.35);
-  --f-display:Fraunces,Georgia,serif;--f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:VT323,ui-monospace,monospace;
+  --f-display:Literata,Georgia,serif;--f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:VT323,ui-monospace,monospace;
   --r-pill:40px;--shadow-cta:0 14px 28px -16px rgba(168,69,42,.9);
 }
 ::selection{background:rgba(228,182,76,.45);color:var(--ink)}
@@ -66,30 +66,30 @@ a{color:inherit}
 .topprog{position:absolute;left:0;right:0;top:0;height:2px;background:rgba(31,58,64,.14)}.topprog span{display:block;height:100%;width:0;background:var(--ink);transition:width .6s}
 /* ---------- picker ---------- */
 #pick{max-width:900px;margin:4vh auto 8vh;padding:0 20px;text-align:center}
-#pick .k{font-family:Fraunces,serif;font-style:italic;color:var(--rust);font-size:18px}
-#pick h1{font-family:Fraunces,serif;font-weight:700;font-size:clamp(34px,4.4vw,56px);letter-spacing:-.035em;line-height:1.05;margin:10px 0 14px}
+#pick .k{font-family:Literata,serif;font-style:italic;color:var(--rust);font-size:18px}
+#pick h1{font-family:Literata,serif;font-weight:700;font-size:clamp(34px,4.4vw,56px);letter-spacing:-.035em;line-height:1.05;margin:10px 0 14px}
 #pick h1 em{font-weight:500;color:var(--rust)}
-#pick p.lead{font-family:Fraunces,serif;font-size:19px;color:var(--ink-2);max-width:40em;margin:0 auto 34px;line-height:1.45}
+#pick p.lead{font-family:Literata,serif;font-size:19px;color:var(--ink-2);max-width:40em;margin:0 auto 34px;line-height:1.45}
 .choices{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:640px;margin:0 auto}
 .choice{border:1.6px solid rgba(31,58,64,.25);border-radius:18px;background:rgba(255,255,255,.45);padding:24px 16px 20px;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;font:inherit;color:inherit}
 .choice:hover{transform:translateY(-3px);border-color:var(--ink);box-shadow:0 18px 30px -22px rgba(31,58,64,.6)}
 .choice svg{height:150px;width:auto;display:block;margin:0 auto 14px}
-.choice b{display:block;font-family:Fraunces,serif;font-size:21px}
+.choice b{display:block;font-family:Literata,serif;font-size:21px}
 .choice span{font-size:14px;color:var(--ink-2)}
-.fine{margin-top:28px;font-family:Fraunces,serif;font-style:italic;font-size:14px;color:var(--ink-2)}
+.fine{margin-top:28px;font-family:Literata,serif;font-style:italic;font-size:14px;color:var(--ink-2)}
 /* ---------- stage ---------- */
 #stage{display:none;grid-template-columns:auto minmax(280px,420px);gap:48px;justify-content:center;align-items:start;padding:8px 24px 40px}
 #stage.on{display:grid}
 .side{padding-top:6px}
-.side h2{font-family:Fraunces,serif;font-size:26px;letter-spacing:-.02em;margin-bottom:4px}
-.side .sub{font-family:Fraunces,serif;font-style:italic;color:var(--ink-2);font-size:15px;margin-bottom:18px}
+.side h2{font-family:Literata,serif;font-size:26px;letter-spacing:-.02em;margin-bottom:4px}
+.side .sub{font-family:Literata,serif;font-style:italic;color:var(--ink-2);font-size:15px;margin-bottom:18px}
 .steps{list-style:none;border-top:2px solid var(--ink);margin-bottom:22px}
-.steps li{display:flex;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid rgba(31,58,64,.15);font-family:Fraunces,serif;font-size:16px;color:rgba(31,58,64,.4)}
+.steps li{display:flex;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid rgba(31,58,64,.15);font-family:Literata,serif;font-size:16px;color:rgba(31,58,64,.4)}
 .steps li i{width:22px;height:22px;border-radius:50%;border:1.6px solid currentColor;display:grid;place-items:center;font-style:normal;font-size:12px;flex:none}
 .steps li.now{color:var(--ink);font-weight:600}.steps li.now i{background:var(--rust);border-color:var(--rust);color:#fff}
 .steps li.done{color:var(--leaf)}.steps li.done i{background:var(--leaf);border-color:var(--leaf);color:#fff}
 .console{background:var(--ink);color:#F6EFE0;border-radius:14px;padding:14px 16px 16px;margin-bottom:18px}
-.console .hd{display:flex;justify-content:space-between;font-family:Fraunces,serif;font-style:italic;font-size:13px;color:#BFD0CC;margin-bottom:10px}
+.console .hd{display:flex;justify-content:space-between;font-family:Literata,serif;font-style:italic;font-size:13px;color:#BFD0CC;margin-bottom:10px}
 .console .hd b{width:8px;height:8px;border-radius:50%;background:#7FD18B;display:inline-block;margin-top:4px}
 .console .raw{background:var(--lcd);color:var(--ink);font-family:VT323,monospace;font-size:20px;line-height:1.1;border-radius:6px;padding:8px 10px;margin-bottom:10px;word-break:break-word;min-height:34px}
 .console .raw mark{background:rgba(228,182,76,.8);color:inherit;border-radius:3px;padding:0 2px}
@@ -99,15 +99,15 @@ a{color:inherit}
 .console td:last-child{border-radius:0 5px 5px 0;text-align:right;font-weight:600}
 .console td.miss{color:var(--gold);font-style:italic;font-weight:400}
 .console .note{font-size:12.5px;color:#BFD0CC;margin-top:6px;line-height:1.45}
-.console .empty{font-family:Fraunces,serif;font-style:italic;color:#BFD0CC;font-size:14px}
-.tries{font-family:Fraunces,serif;font-size:14px;color:var(--ink-2);margin-bottom:16px}
+.console .empty{font-family:Literata,serif;font-style:italic;color:#BFD0CC;font-size:14px}
+.tries{font-family:Literata,serif;font-size:14px;color:var(--ink-2);margin-bottom:16px}
 .tries>b{display:block;font-size:15px;color:var(--ink);margin-bottom:8px}
 .tries button{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;font-family:"IBM Plex Sans",sans-serif;font-size:14px;line-height:1.35;background:#FBF7EE;border:1px solid rgba(31,58,64,.16);border-radius:10px;padding:8px 12px;margin:0 0 6px;cursor:pointer;color:var(--ink);transition:border-color .15s,background .15s}
 .tries button:hover{border-color:var(--ink);background:#fff}
 .tries button .tx{flex:1}.tries button .lg{flex:none;font-size:10.5px;letter-spacing:.06em;color:var(--ink-2);border:1px solid rgba(31,58,64,.25);border-radius:4px;padding:1px 5px;margin-top:2px}
-.ff{display:none;width:100%;padding:13px 16px;border:none;border-radius:30px;background:var(--rust);color:#FFF6EC;font-family:Fraunces,serif;font-size:17px;font-weight:600;cursor:pointer;margin-bottom:14px}
+.ff{display:none;width:100%;padding:13px 16px;border:none;border-radius:30px;background:var(--rust);color:#FFF6EC;font-family:Literata,serif;font-size:17px;font-weight:600;cursor:pointer;margin-bottom:14px}
 .ff.on{display:block}.ff:disabled{opacity:.45;cursor:default}
-.end{display:none;border:1.6px solid var(--leaf);border-radius:14px;padding:16px;background:rgba(78,139,92,.08);font-family:Fraunces,serif}
+.end{display:none;border:1.6px solid var(--leaf);border-radius:14px;padding:16px;background:rgba(78,139,92,.08);font-family:Literata,serif}
 .end.on{display:block}.end h3{font-size:20px;margin-bottom:6px}.end p{font-size:15px;color:var(--ink-2);line-height:1.45;margin-bottom:12px}
 /* ---------- phone shells ---------- */
 .phoneWrap{position:relative}
@@ -116,7 +116,7 @@ a{color:inherit}
 .a-sb{display:flex;justify-content:space-between;align-items:center;padding:12px 22px 6px;font-size:13px;font-weight:600;color:#222}
 .a-sb .r{display:flex;gap:7px;align-items:center}
 .a-hd{display:flex;align-items:center;gap:10px;padding:8px 16px 10px;border-bottom:1px solid #E4E0D8;background:#fff}
-.a-hd .av{width:36px;height:36px;border-radius:50%;background:var(--ink);color:#F6EFE0;display:grid;place-items:center;font-family:Fraunces,serif;font-weight:700}
+.a-hd .av{width:36px;height:36px;border-radius:50%;background:var(--ink);color:#F6EFE0;display:grid;place-items:center;font-family:Literata,serif;font-weight:700}
 .a-hd b{display:block;font-size:15px}.a-hd small{font-size:12px;color:#777}
 .a-list{flex:1;overflow-y:auto;padding:14px 12px 8px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth}
 .bub{max-width:80%;padding:9px 12px;border-radius:18px;font-size:14.5px;line-height:1.38;white-space:pre-wrap;word-break:break-word;animation:pop .25s ease-out}
@@ -163,7 +163,7 @@ a{color:inherit}
 .picker.on{display:flex}
 .picker .sheet{background:#fff;width:100%;border-radius:22px 22px 0 0;padding:16px 14px 20px}
 .nokia .picker .sheet{background:var(--lcd);font-family:VT323,monospace;border-radius:6px 6px 0 0}
-.picker h4{font-family:Fraunces,serif;font-size:16px;margin-bottom:10px}
+.picker h4{font-family:Literata,serif;font-size:16px;margin-bottom:10px}
 .nokia .picker h4{font-family:VT323,monospace;font-size:20px;font-weight:400}
 .picker .row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .picker .row button{border:1.5px solid #DDD;border-radius:10px;background:#FAF8F4;padding:6px 6px 8px;cursor:pointer;font:inherit}
@@ -191,9 +191,9 @@ a{color:inherit}
   .android{width:100vw;height:calc(100svh - 64px - var(--peek,0px));border-radius:0;padding:0;box-shadow:none;margin:0 -10px}
   .android .scr{border-radius:0}
 }
-.langs{font-family:Fraunces,serif;font-size:14px;color:var(--ink-2);margin:-8px 0 16px;padding:8px 12px;border:1px dashed rgba(31,58,64,.35);border-radius:10px}
+.langs{font-family:Literata,serif;font-size:14px;color:var(--ink-2);margin:-8px 0 16px;padding:8px 12px;border:1px dashed rgba(31,58,64,.35);border-radius:10px}
 .langs b{color:var(--ink)}
-.skipbar{display:none;border:none;background:var(--rust);color:#FFF6EC;font-family:Fraunces,serif;font-weight:600;font-size:15px;cursor:pointer;animation:pulse 1.6s infinite}
+.skipbar{display:none;border:none;background:var(--rust);color:#FFF6EC;font-family:Literata,serif;font-weight:600;font-size:15px;cursor:pointer;animation:pulse 1.6s infinite}
 .android #composer .skipbar{flex:1;width:auto;height:auto;min-height:42px;border-radius:21px;padding:8px 14px;box-shadow:none;background:var(--rust);line-height:1.2}
 .android #composer.skip textarea{display:none}
 .android #composer.skip #att,.android #composer.skip #snd{opacity:.3;pointer-events:none}
@@ -214,7 +214,7 @@ a{color:inherit}
 .vid{position:absolute;inset:0;background:#0E1316;z-index:7;display:flex;flex-direction:column;justify-content:center;opacity:0;transition:opacity .35s}
 .vid.on{opacity:1}.vid .vsc{width:100%;height:auto;display:block}
 .vtop{display:flex;justify-content:space-between;color:#F6EFE0;font-size:12px;padding:0 14px 8px}.vtop span:first-child{color:#F08A6A}
-.vcap{color:#F6EFE0;font-family:Fraunces,serif;font-size:15px;padding:12px 14px 10px;min-height:44px}
+.vcap{color:#F6EFE0;font-family:Literata,serif;font-size:15px;padding:12px 14px 10px;min-height:44px}
 .vbar{height:3px;background:#3A4952;margin:0 14px}.vbar i{display:block;height:100%;width:0;background:#E4B64C}
 .vtime{display:flex;justify-content:space-between;color:#AAB;font-size:12px;padding:6px 14px}
 .nvid{position:absolute;left:0;right:0;top:22px;bottom:0;background:var(--lcd);z-index:6;display:flex;flex-direction:column;align-items:center;padding-top:4px}
@@ -232,7 +232,7 @@ body.mob .bank.mtop.on{transform:none}
 .bank .bt{flex:1;font-size:13px;color:#333}.bank .bh{display:flex;justify-content:space-between;margin-bottom:2px}.bank .bh span{color:#999;font-size:12px}.bank .bm b{color:#1F3A40}
 .bub.ai svg.ph{width:100%;height:auto;border-radius:10px;display:block;margin-bottom:4px}
 .end.on{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:50;width:min(420px,calc(100vw - 32px));background:var(--ivory);border:2px solid var(--ink);border-radius:20px;padding:26px 24px 22px;box-shadow:0 0 0 100vmax rgba(20,26,30,.55),0 30px 60px -20px rgba(0,0,0,.5);animation:popm .35s cubic-bezier(.2,.9,.3,1.2)}
-.end .ek{font-family:Fraunces,serif;font-style:italic;color:var(--rust);font-size:15px;margin-bottom:4px}.end.on h3{font-size:26px}
+.end .ek{font-family:Literata,serif;font-style:italic;color:var(--rust);font-size:15px;margin-bottom:4px}.end.on h3{font-size:26px}
 .end .eb{display:flex;gap:8px;flex-wrap:wrap}.end .eb>*{flex:1 1 120px;font-size:15px;padding:10px 12px}
 .end .btn.reg{display:flex;width:100%;margin:4px 0 10px;font-size:20px;padding:15px 22px}.end .syn{margin:10px 0 0;font-size:12px;font-style:italic;text-align:center}
 @keyframes popm{from{opacity:0;transform:translate(-50%,-44%)}to{opacity:1;transform:translate(-50%,-50%)}}
@@ -263,7 +263,7 @@ body.mob .bank.mtop.on{transform:none}
 .gauge i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#4E8B5C,#7FD18B);border-radius:9px}
 .gauge u{position:absolute;top:-3px;bottom:-3px;width:2px;background:#E4B64C}
 .gl{display:flex;justify-content:space-between;font-size:12px;color:#B9C9C4}
-.gbig{font-family:Fraunces,serif;font-size:30px;font-weight:600;color:#F6EFE0;font-variant-numeric:tabular-nums}
+.gbig{font-family:Literata,serif;font-size:30px;font-weight:600;color:#F6EFE0;font-variant-numeric:tabular-nums}
 .console tr.pend td{opacity:.35}
 .ctl button{white-space:nowrap}
 @media(max-width:760px){.top{padding:14px 16px}}
@@ -670,11 +670,11 @@ body.mob .mp[data-p="dash"] .pane .figw{display:block;flex:none!important;height
 </style>
 </head>
 <body class="paper">
-<div class="top"><div class="topprog"><span id="topprog"></span></div><a class="brand" href="./" aria-label="Dure — back to the story"><svg viewBox="-2 0 312 130" aria-label="Dure."><text x="0" y="104" font-family="Fraunces,  serif" font-size="130" font-weight="680" letter-spacing="-5.8" fill="#1F3A40" style="font-variation-settings:'opsz' 144">Dure</text><g transform="translate(290 89)"><g transform="rotate(-28)"><ellipse rx="11.5" ry="15" fill="#6B4226"/><ellipse cx="-3.6" cy="-4.5" rx="4" ry="6.4" fill="#8F5E38" opacity=".55"/><path d="M0.6 -13.6 C -5.2 -7.4 5.2 -1.6 0 4 C -4.2 8.4 1.2 11.2 0.2 13.8" stroke="#2B180C" stroke-width="2.3" fill="none" stroke-linecap="round"/></g></g></svg></a><div class="mkbar" id="mkbar"></div><div class="ctl" id="ctl" style="display:none"><button id="rephone" class="ib" data-tip="Choose phone">📱</button><button id="undo" class="ib" data-tip="Back a step" disabled>↺</button><button id="mkNew" class="ib" data-tip="New random week">🎲</button></div><div class="barr"><button class="langbtn llmb" id="llmBtn" data-tip="Small AI chat · on this device (≈500 MB, once)">Small AI chat: off</button><button class="langbtn" id="langBtn" data-tip="Language of Dure AI's texts">SMS: EN</button><a class="back label-i" href="./">← Back to the story</a></div></div>
+<div class="top"><div class="topprog"><span id="topprog"></span></div><a class="brand" href="./" aria-label="Dure — back to the story"><svg viewBox="-2 0 312 130" aria-label="Dure."><text x="0" y="104" font-family="Literata,  serif" font-size="130" font-weight="680" letter-spacing="-5.8" fill="#1F3A40" style="font-variation-settings:'opsz' 144">Dure</text><g transform="translate(290 89)"><g transform="rotate(-28)"><ellipse rx="11.5" ry="15" fill="#6B4226"/><ellipse cx="-3.6" cy="-4.5" rx="4" ry="6.4" fill="#8F5E38" opacity=".55"/><path d="M0.6 -13.6 C -5.2 -7.4 5.2 -1.6 0 4 C -4.2 8.4 1.2 11.2 0.2 13.8" stroke="#2B180C" stroke-width="2.3" fill="none" stroke-linecap="round"/></g></g></svg></a><div class="mkbar" id="mkbar"></div><div class="ctl" id="ctl" style="display:none"><button id="rephone" class="ib" data-tip="Choose phone">📱</button><button id="undo" class="ib" data-tip="Back a step" disabled>↺</button><button id="mkNew" class="ib" data-tip="New random week">🎲</button></div><div class="barr"><button class="langbtn llmb" id="llmBtn" data-tip="Small AI chat · on this device (≈500 MB, once)">Small AI chat: off</button><button class="langbtn" id="langBtn" data-tip="Language of Dure AI's texts">SMS: EN</button><a class="back label-i" href="./">← Back to the story</a></div></div>
 
 <section id="pick">
   <div class="k">Demo</div>
-  <h1>You are Noor. <em>Sell your coffee by text.</em></h1>
+  <h1>You are Noor. <em style="display:inline-block">Sell your coffee by text.</em></h1>
   <p class="lead">Harvest week in Letefoho, Ermera. Pick a phone, text Dure AI your coffee, send one photo, and follow it to getting paid.</p>
   <div class="choices">
     <button class="choice" data-skin="nokia"><svg viewBox="0 0 60 130"><rect x="4" y="2" width="52" height="126" rx="18" fill="#2E3A42"/><rect x="11" y="18" width="38" height="36" rx="4" fill="#B7CF9A"/><ellipse cx="30" cy="64" rx="10" ry="5" fill="#46555E"/><g fill="#4A5A64"><rect x="12" y="76" width="10" height="7" rx="3"/><rect x="25" y="76" width="10" height="7" rx="3"/><rect x="38" y="76" width="10" height="7" rx="3"/><rect x="12" y="88" width="10" height="7" rx="3"/><rect x="25" y="88" width="10" height="7" rx="3"/><rect x="38" y="88" width="10" height="7" rx="3"/><rect x="12" y="100" width="10" height="7" rx="3"/><rect x="25" y="100" width="10" height="7" rx="3"/><rect x="38" y="100" width="10" height="7" rx="3"/></g></svg><b>Feature phone</b><span>the kind most farmers carry</span></button>
@@ -1857,7 +1857,7 @@ const BEAN=(()=>{const P={A:['#D9A75E','#B98544','#6E4A24','#8A5F2E'],B:['#A9774
   const art=(g,s=1,r=-26,k=0,label=true)=>{const c=P[g],v=Math.sin((k+1)*12.9898)*43758.5453,j=v-Math.floor(v);
     const crease=label?'M-15.8 2.6 C -13 -.2 -10 -1.4 -6.8 -1 M6.8 1.3 C 10 .7 13 -.3 16 -.8':'M-15.6 2.2 C -11.6 -1.6 -7.6 -2.4 -3.6 -.4 C 0 1.4 3.6 2.2 7.6 .6 C 10.8 -.7 13.4 -1.2 15.8 -.6';
     const spots=g==='C'?`<ellipse cx="${8+j*4}" cy="7" rx="3.4" ry="2.3" fill="#140D09"/><ellipse cx="${-12+j*3}" cy="-5.6" rx="2.1" ry="1.5" fill="#140D09"/>`:'';
-    return `<g transform="scale(${s})"><ellipse cx="1" cy="12.6" rx="15" ry="2.6" fill="#2A1A10" opacity=".12"/><g transform="rotate(${(r+(j-.5)*8).toFixed(1)})"><path d="${body}" fill="${c[0]}"/><path d="${shade}" fill="${c[1]}"/>${spots}<path d="${crease}" stroke="${c[2]}" stroke-width="2.6" fill="none" stroke-linecap="round"/></g>${label?`<text y="5.2" text-anchor="middle" font-family="Fraunces,serif" font-size="14.5" font-weight="700" fill="#FBF5E9" stroke="${c[3]}" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke">${g}</text>`:''}</g>`};
+    return `<g transform="scale(${s})"><ellipse cx="1" cy="12.6" rx="15" ry="2.6" fill="#2A1A10" opacity=".12"/><g transform="rotate(${(r+(j-.5)*8).toFixed(1)})"><path d="${body}" fill="${c[0]}"/><path d="${shade}" fill="${c[1]}"/>${spots}<path d="${crease}" stroke="${c[2]}" stroke-width="2.6" fill="none" stroke-linecap="round"/></g>${label?`<text y="5.2" text-anchor="middle" font-family="Literata,serif" font-size="14.5" font-weight="700" fill="#FBF5E9" stroke="${c[3]}" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke">${g}</text>`:''}</g>`};
   return {art,P}})();
 const CG={A:BEAN.P.A[0],B:BEAN.P.B[0],C:BEAN.P.C[0]},CGD={A:BEAN.P.A[1],B:BEAN.P.B[1],C:BEAN.P.C[1]};
 let mk=null,stepTxt='',anim={};
@@ -2269,7 +2269,7 @@ let paused=false;
 /* =====================================================================
    Views
    ===================================================================== */
-const FT='font-family="Fraunces,  serif"',INK='#1F3A40',INK2='#5B5345',RUST='#A8452A',GOLD='#E4B64C',LEAF='#4E8B5C';
+const FT='font-family="Literata,  serif"',INK='#1F3A40',INK2='#5B5345',RUST='#A8452A',GOLD='#E4B64C',LEAF='#4E8B5C';
 /* weather-app style condition chips: drawn icons + plain labels */
 const WX={
   sun:`<circle cx="12" cy="12" r="5" fill="#E9B23A"/><g stroke="#E9B23A" stroke-width="1.8" stroke-linecap="round">${[0,45,90,135,180,225,270,315].map(a=>`<path d="M${(12+8*Math.cos(a*Math.PI/180)).toFixed(1)} ${(12+8*Math.sin(a*Math.PI/180)).toFixed(1)} L${(12+10.5*Math.cos(a*Math.PI/180)).toFixed(1)} ${(12+10.5*Math.sin(a*Math.PI/180)).toFixed(1)}"/>`).join('')}</g>`,

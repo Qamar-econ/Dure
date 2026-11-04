@@ -33,8 +33,8 @@ def add(svg, extra):
 
 stack = heap_svg().replace(' style="opacity:0"', '').replace('<svg ', f'<svg x="{HEAP[0]-64}" y="{HEAP[1]-70}" width="128" height="87" ', 1)
 sign = (f'<g transform="translate({HEAP[0]+52} {HEAP[1]-96}) rotate(-4)"><rect width="74" height="38" rx="3" fill="#C9A06A" stroke="#A67E4B" stroke-width="2"/>'
-        '<text x="37" y="17" text-anchor="middle" font-family="Newsreader,Georgia,serif" font-size="15" font-weight="700" fill="#2A2522">500 kg</text>'
-        '<text x="37" y="31" text-anchor="middle" font-family="Newsreader,Georgia,serif" font-style="italic" font-size="11" fill="#7A3322">best offer?</text></g>')
+        '<text x="37" y="17" text-anchor="middle" font-family="Literata,Georgia,serif" font-size="15" font-weight="700" fill="#2A2522">500 kg</text>'
+        '<text x="37" y="31" text-anchor="middle" font-family="Literata,Georgia,serif" font-style="italic" font-size="11" fill="#7A3322">best offer?</text></g>')
 ends = [(132, 748), (300, 752), (112, 800), (318, 806), (168, 830)]
 
 BEATS = {

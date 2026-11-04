@@ -3,7 +3,7 @@
   --ivory:#F2EADA;--paper:#F6EFE0;--ink:#1F3A40;--ink-2:#5B5345;--rust:#A8452A;--rust-2:#8E3A22;
   --gold:#E4B64C;--leaf:#4E8B5C;--teal:#2C4F57;--lcd:#B7CF9A;
   --line:rgba(31,58,64,.18);--line-2:rgba(31,58,64,.35);
-  --f-display:Newsreader,Georgia,serif;--f-body:"Atkinson Hyperlegible Next",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:"Atkinson Hyperlegible Mono",ui-monospace,monospace;--f-lcd:VT323,ui-monospace,monospace;
+  --f-display:Literata,Georgia,serif;--f-body:"Atkinson Hyperlegible Next",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:"Atkinson Hyperlegible Mono",ui-monospace,monospace;--f-lcd:VT323,ui-monospace,monospace;
   --r-pill:40px;--shadow-cta:0 14px 28px -16px rgba(168,69,42,.9);
 }
 ::selection{background:rgba(228,182,76,.45);color:var(--ink)}
