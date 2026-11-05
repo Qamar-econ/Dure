@@ -1011,10 +1011,10 @@ const jit=(a,b)=>a+Math.random()*(b-a);
 const SAMPLES=[{g:'A',url:'assets/samples/sample_A.jpg',sub:'clean, even',by:'Harald Ulver'},
   {g:'B',url:'assets/samples/sample_B.jpg',sub:'mixed',by:'Kızıldeniz'},
   {g:'C',url:'assets/samples/sample_C.jpg',sub:'many damaged',by:'Forest & Kim Starr',lic:'CC BY 3.0 US'}];
-/* the same model's outputs on the three samples (A, B: ai/photo2/out/test_expected_samples.json; C: grader_v2 in the browser on this file): used only when the live model can't load */
-const PRECOMP={A:{grade:'A',kind:'graded',reason:'grade A',probs:{A:.900,B:.011,C:.060,N:.002,R:.027},conf:.900},
-  B:{grade:'B',kind:'graded',reason:'grade B',probs:{A:.082,B:.817,C:.095,N:.003,R:.004},conf:.817},
-  C:{grade:'C',kind:'graded',reason:'grade C',probs:{A:.148,B:.068,C:.777,N:.005,R:.002},conf:.777}};
+/* grader v3's outputs on the three samples (grader_v2.js in Chromium on these files): used only when the live model can't load */
+const PRECOMP={A:{grade:'A',kind:'graded',reason:'grade A',probs:{A:.729,B:.219,C:.036,N:.015,R:.001},conf:.729},
+  B:{grade:'B',kind:'graded',reason:'grade B',probs:{A:.012,B:.927,C:.047,N:.003,R:.011},conf:.927},
+  C:{grade:'C',kind:'graded',reason:'grade C',probs:{A:.002,B:.006,C:.947,N:.035,R:.009},conf:.947}};
 const QS=new URLSearchParams(location.search);
 const GR={st:'idle',p:0,got:0,t0:0,err:null,slow:false,promise:null};
 function graderSetup(){if(!window.DureGraderV2)return false;
