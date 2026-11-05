@@ -191,7 +191,7 @@ TAIS = ("data:image/svg+xml;utf8," +
         "<svg xmlns='http://www.w3.org/2000/svg' width='88' height='28' viewBox='0 0 44 14'><rect width='44' height='14' fill='%239A3326'/><rect x='0' width='4' height='14' fill='%23241A16'/><rect x='6' width='1.6' height='14' fill='%23E4B64C'/><rect x='9' width='1.2' height='14' fill='%23F1E3C6'/><rect x='16' width='12' height='14' fill='%23241A16'/><path d='M22 1 L26 7 L22 13 L18 7Z' fill='%23E4B64C'/><path d='M22 4 L24 7 L22 10 L20 7Z' fill='%23241A16'/><rect x='31' width='1.2' height='14' fill='%23F1E3C6'/><rect x='34' width='1.6' height='14' fill='%23E4B64C'/><rect x='38' width='3' height='14' fill='%23241A16'/></svg>")
 
 LOGO = ('<svg viewBox="-2 0 336 130" aria-label="Dure."><text x="0" y="104" font-family="Newsreader" font-size="130" font-weight="680" letter-spacing="-5.8" fill="#1F3A40" style="font-variation-settings:\'opsz\' 72">Dure</text>'
-        '<g transform="translate(316 89)"><g transform="rotate(-28)"><ellipse rx="11.5" ry="15" fill="#6B4226"/><ellipse cx="-3.6" cy="-4.5" rx="4" ry="6.4" fill="#8F5E38" opacity=".55"/>'
+        '<g transform="translate(312 89)"><g transform="rotate(-28)"><ellipse rx="11.5" ry="15" fill="#6B4226"/><ellipse cx="-3.6" cy="-4.5" rx="4" ry="6.4" fill="#8F5E38" opacity=".55"/>'
         '<path d="M0.6 -13.6 C -5.2 -7.4 5.2 -1.6 0 4 C -4.2 8.4 1.2 11.2 0.2 13.8" stroke="#2B180C" stroke-width="2.2" fill="none" stroke-linecap="round"/></g></g></svg>')
 
 wa, ec = TXT['wa'], TXT['ec']
