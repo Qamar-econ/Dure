@@ -1,0 +1,706 @@
+{
+ "CLIP int8, deployed head (as shipped)": {
+  "clean": {
+   "real_lopo": {
+    "n": 22,
+    "exact": 0.636,
+    "exact_ci": [
+     0.43,
+     0.803
+    ],
+    "graded": 1.0,
+    "confusion": {
+     "A": {
+      "A": 10,
+      "B": 0,
+      "C": 0,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 4,
+      "B": 1,
+      "C": 0,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 4,
+      "B": 0,
+      "C": 3,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "real_kind_only": {
+    "n": 19,
+    "graded": 1.0,
+    "kinds": {
+     "graded": 19,
+     "roasted": 0,
+     "retake": 0
+    }
+   },
+   "synthetic_piles": {
+    "n": 240,
+    "exact": 0.375,
+    "exact_ci": [
+     0.316,
+     0.438
+    ],
+    "answered": 1.0,
+    "acc_when_answered": 0.375,
+    "argmax_5class": 0.375,
+    "confusion": {
+     "A": {
+      "A": 1,
+      "B": 79,
+      "C": 0,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 0,
+      "B": 65,
+      "C": 15,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 0,
+      "B": 56,
+      "C": 24,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "roasted": {
+    "n": 12,
+    "said_roasted": 1.0
+   },
+   "no_coffee": {
+    "n": 132,
+    "refused": 0.636,
+    "n_real_photos": 112,
+    "refused_real_photos": 0.732
+   }
+  },
+  "phone": {
+   "real_lopo": {
+    "n": 22,
+    "exact": 0.591,
+    "exact_ci": [
+     0.387,
+     0.767
+    ],
+    "graded": 1.0,
+    "confusion": {
+     "A": {
+      "A": 10,
+      "B": 0,
+      "C": 0,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 4,
+      "B": 1,
+      "C": 0,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 5,
+      "B": 0,
+      "C": 2,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "real_kind_only": {
+    "n": 19,
+    "graded": 1.0,
+    "kinds": {
+     "graded": 19,
+     "roasted": 0,
+     "retake": 0
+    }
+   },
+   "synthetic_piles": {
+    "n": 240,
+    "exact": 0.4,
+    "exact_ci": [
+     0.34,
+     0.463
+    ],
+    "answered": 1.0,
+    "acc_when_answered": 0.4,
+    "argmax_5class": 0.4,
+    "confusion": {
+     "A": {
+      "A": 8,
+      "B": 61,
+      "C": 11,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 0,
+      "B": 36,
+      "C": 44,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 0,
+      "B": 28,
+      "C": 52,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "roasted": {
+    "n": 12,
+    "said_roasted": 0.833
+   },
+   "no_coffee": {
+    "n": 132,
+    "refused": 0.591,
+    "n_real_photos": 112,
+    "refused_real_photos": 0.652
+   }
+  }
+ },
+ "CLIP int8, head retrained here": {
+  "clean": {
+   "real_lopo": {
+    "n": 22,
+    "exact": 0.318,
+    "exact_ci": [
+     0.164,
+     0.527
+    ],
+    "graded": 0.773,
+    "confusion": {
+     "A": {
+      "A": 5,
+      "B": 1,
+      "C": 0,
+      "retake": 0,
+      "roasted": 4
+     },
+     "B": {
+      "A": 4,
+      "B": 0,
+      "C": 1,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 2,
+      "B": 2,
+      "C": 2,
+      "retake": 0,
+      "roasted": 1
+     }
+    }
+   },
+   "real_kind_only": {
+    "n": 19,
+    "graded": 0.368,
+    "kinds": {
+     "graded": 7,
+     "roasted": 1,
+     "retake": 11
+    }
+   },
+   "synthetic_piles": {
+    "n": 240,
+    "exact": 0.929,
+    "exact_ci": [
+     0.89,
+     0.955
+    ],
+    "answered": 1.0,
+    "acc_when_answered": 0.929,
+    "argmax_5class": 0.929,
+    "confusion": {
+     "A": {
+      "A": 80,
+      "B": 0,
+      "C": 0,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 0,
+      "B": 74,
+      "C": 6,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 0,
+      "B": 11,
+      "C": 69,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "roasted": {
+    "n": 12,
+    "said_roasted": 1.0
+   },
+   "no_coffee": {
+    "n": 132,
+    "refused": 0.992,
+    "n_real_photos": 112,
+    "refused_real_photos": 0.991
+   }
+  },
+  "phone": {
+   "real_lopo": {
+    "n": 22,
+    "exact": 0.318,
+    "exact_ci": [
+     0.164,
+     0.527
+    ],
+    "graded": 0.682,
+    "confusion": {
+     "A": {
+      "A": 5,
+      "B": 0,
+      "C": 1,
+      "retake": 0,
+      "roasted": 4
+     },
+     "B": {
+      "A": 3,
+      "B": 1,
+      "C": 0,
+      "retake": 0,
+      "roasted": 1
+     },
+     "C": {
+      "A": 2,
+      "B": 2,
+      "C": 1,
+      "retake": 1,
+      "roasted": 1
+     }
+    }
+   },
+   "real_kind_only": {
+    "n": 19,
+    "graded": 0.368,
+    "kinds": {
+     "graded": 7,
+     "roasted": 1,
+     "retake": 11
+    }
+   },
+   "synthetic_piles": {
+    "n": 240,
+    "exact": 0.883,
+    "exact_ci": [
+     0.837,
+     0.918
+    ],
+    "answered": 1.0,
+    "acc_when_answered": 0.883,
+    "argmax_5class": 0.883,
+    "confusion": {
+     "A": {
+      "A": 80,
+      "B": 0,
+      "C": 0,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 0,
+      "B": 61,
+      "C": 19,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 0,
+      "B": 9,
+      "C": 71,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "roasted": {
+    "n": 12,
+    "said_roasted": 1.0
+   },
+   "no_coffee": {
+    "n": 132,
+    "refused": 1.0,
+    "n_real_photos": 112,
+    "refused_real_photos": 1.0
+   }
+  }
+ },
+ "ResNet-18 fp32, head trained here": {
+  "clean": {
+   "real_lopo": {
+    "n": 22,
+    "exact": 0.409,
+    "exact_ci": [
+     0.233,
+     0.613
+    ],
+    "graded": 0.773,
+    "confusion": {
+     "A": {
+      "A": 6,
+      "B": 2,
+      "C": 0,
+      "retake": 1,
+      "roasted": 1
+     },
+     "B": {
+      "A": 2,
+      "B": 1,
+      "C": 0,
+      "retake": 1,
+      "roasted": 1
+     },
+     "C": {
+      "A": 4,
+      "B": 0,
+      "C": 2,
+      "retake": 0,
+      "roasted": 1
+     }
+    }
+   },
+   "real_kind_only": {
+    "n": 19,
+    "graded": 0.263,
+    "kinds": {
+     "graded": 5,
+     "roasted": 0,
+     "retake": 14
+    }
+   },
+   "synthetic_piles": {
+    "n": 240,
+    "exact": 0.887,
+    "exact_ci": [
+     0.841,
+     0.922
+    ],
+    "answered": 1.0,
+    "acc_when_answered": 0.887,
+    "argmax_5class": 0.887,
+    "confusion": {
+     "A": {
+      "A": 79,
+      "B": 0,
+      "C": 1,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 2,
+      "B": 68,
+      "C": 10,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 0,
+      "B": 14,
+      "C": 66,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "roasted": {
+    "n": 12,
+    "said_roasted": 0.917
+   },
+   "no_coffee": {
+    "n": 132,
+    "refused": 0.947,
+    "n_real_photos": 112,
+    "refused_real_photos": 0.938
+   }
+  },
+  "phone": {
+   "real_lopo": {
+    "n": 22,
+    "exact": 0.182,
+    "exact_ci": [
+     0.073,
+     0.385
+    ],
+    "graded": 0.5,
+    "confusion": {
+     "A": {
+      "A": 3,
+      "B": 1,
+      "C": 1,
+      "retake": 3,
+      "roasted": 2
+     },
+     "B": {
+      "A": 2,
+      "B": 0,
+      "C": 0,
+      "retake": 1,
+      "roasted": 2
+     },
+     "C": {
+      "A": 3,
+      "B": 0,
+      "C": 1,
+      "retake": 2,
+      "roasted": 1
+     }
+    }
+   },
+   "real_kind_only": {
+    "n": 19,
+    "graded": 0.158,
+    "kinds": {
+     "graded": 3,
+     "roasted": 1,
+     "retake": 15
+    }
+   },
+   "synthetic_piles": {
+    "n": 240,
+    "exact": 0.704,
+    "exact_ci": [
+     0.644,
+     0.758
+    ],
+    "answered": 0.996,
+    "acc_when_answered": 0.707,
+    "argmax_5class": 0.7,
+    "confusion": {
+     "A": {
+      "A": 75,
+      "B": 0,
+      "C": 5,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 1,
+      "B": 21,
+      "C": 57,
+      "retake": 1,
+      "roasted": 0
+     },
+     "C": {
+      "A": 4,
+      "B": 3,
+      "C": 73,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "roasted": {
+    "n": 12,
+    "said_roasted": 0.917
+   },
+   "no_coffee": {
+    "n": 132,
+    "refused": 0.955,
+    "n_real_photos": 112,
+    "refused_real_photos": 0.946
+   }
+  }
+ },
+ "ResNet-18 int8, head trained here": {
+  "clean": {
+   "real_lopo": {
+    "n": 22,
+    "exact": 0.364,
+    "exact_ci": [
+     0.197,
+     0.57
+    ],
+    "graded": 0.773,
+    "confusion": {
+     "A": {
+      "A": 5,
+      "B": 1,
+      "C": 1,
+      "retake": 2,
+      "roasted": 1
+     },
+     "B": {
+      "A": 3,
+      "B": 1,
+      "C": 0,
+      "retake": 1,
+      "roasted": 0
+     },
+     "C": {
+      "A": 4,
+      "B": 0,
+      "C": 2,
+      "retake": 0,
+      "roasted": 1
+     }
+    }
+   },
+   "real_kind_only": {
+    "n": 19,
+    "graded": 0.263,
+    "kinds": {
+     "graded": 5,
+     "roasted": 0,
+     "retake": 14
+    }
+   },
+   "synthetic_piles": {
+    "n": 240,
+    "exact": 0.883,
+    "exact_ci": [
+     0.837,
+     0.918
+    ],
+    "answered": 1.0,
+    "acc_when_answered": 0.883,
+    "argmax_5class": 0.883,
+    "confusion": {
+     "A": {
+      "A": 79,
+      "B": 0,
+      "C": 1,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 3,
+      "B": 70,
+      "C": 7,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 0,
+      "B": 17,
+      "C": 63,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "roasted": {
+    "n": 12,
+    "said_roasted": 0.833
+   },
+   "no_coffee": {
+    "n": 132,
+    "refused": 0.947,
+    "n_real_photos": 112,
+    "refused_real_photos": 0.938
+   }
+  },
+  "phone": {
+   "real_lopo": {
+    "n": 22,
+    "exact": 0.273,
+    "exact_ci": [
+     0.132,
+     0.482
+    ],
+    "graded": 0.545,
+    "confusion": {
+     "A": {
+      "A": 5,
+      "B": 0,
+      "C": 0,
+      "retake": 3,
+      "roasted": 2
+     },
+     "B": {
+      "A": 2,
+      "B": 0,
+      "C": 0,
+      "retake": 1,
+      "roasted": 2
+     },
+     "C": {
+      "A": 3,
+      "B": 1,
+      "C": 1,
+      "retake": 2,
+      "roasted": 0
+     }
+    }
+   },
+   "real_kind_only": {
+    "n": 19,
+    "graded": 0.211,
+    "kinds": {
+     "graded": 4,
+     "roasted": 0,
+     "retake": 15
+    }
+   },
+   "synthetic_piles": {
+    "n": 240,
+    "exact": 0.717,
+    "exact_ci": [
+     0.657,
+     0.77
+    ],
+    "answered": 1.0,
+    "acc_when_answered": 0.717,
+    "argmax_5class": 0.717,
+    "confusion": {
+     "A": {
+      "A": 77,
+      "B": 0,
+      "C": 3,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 3,
+      "B": 24,
+      "C": 53,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 6,
+      "B": 3,
+      "C": 71,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "roasted": {
+    "n": 12,
+    "said_roasted": 0.917
+   },
+   "no_coffee": {
+    "n": 132,
+    "refused": 0.955,
+    "n_real_photos": 112,
+    "refused_real_photos": 0.946
+   }
+  }
+ }
+}

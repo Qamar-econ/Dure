@@ -204,7 +204,7 @@ def head(hh):
 TW = [head(x) for x in wa + ec]
 # the phone edition says each step in fewer words; citations stay as they are
 SHORT = ["A small model (Qwen2.5-0.5B) plus a rules engine, trained on about 3,700 Tetum and English texts. Dialects and spelling slips are fine.",
-         "A small vision model, trained on 1,200 real bean photos, sorts coffee into three grades on SCA defect criteria. It is exactly right 79% of the time; a hand check at pickup sets the final grade.",
+         "A small vision model, trained on 1,200 real bean photos, sorts coffee into three grades on SCA defect criteria. It names the exact grade about 6 times in 10 and turns away 97% of photos with no coffee; a hand check at pickup sets the final grade.",
          "Dure estimates a fair price from recent sales, buyers, road and rain. Bidding opens a little under it.",
          "Trust comes from trades, punctuality and steady quality, not farm size. Floods and other force majeure never count.",
          "The blended pool is an open market with scale. The fixed pool links part of trusted farmers' output to steady buyers."]

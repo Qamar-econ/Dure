@@ -1,0 +1,146 @@
+{
+ "improved": {
+  "clean": {
+   "real_coffee_graded": 0.922,
+   "n_real": 51,
+   "real_grade_exact": 0.571,
+   "n_real_graded": 28,
+   "real_confusion": {
+    "A": {
+     "A": 8,
+     "B": 1,
+     "C": 2,
+     "retake": 0,
+     "roasted": 1
+    },
+    "B": {
+     "A": 4,
+     "B": 3,
+     "C": 0,
+     "retake": 0,
+     "roasted": 0
+    },
+    "C": {
+     "A": 2,
+     "B": 2,
+     "C": 5,
+     "retake": 0,
+     "roasted": 0
+    }
+   },
+   "no_coffee_refused": 0.973,
+   "no_coffee_real_refused": 0.97,
+   "n_no_coffee_real": 168,
+   "roasted": 1.0,
+   "n_roasted": 24,
+   "piles_exact": 0.917
+  },
+  "phone": {
+   "real_coffee_graded": 0.961,
+   "n_real": 51,
+   "real_grade_exact": 0.714,
+   "n_real_graded": 28,
+   "real_confusion": {
+    "A": {
+     "A": 10,
+     "B": 1,
+     "C": 1,
+     "retake": 0,
+     "roasted": 0
+    },
+    "B": {
+     "A": 2,
+     "B": 5,
+     "C": 0,
+     "retake": 0,
+     "roasted": 0
+    },
+    "C": {
+     "A": 2,
+     "B": 2,
+     "C": 5,
+     "retake": 0,
+     "roasted": 0
+    }
+   },
+   "no_coffee_refused": 0.968,
+   "no_coffee_real_refused": 0.964,
+   "n_no_coffee_real": 168,
+   "roasted": 1.0,
+   "n_roasted": 24,
+   "piles_exact": 0.858
+  }
+ },
+ "deployed": {
+  "clean": {
+   "real_coffee_graded": 0.98,
+   "n_real": 51,
+   "real_grade_exact": 0.643,
+   "n_real_graded": 28,
+   "real_confusion": {
+    "A": {
+     "A": 12,
+     "B": 0,
+     "C": 0,
+     "retake": 0,
+     "roasted": 0
+    },
+    "B": {
+     "A": 5,
+     "B": 2,
+     "C": 0,
+     "retake": 0,
+     "roasted": 0
+    },
+    "C": {
+     "A": 4,
+     "B": 1,
+     "C": 4,
+     "retake": 0,
+     "roasted": 0
+    }
+   },
+   "no_coffee_refused": 0.734,
+   "no_coffee_real_refused": 0.81,
+   "n_no_coffee_real": 168,
+   "roasted": 0.875,
+   "n_roasted": 24,
+   "piles_exact": 0.375
+  },
+  "phone": {
+   "real_coffee_graded": 1.0,
+   "n_real": 51,
+   "real_grade_exact": 0.607,
+   "n_real_graded": 28,
+   "real_confusion": {
+    "A": {
+     "A": 12,
+     "B": 0,
+     "C": 0,
+     "retake": 0,
+     "roasted": 0
+    },
+    "B": {
+     "A": 5,
+     "B": 2,
+     "C": 0,
+     "retake": 0,
+     "roasted": 0
+    },
+    "C": {
+     "A": 6,
+     "B": 0,
+     "C": 3,
+     "retake": 0,
+     "roasted": 0
+    }
+   },
+   "no_coffee_refused": 0.697,
+   "no_coffee_real_refused": 0.75,
+   "n_no_coffee_real": 168,
+   "roasted": 0.75,
+   "n_roasted": 24,
+   "piles_exact": 0.4
+  }
+ }
+}

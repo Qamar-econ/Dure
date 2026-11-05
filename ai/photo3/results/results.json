@@ -1,0 +1,1867 @@
+{
+ "CLIP int8, deployed head (as shipped)": {
+  "backbone": "clip_int8",
+  "cv": null,
+  "clean": {
+   "piles": {
+    "n": 240,
+    "exact": 0.375,
+    "exact_ci": [
+     0.316,
+     0.438
+    ],
+    "answered": 1.0,
+    "acc_when_answered": 0.375,
+    "argmax_5class": 0.375,
+    "confusion": {
+     "A": {
+      "A": 1,
+      "B": 79,
+      "C": 0,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 0,
+      "B": 65,
+      "C": 15,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 0,
+      "B": 56,
+      "C": 24,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "roasted": {
+    "n": 12,
+    "said_roasted": 1.0
+   },
+   "no_coffee": {
+    "n": 132,
+    "refused": 0.636,
+    "n_real_photos": 112,
+    "refused_real_photos": 0.732
+   },
+   "real_green": {
+    "n": 31,
+    "graded": 1.0,
+    "kinds": {
+     "graded": 31,
+     "roasted": 0,
+     "retake": 0
+    },
+    "grades": {
+     "A": 26,
+     "B": 3,
+     "C": 2
+    }
+   }
+  },
+  "phone": {
+   "piles": {
+    "n": 240,
+    "exact": 0.4,
+    "exact_ci": [
+     0.34,
+     0.463
+    ],
+    "answered": 1.0,
+    "acc_when_answered": 0.4,
+    "argmax_5class": 0.4,
+    "confusion": {
+     "A": {
+      "A": 8,
+      "B": 61,
+      "C": 11,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 0,
+      "B": 36,
+      "C": 44,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 0,
+      "B": 28,
+      "C": 52,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "roasted": {
+    "n": 12,
+    "said_roasted": 0.833
+   },
+   "no_coffee": {
+    "n": 132,
+    "refused": 0.591,
+    "n_real_photos": 112,
+    "refused_real_photos": 0.652
+   },
+   "real_green": {
+    "n": 31,
+    "graded": 1.0,
+    "kinds": {
+     "graded": 31,
+     "roasted": 0,
+     "retake": 0
+    },
+    "grades": {
+     "A": 26,
+     "B": 2,
+     "C": 3
+    }
+   }
+  },
+  "seen": [
+   {
+    "id": "seen/Coffee_Bean_Quality_Sorting_Comparison_Tanzania_jpg.jpg",
+    "variant": "clean",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.769,
+     "B": 0.052,
+     "C": 0.009,
+     "N": 0.167,
+     "R": 0.004
+    }
+   },
+   {
+    "id": "seen/Coffee_Bean_Quality_Sorting_Comparison_Tanzania_jpg.jpg",
+    "variant": "phone",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.739,
+     "B": 0.065,
+     "C": 0.03,
+     "N": 0.16,
+     "R": 0.006
+    }
+   },
+   {
+    "id": "seen/Coffee_defect_kuku_kambing_jpg.jpg",
+    "variant": "clean",
+    "kind": "graded",
+    "grade": "C",
+    "probs": {
+     "A": 0.064,
+     "B": 0.043,
+     "C": 0.873,
+     "N": 0.019,
+     "R": 0.001
+    }
+   },
+   {
+    "id": "seen/Coffee_defect_kuku_kambing_jpg.jpg",
+    "variant": "phone",
+    "kind": "graded",
+    "grade": "C",
+    "probs": {
+     "A": 0.163,
+     "B": 0.063,
+     "C": 0.763,
+     "N": 0.01,
+     "R": 0.002
+    }
+   },
+   {
+    "id": "seen/Colombian_Parchment_Coffee_jpg.jpg",
+    "variant": "clean",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.946,
+     "B": 0.036,
+     "C": 0.006,
+     "N": 0.007,
+     "R": 0.004
+    }
+   },
+   {
+    "id": "seen/Colombian_Parchment_Coffee_jpg.jpg",
+    "variant": "phone",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.908,
+     "B": 0.035,
+     "C": 0.053,
+     "N": 0.001,
+     "R": 0.003
+    }
+   },
+   {
+    "id": "seen/High_Quality_Coffee_Beans_Closeup_Tanzania_jpg.jpg",
+    "variant": "clean",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.945,
+     "B": 0.013,
+     "C": 0.032,
+     "N": 0.001,
+     "R": 0.008
+    }
+   },
+   {
+    "id": "seen/High_Quality_Coffee_Beans_Closeup_Tanzania_jpg.jpg",
+    "variant": "phone",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.964,
+     "B": 0.011,
+     "C": 0.02,
+     "N": 0.001,
+     "R": 0.004
+    }
+   },
+   {
+    "id": "seen/Rejected_Coffee_Beans_Closeup_Tanzania_jpg.jpg",
+    "variant": "clean",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.62,
+     "B": 0.131,
+     "C": 0.201,
+     "N": 0.02,
+     "R": 0.027
+    }
+   },
+   {
+    "id": "seen/Rejected_Coffee_Beans_Closeup_Tanzania_jpg.jpg",
+    "variant": "phone",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.665,
+     "B": 0.091,
+     "C": 0.203,
+     "N": 0.004,
+     "R": 0.037
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0305_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg",
+    "variant": "clean",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.774,
+     "B": 0.016,
+     "C": 0.169,
+     "N": 0.015,
+     "R": 0.026
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0305_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg",
+    "variant": "phone",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.883,
+     "B": 0.007,
+     "C": 0.09,
+     "N": 0.007,
+     "R": 0.013
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0319_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg",
+    "variant": "clean",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.852,
+     "B": 0.021,
+     "C": 0.101,
+     "N": 0.008,
+     "R": 0.018
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0319_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg",
+    "variant": "phone",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.934,
+     "B": 0.013,
+     "C": 0.044,
+     "N": 0.002,
+     "R": 0.007
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0355_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_wi.jpg",
+    "variant": "clean",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.502,
+     "B": 0.114,
+     "C": 0.355,
+     "N": 0.022,
+     "R": 0.008
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0355_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_wi.jpg",
+    "variant": "phone",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.683,
+     "B": 0.059,
+     "C": 0.247,
+     "N": 0.005,
+     "R": 0.006
+    }
+   },
+   {
+    "id": "seen/Starr_170109_4505_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg",
+    "variant": "clean",
+    "kind": "graded",
+    "grade": "C",
+    "probs": {
+     "A": 0.211,
+     "B": 0.075,
+     "C": 0.7,
+     "N": 0.01,
+     "R": 0.004
+    }
+   },
+   {
+    "id": "seen/Starr_170109_4505_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg",
+    "variant": "phone",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.56,
+     "B": 0.059,
+     "C": 0.376,
+     "N": 0.002,
+     "R": 0.003
+    }
+   },
+   {
+    "id": "seen/Starr_170109_4634_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg",
+    "variant": "clean",
+    "kind": "graded",
+    "grade": "C",
+    "probs": {
+     "A": 0.218,
+     "B": 0.051,
+     "C": 0.709,
+     "N": 0.01,
+     "R": 0.012
+    }
+   },
+   {
+    "id": "seen/Starr_170109_4634_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg",
+    "variant": "phone",
+    "kind": "graded",
+    "grade": "C",
+    "probs": {
+     "A": 0.328,
+     "B": 0.051,
+     "C": 0.6,
+     "N": 0.006,
+     "R": 0.015
+    }
+   },
+   {
+    "id": "seen/sample_A",
+    "variant": "clean",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.912,
+     "B": 0.013,
+     "C": 0.053,
+     "N": 0.002,
+     "R": 0.021
+    }
+   },
+   {
+    "id": "seen/sample_A",
+    "variant": "phone",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.924,
+     "B": 0.012,
+     "C": 0.043,
+     "N": 0.003,
+     "R": 0.018
+    }
+   },
+   {
+    "id": "seen/sample_B",
+    "variant": "clean",
+    "kind": "graded",
+    "grade": "B",
+    "probs": {
+     "A": 0.133,
+     "B": 0.8,
+     "C": 0.059,
+     "N": 0.003,
+     "R": 0.005
+    }
+   },
+   {
+    "id": "seen/sample_B",
+    "variant": "phone",
+    "kind": "graded",
+    "grade": "B",
+    "probs": {
+     "A": 0.253,
+     "B": 0.648,
+     "C": 0.078,
+     "N": 0.004,
+     "R": 0.016
+    }
+   },
+   {
+    "id": "seen/sample_C",
+    "variant": "clean",
+    "kind": "graded",
+    "grade": "C",
+    "probs": {
+     "A": 0.089,
+     "B": 0.047,
+     "C": 0.853,
+     "N": 0.008,
+     "R": 0.003
+    }
+   },
+   {
+    "id": "seen/sample_C",
+    "variant": "phone",
+    "kind": "graded",
+    "grade": "C",
+    "probs": {
+     "A": 0.118,
+     "B": 0.04,
+     "C": 0.832,
+     "N": 0.005,
+     "R": 0.005
+    }
+   }
+  ]
+ },
+ "CLIP int8, head retrained here": {
+  "backbone": "clip_int8",
+  "cv": [
+   10,
+   0.9265848605577689
+  ],
+  "clean": {
+   "piles": {
+    "n": 240,
+    "exact": 0.929,
+    "exact_ci": [
+     0.89,
+     0.955
+    ],
+    "answered": 1.0,
+    "acc_when_answered": 0.929,
+    "argmax_5class": 0.929,
+    "confusion": {
+     "A": {
+      "A": 80,
+      "B": 0,
+      "C": 0,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 0,
+      "B": 74,
+      "C": 6,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 0,
+      "B": 11,
+      "C": 69,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "roasted": {
+    "n": 12,
+    "said_roasted": 1.0
+   },
+   "no_coffee": {
+    "n": 132,
+    "refused": 0.992,
+    "n_real_photos": 112,
+    "refused_real_photos": 0.991
+   },
+   "real_green": {
+    "n": 31,
+    "graded": 0.032,
+    "kinds": {
+     "graded": 1,
+     "roasted": 15,
+     "retake": 15
+    },
+    "grades": {
+     "A": 0,
+     "B": 0,
+     "C": 1
+    }
+   }
+  },
+  "phone": {
+   "piles": {
+    "n": 240,
+    "exact": 0.879,
+    "exact_ci": [
+     0.832,
+     0.915
+    ],
+    "answered": 1.0,
+    "acc_when_answered": 0.879,
+    "argmax_5class": 0.879,
+    "confusion": {
+     "A": {
+      "A": 80,
+      "B": 0,
+      "C": 0,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 0,
+      "B": 59,
+      "C": 21,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 0,
+      "B": 8,
+      "C": 72,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "roasted": {
+    "n": 12,
+    "said_roasted": 1.0
+   },
+   "no_coffee": {
+    "n": 132,
+    "refused": 1.0,
+    "n_real_photos": 112,
+    "refused_real_photos": 1.0
+   },
+   "real_green": {
+    "n": 31,
+    "graded": 0.0,
+    "kinds": {
+     "graded": 0,
+     "roasted": 14,
+     "retake": 17
+    },
+    "grades": {
+     "A": 0,
+     "B": 0,
+     "C": 0
+    }
+   }
+  },
+  "seen": [
+   {
+    "id": "seen/Coffee_Bean_Quality_Sorting_Comparison_Tanzania_jpg.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.048,
+     "B": 0.008,
+     "C": 0.006,
+     "N": 0.623,
+     "R": 0.315
+    }
+   },
+   {
+    "id": "seen/Coffee_Bean_Quality_Sorting_Comparison_Tanzania_jpg.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.022,
+     "B": 0.009,
+     "C": 0.001,
+     "N": 0.703,
+     "R": 0.265
+    }
+   },
+   {
+    "id": "seen/Coffee_defect_kuku_kambing_jpg.jpg",
+    "variant": "clean",
+    "kind": "graded",
+    "grade": "C",
+    "probs": {
+     "A": 0.16,
+     "B": 0.002,
+     "C": 0.404,
+     "N": 0.227,
+     "R": 0.206
+    }
+   },
+   {
+    "id": "seen/Coffee_defect_kuku_kambing_jpg.jpg",
+    "variant": "phone",
+    "kind": "graded",
+    "grade": "C",
+    "probs": {
+     "A": 0.205,
+     "B": 0.002,
+     "C": 0.389,
+     "N": 0.283,
+     "R": 0.121
+    }
+   },
+   {
+    "id": "seen/Colombian_Parchment_Coffee_jpg.jpg",
+    "variant": "clean",
+    "kind": "roasted",
+    "grade": null,
+    "probs": {
+     "A": 0.016,
+     "B": 0.001,
+     "C": 0.0,
+     "N": 0.472,
+     "R": 0.51
+    }
+   },
+   {
+    "id": "seen/Colombian_Parchment_Coffee_jpg.jpg",
+    "variant": "phone",
+    "kind": "roasted",
+    "grade": null,
+    "probs": {
+     "A": 0.014,
+     "B": 0.001,
+     "C": 0.0,
+     "N": 0.457,
+     "R": 0.527
+    }
+   },
+   {
+    "id": "seen/High_Quality_Coffee_Beans_Closeup_Tanzania_jpg.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.006,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.74,
+     "R": 0.254
+    }
+   },
+   {
+    "id": "seen/High_Quality_Coffee_Beans_Closeup_Tanzania_jpg.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.01,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.949,
+     "R": 0.041
+    }
+   },
+   {
+    "id": "seen/Rejected_Coffee_Beans_Closeup_Tanzania_jpg.jpg",
+    "variant": "clean",
+    "kind": "roasted",
+    "grade": null,
+    "probs": {
+     "A": 0.002,
+     "B": 0.017,
+     "C": 0.0,
+     "N": 0.236,
+     "R": 0.745
+    }
+   },
+   {
+    "id": "seen/Rejected_Coffee_Beans_Closeup_Tanzania_jpg.jpg",
+    "variant": "phone",
+    "kind": "roasted",
+    "grade": null,
+    "probs": {
+     "A": 0.001,
+     "B": 0.007,
+     "C": 0.0,
+     "N": 0.384,
+     "R": 0.608
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0305_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg",
+    "variant": "clean",
+    "kind": "roasted",
+    "grade": null,
+    "probs": {
+     "A": 0.024,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.255,
+     "R": 0.72
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0305_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg",
+    "variant": "phone",
+    "kind": "roasted",
+    "grade": null,
+    "probs": {
+     "A": 0.018,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.487,
+     "R": 0.494
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0319_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg",
+    "variant": "clean",
+    "kind": "roasted",
+    "grade": null,
+    "probs": {
+     "A": 0.034,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.231,
+     "R": 0.735
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0319_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg",
+    "variant": "phone",
+    "kind": "roasted",
+    "grade": null,
+    "probs": {
+     "A": 0.108,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.416,
+     "R": 0.475
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0355_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_wi.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.056,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.687,
+     "R": 0.257
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0355_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_wi.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.038,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.85,
+     "R": 0.113
+    }
+   },
+   {
+    "id": "seen/Starr_170109_4505_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.042,
+     "B": 0.002,
+     "C": 0.001,
+     "N": 0.691,
+     "R": 0.265
+    }
+   },
+   {
+    "id": "seen/Starr_170109_4505_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.028,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.857,
+     "R": 0.115
+    }
+   },
+   {
+    "id": "seen/Starr_170109_4634_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg",
+    "variant": "clean",
+    "kind": "roasted",
+    "grade": null,
+    "probs": {
+     "A": 0.056,
+     "B": 0.001,
+     "C": 0.0,
+     "N": 0.365,
+     "R": 0.579
+    }
+   },
+   {
+    "id": "seen/Starr_170109_4634_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.059,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.558,
+     "R": 0.382
+    }
+   },
+   {
+    "id": "seen/sample_A",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.003,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.904,
+     "R": 0.094
+    }
+   },
+   {
+    "id": "seen/sample_A",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.002,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.963,
+     "R": 0.035
+    }
+   },
+   {
+    "id": "seen/sample_B",
+    "variant": "clean",
+    "kind": "roasted",
+    "grade": null,
+    "probs": {
+     "A": 0.006,
+     "B": 0.007,
+     "C": 0.001,
+     "N": 0.21,
+     "R": 0.775
+    }
+   },
+   {
+    "id": "seen/sample_B",
+    "variant": "phone",
+    "kind": "roasted",
+    "grade": null,
+    "probs": {
+     "A": 0.012,
+     "B": 0.005,
+     "C": 0.001,
+     "N": 0.342,
+     "R": 0.641
+    }
+   },
+   {
+    "id": "seen/sample_C",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.036,
+     "B": 0.001,
+     "C": 0.001,
+     "N": 0.671,
+     "R": 0.291
+    }
+   },
+   {
+    "id": "seen/sample_C",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.026,
+     "B": 0.0,
+     "C": 0.001,
+     "N": 0.68,
+     "R": 0.292
+    }
+   }
+  ]
+ },
+ "ResNet-18 fp32, head trained here": {
+  "backbone": "resnet18_fp32",
+  "cv": [
+   10,
+   0.8914772908366533
+  ],
+  "clean": {
+   "piles": {
+    "n": 240,
+    "exact": 0.883,
+    "exact_ci": [
+     0.837,
+     0.918
+    ],
+    "answered": 1.0,
+    "acc_when_answered": 0.883,
+    "argmax_5class": 0.883,
+    "confusion": {
+     "A": {
+      "A": 79,
+      "B": 0,
+      "C": 1,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 2,
+      "B": 68,
+      "C": 10,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 0,
+      "B": 15,
+      "C": 65,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "roasted": {
+    "n": 12,
+    "said_roasted": 1.0
+   },
+   "no_coffee": {
+    "n": 132,
+    "refused": 0.985,
+    "n_real_photos": 112,
+    "refused_real_photos": 0.982
+   },
+   "real_green": {
+    "n": 31,
+    "graded": 0.0,
+    "kinds": {
+     "graded": 0,
+     "roasted": 7,
+     "retake": 24
+    },
+    "grades": {
+     "A": 0,
+     "B": 0,
+     "C": 0
+    }
+   }
+  },
+  "phone": {
+   "piles": {
+    "n": 240,
+    "exact": 0.704,
+    "exact_ci": [
+     0.644,
+     0.758
+    ],
+    "answered": 1.0,
+    "acc_when_answered": 0.704,
+    "argmax_5class": 0.704,
+    "confusion": {
+     "A": {
+      "A": 73,
+      "B": 1,
+      "C": 6,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 1,
+      "B": 21,
+      "C": 58,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 2,
+      "B": 3,
+      "C": 75,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "roasted": {
+    "n": 12,
+    "said_roasted": 1.0
+   },
+   "no_coffee": {
+    "n": 132,
+    "refused": 0.977,
+    "n_real_photos": 112,
+    "refused_real_photos": 0.973
+   },
+   "real_green": {
+    "n": 31,
+    "graded": 0.0,
+    "kinds": {
+     "graded": 0,
+     "roasted": 5,
+     "retake": 26
+    },
+    "grades": {
+     "A": 0,
+     "B": 0,
+     "C": 0
+    }
+   }
+  },
+  "seen": [
+   {
+    "id": "seen/Coffee_Bean_Quality_Sorting_Comparison_Tanzania_jpg.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.002,
+     "N": 0.99,
+     "R": 0.008
+    }
+   },
+   {
+    "id": "seen/Coffee_Bean_Quality_Sorting_Comparison_Tanzania_jpg.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.001,
+     "N": 0.994,
+     "R": 0.005
+    }
+   },
+   {
+    "id": "seen/Coffee_defect_kuku_kambing_jpg.jpg",
+    "variant": "clean",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.449,
+     "B": 0.02,
+     "C": 0.146,
+     "N": 0.193,
+     "R": 0.191
+    }
+   },
+   {
+    "id": "seen/Coffee_defect_kuku_kambing_jpg.jpg",
+    "variant": "phone",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.447,
+     "B": 0.022,
+     "C": 0.294,
+     "N": 0.169,
+     "R": 0.068
+    }
+   },
+   {
+    "id": "seen/Colombian_Parchment_Coffee_jpg.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.003,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.989,
+     "R": 0.008
+    }
+   },
+   {
+    "id": "seen/Colombian_Parchment_Coffee_jpg.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.002,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.993,
+     "R": 0.005
+    }
+   },
+   {
+    "id": "seen/High_Quality_Coffee_Beans_Closeup_Tanzania_jpg.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.001,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.965,
+     "R": 0.034
+    }
+   },
+   {
+    "id": "seen/High_Quality_Coffee_Beans_Closeup_Tanzania_jpg.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.001,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.977,
+     "R": 0.023
+    }
+   },
+   {
+    "id": "seen/Rejected_Coffee_Beans_Closeup_Tanzania_jpg.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.001,
+     "B": 0.002,
+     "C": 0.0,
+     "N": 0.945,
+     "R": 0.052
+    }
+   },
+   {
+    "id": "seen/Rejected_Coffee_Beans_Closeup_Tanzania_jpg.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.0,
+     "B": 0.001,
+     "C": 0.0,
+     "N": 0.981,
+     "R": 0.018
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0305_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.193,
+     "B": 0.003,
+     "C": 0.0,
+     "N": 0.656,
+     "R": 0.148
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0305_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.03,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.956,
+     "R": 0.013
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0319_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg",
+    "variant": "clean",
+    "kind": "roasted",
+    "grade": null,
+    "probs": {
+     "A": 0.184,
+     "B": 0.005,
+     "C": 0.0,
+     "N": 0.442,
+     "R": 0.369
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0319_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.033,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.868,
+     "R": 0.1
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0355_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_wi.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.179,
+     "B": 0.001,
+     "C": 0.0,
+     "N": 0.607,
+     "R": 0.212
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0355_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_wi.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.019,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.905,
+     "R": 0.076
+    }
+   },
+   {
+    "id": "seen/Starr_170109_4505_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.051,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.925,
+     "R": 0.025
+    }
+   },
+   {
+    "id": "seen/Starr_170109_4505_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.003,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.957,
+     "R": 0.04
+    }
+   },
+   {
+    "id": "seen/Starr_170109_4634_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.051,
+     "B": 0.005,
+     "C": 0.0,
+     "N": 0.903,
+     "R": 0.04
+    }
+   },
+   {
+    "id": "seen/Starr_170109_4634_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.011,
+     "B": 0.001,
+     "C": 0.0,
+     "N": 0.964,
+     "R": 0.023
+    }
+   },
+   {
+    "id": "seen/sample_A",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.001,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.928,
+     "R": 0.072
+    }
+   },
+   {
+    "id": "seen/sample_A",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.946,
+     "R": 0.053
+    }
+   },
+   {
+    "id": "seen/sample_B",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.006,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.99,
+     "R": 0.004
+    }
+   },
+   {
+    "id": "seen/sample_B",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.006,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.992,
+     "R": 0.003
+    }
+   },
+   {
+    "id": "seen/sample_C",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.052,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.923,
+     "R": 0.025
+    }
+   },
+   {
+    "id": "seen/sample_C",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.028,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.953,
+     "R": 0.019
+    }
+   }
+  ]
+ },
+ "ResNet-18 int8, head trained here": {
+  "backbone": "resnet18_int8",
+  "cv": [
+   30,
+   0.8882868525896415
+  ],
+  "clean": {
+   "piles": {
+    "n": 240,
+    "exact": 0.892,
+    "exact_ci": [
+     0.846,
+     0.925
+    ],
+    "answered": 1.0,
+    "acc_when_answered": 0.892,
+    "argmax_5class": 0.892,
+    "confusion": {
+     "A": {
+      "A": 79,
+      "B": 0,
+      "C": 1,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 4,
+      "B": 70,
+      "C": 6,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 0,
+      "B": 15,
+      "C": 65,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "roasted": {
+    "n": 12,
+    "said_roasted": 1.0
+   },
+   "no_coffee": {
+    "n": 132,
+    "refused": 0.977,
+    "n_real_photos": 112,
+    "refused_real_photos": 0.973
+   },
+   "real_green": {
+    "n": 31,
+    "graded": 0.0,
+    "kinds": {
+     "graded": 0,
+     "roasted": 4,
+     "retake": 27
+    },
+    "grades": {
+     "A": 0,
+     "B": 0,
+     "C": 0
+    }
+   }
+  },
+  "phone": {
+   "piles": {
+    "n": 240,
+    "exact": 0.729,
+    "exact_ci": [
+     0.67,
+     0.781
+    ],
+    "answered": 1.0,
+    "acc_when_answered": 0.729,
+    "argmax_5class": 0.729,
+    "confusion": {
+     "A": {
+      "A": 77,
+      "B": 0,
+      "C": 3,
+      "retake": 0,
+      "roasted": 0
+     },
+     "B": {
+      "A": 3,
+      "B": 25,
+      "C": 52,
+      "retake": 0,
+      "roasted": 0
+     },
+     "C": {
+      "A": 5,
+      "B": 2,
+      "C": 73,
+      "retake": 0,
+      "roasted": 0
+     }
+    }
+   },
+   "roasted": {
+    "n": 12,
+    "said_roasted": 1.0
+   },
+   "no_coffee": {
+    "n": 132,
+    "refused": 0.97,
+    "n_real_photos": 112,
+    "refused_real_photos": 0.964
+   },
+   "real_green": {
+    "n": 31,
+    "graded": 0.0,
+    "kinds": {
+     "graded": 0,
+     "roasted": 4,
+     "retake": 27
+    },
+    "grades": {
+     "A": 0,
+     "B": 0,
+     "C": 0
+    }
+   }
+  },
+  "seen": [
+   {
+    "id": "seen/Coffee_Bean_Quality_Sorting_Comparison_Tanzania_jpg.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.999,
+     "R": 0.001
+    }
+   },
+   {
+    "id": "seen/Coffee_Bean_Quality_Sorting_Comparison_Tanzania_jpg.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.999,
+     "R": 0.001
+    }
+   },
+   {
+    "id": "seen/Coffee_defect_kuku_kambing_jpg.jpg",
+    "variant": "clean",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.472,
+     "B": 0.017,
+     "C": 0.114,
+     "N": 0.183,
+     "R": 0.214
+    }
+   },
+   {
+    "id": "seen/Coffee_defect_kuku_kambing_jpg.jpg",
+    "variant": "phone",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.601,
+     "B": 0.005,
+     "C": 0.201,
+     "N": 0.135,
+     "R": 0.058
+    }
+   },
+   {
+    "id": "seen/Colombian_Parchment_Coffee_jpg.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.001,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.998,
+     "R": 0.001
+    }
+   },
+   {
+    "id": "seen/Colombian_Parchment_Coffee_jpg.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.001,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.999,
+     "R": 0.001
+    }
+   },
+   {
+    "id": "seen/High_Quality_Coffee_Beans_Closeup_Tanzania_jpg.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.001,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.986,
+     "R": 0.013
+    }
+   },
+   {
+    "id": "seen/High_Quality_Coffee_Beans_Closeup_Tanzania_jpg.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.99,
+     "R": 0.01
+    }
+   },
+   {
+    "id": "seen/Rejected_Coffee_Beans_Closeup_Tanzania_jpg.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.0,
+     "B": 0.001,
+     "C": 0.0,
+     "N": 0.969,
+     "R": 0.03
+    }
+   },
+   {
+    "id": "seen/Rejected_Coffee_Beans_Closeup_Tanzania_jpg.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.99,
+     "R": 0.009
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0305_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.372,
+     "B": 0.001,
+     "C": 0.0,
+     "N": 0.556,
+     "R": 0.07
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0305_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.06,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.928,
+     "R": 0.011
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0319_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg",
+    "variant": "clean",
+    "kind": "graded",
+    "grade": "A",
+    "probs": {
+     "A": 0.301,
+     "B": 0.003,
+     "C": 0.0,
+     "N": 0.438,
+     "R": 0.258
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0319_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_no.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.097,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.808,
+     "R": 0.094
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0355_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_wi.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.216,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.552,
+     "R": 0.232
+    }
+   },
+   {
+    "id": "seen/Starr_170109_0355_Coffea_arabica_Coffee_Berry_Borer_parchment_seeds_wi.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.023,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.811,
+     "R": 0.166
+    }
+   },
+   {
+    "id": "seen/Starr_170109_4505_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.046,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.925,
+     "R": 0.029
+    }
+   },
+   {
+    "id": "seen/Starr_170109_4505_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.001,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.967,
+     "R": 0.033
+    }
+   },
+   {
+    "id": "seen/Starr_170109_4634_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.111,
+     "B": 0.004,
+     "C": 0.0,
+     "N": 0.843,
+     "R": 0.042
+    }
+   },
+   {
+    "id": "seen/Starr_170109_4634_Coffea_arabica_Coffee_Berry_Borer_damaged_parchment_.jpg",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.031,
+     "B": 0.002,
+     "C": 0.0,
+     "N": 0.929,
+     "R": 0.038
+    }
+   },
+   {
+    "id": "seen/sample_A",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.985,
+     "R": 0.015
+    }
+   },
+   {
+    "id": "seen/sample_A",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.971,
+     "R": 0.029
+    }
+   },
+   {
+    "id": "seen/sample_B",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.998,
+     "R": 0.001
+    }
+   },
+   {
+    "id": "seen/sample_B",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.001,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.998,
+     "R": 0.001
+    }
+   },
+   {
+    "id": "seen/sample_C",
+    "variant": "clean",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.049,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.911,
+     "R": 0.039
+    }
+   },
+   {
+    "id": "seen/sample_C",
+    "variant": "phone",
+    "kind": "retake",
+    "grade": null,
+    "probs": {
+     "A": 0.024,
+     "B": 0.0,
+     "C": 0.0,
+     "N": 0.953,
+     "R": 0.023
+    }
+   }
+  ]
+ }
+}

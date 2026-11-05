@@ -63,7 +63,7 @@ def week():
 
 # the phone edition's notes, shorter
 _tw = list(B.TW[0]); _tw[3] = 'Open-source Qwen, trained on about 3,700 texts incl. 250 real Tetum (Labadain-30k+, CC BY 4.0).'; B.TW[0] = tuple(_tw)
-_tw = list(B.TW[1]); _tw[2] = 'A small vision model trained on 1,200 bean photos grades coffee A, B or C, right 79% of the time. A hand check sets the final grade.'; B.TW[1] = tuple(_tw)
+_tw = list(B.TW[1]); _tw[2] = 'A small vision model trained on 1,200 bean photos grades coffee A, B or C, right about 6 times in 10, and turns away photos with no coffee. A hand check sets the final grade.'; B.TW[1] = tuple(_tw)
 
 TECH = (
     B.tw_block(0, B.PARSER)

@@ -56,7 +56,7 @@ In the demo, reputation and the fixed pool run on pre-accumulated synthetic reco
 |---|---|---|
 | Reading farmers' SMS (kilos, grade, price, yes/no, questions) in Tetum and English | **AI, hybrid.** A rules engine reads every text. A Qwen2.5-0.5B model fine-tuned with LoRA reads the texts routing sends it: English, other languages, and anything the rules engine could not place. | Rules engine on the phone or hub. The fine-tuned reader runs as an 8-bit GGUF on the hub laptop (llama.cpp). The web demo runs the rules engine only for offers (see below). |
 | Off-script questions ("is today a good day to sell?", "why is the price low?") | **AI.** Stock Qwen2.5-0.5B-Instruct reads the intent. The reply is composed from live market data, so every number is real. | On the visitor's device (transformers.js, WebGPU or WebAssembly), ~3 s per reply on a 2-core CPU |
-| Preliminary grade from one phone photo | **AI (computer vision).** CLIP ViT-B/32 (int8) plus our own 5-class head (A/B/C, roasted, not coffee) | On the visitor's device (onnxruntime-web), ~2 s per photo |
+| Preliminary grade from one phone photo | **AI (computer vision).** CLIP ViT-B/32 (int8) plus two small heads of our own (coffee / roasted / not coffee, then A/B/C) | On the visitor's device (onnxruntime-web), ~2 s per photo |
 | Daily brief for extension services | **On the site: code computes the findings and fills a hand-written phrase bank; a checker verifies every sentence.** A small model (Qwen2.5-3B) writing the sentences instead was tested offline (`ai/brief/`) | Site version in the browser; the model version on a laptop, not on the site |
 | Morning price, suggestion, opening price, reputation, two pools | Algorithms run on pre-accumulated synthetic records in the demo | In the browser |
 | Pooling, auction, floor, escrow, payout, Registry | Ordinary software, which must be predictable and auditable | In the browser (simulated) |
@@ -117,17 +117,27 @@ Dure reads every text with a rules engine and, when routing says so, a small fin
 ## Photo grader
 
 - **Criteria:** grading follows the SCA green coffee defect classification. The grader looks only at the defects a photo can show: black or mouldy beans, insect holes, broken beans, and uneven drying or colour.
+- **Model (grader v3, 5 Nov):** the same CLIP image model; on top, a *kind* head (coffee / roasted / not coffee) and a *grade* head (A / B / C). The five numbers it reports are p(coffee)×p(grade), p(roasted), p(not coffee), averaged over 6 views of the photo.
 - **Training data:**
-  - 900 synthetic piles composed from 1,202 real bean crops (Pre-Roast Coffee Bean Grading Dataset, MIT)
-  - labelled Wikimedia Commons photos
-  - 143 photos with no coffee in them
-- **Results (leave-one-photo-out cross-validation):**
-  - exact grade: 46 of 58 photos (79%)
-  - kind of answer (graded, roasted or not coffee): right on every bean photo
-  - photos with no coffee: 34 of 35 refused
-- **Limits:** the labels are ours, the test set is small, and there are no Timor-Leste farmer photos yet. The final grade always comes from the hand check at pickup.
+  - 900 synthetic piles composed from 1,254 real bean crops (Pre-Roast Coffee Bean Grading Dataset, MIT)
+  - real green/parchment coffee photos from Wikimedia Commons (51, of which 28 graded by us), weighted ×20
+  - about 560 reviewed photos with no coffee beans, including look-alikes (peanuts, kidney beans, cocoa, coffee cherries and plants), plus 80 empty tarp/sack/concrete backgrounds
+  - about 80 photos of roasted coffee
+- **Results (photos never seen in training: real coffee photos left out one at a time, the rest a held-out split):**
 
-Note: the training scripts for photo grader v2 and for a later reader experiment (v2) were lost when our build environment was reset on 4 Oct. What survived is the deployed grader (`site/src/assets/grader_v2.js`, with the head weights inlined), the benchmarked reader (the LoRA adapter in `ai/coffee/lora/`) and the measured numbers above.
+  | | clean photo | cheap-phone copy |
+  |---|---|---|
+  | real coffee photos graded (51), the rest asked to retake | 92% | 96% |
+  | exact grade on real photos (28) | 16 of 28 | 20 of 28 |
+  | real photos with no coffee refused (168) | 97% | 96% |
+  | roasted photos recognised (24) | 24 of 24 | 24 of 24 |
+  | synthetic piles, exact grade (240) | 92% | 86% |
+
+  Grader v2 on the same photos: no-coffee photos refused 81% / 75%, roasted 88% / 75%, real coffee graded 98% / 100%, exact grade 18 of 28 / 17 of 28 (it had seen 11 of the 28 in training).
+- **Worst error:** grade C photos called A (2 of 9).
+- **Limits:** the labels are ours, the real test set is small, and there are no Timor-Leste farmer photos yet. The three demo sample photos are in the training set. The final grade always comes from the hand check at pickup.
+
+Training, evaluation and the photo review labels for v3 are in [`ai/photo3/`](ai/photo3/). The v2 training scripts were lost when our build environment was reset on 4 Oct; v3 was rebuilt from public data. The benchmarked SMS reader is the LoRA adapter in `ai/coffee/lora/`.
 
 ## The Registry and the daily brief
 
@@ -186,6 +196,7 @@ ai/coffee/              SMS reader: rules.js (v2.1), synthetic data generators (
                         routing (hybrid2.py), test sets 1–6, evaluation, GGUF inference
 ai/intent/              on-device question-topic model for phones and tablets (generator, numpy trainer, test sets)
 ai/photo/               photo grader v1 (MobileNetV3) scripts and results
+ai/photo3/              photo grader v3 (CLIP heads): data rebuild, training, evaluation, review labels
 ai/brief/               brief findings + model writer + checker experiments
 ```
 

@@ -4,11 +4,11 @@
   "intended": "A",
   "predicted": "A",
   "probs": {
-   "A": 0.8999999761581421,
-   "B": 0.010999999940395355,
-   "C": 0.05999999865889549,
-   "N": 0.0020000000949949026,
-   "R": 0.027000000700354576
+   "A": 0.729,
+   "B": 0.219,
+   "C": 0.036,
+   "N": 0.015,
+   "R": 0.001
   },
   "title": "High_Quality_Coffee_Beans_Closeup_-_Tanzania.jpg",
   "author": "Harald Ulver",
@@ -22,11 +22,11 @@
   "intended": "B",
   "predicted": "B",
   "probs": {
-   "A": 0.0820000022649765,
-   "B": 0.8169999718666077,
-   "C": 0.0949999988079071,
-   "N": 0.003000000026077032,
-   "R": 0.004000000189989805
+   "A": 0.012,
+   "B": 0.927,
+   "C": 0.047,
+   "N": 0.003,
+   "R": 0.011
   },
   "title": "Raw_coffee_beans.jpg",
   "author": "Kızıldeniz",
@@ -40,11 +40,11 @@
   "intended": "C",
   "predicted": "C",
   "probs": {
-   "A": 0.148,
-   "B": 0.068,
-   "C": 0.777,
-   "N": 0.005,
-   "R": 0.002
+   "A": 0.002,
+   "B": 0.006,
+   "C": 0.947,
+   "N": 0.035,
+   "R": 0.009
   },
   "title": "Starr-170109-4505-Coffea arabica-Coffee Berry Borer damaged parchment seeds sample-Kula Community Center-Maui (32344618211).jpg",
   "author": "Forest and Kim Starr",

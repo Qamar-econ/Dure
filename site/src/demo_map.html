@@ -1007,7 +1007,7 @@ const CHIPS={
 const $=id=>document.getElementById(id);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const jit=(a,b)=>a+Math.random()*(b-a);
-/* ---------- photo grader: DureGraderV2 (CLIP image encoder, int8 ONNX, + Dure's 5-class head), runs in the browser ---------- */
+/* ---------- photo grader: DureGraderV2 (CLIP image encoder, int8 ONNX, + Dure's kind and grade heads (v3)), runs in the browser ---------- */
 const SAMPLES=[{g:'A',url:'assets/samples/sample_A.jpg',sub:'clean, even',by:'Harald Ulver'},
   {g:'B',url:'assets/samples/sample_B.jpg',sub:'mixed',by:'Kızıldeniz'},
   {g:'C',url:'assets/samples/sample_C.jpg',sub:'many damaged',by:'Forest & Kim Starr',lic:'CC BY 3.0 US'}];
