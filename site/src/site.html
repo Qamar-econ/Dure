@@ -538,7 +538,7 @@ h1.hero .ln>span{white-space:nowrap}
 .closing .fdr .ct a:hover{background:var(--ink);color:#F2EADA}
 .closing .thx{font-family:Literata,serif;font-style:italic;font-size:clamp(20px,1.8vw,26px);margin-top:30px;color:var(--ink-2)}
 .risk>div.pw{border-bottom:none}
-.hy-foot{font-size:13.5px;line-height:1.55;color:var(--ink-2);max-width:900px;margin-top:12px}
+.hy-foot a{color:var(--rust)}.hy-foot{font-size:13.5px;line-height:1.55;color:var(--ink-2);max-width:900px;margin-top:12px}
 @media (max-width:760px){.hy-ev,.hy-states{grid-template-columns:1fr}}
 /* chapter 10: register */
 .lg-lead{font-size:clamp(18px,1.6vw,22px);line-height:1.5;max-width:760px;color:var(--ink-2);margin:18px 0 28px}
@@ -892,8 +892,29 @@ p,li,small,blockquote,cite,.k,.principle p{text-wrap:pretty}
   <p class="hy-foot rv"><b>Method.</b> 60 synthetic SMS (36 Tetum, 16 English, 8 other), written by Claude Sonnet and frozen before scoring; a text counts only if every field is right. On 64 newer texts never used to build Dure: 86%, against 78% for the rules engine alone. These are benchmark scores on synthetic texts, not field results, and they measure the reader for the pickup-point laptop: the web demo reads offers with the rules engine only. Reading adds under 1% to the cost of an SMS. Measured 23 Oct 2026.</p>
 </div></section>
 
+<section class="flow" id="vision"><div class="fl-wrap">
+  <div class="fl-k rv">12 · Photo Grading Index</div>
+  <h2 class="rv">How well does AI grade <em>a coffee photo?</em></h2>
+  <p class="hy-lead rv">Dure grades coffee from one phone photo. A small vision model (CLIP) reads the photo on the farmer's own phone, so the picture never leaves it. Two small parts trained by Dure then decide: first, is this green coffee at all? Only then, which grade: A, B or C?</p>
+  <div class="tbi rv">
+    <div class="tbi-r big"><div class="tbi-l"><b>Turns away non-coffee</b><span>peanuts, beans, cocoa, coffee cherries · 168 photos</span></div><div class="tbi-b"><i style="--w:97%"></i><em>97%</em></div><div class="tbi-m">96% on cheap-phone copies · was 81% before this update</div></div>
+    <div class="tbi-r big"><div class="tbi-l"><b>Spots roasted beans</b><span>roasted coffee is not graded · 24 photos</span></div><div class="tbi-b"><i style="--w:100%"></i><em>100%</em></div><div class="tbi-m">was 88%</div></div>
+    <div class="tbi-r"><div class="tbi-l"><b>Accepts real coffee photos</b><span>the rest are asked for another photo · 51 photos</span></div><div class="tbi-b"><i style="--w:92%"></i><em>92%</em></div><div class="tbi-m">96% on cheap-phone copies · was 98%</div></div>
+    <div class="tbi-r"><div class="tbi-l"><b>Exact grade, real photos</b><span>A, B or C, labelled by us · 28 photos</span></div><div class="tbi-b"><i style="--w:57%"></i><em>57%</em></div><div class="tbi-m">71% on cheap-phone copies · was 64%, partly on photos it trained on</div></div>
+    <div class="tbi-r"><div class="tbi-l"><b>Exact grade, synthetic piles</b><span>beans never seen in training · 240 photos</span></div><div class="tbi-b"><i style="--w:92%"></i><em>92%</em></div><div class="tbi-m">86% on cheap-phone copies</div></div>
+  </div>
+  <h3 class="rk-h rv">Why CLIP, and not a lighter model?</h3>
+  <p class="hy-lead rv">We trained CLIP and ResNet-18, a smaller classic vision model, in exactly the same way, then asked both to grade cheap-phone copies of 240 synthetic piles. ResNet-18 is up to seven times smaller, but it slips on cheap-phone photos, and most farmers' photos will be cheap-phone photos.</p>
+  <div class="tbi rv">
+    <div class="tbi-r big"><div class="tbi-l"><b>CLIP ViT-B/32</b><span>the model Dure uses · 89 MB</span></div><div class="tbi-b"><i style="--w:88%"></i><em>88%</em></div><div class="tbi-m">93% on clean photos</div></div>
+    <div class="tbi-r"><div class="tbi-l"><b>ResNet-18, compressed</b><span>same training · 12 MB</span></div><div class="tbi-b"><i style="--w:73%"></i><em>73%</em></div><div class="tbi-m">89% on clean photos</div></div>
+    <div class="tbi-r"><div class="tbi-l"><b>ResNet-18</b><span>same training · 47 MB</span></div><div class="tbi-b"><i style="--w:70%"></i><em>70%</em></div><div class="tbi-m">88% on clean photos</div></div>
+  </div>
+  <p class="hy-foot rv"><b>Method.</b> CLIP ViT-B/32, compressed to 8 bits, reads six views of the photo: whole, mirrored and four overlapping quarters. Its readings go to two small heads trained by Dure. One says coffee, roasted or not coffee; the other says A, B or C, on the SCA defects a photo can show. Training data: 900 synthetic piles made from 1,254 real bean photos (Pre-Roast Coffee Bean Grading Dataset, MIT); 51 real green and parchment coffee photos, weighted 20 times; about 560 photos without coffee beans; about 80 of roasted coffee. All photos come from Wikimedia Commons and were sorted by hand before training. Every score is on photos the model never trained on: real coffee photos are left out one at a time, the rest are a held-out set. Cheap-phone copies are shrunk to 640 px, blurred and saved as low-quality JPEGs. The CLIP and ResNet-18 comparison used the same data without the real coffee photos. The grade labels are ours, the real test set is small and there are no Timor-Leste farmer photos yet, so a person always confirms the grade at pickup. <a href="https://github.com/Qamar-econ/Dure/tree/main/ai/photo3" target="_blank" rel="noopener">Code and data →</a></p>
+</div></section>
+
 <section class="flow" id="risks"><div class="fl-wrap">
-  <div class="fl-k rv">12 · Field problems</div>
+  <div class="fl-k rv">13 · Field problems</div>
   <h2 class="rv">What are the real <em>field problems?</em></h2>
   <div class="risk rv">
     <div><h4>The road washes out.</h4><p>Dure books the truck and the pickup point. It can't fix the road, and doesn't pretend to.</p></div>
@@ -1966,12 +1987,12 @@ function econ(p){
     <svg x="${PX}" y="${PY}" width="${120*PS}" height="${90*PS}" style="width:${120*PS}px;height:${90*PS}px" viewBox="0 0 120 90">${cropPhoto('C').replace(/^<svg[^>]*>|<\/svg>$/g,'')}</svg>
     <g id="pFind" opacity="0">${(()=>{const [x,y,w,h]=bx(9,14,100,52);return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="#F6EFE0" stroke-width="2" stroke-dasharray="7 5"/><rect x="${x}" y="${y-22}" width="104" height="20" fill="#F6EFE0"/><text x="${x+6}" y="${y-7}" ${T} font-size="12.5" font-weight="700" fill="${ink}">coffee · 98%</text>`})()}</g>
     ${DEF.map(([l,v,b],k)=>{if(!b)return '';const [x,y,w,h]=bx(...b);return `<g class="pdef" data-k="${k}" opacity="0"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="rgba(228,182,76,.14)" stroke="${gold}" stroke-width="2.4"/><circle cx="${x+w}" cy="${y}" r="11" fill="${gold}"/><text x="${x+w}" y="${y+4.5}" text-anchor="middle" ${T} font-size="13" font-weight="800" fill="${ink}">${k+1}</text></g>`}).join('')}
-    <text x="24" y="${PY+90*PS+26}" ${T} font-size="13.5" font-style="italic" fill="#BFD0CC">Each box is something the model spotted.</text>
+    <text x="24" y="${PY+90*PS+26}" ${T} font-size="13.5" font-style="italic" fill="#BFD0CC">Illustration: the defects that set the grade.</text>
     <g transform="translate(396 0)">
       <text x="0" y="66" ${T} font-size="14" font-weight="700" fill="#F6EFE0">① Find the beans</text><text class="pst" data-k="0" x="220" y="66" text-anchor="end" ${T} font-size="13" fill="#7FD18B" opacity="0">done</text>
       <text x="0" y="98" ${T} font-size="14" font-weight="700" fill="#F6EFE0">② Look for defects</text>
       ${DEF.map(([l,v],k)=>`<g class="pchk" data-k="${k}" opacity=".2"><rect x="0" y="${110+k*34}" width="220" height="28" rx="5" fill="#2C4F57"/><circle cx="14" cy="${124+k*34}" r="8" fill="${k<3?gold:'#46656B'}"/><text x="14" y="${128+k*34}" text-anchor="middle" ${T} font-size="10.5" font-weight="800" fill="${ink}">${k<3?k+1:''}</text><text x="30" y="${129+k*34}" ${T} font-size="14" fill="#F6EFE0">${l}</text><text x="208" y="${129+k*34}" text-anchor="end" ${T} font-size="13.5" font-weight="700" fill="${v==='found'?gold:'#BFD0CC'}">${v}</text></g>`).join('')}
-      <text x="0" y="266" ${T} font-size="14" font-weight="700" fill="#F6EFE0">③ Compare with graded photos</text>
+      <text x="0" y="266" ${T} font-size="14" font-weight="700" fill="#F6EFE0">③ Score each grade</text>
       ${REF.map(([g,pc],k)=>`<g class="pref" data-k="${k}" data-pc="${pc}" opacity="0"><svg x="${k*76}" y="278" width="64" height="48" style="width:64px;height:48px" viewBox="0 0 120 90">${cropPhoto(g).replace(/^<svg[^>]*>|<\/svg>$/g,'')}</svg>
         <text x="${k*76}" y="344" ${T} font-size="13" font-weight="700" fill="${CG[g]}">${g}</text><text class="pcv" x="${k*76+64}" y="344" text-anchor="end" ${T} font-size="13" font-weight="700" fill="#F6EFE0">0%</text>
         <rect x="${k*76}" y="350" width="64" height="5" rx="2.5" fill="#2C4F57"/><rect class="pcb" x="${k*76}" y="350" width="0" height="5" rx="2.5" fill="${g==='C'?gold:'#7FA6A8'}"/></g>`).join('')}
@@ -2122,7 +2143,7 @@ function frame(){
 let raf=0,want=false,lenisLoop=false;const req=()=>{if(lenisLoop){want=true;return}if(!raf)raf=requestAnimationFrame(()=>{raf=0;tickCtl();frame()})};
 let _rw=innerWidth,_rh=innerHeight;addEventListener('resize',()=>{/* phones fire resize whenever the address bar slides: ignore height-only changes */if(innerWidth===_rw&&Math.abs(innerHeight-_rh)<160)return;_rw=innerWidth;_rh=innerHeight;sizeRoad();measure();req()});
 /* ---------- scroll controller: each scene = one slot of scroll; it plays fast, then holds ---------- */
-const CH=[['1','The field'],['2','The buyers'],['3','The road'],['4','The buyer'],['5','Together'],['6','The catch'],['7','Dure'],['8','How it works'],['9','Technical walkthrough'],['10','The Registry','ledger10'],['11','Tetum Benchmark Index','hybrid'],['12','Field problems','risks']];
+const CH=[['1','The field'],['2','The buyers'],['3','The road'],['4','The buyer'],['5','Together'],['6','The catch'],['7','Dure'],['8','How it works'],['9','Technical walkthrough'],['10','The Registry','ledger10'],['11','Tetum Benchmark Index','hybrid'],['12','Photo Grading Index','vision'],['13','Field problems','risks']];
 const H=(i,a,b)=>[(i+a)/8,(i+b)/8-(b>=1?.0001:0)], E=(i)=>[i/4,(i+1)/4-.0001];
 const SCN=[
  {s:'hero',a:0,b:.2,d:1.4,c:0},{s:'hero',a:.48,b:.62,d:.8,c:0},{s:'hero',a:.62,b:.9,d:.8,c:0},
@@ -2147,7 +2168,7 @@ SCN.forEach((n,k)=>{const S=SEC[n.s];n.k=k;n.o=S.len;n.l=Math.round((n.L||slotVH
 const ROADF=(()=>{const S=SEC.road;if(!S)return null;const K=S.slots.map(n=>[n.o,n.a]);const l=S.slots[S.slots.length-1];K.push([l.o+l.l*PLn(l),l.b-.003]);return monoFn(K)})();
 const SWAP=innerWidth<=760;   // phones: the six AI panels share one fixed screen and swap like the How-it-works steps
 function sizeSecs(){Object.values(SEC).forEach(S=>S.el.style.height=S.el.classList.contains('flow')?'':(SWAP&&(S.el.id==='wai'||S.el.id==='econ'))?`${S.len}vh`:`calc(${S.len}vh + 100vh)`);measure()}
-const TOPS={};function measure(){Object.values(SEC).forEach(S=>{S.top=S.el.offsetTop;S.h=S.el.offsetHeight});{const c=$('close');TOPS.closeTop=c?c.offsetTop:0}['risks','wai','econ','hybrid','ledger10'].forEach(id=>{const e=$(id);if(e)TOPS[id]=[e.offsetTop,e.offsetHeight]})}
+const TOPS={};function measure(){Object.values(SEC).forEach(S=>{S.top=S.el.offsetTop;S.h=S.el.offsetHeight});{const c=$('close');TOPS.closeTop=c?c.offsetTop:0}['risks','wai','econ','hybrid','vision','ledger10'].forEach(id=>{const e=$(id);if(e)TOPS[id]=[e.offsetTop,e.offsetHeight]})}
 addEventListener('load',()=>{measure();req()});document.fonts&&document.fonts.ready.then(()=>{measure();req()});
 function swapStages(){if(!SWAP)return;const H=_IH,r=id=>{const[t,h]=TOPS[id];return{top:t-_SY,bottom:t+h-_SY}},a=r('wai'),b=r('econ');
   const onA=a.top<H*.55&&b.top>0, onB=b.top<=0&&b.bottom>H*.25;

@@ -76,6 +76,27 @@ BENCH = (f'<p>Large models overlook Tetum. A small model plus a rules engine get
          f'<ul class="bench rv">{B.bench}</ul>'
          '<p class="src"><b>Method.</b> 60 synthetic SMS written by Claude Sonnet, frozen before scoring; every field must be right. On 64 newer texts never used to build Dure: 86% (rules engine alone 78%). Synthetic benchmark, not field results; the web demo reads offers with the rules engine only. Measured 23 Oct 2026.</p>')
 
+VISION_ROWS = [('Turns away non-coffee', 'peanuts, beans, cocoa, coffee cherries · 168 photos', 97, '96% on cheap-phone copies · was 81% before this update', 'me'),
+               ('Spots roasted beans', 'roasted coffee is not graded · 24 photos', 100, 'was 88%', 'me'),
+               ('Accepts real coffee', 'the rest are asked for another photo · 51 photos', 92, '96% on cheap-phone copies · was 98%', ''),
+               ('Exact grade, real', 'A, B or C, labelled by us · 28 photos', 57, '71% on cheap-phone copies · was 64%, partly on photos it trained on', ''),
+               ('Exact grade, piles', 'synthetic, beans never seen in training · 240 photos', 92, '86% on cheap-phone copies', '')]
+VISION_CMP = [('CLIP ViT-B/32', 'the model Dure uses · 89 MB', 88, '93% on clean photos', 'me'),
+              ('ResNet-18, compressed', 'same training · 12 MB', 73, '89% on clean photos', ''),
+              ('ResNet-18', 'same training · 47 MB', 70, '88% on clean photos', '')]
+VISION = ('<p>Dure grades coffee from one phone photo. A small vision model (CLIP) reads it on the farmer\'s own phone, so the picture never leaves it. '
+          'Two small parts trained by Dure then decide: is this green coffee at all? Only then, which grade: A, B or C?</p>'
+          f'<ul class="bench rv">{"".join(B.bench_row(*r) for r in VISION_ROWS)}</ul>'
+          '<h3 class="sub">Why CLIP, and not a lighter model?</h3>'
+          '<p>We trained CLIP and ResNet-18, a smaller classic vision model, in exactly the same way, then asked both to grade cheap-phone copies of 240 synthetic piles. '
+          'ResNet-18 is up to seven times smaller, but it slips on cheap-phone photos, and most farmers\' photos will be cheap-phone photos.</p>'
+          f'<ul class="bench rv">{"".join(B.bench_row(*r) for r in VISION_CMP)}</ul>'
+          '<p class="src"><b>Method.</b> CLIP ViT-B/32, compressed to 8 bits, reads six views of the photo (whole, mirrored, four quarters). Two small heads trained by Dure say coffee, roasted or not coffee, then A, B or C on the SCA defects a photo can show. '
+          'Training: 900 synthetic piles from 1,254 real bean photos (MIT dataset); 51 real green and parchment coffee photos, weighted 20 times; about 560 photos without coffee beans; about 80 of roasted coffee, all from Wikimedia Commons and sorted by hand. '
+          'Every score is on photos the model never trained on. Cheap-phone copies are shrunk to 640 px, blurred and saved as low-quality JPEGs. The model comparison used the same data without the real coffee photos. '
+          'Labels are ours, the real test set is small and there are no Timor-Leste farmer photos yet, so a person confirms every grade at pickup. '
+          f'<a href="{REPO}/tree/main/ai/photo3">Code and data →</a></p>')
+
 REGISTRY = ('<p class="lead">A farmer Registry is costly to keep by hand. Every Dure deal leaves a record, <b>so the Registry builds itself.</b></p>'
             f'<div class="reg">{N.tabs([("1 · Trades", N.ledger()), ("2 · Data analysis", N.qchart()), ("3 · AI brief", N.brief())], "The Registry")}</div>'
             '<p><b>AI is not a silver bullet.</b> Noor knows farming better than Dure. Dure helps the extension officer make the most of two visits a year.</p>'
@@ -197,6 +218,7 @@ PAGE = f'''<!doctype html>
   <p class="chapno rv">For the curious</p>
   {more('Technical walkthrough', 'Tetum texts · photo grades · reputation · two markets', '<div class="twsec">' + TECH + '</div>')}
   {more('How well does AI read <em>Tetum texts?</em>', 'Tetum Benchmark Index', BENCH)}
+  {more('How well does AI grade <em>a coffee photo?</em>', 'Photo Grading Index', VISION)}
   {more('An automated Registry <em>and AI policy suggestions.</em>', 'From the slope to the ministry', REGISTRY)}
   {more('What are the real <em>field problems?</em>', 'Roads, records, power', RISKS)}
 </section>

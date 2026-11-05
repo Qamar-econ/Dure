@@ -166,11 +166,11 @@ def photo():
     bx = ''.join(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="rgba(228,182,76,.16)" stroke="{GOLD}" stroke-width="2.4"/>'
                  f'<circle cx="{x+w}" cy="{y}" r="10" fill="{GOLD}"/><text x="{x+w}" y="{y+4.5}" text-anchor="middle" class="t b s" fill="{INK}">{n}</text>'
                  for n, x, y, w, h, _ in boxes)
-    return ('<div class="nf nf-photo dk"><svg viewBox="0 18 340 200" role="img" aria-label="Photo check: three boxes where the model found defects">'
+    return ('<div class="nf nf-photo dk"><svg viewBox="0 18 340 200" role="img" aria-label="Photo check, illustrated: three defects that set the grade">'
             f'<rect width="340" height="236" fill="#47708F"/><path d="M0 80 H340 M0 160 H340 M110 0 V236 M226 0 V236" stroke="#3B5F7B" stroke-width="3"/>{f}'
             f'<rect x="22" y="40" width="292" height="164" fill="none" stroke="#F4EBDA" stroke-width="2" stroke-dasharray="7 5"/>'
             f'<rect x="22" y="22" width="96" height="20" fill="#F4EBDA"/><text x="30" y="36" class="t b s" fill="{INK}">coffee · 98%</text>{bx}</svg>'
-            '<p class="cap">Each box is something the model spotted.</p></div>')
+            '<p class="cap">Illustration: the defects that set the grade.</p></div>')
 
 
 def steps():
@@ -179,7 +179,7 @@ def steps():
     return ('<div class="nf nf-steps dk" role="img" aria-label="Black beans, mould and broken beans found; preliminary grade C">'
             '<p class="st"><i>1</i>Find the beans<span class="ok">done</span></p><p class="st"><i>2</i>Look for defects</p><ul>'
             + ''.join(f'<li{" class=dim" if not n else ""}><i>{n}</i>{l}<b>{r}</b></li>' for n, l, r in defs)
-            + '</ul><p class="st"><i>3</i>Compare with graded photos</p><div class="cmp">'
+            + '</ul><p class="st"><i>3</i>Score each grade</p><div class="cmp">'
             + ''.join(f'<div class="{"hi" if g == "C" else ""}">{tile(s, m)}<p><b class="g{g}">{g}</b><span>{v}%</span></p><s><i style="width:{v}%"></i></s></div>'
                       for g, v, s, m in cmp_)
             + '</div><div class="pre">Preliminary grade <b>C</b></div></div>')
@@ -375,10 +375,10 @@ def dsum(text):
 def grade_compact():
     defs = [('1', 'Black beans', 'found'), ('2', 'Mould', 'found'), ('3', 'Broken beans', 'found'), ('', 'Uneven drying', 'slight')]
     cmp_ = [('A', 3, 21, [70, 18, 6, 1, 5]), ('B', 18, 22, [48, 24, 16, 4, 8]), ('C', 79, 23, [30, 20, 22, 18, 10])]
-    return ('<div class="nf nf-gc dk" role="img" aria-label="Black beans, mould and broken beans found; closest graded photos: C 79%; preliminary grade C">'
+    return ('<div class="nf nf-gc dk" role="img" aria-label="Black beans, mould and broken beans found; grade scores: C 79%; preliminary grade C">'
             '<p class="st"><i>1</i>Find the beans <span class="ok">done</span></p>'
             '<p class="st"><i>2</i>Look for defects</p><div class="dg">' + ''.join(f'<span class="{"dim" if not n else ""}"><i>{n}</i>{l}<b>{r}</b></span>' for n, l, r in defs) + '</div>'
-            '<p class="st"><i>3</i>Compare with graded photos</p><div class="cg">' + ''.join(
+            '<p class="st"><i>3</i>Score each grade</p><div class="cg">' + ''.join(
                 f'<div class="{"hi" if g == "C" else ""}">{tile(s, m)}<b class="g{g}">{g}</b><span>{v}%</span></div>' for g, v, s, m in cmp_) +
             '<div class="pg"><small>Preliminary</small><b>C</b></div></div></div>')
 
