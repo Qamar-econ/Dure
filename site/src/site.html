@@ -893,15 +893,10 @@ p,li,small,blockquote,cite,.k,.principle p{text-wrap:pretty}
 </div></section>
 
 <section class="flow" id="vision"><div class="fl-wrap">
-  <div class="fl-k rv">12 · Photo Grading Index</div>
-  <h2 class="rv">How well does AI grade <em>a coffee photo?</em></h2>
+  <div class="fl-k rv">12 · Photo grader</div>
+  <h2 class="rv">How does AI grade <em>a coffee photo?</em></h2>
   <p class="hy-lead rv">A farmer texts one photo of her coffee. On Dure's laptop at the pickup point, a small vision model (CLIP) reads it, with no internet needed. Two small parts trained by Dure then decide: first, is this green coffee at all? Only then, which grade: A, B or C?</p>
-  <div class="tbi rv">
-    <div class="tbi-r big"><div class="tbi-l"><b>Names the exact grade</b><span>real photos, A, B or C · 28 photos</span></div><div class="tbi-b"><i style="--w:57%"></i><em>57%</em></div><div class="tbi-m">71% on cheap-phone copies</div></div>
-    <div class="tbi-r"><div class="tbi-l"><b>Turns away non-coffee</b><span>peanuts, beans, cocoa, cherries · 168 photos</span></div><div class="tbi-b"><i style="--w:97%"></i><em>97%</em></div><div class="tbi-m">was 81% before this update</div></div>
-    <div class="tbi-r"><div class="tbi-l"><b>Accepts real coffee photos</b><span>green or parchment · 51 photos</span></div><div class="tbi-b"><i style="--w:92%"></i><em>92%</em></div><div class="tbi-m">the rest are asked for another photo</div></div>
-  </div>
-  <p class="hy-foot rv"><b>Method.</b> CLIP ViT-B/32 (8-bit, 89 MB) reads six views of each photo; two small heads trained by Dure decide coffee, roasted or not, then A, B or C on SCA defects. Training: 900 synthetic piles from 1,254 real bean photos (MIT dataset) and about 690 hand-sorted Wikimedia Commons photos. Every score is on photos never used in training. Grade labels are ours and there are no Timor-Leste photos yet, so a person confirms every grade at pickup. In the web demo, the model runs in your browser. <a href="https://github.com/Qamar-econ/Dure/tree/main/ai/photo3" target="_blank" rel="noopener">Code and data →</a></p>
+  <p class="hy-foot rv"><b>Method.</b> CLIP ViT-B/32 (8-bit, 89 MB) reads six views of each photo: whole, mirrored and four overlapping quarters. Two small heads trained by Dure decide coffee, roasted or not coffee, then A, B or C on the SCA defects a photo can show. Training: 900 synthetic piles from 1,254 real bean photos (MIT dataset) and about 690 hand-sorted Wikimedia Commons photos. Grade labels are ours and there are no Timor-Leste photos yet, so a person confirms every grade at pickup. In the web demo, the model runs in your browser. <a href="https://github.com/Qamar-econ/Dure/tree/main/ai/photo3" target="_blank" rel="noopener">Code and data →</a></p>
 </div></section>
 
 <section class="flow" id="risks"><div class="fl-wrap">
@@ -2134,7 +2129,7 @@ function frame(){
 let raf=0,want=false,lenisLoop=false;const req=()=>{if(lenisLoop){want=true;return}if(!raf)raf=requestAnimationFrame(()=>{raf=0;tickCtl();frame()})};
 let _rw=innerWidth,_rh=innerHeight;addEventListener('resize',()=>{/* phones fire resize whenever the address bar slides: ignore height-only changes */if(innerWidth===_rw&&Math.abs(innerHeight-_rh)<160)return;_rw=innerWidth;_rh=innerHeight;sizeRoad();measure();req()});
 /* ---------- scroll controller: each scene = one slot of scroll; it plays fast, then holds ---------- */
-const CH=[['1','The field'],['2','The buyers'],['3','The road'],['4','The buyer'],['5','Together'],['6','The catch'],['7','Dure'],['8','How it works'],['9','Technical walkthrough'],['10','The Registry','ledger10'],['11','Tetum Benchmark Index','hybrid'],['12','Photo Grading Index','vision'],['13','Field problems','risks']];
+const CH=[['1','The field'],['2','The buyers'],['3','The road'],['4','The buyer'],['5','Together'],['6','The catch'],['7','Dure'],['8','How it works'],['9','Technical walkthrough'],['10','The Registry','ledger10'],['11','Tetum Benchmark Index','hybrid'],['12','Photo grader','vision'],['13','Field problems','risks']];
 const H=(i,a,b)=>[(i+a)/8,(i+b)/8-(b>=1?.0001:0)], E=(i)=>[i/4,(i+1)/4-.0001];
 const SCN=[
  {s:'hero',a:0,b:.2,d:1.4,c:0},{s:'hero',a:.48,b:.62,d:.8,c:0},{s:'hero',a:.62,b:.9,d:.8,c:0},

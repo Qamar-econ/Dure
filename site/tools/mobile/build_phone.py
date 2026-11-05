@@ -76,14 +76,11 @@ BENCH = (f'<p>Large models overlook Tetum. A small model plus a rules engine get
          f'<ul class="bench rv">{B.bench}</ul>'
          '<p class="src"><b>Method.</b> 60 synthetic SMS written by Claude Sonnet, frozen before scoring; every field must be right. On 64 newer texts never used to build Dure: 86% (rules engine alone 78%). Synthetic benchmark, not field results; the web demo reads offers with the rules engine only. Measured 23 Oct 2026.</p>')
 
-VISION_ROWS = [('Exact grade', 'real photos, A, B or C · 28 photos', 57, '71% on cheap-phone copies', 'me'),
-               ('Turns away non-coffee', 'peanuts, beans, cocoa, cherries · 168 photos', 97, 'was 81% before this update', ''),
-               ('Accepts real coffee', 'green or parchment · 51 photos', 92, 'the rest are asked for another photo', '')]
 VISION = ('<p>A farmer texts one photo of her coffee. On Dure\'s laptop at the pickup point, a small vision model (CLIP) reads it, with no internet needed. '
           'Two small parts trained by Dure then decide: is this green coffee at all? Only then, which grade: A, B or C?</p>'
-          f'<ul class="bench rv">{"".join(B.bench_row(*r) for r in VISION_ROWS)}</ul>'
-          '<p class="src"><b>Method.</b> CLIP ViT-B/32 (8-bit, 89 MB) reads six views of each photo; two small heads trained by Dure decide coffee, roasted or not, then A, B or C on SCA defects. '
-          'Training: 900 synthetic piles from 1,254 real bean photos (MIT dataset) and about 690 hand-sorted Wikimedia Commons photos. Every score is on photos never used in training. '
+          '<p class="src"><b>Method.</b> CLIP ViT-B/32 (8-bit, 89 MB) reads six views of each photo: whole, mirrored and four overlapping quarters. '
+          'Two small heads trained by Dure decide coffee, roasted or not coffee, then A, B or C on the SCA defects a photo can show. '
+          'Training: 900 synthetic piles from 1,254 real bean photos (MIT dataset) and about 690 hand-sorted Wikimedia Commons photos. '
           'Grade labels are ours and there are no Timor-Leste photos yet, so a person confirms every grade at pickup. In the web demo, the model runs in your browser. '
           f'<a href="{REPO}/tree/main/ai/photo3">Code and data →</a></p>')
 
@@ -208,7 +205,7 @@ PAGE = f'''<!doctype html>
   <p class="chapno rv">For the curious</p>
   {more('Technical walkthrough', 'Tetum texts · photo grades · reputation · two markets', '<div class="twsec">' + TECH + '</div>')}
   {more('How well does AI read <em>Tetum texts?</em>', 'Tetum Benchmark Index', BENCH)}
-  {more('How well does AI grade <em>a coffee photo?</em>', 'Photo Grading Index', VISION)}
+  {more('How does AI grade <em>a coffee photo?</em>', 'Photo grader', VISION)}
   {more('An automated Registry <em>and AI policy suggestions.</em>', 'From the slope to the ministry', REGISTRY)}
   {more('What are the real <em>field problems?</em>', 'Roads, records, power', RISKS)}
 </section>
