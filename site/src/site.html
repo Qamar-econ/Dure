@@ -2171,7 +2171,15 @@ if(FLOW)['wai','econ'].forEach(id=>{const R=$(id),st=R.querySelector('.stage');R
 function flowRun(id,fn){const R=$(id),N=R.querySelectorAll('.ec-fig').length;let best=-1,bd=1e9;
   R.querySelectorAll('.ec-fig').forEach(f=>{const r=f.getBoundingClientRect(),c=r.top+r.height/2,d=Math.abs(c-innerHeight*.55);if(r.bottom>0&&r.top<innerHeight&&d<bd){bd=d;best=+f.dataset.i}});
   if(best<0)return;const r=R.querySelector(`.ec-fig[data-i="${best}"]`).getBoundingClientRect();
-  const u=clamp((innerHeight*.9-r.top)/(innerHeight*.55),0,1),raw=Math.min(.999,_IW<=760?MOB_SPLIT*.8+u*(1-MOB_SPLIT*.8):u);   // computers: each picture starts from its first frame as it comes up
+  let raw;
+  if(_IW<=760){const u=clamp((innerHeight*.9-r.top)/(innerHeight*.55),0,1);raw=Math.min(.999,MOB_SPLIT*.8+u*(1-MOB_SPLIT*.8));}
+  else{/* computers: the picture follows the scroll over most of the screen (it finishes as the picture reaches the middle of the screen),
+          and never plays faster than about 3 s from start to end, however quickly the page is scrolled */
+    const tgt=clamp((innerHeight*.95-(r.top+r.height/2))/(innerHeight*.45),0,1);
+    const st=R._fl||(R._fl={}),now=performance.now(),k=best,prev=st[k]||{v:0,t:now},dt=Math.min(.1,(now-prev.t)/1000);
+    let v=tgt<prev.v?tgt:Math.min(tgt,prev.v+dt/3);st[k]={v,t:now};
+    if(v<tgt-.001)requestAnimationFrame(()=>req());
+    raw=Math.min(.999,v);}
   fn((best+raw)/N);}
 const PS={hero:0,map:0,road:0,together:0,split:0,curtain:0,how:0,wai:0,econ:0}, TG_={...PS};
 let cur=0;
