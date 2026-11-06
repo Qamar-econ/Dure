@@ -238,12 +238,12 @@ body.in .scrollcue{opacity:1}
 .pin.flow .ec-head,.pin.flow .ec-fig{position:relative;left:auto;right:auto;top:auto;bottom:auto;width:auto;opacity:1;transform:none;pointer-events:auto}
 .pin.flow .ec-head h3{font-size:36px}.pin.flow .ec-head p{font-size:17px}
 @media (min-width:761px){
-  .pin.flow{padding-left:5vw;padding-right:5vw}.pin.flow .stage{padding:0}.pin.flow .grain{display:none}
+  .pin.flow{padding:0 5vw}.pin.flow .stage{padding:0}.pin.flow .grain{display:none}
   .pin.flow .flowp{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(32px,5vw,80px);align-items:center;max-width:1180px;margin:0 auto;min-height:0;padding:11vh 0}
-  #wai.flow .flowp:first-child{padding-top:16vh}#econ.flow .flowp:last-child{padding-bottom:6vh}
+  #wai.flow .flowp:first-child{padding-top:22vh}
   .pin.flow .ec-head{width:auto}.pin.flow .ec-fig{width:auto}
   .pin.flow .ec-head h3{font-size:clamp(34px,3.6vw,58px);margin:12px 0 22px}.pin.flow .ec-head p{font-size:clamp(18px,1.6vw,22px)}
-  #econ.flow + .flow{padding-top:10vh}}   /* same type scale as the chapters below; no extra gap before chapter 10 */
+  #econ.flow + .flow{padding-top:calc(11vh - 22px)}}   /* same type scale as the chapters below; no extra gap before chapter 10 */
 @media (min-width:761px) and (max-width:1100px) and (orientation:portrait){.pin.flow .flowp{grid-template-columns:1fr;gap:28px}}
 #wai.flow .ec-head,#econ.flow .ec-head,#wai.flow .ec-fig,#econ.flow .ec-fig{top:auto;left:auto;right:auto;bottom:auto}   /* beat the per-section offsets used by the pinned panels */   /* tall narrow windows: text over the picture */
 @media (max-width:760px){#wai .ec-head,#econ .ec-head{top:66px}#wai .ec-head h3,#econ .ec-head h3{font-size:28px;margin:4px 0 8px}#wai .ec-head p,#econ .ec-head p{font-size:15px;line-height:1.38}#wai .ec-head cite,#econ .ec-head cite{font-size:12.5px;margin-top:6px}#wai .ec-head .n,#econ .ec-head .n{font-size:15px}}
