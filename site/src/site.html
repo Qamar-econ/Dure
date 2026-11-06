@@ -526,13 +526,13 @@ h1.hero .ln>span{white-space:nowrap}
 .tbi-l{display:flex;flex-direction:column;justify-content:center;padding-top:3px}   /* Literata sits high in its line box: nudge the block so the ink centres on the bar */
 .tbi-l b{display:block;font-family:Literata,serif;font-size:20px;font-weight:600;line-height:1.15;color:var(--ink)}
 .tbi-l span{display:block;font-size:13.5px;line-height:1.35;margin-top:3px;color:var(--ink-2)}
-.tbi-b{position:relative;height:30px;background:rgba(31,58,64,.07);border-radius:6px}
+.tbi-b{position:relative;height:38px;background:rgba(31,58,64,.07);border-radius:6px}
 .tbi-b i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:6px;background:#8FA3A6;transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
 .tbi.on .tbi-b i{width:var(--w)}
-.tbi-b em{position:absolute;left:12px;top:0;bottom:0;display:flex;align-items:center;padding-top:3px;line-height:1;font-style:normal;font-family:Literata,serif;font-weight:700;font-size:20px;color:var(--ink);opacity:0;transition:opacity .5s .7s}   /* the score sits inside its bar, on the left */
+.tbi-b em{position:absolute;left:14px;top:0;bottom:0;display:flex;align-items:center;padding:0 0 3px;line-height:1;font-style:normal;font-family:Literata,serif;font-weight:700;font-size:24px;color:var(--ink);opacity:0;transition:opacity .5s .7s}   /* the score sits inside its bar, on the left */
 .tbi.on .tbi-b em{opacity:1}
 .tbi-r.big .tbi-b em{color:#FBF7EE}
-.tbi-r.dim .tbi-b em{left:calc(var(--w) + 10px)}   /* too short a bar to hold it: just after the bar */
+.tbi.on .tbi-r.dim .tbi-b i{width:max(var(--w),76px)}   /* too short a bar to hold its score: widened just enough to carry it inside */
 .tbi-r.big .tbi-b i{background:var(--leaf,#4E8B5C)}.tbi-r.cl .tbi-b i{background:#C9A06A}.tbi-r.dim .tbi-b i{background:#C9BFAE}
 .tbi-r.dim .tbi-l b{color:var(--ink-2)}
 .tbi-m{font-size:14px;line-height:1.4;color:var(--ink-2)}
